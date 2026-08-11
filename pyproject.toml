@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataclassifygrading"
+version = "0.1.0"
+description = "数据分类分级智能体：基于大模型对数据资产元数据做四级分类（level_1..4）+ 敏感级别（L1-L4）标注，面向后训练"
+requires-python = ">=3.10"
+
+# 依赖占位（随阶段决策补齐）：
+#   - LLM 客户端：待供应商选定（DeepSeek/通义/OpenAI）→ llm.py 重写方向（M2）
+#   - XRAG：examinationrag（M3 引入，pip 安装，无需 clone）
+#   - VeRL / verl：M4 引入，Linux GPU 集群执行，仓库只放代码与配置
+
+[tool.setuptools.packages.find]
+where = ["src"]

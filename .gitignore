@@ -1,0 +1,38 @@
+# ---- 项目纪律（数据集/产物不入库） ----
+/data/*
+!/data/knowledge/
+/data/knowledge/*
+!/data/knowledge/standards_map/
+!/data/README.md
+/tmp/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ---- Windows / macOS ----
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ---- 编辑器 / IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- 密钥与本地配置 ----
+.env
+.env.*
+*.pem
+*.key

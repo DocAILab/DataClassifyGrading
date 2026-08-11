@@ -1,0 +1,11 @@
+{
+  "表名称": "table_name",
+  "表中文描述": "table_description",
+  "字段名称": "field_name",
+  "表字段中文描述": "field_description",
+  "一级子类": "level_1",
+  "二级子类": "level_2",
+  "三级子类": "level_3",
+  "四级分类": "level_4",
+  "数据级别": "data_level"
+}
