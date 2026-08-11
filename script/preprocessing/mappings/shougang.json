@@ -1,0 +1,12 @@
+{
+  "数据库名": "database_name",
+  "表名": "table_name",
+  "表描述": "table_description",
+  "字段名": "field_name",
+  "字段描述": "field_description",
+  "一级分类": "level_1",
+  "二级分类": "level_2",
+  "三级分类": "level_3",
+  "四级分类": "level_4",
+  "分级": "data_level"
+}

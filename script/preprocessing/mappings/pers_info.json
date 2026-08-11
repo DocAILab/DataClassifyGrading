@@ -1,0 +1,9 @@
+{
+  "asset_database_name": "database_name",
+  "asset_table_name": "table_name",
+  "asset_column_name": "field_name",
+  "column_comment": "field_description",
+  "asset_column_type": "field_type",
+  "分类": "level_4",
+  "分级": "data_level"
+}
