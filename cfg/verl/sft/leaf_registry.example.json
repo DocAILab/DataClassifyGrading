@@ -1,0 +1,24 @@
+{
+  "categories": [
+    {
+      "category_id": "example.category.1",
+      "description": "Replace with the first formal leaf-category description."
+    },
+    {
+      "category_id": "example.category.2",
+      "description": "Replace with the second formal leaf-category description."
+    },
+    {
+      "category_id": "example.category.3",
+      "description": "Replace with the third formal leaf-category description."
+    },
+    {
+      "category_id": "example.category.4",
+      "description": "Replace with the fourth formal leaf-category description."
+    },
+    {
+      "category_id": "example.category.5",
+      "description": "Replace with the fifth formal leaf-category description."
+    }
+  ]
+}

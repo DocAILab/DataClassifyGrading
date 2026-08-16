@@ -1,0 +1,9 @@
+[
+  {
+    "id": "fixture-1",
+    "metadata": {"field_name": "email", "field_description": "contact address", "table_name": "hidden"},
+    "classification": {"level_1": "", "level_2": "", "level_3": "", "level_4": "C"},
+    "data_level": "L2",
+    "label_status": "labeled"
+  }
+]

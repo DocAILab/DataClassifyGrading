@@ -28,3 +28,16 @@ python -m script.corpus.cli build --dataset finance --overwrite
 ### 3. 知识库
 
 `data/knowledge/standards_map/`：12 份多领域分类分级标准词典（车联网 YDT 3751 / 白皮书、关基、教育、金融、自贸区京沪、个人信息一般/敏感）
+
+### 4. VeRL SFT 基座
+
+仓库只保存 VeRL SFT 的数据适配、验证和启动脚本，不复制 VeRL 源码。
+离线测试：
+
+```bash
+pip install -e ".[test]"
+pytest -q
+```
+
+数据契约、导出命令和服务器 smoke-test 入口见
+[`docs/SFT_BASELINE.md`](docs/SFT_BASELINE.md)。
