@@ -3,6 +3,9 @@ from pathlib import Path
 import pytest
 
 
+QWEN_TOKENIZER_REVISION = "7ae557604adf67be50417f59c2c2f167def9a775"
+
+
 @pytest.mark.verl
 def test_verl_multiturn_dataset_reads_exported_messages(tmp_path: Path):
     pytest.importorskip("verl")
@@ -21,7 +24,10 @@ def test_verl_multiturn_dataset_reads_exported_messages(tmp_path: Path):
         fixture_dir / "registry.json",
         fixture_dir / "task.json",
     )
-    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
+    tokenizer = AutoTokenizer.from_pretrained(
+        "Qwen/Qwen2.5-0.5B-Instruct",
+        revision=QWEN_TOKENIZER_REVISION,
+    )
     config = OmegaConf.create(
         {
             "messages_key": "messages",
