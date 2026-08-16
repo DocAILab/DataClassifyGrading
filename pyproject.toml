@@ -9,8 +9,8 @@ description = "数据分类分级智能体：基于大模型对数据资产元�
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
-# GPU environment: install requirements/verl-sft.txt for the pinned VeRL stack.
-verl-sft = ["pyarrow==25.0.1"]
+# GPU environment: install requirements/verl.txt for the pinned VeRL stack.
+verl = ["pyarrow==25.0.1"]
 test = ["pytest>=8,<10", "pyarrow==25.0.1"]
 
 [tool.setuptools.packages.find]

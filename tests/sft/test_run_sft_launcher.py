@@ -7,7 +7,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-LAUNCHER = ROOT / "script" / "verl" / "run_sft.sh"
+LAUNCHER = ROOT / "script" / "verl" / "sft" / "run.sh"
 
 
 def _run_launcher(*overrides: str) -> subprocess.CompletedProcess[str]:

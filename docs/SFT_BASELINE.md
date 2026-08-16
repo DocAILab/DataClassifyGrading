@@ -1,28 +1,28 @@
 # VeRL SFT baseline
 
 This is the first, deliberately small VeRL SFT base. Install the pinned GPU
-requirements from `requirements/verl-sft.txt` (VeRL `0.8.0`; its declared
+requirements from `requirements/verl.txt` (VeRL `0.8.0`; its declared
 `pyarrow>=19.0.0` constraint is preserved). The repository does not vendor VeRL.
 
 Create the pinned Linux/CUDA environment from a clean clone:
 
 ```bash
-SFT_ENV_DIR=/path/on/persistent-disk/verl-sft \
-  bash script/verl/create_sft_env.sh
-source /path/on/persistent-disk/verl-sft/bin/activate
+VERL_ENV_DIR=/path/on/persistent-disk/verl \
+  bash script/verl/common/create_env.sh
+source /path/on/persistent-disk/verl/bin/activate
 ```
 
 The pinned environment requires Python 3.11 or newer. The bootstrap installs
 PyTorch 2.8.0 from the cu128 index, applies
-`requirements/verl-sft-cu128.constraints.txt`, installs VeRL 0.8.0, and runs
+`requirements/verl-cu128.constraints.txt`, installs VeRL 0.8.0, and runs
 `pip check`. On a SeeTacloud image that already provides PyTorch 2.8.0+cu128,
 set `REUSE_SYSTEM_TORCH=1` to avoid storing a duplicate PyTorch stack:
 
 ```bash
 PYTHON_BOOTSTRAP=/root/miniconda3/bin/python \
 REUSE_SYSTEM_TORCH=1 \
-SFT_ENV_DIR=/root/autodl-tmp/envs/verl-sft \
-  bash script/verl/create_sft_env.sh
+VERL_ENV_DIR=/root/autodl-tmp/envs/verl \
+  bash script/verl/common/create_env.sh
 ```
 
 ## Export
@@ -33,11 +33,11 @@ Each labeled input record produces two HF-style message examples in each split:
 the tokenizer at runtime and are **not** written to parquet.
 
 ```bash
-python -m script.verl.export_sft \
+python -m script.verl.sft.export \
   --input-dir data/processed/pers_info \
   --output-dir data/sft/pers_info \
   --registry path/to/formal_leaf_registry.json \
-  --task-config cfg/verl/sft/task.example.json \
+  --task-config cfg/task/task.example.json \
   --metadata-fields field_name field_description
 ```
 
@@ -64,10 +64,10 @@ answer belongs to those five candidates.
 ## Validation
 
 ```bash
-python -m script.verl.validate_sft \
+python -m script.verl.sft.validate \
   --dataset-dir data/sft/pers_info \
   --registry path/to/formal_leaf_registry.json \
-  --task-config cfg/verl/sft/task.example.json \
+  --task-config cfg/task/task.example.json \
   --metadata-fields field_name field_description
 ```
 
@@ -79,7 +79,7 @@ row is invalid. It also requires exactly one Stage 1/Stage 2 pair per stable
 Validate prompt length with the actual model chat template before training:
 
 ```bash
-python -m script.verl.check_token_budget \
+python -m script.verl.sft.check_token_budget \
   --dataset-dir data/sft/pers_info \
   --model /path/to/Qwen2.5-7B-Instruct \
   --max-length 2048 \
@@ -92,12 +92,12 @@ category set because Stage 1 includes every allowed leaf-category ID. Its
 
 ## GPU launch
 
-`script/verl/run_sft.sh` is an intentionally thin, single-node wrapper. It uses
+`script/verl/sft/run.sh` is an intentionally thin, single-node wrapper. It uses
 `python -m torch.distributed.run` (the `torchrun` module), reads `NUM_GPUS`, and
 forwards the remaining Hydra overrides to VeRL:
 
 ```bash
-NUM_GPUS=1 script/verl/run_sft.sh \
+NUM_GPUS=1 script/verl/sft/run.sh \
   data.train_files=data/sft/pers_info/train.parquet \
   data.val_files=data/sft/pers_info/val.parquet \
   data.messages_key=messages \
@@ -118,22 +118,23 @@ For the checked-in two-row fixture, use the fully specified smoke launcher:
 export SFT_BASE=/path/on/persistent-disk
 # Use a reachable mirror where huggingface.co is unavailable:
 # export HF_ENDPOINT=https://hf-mirror.com
-bash script/verl/run_sft_smoke.sh
+bash script/verl/sft/smoke.sh
 ```
 
 The smoke launcher downloads Qwen2.5-0.5B-Instruct and creates its fixture
 parquet when they are absent. Set `DOWNLOAD_SMOKE_MODEL=0` for an offline run
 that must fail rather than access the network.
-`cfg/verl/sft/` contains shape-only examples; replace the example category IDs
-and descriptions with the versioned formal leaf registry before real export.
+`cfg/task/` contains algorithm-independent shape examples; replace the example
+category IDs and descriptions with the versioned formal leaf registry before
+real export.
 
 ## Verified no-GPU environment
 
 The offline path was verified on 2026-08-16 with Ubuntu 22.04, Python 3.12.3,
 PyTorch 2.8.0+cu128, VeRL 0.8.0, and PyArrow 25.0.1:
 
-- local core tests: 15 passed, 1 VeRL compatibility test skipped when VeRL is absent;
-- pinned server environment: 16 passed, including the VeRL compatibility test;
+- local core tests: 19 passed, 1 VeRL compatibility test skipped when VeRL is absent;
+- pinned server environment: 20 passed, including the VeRL compatibility test;
 - exporter/validator fixture roundtrip: valid, 2 rows per split;
 - `verl.trainer.sft_trainer` import and launcher `--help`: passed;
 - VeRL `MultiTurnSFTDataset` loaded the generated parquet with the local
@@ -165,9 +166,9 @@ FlashAttention is optional because the verified SDPA path is the fallback. To
 build it against the active PyTorch/CUDA environment rather than copying a wheel:
 
 ```bash
-source /path/on/persistent-disk/verl-sft/bin/activate
+source /path/on/persistent-disk/verl/bin/activate
 CUDA_HOME=/usr/local/cuda-12.8 MAX_JOBS=2 \
-  bash script/verl/install_flash_attn.sh
+  bash script/verl/common/install_flash_attn.sh
 ```
 
 The default build version is 2.8.3. To avoid compiler OOM on the 90GB host, the
@@ -180,7 +181,7 @@ run the VeRL path explicitly:
 
 ```bash
 ATTENTION_IMPL=flash_attention_2 STEPS=1 EPOCHS=1 \
-  bash script/verl/run_sft_smoke.sh
+  bash script/verl/sft/smoke.sh
 ```
 
 Keep SDPA as the default until both checks pass.

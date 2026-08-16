@@ -1,5 +1,5 @@
-# VeRL SFT baseline. Install PyTorch cu128 first; see docs/SFT_BASELINE.md.
--c verl-sft-cu128.constraints.txt
+# Shared VeRL stack. Install PyTorch cu128 first; see docs/SFT_BASELINE.md.
+-c verl-cu128.constraints.txt
 verl==0.8.0
 pyarrow==25.0.1
 # Required by the SFT trainer import chain but omitted from the v0.8.0 wheel metadata.

@@ -1,13 +1,8 @@
-"""Contracts and dataset adapters for the VeRL SFT baseline."""
+"""Algorithm-specific adapters for post-training."""
 
-from .contracts import LeafCategory, LeafRegistry, TaskConfig
-from .sft_dataset import export_sft_dataset, validate_sft_dataset
-from .token_budget import inspect_token_budget
+from .sft import export_sft_dataset, inspect_token_budget, validate_sft_dataset
 
 __all__ = [
-    "LeafCategory",
-    "LeafRegistry",
-    "TaskConfig",
     "export_sft_dataset",
     "validate_sft_dataset",
     "inspect_token_budget",

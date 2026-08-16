@@ -4,11 +4,10 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 
-from agent.training.contracts import LeafRegistry, TaskConfig
-from agent.training.prompts import build_stage1_prompt, build_stage2_prompt
-from agent.training.sft_dataset import export_sft_dataset, validate_sft_dataset
-from script.verl.export_sft import main as export_cli
-from script.verl.validate_sft import main as validate_cli
+from agent.task import LeafRegistry, TaskConfig
+from agent.training.sft import export_sft_dataset, validate_sft_dataset
+from script.verl.sft.export import main as export_cli
+from script.verl.sft.validate import main as validate_cli
 
 
 REGISTRY = {
@@ -43,25 +42,6 @@ def _write_inputs(root: Path):
     return registry, config
 
 
-def test_prompts_have_strict_stage_contracts_and_no_chatml_tokens():
-    s1 = build_stage1_prompt(RECORD["metadata"], LeafRegistry.from_mapping(REGISTRY), TaskConfig.from_mapping(CONFIG))
-    s2 = build_stage2_prompt(
-        RECORD["metadata"],
-        ["C", "A", "B", "D", "E"],
-        LeafRegistry.from_mapping(REGISTRY),
-        TaskConfig.from_mapping(CONFIG),
-    )
-    assert '"candidates"' in s1.system and "exactly 5" in s1.system
-    assert '"answer"' in s2.system and "one of the five" in s2.system
-    prompt_text = s1.system + s1.user + s2.system + s2.user
-    assert all(
-        token not in prompt_text
-        for token in ("<|im_start|>", "<|im_end|>", "ChatML")
-    )
-    assert "secret_table" not in s1.user
-    assert '"field_name"' in s1.user
-
-
 def test_exporter_writes_messages_parquet_and_report(tmp_path):
     registry_path, config_path = _write_inputs(tmp_path / "input")
     out = tmp_path / "out"
@@ -80,26 +60,12 @@ def test_exporter_writes_messages_parquet_and_report(tmp_path):
 
 
 def test_candidate_construction_is_deterministic_and_gt_first():
-    from agent.training.sft_dataset import build_candidates
+    from agent.training.sft import build_candidates
 
     registry = LeafRegistry.from_mapping(REGISTRY)
     expected = ["D", "A", "B", "C", "E"]
     assert build_candidates("D", registry) == expected
     assert build_candidates("D", registry) == expected
-
-
-def test_invalid_registry_rejected():
-    with pytest.raises(ValueError, match="at least 5"):
-        LeafRegistry.from_mapping({"categories": [{"category_id": "A"}] * 4})
-    with pytest.raises(ValueError, match="unique"):
-        LeafRegistry.from_mapping({"categories": [{"category_id": "A", "description": "x"}] * 5})
-    with pytest.raises(ValueError, match="non-empty"):
-        LeafRegistry.from_mapping([" ", "  ", "   ", "    ", "     "])
-
-
-def test_task_config_rejects_non_string_metadata_fields():
-    with pytest.raises(ValueError, match="must be strings"):
-        TaskConfig.from_mapping({"metadata_fields": [1]})
 
 
 def test_exporter_rejects_labeled_record_without_leaf_ground_truth(tmp_path):

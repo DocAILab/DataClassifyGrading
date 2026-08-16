@@ -13,7 +13,7 @@ export MODELSCOPE_TOKEN=xxx
 git clone <ModelScope 数据集地址> data/   # 各领域 all/train/val/test.json + split_report.json
 ```
 
-### 2. 数据管线（旧仓库复用）
+### 2. 数据管线（独立维护）
 
 ```bash
 # 预处理 + 按表分组切分（0.8/0.1/0.1）
@@ -23,15 +23,18 @@ python -m script.preprocessing.cli prepare --dataset finance
 python -m script.corpus.cli build --dataset finance --overwrite
 ```
 
-详细 SOP 见 [docs/新数据集运行说明.md](docs/新数据集运行说明.md)。
+详细 SOP 见 [docs/新数据集运行说明.md](docs/新数据集运行说明.md)。训练框架只消费
+规范化的 `train/val/test.json`，不导入或改写预处理实现。
 
 ### 3. 知识库
 
 `data/knowledge/standards_map/`：12 份多领域分类分级标准词典（车联网 YDT 3751 / 白皮书、关基、教育、金融、自贸区京沪、个人信息一般/敏感）
 
-### 4. VeRL SFT 基座
+### 4. 可复用 VeRL 后训练框架
 
-仓库只保存 VeRL SFT 的数据适配、验证和启动脚本，不复制 VeRL 源码。
+仓库保存算法无关的任务契约与评价逻辑，以及 VeRL 数据适配、验证和启动脚本；
+不复制 VeRL 源码。当前已实现 SFT vertical slice，RL adapter 在 reward 与正式数据
+契约冻结后再加入。
 离线测试：
 
 ```bash
@@ -40,4 +43,5 @@ pytest -q
 ```
 
 数据契约、导出命令和服务器 smoke-test 入口见
-[`docs/SFT_BASELINE.md`](docs/SFT_BASELINE.md)。
+[`docs/SFT_BASELINE.md`](docs/SFT_BASELINE.md)；公共 seam 与 RL 接入条件见
+[`docs/RL_FRAMEWORK.md`](docs/RL_FRAMEWORK.md)。

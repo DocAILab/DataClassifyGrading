@@ -14,7 +14,7 @@ def test_verl_multiturn_dataset_reads_exported_messages(tmp_path: Path):
     from transformers import AutoTokenizer
     from verl.utils.dataset.multiturn_sft_dataset import MultiTurnSFTDataset
 
-    from agent.training.sft_dataset import export_sft_dataset
+    from agent.training.sft import export_sft_dataset
 
     fixture_dir = Path(__file__).parent / "fixtures"
     output_dir = tmp_path / "sft"
