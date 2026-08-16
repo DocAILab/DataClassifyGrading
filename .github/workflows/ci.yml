@@ -59,7 +59,9 @@ jobs:
           python -m pip install -r requirements/verl-sft.txt
           python -m pip install "pytest>=8,<10"
           python -m pip install -e . --no-deps
-      - name: Verify VeRL trainer import chain
-        run: python -c "import verl.trainer.sft_trainer"
+      - name: Verify VeRL trainer import and Hydra entrypoint
+        run: |
+          python -c "import verl.trainer.sft_trainer"
+          python -m verl.trainer.sft_trainer --help > /dev/null
       - name: Load exported parquet through VeRL
         run: python -m pytest -q tests/sft/test_verl_compat.py
