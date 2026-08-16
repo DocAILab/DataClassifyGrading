@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 BASE="${SFT_BASE:-$REPO_ROOT/.artifacts}"
 MODEL_PATH="${MODEL_PATH:-$BASE/models/Qwen2.5-0.5B-Instruct}"
 SMOKE_MODEL_ID="${SMOKE_MODEL_ID:-Qwen/Qwen2.5-0.5B-Instruct}"
@@ -36,23 +36,23 @@ snapshot_download(
 )
 PY
 fi
-"$PYTHON_BIN" -m script.verl.export_sft \
+"$PYTHON_BIN" -m script.verl.sft.export \
   --input-dir tests/sft/fixtures \
   --output-dir "$SMOKE_DATA_DIR" \
   --registry tests/sft/fixtures/registry.json \
   --task-config tests/sft/fixtures/task.json \
   --metadata-fields field_name field_description
-"$PYTHON_BIN" -m script.verl.validate_sft \
+"$PYTHON_BIN" -m script.verl.sft.validate \
   --dataset-dir "$SMOKE_DATA_DIR" \
   --registry tests/sft/fixtures/registry.json \
   --task-config tests/sft/fixtures/task.json \
   --metadata-fields field_name field_description
-"$PYTHON_BIN" -m script.verl.check_token_budget \
+"$PYTHON_BIN" -m script.verl.sft.check_token_budget \
   --dataset-dir "$SMOKE_DATA_DIR" \
   --model "$MODEL_PATH" \
   --max-length 512
 
-NUM_GPUS=1 PYTHON_BIN="$PYTHON_BIN" bash "$SCRIPT_DIR/run_sft.sh" \
+NUM_GPUS=1 PYTHON_BIN="$PYTHON_BIN" bash "$SCRIPT_DIR/run.sh" \
   "data.train_files=$TRAIN_FILE" \
   "data.val_files=$VAL_FILE" \
   data.messages_key=messages \

@@ -6,8 +6,9 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from .contracts import LeafRegistry, TaskConfig
-from .prompts import (
+from agent.evaluation import evaluate_stage1, evaluate_stage2
+from agent.task.contracts import LeafRegistry, TaskConfig
+from agent.task.prompts import (
     build_stage1_prompt,
     build_stage2_prompt,
     stage1_answer,
@@ -17,20 +18,12 @@ from .prompts import (
 SPLITS = ("train", "val", "test")
 
 
-def _registry(value: LeafRegistry | str | Path | Mapping[str, Any]) -> LeafRegistry:
-    if isinstance(value, LeafRegistry):
-        return value
-    if isinstance(value, (str, Path)):
-        return LeafRegistry.from_path(value)
-    return LeafRegistry.from_mapping(value)
+def _registry(value: LeafRegistry | str | Path) -> LeafRegistry:
+    return value if isinstance(value, LeafRegistry) else LeafRegistry.from_path(value)
 
 
-def _config(value: TaskConfig | str | Path | Mapping[str, Any]) -> TaskConfig:
-    if isinstance(value, TaskConfig):
-        return value
-    if isinstance(value, (str, Path)):
-        return TaskConfig.from_path(value)
-    return TaskConfig.from_mapping(value)
+def _config(value: TaskConfig | str | Path) -> TaskConfig:
+    return value if isinstance(value, TaskConfig) else TaskConfig.from_path(value)
 
 
 def load_json_records(path: str | Path) -> list[dict[str, Any]]:
@@ -121,17 +114,10 @@ def _write_parquet(rows: list[dict[str, Any]], path: Path) -> None:
 def export_sft_dataset(
     input_dir: str | Path,
     output_dir: str | Path,
-    registry: LeafRegistry | str | Path | Mapping[str, Any] | None = None,
-    task_config: TaskConfig | str | Path | Mapping[str, Any] | None = None,
-    *,
-    registry_path: str | Path | None = None,
-    task_config_path: str | Path | None = None,
+    registry: LeafRegistry | str | Path,
+    task_config: TaskConfig | str | Path,
 ) -> dict[str, Any]:
     """Export each labeled JSON record as one stage1 and one stage2 SFT row."""
-    registry = registry if registry is not None else registry_path
-    task_config = task_config if task_config is not None else task_config_path
-    if registry is None or task_config is None:
-        raise TypeError("export_sft_dataset requires explicit registry and task_config")
     leaf_registry = _registry(registry)
     config = _config(task_config)
     input_root, output_root = Path(input_dir), Path(output_dir)
@@ -201,12 +187,6 @@ def _validate_row(
     assistant = messages[-1].get("content") if isinstance(messages[-1], Mapping) else None
     if not isinstance(assistant, str):
         return errors + ["assistant content must be a JSON string"]
-    try:
-        answer = json.loads(assistant)
-    except json.JSONDecodeError:
-        return errors + ["assistant content is not valid JSON"]
-    if not isinstance(answer, Mapping):
-        return errors + ["assistant content must decode to a JSON object"]
     stage = row.get("stage")
     ground_truth = row.get("ground_truth")
     candidates = row.get("candidates")
@@ -222,19 +202,32 @@ def _validate_row(
         errors.append("candidates contain an ID absent from registry")
     if not isinstance(ground_truth, str) or ground_truth not in registry.ids:
         errors.append("ground_truth must be an ID from the leaf registry")
-    if stage == "stage1":
-        if set(answer) != {"candidates"} or answer.get("candidates") != candidates:
+    candidates_belong_to_registry = candidates_are_valid and all(
+        candidate in registry.ids for candidate in candidates
+    )
+    ground_truth_is_valid = (
+        isinstance(ground_truth, str) and ground_truth in registry.ids
+    )
+    if stage == "stage1" and ground_truth_is_valid:
+        evaluation = evaluate_stage1(
+            assistant,
+            ground_truth=ground_truth,
+            registry=registry,
+        )
+        errors.extend(f"stage1 evaluation: {error}" for error in evaluation.errors)
+        if evaluation.prediction is None or list(evaluation.prediction) != candidates:
             errors.append("stage1 answer must exactly match the five candidates")
-    elif stage == "stage2":
-        if (
-            set(answer) != {"answer"}
-            or not candidates_are_valid
-            or answer.get("answer") not in candidates
-        ):
-            errors.append("stage2 answer must be one of the five candidates")
-        elif answer.get("answer") != ground_truth:
+    elif stage == "stage2" and candidates_belong_to_registry and ground_truth_is_valid:
+        evaluation = evaluate_stage2(
+            assistant,
+            ground_truth=ground_truth,
+            candidates=tuple(candidates),
+            registry=registry,
+        )
+        errors.extend(f"stage2 evaluation: {error}" for error in evaluation.errors)
+        if evaluation.contract_valid and not evaluation.correct:
             errors.append("stage2 answer must equal ground_truth")
-    else:
+    elif stage not in {"stage1", "stage2"}:
         errors.append("stage must be stage1 or stage2")
 
     visible_metadata = row.get("metadata")
@@ -295,17 +288,10 @@ def _validate_stage_pairs(rows: list[Mapping[str, Any]]) -> list[str]:
 
 def validate_sft_dataset(
     dataset_dir: str | Path,
-    registry: LeafRegistry | str | Path | Mapping[str, Any] | None = None,
-    task_config: TaskConfig | str | Path | Mapping[str, Any] | None = None,
-    *,
-    registry_path: str | Path | None = None,
-    task_config_path: str | Path | None = None,
+    registry: LeafRegistry | str | Path,
+    task_config: TaskConfig | str | Path,
 ) -> dict[str, Any]:
     """Return a structured report; malformed rows are reported, not silently accepted."""
-    registry = registry if registry is not None else registry_path
-    task_config = task_config if task_config is not None else task_config_path
-    if registry is None or task_config is None:
-        raise TypeError("validate_sft_dataset requires explicit registry and task_config")
     leaf_registry = _registry(registry)
     config = _config(task_config)
     root = Path(dataset_dir)

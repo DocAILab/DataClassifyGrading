@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Create the verified VeRL SFT environment without vendoring VeRL.
+# Create the verified VeRL environment without vendoring VeRL.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 PYTHON_BOOTSTRAP="${PYTHON_BOOTSTRAP:-python3}"
-SFT_ENV_DIR="${SFT_ENV_DIR:-$REPO_ROOT/.venv}"
+VERL_ENV_DIR="${VERL_ENV_DIR:-$REPO_ROOT/.venv}"
 TORCH_INDEX_URL="${TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu128}"
 
 if ! "$PYTHON_BOOTSTRAP" -c \
   'import sys; raise SystemExit(sys.version_info < (3, 11))' 2>/dev/null; then
-  echo "The pinned SFT environment requires Python 3.11 or newer" >&2
+  echo "The pinned VeRL environment requires Python 3.11 or newer" >&2
   exit 2
 fi
 
@@ -18,10 +18,10 @@ venv_args=()
 if [[ "${REUSE_SYSTEM_TORCH:-0}" == "1" ]]; then
   venv_args+=(--system-site-packages)
 fi
-if [[ ! -x "$SFT_ENV_DIR/bin/python" ]]; then
-  "$PYTHON_BOOTSTRAP" -m venv "${venv_args[@]}" "$SFT_ENV_DIR"
+if [[ ! -x "$VERL_ENV_DIR/bin/python" ]]; then
+  "$PYTHON_BOOTSTRAP" -m venv "${venv_args[@]}" "$VERL_ENV_DIR"
 fi
-PYTHON_BIN="$SFT_ENV_DIR/bin/python"
+PYTHON_BIN="$VERL_ENV_DIR/bin/python"
 
 "$PYTHON_BIN" -m pip install --upgrade pip
 if ! "$PYTHON_BIN" - <<'PY'
@@ -40,7 +40,7 @@ then
   "$PYTHON_BIN" -m pip install torch==2.8.0 --index-url "$TORCH_INDEX_URL"
 fi
 
-"$PYTHON_BIN" -m pip install -r "$REPO_ROOT/requirements/verl-sft.txt"
+"$PYTHON_BIN" -m pip install -r "$REPO_ROOT/requirements/verl.txt"
 "$PYTHON_BIN" -m pip install -e "$REPO_ROOT" --no-deps
 "$PYTHON_BIN" -m pip check
 

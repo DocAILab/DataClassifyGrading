@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 import sys
 
-from agent.training.contracts import LeafRegistry, TaskConfig
-from agent.training.sft_dataset import validate_sft_dataset
+from agent.task import LeafRegistry, TaskConfig
+from agent.training.sft import validate_sft_dataset
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
