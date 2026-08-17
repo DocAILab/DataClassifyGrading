@@ -5,6 +5,12 @@
 !/data/knowledge/standards_map/
 !/data/README.md
 /tmp/
+/.artifacts/
+/outputs/
+/checkpoints/
+/models/
+/wandb/
+/ray_results/
 
 # ---- Python ----
 __pycache__/
