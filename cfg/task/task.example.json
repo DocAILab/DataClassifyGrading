@@ -1,0 +1,8 @@
+{
+  "task_name": "data_classification_sft",
+  "metadata_fields": [
+    "field_name",
+    "field_description",
+    "field_type"
+  ]
+}

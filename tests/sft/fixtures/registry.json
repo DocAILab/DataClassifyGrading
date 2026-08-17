@@ -1,0 +1,9 @@
+{
+  "categories": [
+    {"category_id": "A", "description": "alpha data"},
+    {"category_id": "B", "description": "beta data"},
+    {"category_id": "C", "description": "gamma data"},
+    {"category_id": "D", "description": "delta data"},
+    {"category_id": "E", "description": "epsilon data"}
+  ]
+}
