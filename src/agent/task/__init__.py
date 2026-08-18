@@ -8,7 +8,7 @@ from .contracts import (
     TaskConfig,
 )
 from .dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
-from .identity import build_leaf_registry, code_leaf_map, compact, stable_category_id
+from .identity import code_leaf_map, compact, leaf_registry_from_corpus, qualified_category_id
 from .parser import (
     PredictionFormatError,
     Stage1Output,
@@ -40,9 +40,9 @@ __all__ = [
     "TargetResolver",
     "ClassificationTargetResolver",
     "resolve_all",
-    "stable_category_id",
+    "qualified_category_id",
     "code_leaf_map",
-    "build_leaf_registry",
+    "leaf_registry_from_corpus",
     "compact",
     "PredictionFormatError",
     "Stage1Output",

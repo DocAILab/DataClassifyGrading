@@ -2,18 +2,26 @@
 
 The resolver derives a canonical SampleTarget from one processed record while
 leaving classification.level_1..level_4 untouched as provenance. It never
-auto-fixes labels and never uses semantic matching; records whose leaf is a
-placeholder label or missing resolve to None (to be filtered by the pipeline).
+auto-fixes labels and never uses semantic matching.
+
+Resolution outcomes are explicit:
+- structural skip: no classification, empty leaf, or a placeholder label
+  (e.g. shougang "——") -> None, counted in ``skipped``;
+- unresolved (code strategy only): the leaf exists but the corpus carries no
+  code for it -> None, reported in ``unresolved_leaves``. There is no silent
+  fallback to another ID scheme; datasets that must produce targets without a
+  complete corpus use their own deterministic path strategy instead.
 """
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Protocol, Sequence
 
 from agent.task.contracts import SampleTarget
 from agent.task.dataset_config import DatasetConfig
-from agent.task.identity import stable_category_id
+from agent.task.identity import qualified_category_id
 
 
 class TargetResolver(Protocol):
@@ -31,13 +39,14 @@ class TargetResolver(Protocol):
 
     @property
     def skipped(self) -> int:
-        """Number of records that produced no target."""
+        """Number of records skipped structurally (no classification, empty
+        leaf, or placeholder label)."""
         ...
 
     @property
-    def code_fallbacks(self) -> int:
-        """Number of records whose category_id fell back to the path hash
-        because the code map had no entry for the leaf (incomplete corpus)."""
+    def unresolved(self) -> Mapping[str, int]:
+        """leaf name -> count for records that resolved to no target because
+        the code strategy found no code for the leaf (incomplete corpus)."""
         ...
 
 
@@ -45,17 +54,19 @@ class TargetResolver(Protocol):
 class ClassificationTargetResolver:
     """Deterministic resolver for the normalized TransClass record format.
 
-    id_strategy "code": category_id = code_leaf_map[leaf_name]; when the leaf
-    has no code (corpus incomplete), fall back to the path hash and count it.
-    id_strategy "path_hash": category_id = stable_category_id(dataset, all
-    path fields). Same leaf under different parents therefore never collides.
+    id_strategy "code": category_id = code_leaf_map[leaf_name]; a leaf
+    without a code is unresolved (no target, reported, never silently
+    remapped to another ID scheme).
+    id_strategy "path": category_id = qualified_category_id(dataset, all
+    path fields); human-readable and path-qualified, so the same leaf name
+    under different parents never collides.
     """
 
     config: DatasetConfig
     code_leaf_map: Mapping[str, str] = field(default_factory=dict)
     resolved: int = 0
     skipped: int = 0
-    code_fallbacks: int = 0
+    unresolved_leaves: Counter[str] = field(default_factory=Counter)
 
     def resolve(self, record: Mapping[str, Any]) -> SampleTarget | None:
         classification = record.get("classification")
@@ -79,10 +90,10 @@ class ClassificationTargetResolver:
         if self.config.id_strategy == "code":
             category_id = self.code_leaf_map.get(leaf)
             if category_id is None:
-                category_id = stable_category_id(self.config.dataset, levels)
-                self.code_fallbacks += 1
+                self.unresolved_leaves[leaf] += 1
+                return None
         else:
-            category_id = stable_category_id(self.config.dataset, levels)
+            category_id = qualified_category_id(self.config.dataset, levels)
 
         category_path = tuple(part for part in levels if part)
         self.resolved += 1
@@ -93,12 +104,20 @@ class ClassificationTargetResolver:
             category_path=category_path,
         )
 
+    @property
+    def unresolved(self) -> Mapping[str, int]:
+        return dict(self.unresolved_leaves)
+
 
 def resolve_all(
     records: Sequence[Mapping[str, Any]],
     resolver: TargetResolver,
 ) -> tuple[list[SampleTarget], list[dict[str, Any]]]:
-    """Resolve a batch; returns (targets, skipped_records)."""
+    """Resolve a batch; returns (targets, skipped_records).
+
+    Skipped records include structural skips and unresolved code lookups;
+    inspection of ``resolver.unresolved`` distinguishes the two.
+    """
     targets: list[SampleTarget] = []
     skipped: list[dict[str, Any]] = []
     for record in records:
