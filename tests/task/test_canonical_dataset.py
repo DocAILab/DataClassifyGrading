@@ -339,6 +339,120 @@ def test_cli_is_deterministic_across_two_runs(tmp_path: Path) -> None:
     assert first_report == second_report
 
 
+# --- edge cases: code_unresolved pipeline, cross-dataset fail-fast, invalid ----
+
+
+def _write_tmp_corpus(tmp_path: Path, dataset: str, categories: list[dict]) -> None:
+    corpus_dir = tmp_path / "corpus"
+    corpus_dir.mkdir(parents=True, exist_ok=True)
+    with (corpus_dir / f"{dataset}.corpus.json").open("w", encoding="utf-8") as handle:
+        json.dump({"dataset": dataset, "categories": categories, "build_report": {}}, handle, ensure_ascii=False)
+
+
+def test_code_unresolved_pipeline_no_crash(tmp_path: Path) -> None:
+    """code strategy + missing code: status=code_unresolved, no target in the
+    canonical record, report.by_leaf correct, pipeline must not crash."""
+    _write_tmp_dataset(
+        tmp_path,
+        "shougang",
+        [
+            _record(
+                {"level_1": "研发数据域", "level_2": "科研管理", "level_3": "设备管理", "level_4": "科研设备预约管理"},
+                record_id="has-code",
+            ),
+            _record(
+                {"level_1": "研发数据域", "level_2": "科研管理", "level_3": "设备管理", "level_4": "科研进程管控"},
+                record_id="no-code",
+            ),
+        ],
+    )
+    # incomplete canonical corpus: 科研设备预约管理 has a code, 科研进程管控 has none
+    _write_tmp_corpus(
+        tmp_path,
+        "shougang",
+        [
+            {"category_id": "A1-1-1", "name": "科研设备预约管理", "code": "A1-1-1"},
+        ],
+    )
+    result = build_canonical_dataset(
+        "shougang",
+        data_dir=tmp_path / "data",
+        registry_dir=REGISTRY_DIR,  # real shared guanji registry (233)
+        corpus_dir=tmp_path / "corpus",
+    )
+    assert result.status_counts == {"code_unresolved": 1, "resolved": 1}
+    assert result.unresolved_details["code_unresolved"] == {
+        "count": 1,
+        "by_leaf": {"科研进程管控": 1},
+    }
+    with (tmp_path / "data" / "shougang" / "canonical" / "all.json").open(encoding="utf-8") as handle:
+        canonical = json.load(handle)
+    by_id = {record["id"]: record for record in canonical}
+    assert by_id["has-code"]["resolution_status"] == "resolved"
+    assert by_id["has-code"]["target"]["category_id"] == "A1-1-1"
+    assert by_id["no-code"]["resolution_status"] == "code_unresolved"
+    assert "target" not in by_id["no-code"]
+    assert result.unresolved_details["record_ids"] == ["no-code"]
+
+
+def test_cross_dataset_fail_fast_no_partial_writes(tmp_path: Path) -> None:
+    """dataset A valid, dataset B missing input: --datasets A B must fail and
+    neither A nor B may produce canonical output."""
+    from script.canonical import targets as targets_cli
+
+    _write_tmp_dataset(
+        tmp_path,
+        "finance",
+        [_record({"level_1": "客户", "level_2": "个人", "level_3": "", "level_4": "个人基本概况信息"})],
+    )
+    # shougang input deliberately missing
+    with pytest.raises(FileNotFoundError, match="input dataset not found"):
+        targets_cli.main(
+            [
+                "--data-dir", str(tmp_path / "data"),
+                "--registry-dir", str(REGISTRY_DIR),
+                "--corpus-dir", str(CORPUS_DIR),
+                "--datasets", "finance", "shougang",
+            ]
+        )
+    assert not (tmp_path / "data" / "finance" / "canonical").exists()
+    assert not (tmp_path / "data" / "shougang" / "canonical").exists()
+
+
+def test_invalid_record_non_mapping_is_audited(tmp_path: Path) -> None:
+    """Non-object records (bare strings in the JSON array) resolve to
+    invalid_record instead of raising AttributeError, and stay auditable."""
+    data_dir = tmp_path / "data"
+    out = data_dir / "finance" / "all.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8") as handle:
+        json.dump(
+            [
+                _record({"level_1": "客户", "level_2": "个人", "level_3": "", "level_4": "个人基本概况信息"}, record_id="ok"),
+                "not-a-record",
+                42,
+                None,
+            ],
+            handle,
+            ensure_ascii=False,
+        )
+    result = build_canonical_dataset(
+        "finance",
+        data_dir=data_dir,
+        registry_dir=REGISTRY_DIR,
+        corpus_dir=CORPUS_DIR,
+    )
+    assert result.status_counts == {"invalid_record": 3, "resolved": 1}
+    with (data_dir / "finance" / "canonical" / "all.json").open(encoding="utf-8") as handle:
+        canonical = json.load(handle)
+    invalid = [r for r in canonical if r["resolution_status"] == "invalid_record"]
+    assert len(invalid) == 3
+    assert all("target" not in r for r in invalid)
+    assert invalid[0]["record"] == "not-a-record"  # original value kept, auditable
+    assert invalid[2]["record"] is None
+    assert result.unresolved_details["record_ids"] == ["", "", ""]
+
+
 # ---------------------------------------------------------------------------
 # real-data integration assertions (local only; skipped in CI without data/)
 # ---------------------------------------------------------------------------

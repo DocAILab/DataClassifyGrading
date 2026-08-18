@@ -121,7 +121,7 @@ class CanonicalDatasetResult:
 
 
 def resolve_record(
-    record: Mapping[str, Any],
+    record: Any,
     resolver: ClassificationTargetResolver,
     registry: LeafRegistry,
     registry_names: set[str],
@@ -130,7 +130,9 @@ def resolve_record(
 
     Downgrades a resolver RESOLVED result to PATH_MISMATCH (leaf known in the
     corpus but identity path differs) or MISSING_LEAF (leaf absent from the
-    universe) when the generated category_id is not in the registry.
+    universe) when the generated category_id is not in the registry. Audit
+    fields (leaf / category_id) are populated on every downgrade so
+    consumers never need to touch ``target`` on non-RESOLVED results.
     """
     result = resolver.resolve_detailed(record)
     if result.status is not ResolutionStatus.RESOLVED or result.target is None:
@@ -146,24 +148,31 @@ def resolve_record(
                 f"leaf {target.leaf_name!r} exists in the corpus but resolved "
                 f"identity {target.category_id!r} is not in the registry"
             ),
+            leaf=target.leaf_name,
+            category_id=target.category_id,
         )
     return ResolutionResult(
         ResolutionStatus.MISSING_LEAF,
         target=target,
         reason=f"leaf {target.leaf_name!r} is absent from the corpus universe",
+        leaf=target.leaf_name,
+        category_id=target.category_id,
     )
 
 
-def build_canonical_dataset(
+def prepare_canonical_dataset(
     dataset: str,
     *,
     data_dir: str | Path,
     registry_dir: str | Path,
     corpus_dir: str | Path,
-    overwrite: bool = False,
-) -> CanonicalDatasetResult:
-    """Resolve every record of data/<dataset>/all.json against the canonical
-    registry and write data/<dataset>/canonical/{all.json,resolution_report.json}."""
+) -> tuple[CanonicalDatasetResult, list[dict[str, Any]]]:
+    """Load, validate, resolve and build the report for one dataset.
+
+    Pure computation: writes nothing. The caller decides when to write via
+    write_canonical_dataset(), which enables cross-dataset fail-fast (no
+    partial outputs when any selected dataset fails).
+    """
     data_dir = Path(data_dir)
     input_path = data_dir / dataset / "all.json"
     if not input_path.is_file():
@@ -207,39 +216,42 @@ def build_canonical_dataset(
     for record in records:
         result = resolve_record(record, resolver, registry, registry_names)
         status_counts[result.status.value] += 1
-        canonical = copy.deepcopy(dict(record))
+        if isinstance(record, Mapping):
+            canonical = copy.deepcopy(dict(record))
+        else:
+            # non-object record (e.g. a bare string in the JSON array): keep
+            # it auditable without corrupting the canonical schema
+            canonical = {"record": copy.deepcopy(record)}
         canonical["resolution_status"] = result.status.value
         if result.status is ResolutionStatus.RESOLVED:
             assert result.target is not None
             assert result.target.category_id in registry.ids
             canonical["target"] = _target_mapping(result.target)
         else:
+            record_id = (
+                str(record.get("id", ""))
+                if isinstance(record, Mapping)
+                else ""
+            )
             unresolved.append(
                 {
-                    "id": str(record.get("id", "")),
+                    "id": record_id,
                     "status": result.status.value,
-                    "leaf": result.target.leaf_name if result.target else None,
-                    "category_id": (
-                        result.target.category_id if result.target else None
-                    ),
+                    "leaf": result.leaf or None,
+                    "category_id": result.category_id or None,
                     "reason": result.reason,
                 }
             )
             if result.status is ResolutionStatus.MISSING_LEAF:
-                missing_leaf_by_name[result.target.leaf_name] += 1
+                missing_leaf_by_name[result.leaf] += 1
             elif result.status is ResolutionStatus.PATH_MISMATCH:
-                path_mismatch_by_id[result.target.category_id] += 1
+                path_mismatch_by_id[result.category_id] += 1
             elif result.status is ResolutionStatus.CODE_UNRESOLVED:
-                code_unresolved_by_leaf[result.target.leaf_name] += 1
+                code_unresolved_by_leaf[result.leaf] += 1
         output_records.append(canonical)
 
     out_dir = data_dir / dataset / "canonical"
     out_all = out_dir / "all.json"
-    out_report = out_dir / "resolution_report.json"
-    if (out_all.exists() or out_report.exists()) and not overwrite:
-        raise FileExistsError(
-            f"canonical output exists for {dataset}: {out_dir} (pass --overwrite)"
-        )
 
     unresolved_details: dict[str, Any] = {
         "missing_leaf": {
@@ -270,13 +282,53 @@ def build_canonical_dataset(
         output_file=_repo_relative(out_all),
         input_sha256=_sha256(input_path),
     )
-    out_dir.mkdir(parents=True, exist_ok=True)
+    return result, output_records
+
+
+def write_canonical_dataset(
+    result: CanonicalDatasetResult,
+    output_records: list[dict[str, Any]],
+) -> None:
+    """Write the canonical all.json + resolution_report.json for a prepared
+    dataset. Must only be called after every selected dataset prepared
+    successfully (cross-dataset fail-fast)."""
+    out_all = Path(result.output_file)
+    if not out_all.is_absolute():
+        out_all = _PROJECT_ROOT / out_all
+    out_report = out_all.parent / "resolution_report.json"
+    out_all.parent.mkdir(parents=True, exist_ok=True)
     with out_all.open("w", encoding="utf-8", newline="\n") as handle:
         json.dump(output_records, handle, ensure_ascii=False, indent=2)
         handle.write("\n")
     with out_report.open("w", encoding="utf-8", newline="\n") as handle:
         json.dump(result.to_mapping(), handle, ensure_ascii=False, indent=2)
         handle.write("\n")
+
+
+def build_canonical_dataset(
+    dataset: str,
+    *,
+    data_dir: str | Path,
+    registry_dir: str | Path,
+    corpus_dir: str | Path,
+    overwrite: bool = False,
+) -> CanonicalDatasetResult:
+    """Convenience wrapper: prepare + overwrite/existence check + write."""
+    data_dir = Path(data_dir)
+    out_all = data_dir / dataset / "canonical" / "all.json"
+    out_report = data_dir / dataset / "canonical" / "resolution_report.json"
+    if (out_all.exists() or out_report.exists()) and not overwrite:
+        raise FileExistsError(
+            f"canonical output exists for {dataset}: {out_all.parent} "
+            "(pass --overwrite)"
+        )
+    result, output_records = prepare_canonical_dataset(
+        dataset,
+        data_dir=data_dir,
+        registry_dir=registry_dir,
+        corpus_dir=corpus_dir,
+    )
+    write_canonical_dataset(result, output_records)
     return result
 
 
@@ -293,6 +345,8 @@ __all__ = [
     "load_registry",
     "load_corpus_categories",
     "resolve_record",
+    "prepare_canonical_dataset",
+    "write_canonical_dataset",
     "build_canonical_dataset",
     "CanonicalDatasetResult",
 ]

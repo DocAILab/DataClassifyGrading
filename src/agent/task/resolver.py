@@ -47,11 +47,18 @@ class ResolutionResult:
     status RESOLVED with a target: the target still needs registry-membership
     verification (done by the canonical dataset layer, which may downgrade it
     to MISSING_LEAF / PATH_MISMATCH).
+
+    ``leaf`` / ``category_id`` are minimal audit fields populated whenever
+    the information is available (e.g. CODE_UNRESOLVED carries the leaf but
+    no category_id). Consumers must never reach into ``target`` for
+    downgraded / unresolved statuses — use these audit fields instead.
     """
 
     status: ResolutionStatus
     target: SampleTarget | None = None
     reason: str = ""
+    leaf: str = ""
+    category_id: str = ""
 
 
 class TargetResolver(Protocol):
@@ -105,20 +112,24 @@ class ClassificationTargetResolver:
         the record must not produce a training target."""
         return self.resolve_detailed(record).target
 
-    def resolve_detailed(self, record: Mapping[str, Any]) -> ResolutionResult:
-        """Resolve with an explicit outcome status (see ResolutionStatus)."""
+    def resolve_detailed(self, record: Any) -> ResolutionResult:
+        """Resolve with an explicit outcome status (see ResolutionStatus).
+
+        Non-Mapping records (list items, strings, None) resolve to
+        INVALID_RECORD instead of raising AttributeError.
+        """
+        if not isinstance(record, Mapping):
+            self.skipped += 1
+            return ResolutionResult(
+                ResolutionStatus.INVALID_RECORD,
+                reason="record is not an object",
+            )
         classification = record.get("classification")
         if not isinstance(classification, Mapping):
             self.skipped += 1
             return ResolutionResult(
                 ResolutionStatus.INVALID_RECORD,
                 reason="classification missing or not an object",
-            )
-        if str(record.get("label_status", "") or "").strip().lower() == "unlabeled":
-            self.skipped += 1
-            return ResolutionResult(
-                ResolutionStatus.UNLABELED,
-                reason="label_status is unlabeled",
             )
 
         levels = [
@@ -127,6 +138,14 @@ class ClassificationTargetResolver:
         ]
         leaf_index = self.config.path_fields.index(self.config.leaf_level)
         leaf = levels[leaf_index]
+
+        if str(record.get("label_status", "") or "").strip().lower() == "unlabeled":
+            self.skipped += 1
+            return ResolutionResult(
+                ResolutionStatus.UNLABELED,
+                reason="label_status is unlabeled",
+                leaf=leaf,
+            )
         if not leaf:
             self.skipped += 1
             return ResolutionResult(
@@ -138,6 +157,7 @@ class ClassificationTargetResolver:
             return ResolutionResult(
                 ResolutionStatus.PLACEHOLDER,
                 reason=f"placeholder label {leaf!r}",
+                leaf=leaf,
             )
 
         if self.config.id_strategy == "code":
@@ -147,6 +167,7 @@ class ClassificationTargetResolver:
                 return ResolutionResult(
                     ResolutionStatus.CODE_UNRESOLVED,
                     reason=f"no code for leaf {leaf!r} in the corpus",
+                    leaf=leaf,
                 )
         else:
             identity_fields = self.config.identity_fields or self.config.path_fields
@@ -167,6 +188,8 @@ class ClassificationTargetResolver:
                 category_id=category_id,
                 category_path=category_path,
             ),
+            leaf=leaf,
+            category_id=category_id,
         )
 
     @property

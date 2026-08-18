@@ -25,7 +25,11 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
-from agent.task.canonical_dataset import build_canonical_dataset  # noqa: E402
+from agent.task.canonical_dataset import (  # noqa: E402
+    CanonicalDatasetResult,
+    prepare_canonical_dataset,
+    write_canonical_dataset,
+)
 
 DEFAULT_DATASETS = ("shougang", "infra", "finance", "pers_info")
 
@@ -67,21 +71,22 @@ def main(argv: list[str] | None = None) -> int:
                 + " (pass --overwrite to replace them)"
             )
 
-    # 2. build everything (per-dataset writes happen only after all checks)
-    results = []
+    # 2. prepare EVERY selected dataset (pure computation, no writes): if any
+    #    dataset fails to load/validate/resolve, no output is produced at all
+    prepared: list[tuple[CanonicalDatasetResult, list[dict]]] = []
     for dataset in datasets:
-        results.append(
-            build_canonical_dataset(
+        prepared.append(
+            prepare_canonical_dataset(
                 dataset,
                 data_dir=args.data_dir,
                 registry_dir=args.registry_dir,
                 corpus_dir=args.corpus_dir,
-                overwrite=args.overwrite,
             )
         )
 
-    # 3. report
-    for result in results:
+    # 3. all prepared successfully -> write every output exactly once
+    for result, output_records in prepared:
+        write_canonical_dataset(result, output_records)
         print(
             f"{result.dataset}: input={result.input_records} "
             f"status={dict(result.status_counts)} "
