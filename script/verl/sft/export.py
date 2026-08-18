@@ -32,8 +32,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--registry", required=True, help="JSON leaf registry")
     parser.add_argument(
         "--corpus",
-        help="Optional canonical corpus JSON (category_id/name/description/"
-        "descriptions/examples) used by Stage 2; resolved by category_id",
+        required=True,
+        help="Canonical corpus JSON (category_id/name/description/descriptions/"
+        "examples); Stage 2 resolves candidates by category_id against it",
     )
     parser.add_argument(
         "--metadata-fields",

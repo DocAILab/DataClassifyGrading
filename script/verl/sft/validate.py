@@ -16,7 +16,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-dir", required=True)
     parser.add_argument("--registry", required=True)
-    parser.add_argument("--corpus", help="Optional canonical corpus JSON for Stage 2 prompt checks")
+    parser.add_argument(
+        "--corpus",
+        required=True,
+        help="Canonical corpus JSON for Stage 2 prompt checks (required; no fallback)",
+    )
     parser.add_argument("--metadata-fields", nargs="+", required=True)
     parser.add_argument("--task-config")
     parser.add_argument("--report", help="Optional path for the structured validation report")
