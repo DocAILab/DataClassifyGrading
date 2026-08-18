@@ -25,6 +25,8 @@ from .prompts import (
 )
 from .resolver import (
     ClassificationTargetResolver,
+    ResolutionResult,
+    ResolutionStatus,
     TargetResolver,
     resolve_all,
 )
@@ -39,6 +41,8 @@ __all__ = [
     "BUILTIN_DATASET_CONFIGS",
     "TargetResolver",
     "ClassificationTargetResolver",
+    "ResolutionStatus",
+    "ResolutionResult",
     "resolve_all",
     "qualified_category_id",
     "code_leaf_map",
