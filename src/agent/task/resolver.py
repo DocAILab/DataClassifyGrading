@@ -4,24 +4,61 @@ The resolver derives a canonical SampleTarget from one processed record while
 leaving classification.level_1..level_4 untouched as provenance. It never
 auto-fixes labels and never uses semantic matching.
 
-Resolution outcomes are explicit:
-- structural skip: no classification, empty leaf, or a placeholder label
-  (e.g. shougang "——") -> None, counted in ``skipped``;
-- unresolved (code strategy only): the leaf exists but the corpus carries no
-  code for it -> None, reported in ``unresolved_leaves``. There is no silent
-  fallback to another ID scheme; datasets that must produce targets without a
-  complete corpus use their own deterministic path strategy instead.
+Resolution outcomes are explicit (ResolutionStatus / ResolutionResult):
+- INVALID_RECORD: no classification, non-object classification, or empty leaf;
+- UNLABELED: label_status == "unlabeled" (no target, even when a leaf exists);
+- PLACEHOLDER: the leaf is a placeholder label (e.g. shougang "——");
+- CODE_UNRESOLVED: code strategy and the corpus carries no code for the leaf
+  (no silent fallback to another ID scheme);
+- RESOLVED: a SampleTarget was generated. Registry membership is NOT checked
+  here — the canonical dataset layer verifies category_id against the
+  LeafRegistry and splits RESOLVED into registry-covered / missing_leaf /
+  path_mismatch.
 """
 
 from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Mapping, Protocol, Sequence
 
 from agent.task.contracts import SampleTarget
 from agent.task.dataset_config import DatasetConfig
 from agent.task.identity import qualified_category_id
+
+
+class ResolutionStatus(str, Enum):
+    """Explicit resolution outcome for one record."""
+
+    RESOLVED = "resolved"
+    UNLABELED = "unlabeled"
+    PLACEHOLDER = "placeholder"
+    MISSING_LEAF = "missing_leaf"
+    PATH_MISMATCH = "path_mismatch"
+    CODE_UNRESOLVED = "code_unresolved"
+    INVALID_RECORD = "invalid_record"
+
+
+@dataclass(frozen=True)
+class ResolutionResult:
+    """One record's resolution outcome.
+
+    status RESOLVED with a target: the target still needs registry-membership
+    verification (done by the canonical dataset layer, which may downgrade it
+    to MISSING_LEAF / PATH_MISMATCH).
+
+    ``leaf`` / ``category_id`` are minimal audit fields populated whenever
+    the information is available (e.g. CODE_UNRESOLVED carries the leaf but
+    no category_id). Consumers must never reach into ``target`` for
+    downgraded / unresolved statuses — use these audit fields instead.
+    """
+
+    status: ResolutionStatus
+    target: SampleTarget | None = None
+    reason: str = ""
+    leaf: str = ""
+    category_id: str = ""
 
 
 class TargetResolver(Protocol):
@@ -71,10 +108,29 @@ class ClassificationTargetResolver:
     unresolved_leaves: Counter[str] = field(default_factory=Counter)
 
     def resolve(self, record: Mapping[str, Any]) -> SampleTarget | None:
+        """Return the canonical target for one processed record, or None when
+        the record must not produce a training target."""
+        return self.resolve_detailed(record).target
+
+    def resolve_detailed(self, record: Any) -> ResolutionResult:
+        """Resolve with an explicit outcome status (see ResolutionStatus).
+
+        Non-Mapping records (list items, strings, None) resolve to
+        INVALID_RECORD instead of raising AttributeError.
+        """
+        if not isinstance(record, Mapping):
+            self.skipped += 1
+            return ResolutionResult(
+                ResolutionStatus.INVALID_RECORD,
+                reason="record is not an object",
+            )
         classification = record.get("classification")
         if not isinstance(classification, Mapping):
             self.skipped += 1
-            return None
+            return ResolutionResult(
+                ResolutionStatus.INVALID_RECORD,
+                reason="classification missing or not an object",
+            )
 
         levels = [
             str(classification.get(field, "") or "").strip()
@@ -82,18 +138,37 @@ class ClassificationTargetResolver:
         ]
         leaf_index = self.config.path_fields.index(self.config.leaf_level)
         leaf = levels[leaf_index]
+
+        if str(record.get("label_status", "") or "").strip().lower() == "unlabeled":
+            self.skipped += 1
+            return ResolutionResult(
+                ResolutionStatus.UNLABELED,
+                reason="label_status is unlabeled",
+                leaf=leaf,
+            )
         if not leaf:
             self.skipped += 1
-            return None
+            return ResolutionResult(
+                ResolutionStatus.INVALID_RECORD,
+                reason="leaf is empty",
+            )
         if leaf in self.config.placeholder_labels:
             self.skipped += 1
-            return None
+            return ResolutionResult(
+                ResolutionStatus.PLACEHOLDER,
+                reason=f"placeholder label {leaf!r}",
+                leaf=leaf,
+            )
 
         if self.config.id_strategy == "code":
             category_id = self.code_leaf_map.get(leaf)
             if category_id is None:
                 self.unresolved_leaves[leaf] += 1
-                return None
+                return ResolutionResult(
+                    ResolutionStatus.CODE_UNRESOLVED,
+                    reason=f"no code for leaf {leaf!r} in the corpus",
+                    leaf=leaf,
+                )
         else:
             identity_fields = self.config.identity_fields or self.config.path_fields
             identity_indices = [
@@ -105,11 +180,16 @@ class ClassificationTargetResolver:
 
         category_path = tuple(part for part in levels if part)
         self.resolved += 1
-        return SampleTarget(
-            leaf_level=self.config.leaf_level,
-            leaf_name=leaf,
+        return ResolutionResult(
+            ResolutionStatus.RESOLVED,
+            target=SampleTarget(
+                leaf_level=self.config.leaf_level,
+                leaf_name=leaf,
+                category_id=category_id,
+                category_path=category_path,
+            ),
+            leaf=leaf,
             category_id=category_id,
-            category_path=category_path,
         )
 
     @property
