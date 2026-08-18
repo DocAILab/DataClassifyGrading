@@ -25,8 +25,13 @@
 ```
 
 - `target` 是**派生结构**，由 `ClassificationTargetResolver` 从 record 生成；不写回 classification。
-- leaf 为占位符（shougang `——`）或缺失时 resolver 返回 `None`（由 pipeline 过滤），
-  计数在 `resolver.skipped` / `resolver.code_fallbacks` 中暴露。
+- 解析结果显式三分：
+  - **structural skip**：无 classification / leaf 为空 / 占位符（shougang `——`）→ 无 target，计 `skipped`；
+  - **unresolved**（仅 code 策略）：leaf 存在但 corpus 无 code → 无 target，在
+    `resolver.unresolved` 按 leaf 名显式报告；**不静默 fallback 到其他 ID 方案**；
+  - resolved：生成 `SampleTarget`。
+- 需要"corpus 不完整但仍产生 target"的数据集（pers_info）使用自己的
+  deterministic path 策略，而不是依赖 fallback。
 - `category_id` 只在一个 dataset 的 LeafRegistry 内唯一（跨 dataset 允许相同，
   例如 infra 与 shougang 共享同一 code 空间）。
 
@@ -50,25 +55,29 @@
 允许：一个 category 多个 description/example；category 没有 description；corpus 不完整
 （无全局完整性校验）。不再使用 bare level_4 name 作为通用 category identity。
 
+**Registry 与 corpus 的关系**：生产用 `LeafRegistry` 代表 classification standard /
+corpus 的**完整 leaf universe**，由 `leaf_registry_from_corpus(categories)` 构建，
+**绝不从训练样本 SampleTarget 推导**（训练样本可能只覆盖 universe 的子集）。
+
 ## 3. 每个 dataset 的 category_id 策略
 
 | dataset | 策略 | category_id 形态 | 依据（阶段 1 报告） |
 |---|---|---|---|
-| shougang | `code` | guanji code，如 `A1-1-1`、`B1-2` | 192/193 leaf 与 guanji 精确对齐；233 code 全部唯一；字母↔L1 100% 一致（A=研发/B=生产/C=管理）。**数字段是不透明序号，不解释为 level_2/3**。占位符 `——`（1022 样本）→ 无 target |
+| shougang | `code` | guanji code，如 `A1-1-1`、`B1-2` | 192/193 leaf 与 guanji 精确对齐；233 code 全部唯一；字母↔L1 100% 一致（A=研发/B=生产/C=管理）。**数字段是不透明序号，不解释为 level_2/3**。占位符 `——`（1022 样本）→ structural skip；corpus 中 leaf 无 code → unresolved（显式报告，无 fallback） |
 | infra | `code`，`registry_source="shougang"` | 同 shougang（4/4 leaf 同 code） | infra ⊂ shougang；不构建 4 类别的独立 registry（LeafRegistry 有 ≥5 条校验） |
-| finance | `path_hash` | `finance:<sha256(4段path)[:16]>`，如 `finance:3bf4a5fc…` | fs 是 3 段 path、dataset 是 4 级，**不把 join(level_1~4) 当作 corpus identity**；hash 只保证稳定+无碰撞。3 个真同名不同父 leaf（单位基本情况/基本信息/交易清结算信息）各得 2 个 ID；"配置信息"的空白变体（经营 管理/经营管理）归一化后同 1 个 ID |
-| pers_info | `path_hash` | `pers_info:<sha256(leaf)[:16]>` | 仅 level_4（18 唯一，单级）；corpus 只覆盖 4/18，schema 允许 target 存在而 description 缺失 |
+| finance | `path` | `finance:<L1>.<L2>.<L3>.<L4>`，如 `finance:业务.账户信息..基本信息` | fs 是 3 段 path、dataset 是 4 级，**不把 join(level_1~4) 当作 corpus identity**。ID 是 deterministic、human-readable、path-qualified（非 opaque hash）：固定 4 槽、空 level_3 保留空槽（`..`），同名不同父必然不同 ID。3 个真同名不同父 leaf（单位基本情况/基本信息/交易清结算信息）各得 2 个 ID；"配置信息"的空白变体（经营 管理/经营管理）归一化后同 1 个 ID |
+| pers_info | `path`（path_fields=level_4） | `pers_info:<leaf>`，如 `pers_info:学籍管理信息` | 仅 level_4（18 唯一，单级）；corpus 只覆盖 4/18，schema 允许 target 存在而 description 缺失 |
 
-统一 fallback：`code` 策略下 leaf 无 code（corpus 不完整）→ 自动回退 path_hash 并计数
-（`resolver.code_fallbacks`），不报错、不修标签。
+category_id 与 display name（`LeafCategory.name` / `SampleTarget.leaf_name`）保持分离：
+ID 是身份，name 是展示；name 不参与 identity 判定。
 
 ## 4. 新增 / 修改文件
 
 新增：
 - `src/agent/task/dataset_config.py` — `DatasetConfig` + `BUILTIN_DATASET_CONFIGS`（四数据集策略）
-- `src/agent/task/identity.py` — `stable_category_id` / `code_leaf_map` / `build_leaf_registry` / `compact`
+- `src/agent/task/identity.py` — `qualified_category_id` / `code_leaf_map` / `leaf_registry_from_corpus` / `compact`
 - `src/agent/task/resolver.py` — `TargetResolver`（Protocol）/ `ClassificationTargetResolver` / `resolve_all`
-- `tests/task/test_targets.py` — 19 个 contract 测试（覆盖 6 项要求）
+- `tests/task/test_targets.py` — 21 个 contract 测试（覆盖 6 项要求 + unresolved 语义）
 - `cfg/task/dataset.example.json`、`cfg/task/corpus.example.json` — schema 示例
 
 修改：
@@ -81,7 +90,8 @@
 ## 5. 留到阶段 3 的问题（故意不在此解决）
 
 1. **corpus → registry 正式接入**：finance 的 fs 3 段 path ↔ 数据集 4 级 path 的映射、
-   `corpus:finance` bare-leaf 文档如何挂到 category 上、description/examples 填充。
+   `corpus:finance` bare-leaf 文档如何挂到 category 上、description/examples 填充；
+   各 dataset 的 canonical corpus JSON（`CorpusCategory` 列表）落地。
 2. **候选召回**：leaf registry 冻结后，SFT fixture（GT+顺序前 4）替换为 corpus 驱动的
    hard-negative 策略（`CandidatePolicy`）。
 3. **shougang `——` 占位符策略**：过滤（当前行为）vs 单独类别，需数据侧决策。
@@ -98,3 +108,5 @@
 - guanji code 数字段 ↔ level_2/3 的对应（需原指南；本阶段按不透明 ID 处理）。
 - pers_info 14/18 leaf 的语料来源未知。
 - education_dict code（A1-1 等）与 pers_info 无层级可对照。
+- shougang corpus 中 1 条 malformed 条目（`"nan"`，JSON NaN）— 无 code 且不在数据集
+  leaf 内，阶段 3 清理语料时需处理。

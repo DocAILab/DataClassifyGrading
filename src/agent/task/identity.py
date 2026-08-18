@@ -1,23 +1,28 @@
 """Category identity helpers for the canonical data contract.
 
-Rules (from stage-1 report decisions):
+Rules (from stage-1 report decisions and stage-2 review):
 - category_id must be unique inside one dataset LeafRegistry and must not
-  rely on random UUIDs.
-- Same leaf name under different parent paths must never collide.
+  rely on random UUIDs or opaque hashes.
+- Same leaf name under different parent paths must never collide: the
+  deterministic path strategy qualifies the leaf with every path level, so
+  structurally different paths always produce different category_ids.
+- Path-based category_ids are human-readable and stable across runs and
+  machines; whitespace is normalized (collapsed away) so label variants like
+  "经营 管理" / "经营管理" resolve to the same identity, while genuinely
+  different parents stay distinct.
 - Codes (e.g. guanji A1-1-1) are treated as opaque stable identities; their
   digit groups are not interpreted as level_2 / level_3.
-- Deterministic path-hash IDs are stable across runs and machines; the hash
-  seed keeps every path field (empty levels included) so that structurally
-  different paths always produce different IDs.
+- A production LeafRegistry represents the complete leaf universe of a
+  classification standard / corpus, never a set of training samples; the
+  registry factory therefore consumes CorpusCategory, not SampleTarget.
 """
 
 from __future__ import annotations
 
-import hashlib
 import re
-from typing import Iterable, Mapping, Sequence
+from typing import Iterable, Sequence
 
-from agent.task.contracts import CorpusCategory, LeafCategory, LeafRegistry, SampleTarget
+from agent.task.contracts import CorpusCategory, LeafCategory, LeafRegistry
 
 _WS_RE = re.compile(r"\s+")
 
@@ -27,16 +32,17 @@ def compact(text: str) -> str:
     return _WS_RE.sub("", text)
 
 
-def stable_category_id(domain: str, path: Sequence[str]) -> str:
-    """Deterministic, collision-resistant category_id for one category path.
+def qualified_category_id(domain: str, path: Sequence[str]) -> str:
+    """Deterministic, human-readable, path-qualified category_id.
 
-    The seed joins every path field (empty levels kept, so e.g. finance
-    paths with a missing level_3 remain distinguishable from shorter paths)
-    with the unit separator; the ID is ``<domain>:<hex16>``.
+    Format: ``<domain>:<part1>.<part2>.<part3>.<part4>`` where parts are the
+    whitespace-collapsed path fields in fixed slot order (empty levels are
+    kept as empty parts, so a missing level_3 remains distinguishable from a
+    shorter path). The same leaf name under different parent paths therefore
+    always yields different category_ids.
     """
-    seed = "\x1f".join(compact(part) for part in path)
-    digest = hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
-    return f"{domain}:{digest}"
+    parts = [compact(part) for part in path]
+    return f"{domain}:{'.'.join(parts)}"
 
 
 def code_leaf_map(
@@ -62,34 +68,33 @@ def code_leaf_map(
     return mapping
 
 
-def build_leaf_registry(
-    targets: Iterable[SampleTarget],
-    *,
-    descriptions: Mapping[str, str] | None = None,
+def leaf_registry_from_corpus(
+    categories: Iterable[CorpusCategory],
 ) -> LeafRegistry:
-    """Build a LeafRegistry from resolved targets (deduplicated by category_id).
+    """Build a LeafRegistry from the complete leaf universe of a corpus.
 
-    description is optional per category: pers_info targets have no corpus
-    description and still produce a valid registry entry.
+    The registry is derived from the classification standard / corpus, not
+    from training samples, so it stays complete even for leaves that never
+    appear in the training split. Descriptions may be missing per category
+    (pers_info corpus is incomplete); LeafRegistry still enforces unique,
+    non-empty category_ids and the minimum-category invariant.
     """
-    by_id: dict[str, SampleTarget] = {}
-    for target in targets:
-        by_id.setdefault(target.category_id, target)
-    categories = tuple(
+    leaf_categories = tuple(
         LeafCategory(
-            category_id=target.category_id,
-            description=(descriptions or {}).get(target.category_id, ""),
-            name=target.leaf_name,
-            path=target.category_path,
+            category_id=category.category_id,
+            name=category.name,
+            description=category.description,
+            path=category.path,
+            code=category.code,
         )
-        for target in by_id.values()
+        for category in categories
     )
-    return LeafRegistry(categories)
+    return LeafRegistry(leaf_categories)
 
 
 __all__ = [
     "compact",
-    "stable_category_id",
+    "qualified_category_id",
     "code_leaf_map",
-    "build_leaf_registry",
+    "leaf_registry_from_corpus",
 ]

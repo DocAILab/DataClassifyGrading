@@ -5,16 +5,18 @@ an explicit category_id strategy instead of a single global rule:
 
 - shougang: guanji codes are stable and unique (233 codes, letter prefix
   proven to map 1:1 to level_1; digit groups are NOT interpreted as
-  level_2/level_3 — the code is an opaque identity).
+  level_2/level_3 — the code is an opaque identity). Leaves without a code
+  resolve to no target and are reported as unresolved (no silent fallback).
 - infra: a strict subset of shougang (4/4 leaves, same codes); it reuses the
   shougang registry via registry_source instead of building a 4-category one.
 - finance: the standard is a 3-segment path while the dataset has 4 levels;
-  no reliable code exists, so the ID is a deterministic hash of the full
-  4-level path (empty levels kept as separators), which guarantees that the
-  same leaf name under different parents gets different category_ids.
+  no reliable code exists, so the ID is the deterministic, human-readable,
+  path-qualified name built from all four levels (empty levels kept as empty
+  slots). The same leaf under different parents therefore gets different
+  category_ids, and the ID is not an opaque hash.
 - pers_info: only level_4 exists (18 unique labels), corpus covers 4/18, so
   the schema must allow targets with no corpus description; IDs come from the
-  deterministic path hash of the single populated level.
+  same deterministic path strategy over the single populated level.
 """
 
 from __future__ import annotations
@@ -24,7 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-ID_STRATEGIES = ("code", "path_hash")
+ID_STRATEGIES = ("code", "path")
 
 DEFAULT_PATH_FIELDS = ("level_1", "level_2", "level_3", "level_4")
 
@@ -36,10 +38,12 @@ class DatasetConfig:
     Attributes:
       dataset: dataset name, e.g. "finance".
       leaf_level: the canonical leaf classification level, e.g. "level_4".
-      id_strategy: "code" (stable corpus code, e.g. guanji A1-1-1) or
-        "path_hash" (deterministic hash of the full path fields).
+      id_strategy: "code" (stable corpus code, e.g. guanji A1-1-1; leaves
+        without a code are unresolved, never silently remapped) or "path"
+        (deterministic, human-readable, path-qualified ID built from all
+        path fields).
       path_fields: classification fields used to build the category path and
-        the hash seed, in order from root to leaf.
+        the ID, in order from root to leaf.
       placeholder_labels: labels that are not real categories (e.g. shougang
         "——" placeholder); records with such a leaf resolve to no target.
       registry_source: optional name of another dataset whose LeafRegistry
@@ -48,7 +52,7 @@ class DatasetConfig:
 
     dataset: str
     leaf_level: str = "level_4"
-    id_strategy: str = "path_hash"
+    id_strategy: str = "path"
     path_fields: tuple[str, ...] = DEFAULT_PATH_FIELDS
     placeholder_labels: tuple[str, ...] = ()
     registry_source: str | None = None
@@ -105,7 +109,7 @@ class DatasetConfig:
         return cls(
             dataset=raw_dataset.strip(),
             leaf_level=str(value.get("leaf_level", "level_4")).strip(),
-            id_strategy=str(value.get("id_strategy", "path_hash")).strip(),
+            id_strategy=str(value.get("id_strategy", "path")).strip(),
             path_fields=tuple(field.strip() for field in raw_fields),
             placeholder_labels=tuple(label.strip() for label in raw_placeholders),
             registry_source=None if raw_source is None else raw_source.strip(),
@@ -131,8 +135,10 @@ BUILTIN_DATASET_CONFIGS: dict[str, DatasetConfig] = {
         registry_source="shougang",
     ),
     "finance": DatasetConfig(dataset="finance"),
-    "pers_info": DatasetConfig(dataset="pers_info"),
-}
+    "pers_info": DatasetConfig(
+        dataset="pers_info",
+        path_fields=("level_4",),
+    ),}
 
 __all__ = [
     "DatasetConfig",
