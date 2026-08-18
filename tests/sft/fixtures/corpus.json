@@ -1,0 +1,11 @@
+{
+  "dataset": "fixture",
+  "categories": [
+    {"category_id": "A", "name": "alpha data", "description": "alpha data", "path": [], "code": null, "examples": []},
+    {"category_id": "B", "name": "beta data", "description": "beta data", "path": [], "code": null, "examples": []},
+    {"category_id": "C", "name": "gamma data", "description": "gamma data", "path": [], "code": null, "examples": []},
+    {"category_id": "D", "name": "delta data", "description": "delta data", "path": [], "code": null, "examples": []},
+    {"category_id": "E", "name": "epsilon data", "description": "epsilon data", "path": [], "code": null, "examples": []}
+  ],
+  "build_report": {}
+}

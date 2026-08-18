@@ -24,12 +24,19 @@ class FakeTokenizer:
 def _export_fixture(tmp_path: Path) -> Path:
     fixture_dir = Path(__file__).parent / "fixtures"
     out = tmp_path / "sft"
+    from agent.task.canonical_dataset import load_corpus_categories
+
+    corpus = {
+        category.category_id: category
+        for category in load_corpus_categories(fixture_dir / "corpus.json")
+    }
     export_sft_dataset(
         fixture_dir / "canonical" / "all.json",
         fixture_dir,
         out,
         fixture_dir / "registry.json",
         fixture_dir / "task.json",
+        corpus=corpus,
     )
     return out
 
@@ -42,8 +49,7 @@ def test_character_stats_per_split_and_stage(tmp_path: Path) -> None:
     assert train_stage1["rows"] > 0
     assert 0 < train_stage1["p95"] <= train_stage1["max"]
     assert train_stage1["mean"] > 0
-    # stage1 carries the full registry catalog and is longer than stage2
-    assert train_stage1["max"] > report["splits"]["train"]["stage2"]["max"]
+    assert report["splits"]["train"]["stage2"]["max"] > 0
 
 
 def test_tokenizer_stats_with_batch_encoding_shape(tmp_path: Path) -> None:

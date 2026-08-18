@@ -163,12 +163,15 @@ def export_sft_dataset(
     output_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
-    corpus: Mapping[str, CorpusCategory] | None = None,
+    corpus: Mapping[str, CorpusCategory],
 ) -> dict[str, Any]:
     """Export canonical records to one stage1 + one stage2 SFT row per split.
 
     Labels come exclusively from target.category_id (canonical contract);
     split boundaries follow the original split JSON files by record id.
+    corpus is REQUIRED for the production Stage 2 path: candidates are
+    resolved by category_id against the canonical corpus and there is no
+    registry fallback in the exporter.
     """
     leaf_registry = _registry(registry)
     config = _config(task_config)
@@ -181,10 +184,24 @@ def export_sft_dataset(
         raise FileNotFoundError(f"canonical dataset not found: {canonical_path}")
     canonical_records = load_json_records(canonical_path)
     canonical_by_id: dict[str, dict[str, Any]] = {}
+    canonical_resolved = 0
+    idless_non_resolved = 0
     for item in canonical_records:
         item_id = str(item.get("id", "") or "").strip()
-        if not item_id:
-            raise ValueError(f"canonical record without id: {canonical_path}")
+        status = str(item.get("resolution_status", "") or "").strip()
+        if status == "resolved":
+            canonical_resolved += 1
+            if not item_id:
+                raise ValueError(
+                    f"resolved canonical record without id: {canonical_path}"
+                )
+        elif not item_id:
+            # stage-3B contract allows id-less audit records for non-resolved
+            # outcomes (e.g. {"record": ..., "resolution_status":
+            # "invalid_record"}); they never enter training and are ignored
+            # by the split join, but must not fail the export
+            idless_non_resolved += 1
+            continue
         if item_id in canonical_by_id:
             raise ValueError(f"duplicate id in canonical dataset: {item_id}")
         canonical_by_id[item_id] = item
@@ -201,8 +218,11 @@ def export_sft_dataset(
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
         "corpus_size": len(corpus_map),
+        "canonical_resolved": canonical_resolved,
+        "idless_non_resolved_records": idless_non_resolved,
         "splits": {},
     }
+    trainable_ids: set[str] = set()
     for split in SPLITS:
         source = split_root / f"{split}.json"
         split_records = load_json_records(source)
@@ -222,6 +242,7 @@ def export_sft_dataset(
             if ground_truth is None:
                 skipped_unresolved += 1
                 continue
+            trainable_ids.add(item_id)
             rows.extend(
                 _row(canonical_item, source, index, leaf_registry, config, stage, corpus_map)
                 for stage in ("stage1", "stage2")
@@ -236,6 +257,16 @@ def export_sft_dataset(
             "skipped_not_resolved": skipped_unresolved,
             "output_file": str(destination),
         }
+    resolved_outside_split_ids = sorted(
+        record_id
+        for record_id in canonical_by_id
+        if record_id not in trainable_ids
+        and str(canonical_by_id[record_id].get("resolution_status", "")).strip()
+        == "resolved"
+    )
+    report["trainable_resolved"] = len(trainable_ids)
+    report["resolved_outside_splits"] = len(resolved_outside_split_ids)
+    report["resolved_outside_split_ids"] = resolved_outside_split_ids
     output_root.mkdir(parents=True, exist_ok=True)
     (output_root / "export_report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -376,9 +407,13 @@ def validate_sft_dataset(
     dataset_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
-    corpus: Mapping[str, CorpusCategory] | None = None,
+    corpus: Mapping[str, CorpusCategory],
 ) -> dict[str, Any]:
-    """Return a structured report; malformed rows are reported, not silently accepted."""
+    """Return a structured report; malformed rows are reported, not silently accepted.
+
+    corpus is REQUIRED: production validation rebuilds the Stage 2 prompt
+    from the canonical corpus (no registry fallback in the validator).
+    """
     leaf_registry = _registry(registry)
     config = _config(task_config)
     corpus_map = _corpus_map(corpus)

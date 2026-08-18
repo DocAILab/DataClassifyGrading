@@ -1,0 +1,97 @@
+{
+  "unit": "chars",
+  "tokenizer_available": true,
+  "splits": {
+    "train": {
+      "stage1": {
+        "chars": {
+          "rows": 140,
+          "max": 1594,
+          "p95": 1587,
+          "mean": 1576.0
+        },
+        "tokens": {
+          "rows": 140,
+          "max": 523,
+          "p95": 517,
+          "mean": 512.3
+        }
+      },
+      "stage2": {
+        "chars": {
+          "rows": 140,
+          "max": 845,
+          "p95": 840,
+          "mean": 826.5
+        },
+        "tokens": {
+          "rows": 140,
+          "max": 236,
+          "p95": 232,
+          "mean": 225.6
+        }
+      }
+    },
+    "val": {
+      "stage1": {
+        "chars": {
+          "rows": 18,
+          "max": 1589,
+          "p95": 1589,
+          "mean": 1582.6
+        },
+        "tokens": {
+          "rows": 18,
+          "max": 517,
+          "p95": 516,
+          "mean": 513.7
+        }
+      },
+      "stage2": {
+        "chars": {
+          "rows": 18,
+          "max": 839,
+          "p95": 839,
+          "mean": 832.7
+        },
+        "tokens": {
+          "rows": 18,
+          "max": 230,
+          "p95": 229,
+          "mean": 226.9
+        }
+      }
+    },
+    "test": {
+      "stage1": {
+        "chars": {
+          "rows": 18,
+          "max": 1585,
+          "p95": 1585,
+          "mean": 1579.3
+        },
+        "tokens": {
+          "rows": 18,
+          "max": 517,
+          "p95": 516,
+          "mean": 512.9
+        }
+      },
+      "stage2": {
+        "chars": {
+          "rows": 18,
+          "max": 839,
+          "p95": 836,
+          "mean": 830.3
+        },
+        "tokens": {
+          "rows": 18,
+          "max": 232,
+          "p95": 231,
+          "mean": 227.1
+        }
+      }
+    }
+  },
+  "exceeds_max_length": []
+}

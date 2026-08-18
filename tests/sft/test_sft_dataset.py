@@ -133,6 +133,7 @@ def test_stage1_prompt_catalog_contains_id_and_name(tmp_path):
         out,
         registry_path,
         config_path,
+        corpus=_corpus_map(),
     )
     rows = pq.read_table(out / "train.parquet").to_pylist()
     stage1 = next(row for row in rows if row["stage"] == "stage1")
@@ -189,6 +190,7 @@ def test_unresolved_records_never_enter_training(tmp_path):
         out,
         registry_path,
         config_path,
+        corpus=_corpus_map(),
     )
     assert report["splits"]["train"]["exported_records"] == 2
     # only the resolved val record enters training; the unresolved one is skipped
@@ -210,6 +212,7 @@ def test_exporter_rejects_resolved_record_without_target(tmp_path):
             tmp_path / "out",
             registry_path,
             config_path,
+            corpus=_corpus_map(),
         )
 
 
@@ -224,6 +227,7 @@ def test_exporter_rejects_target_id_absent_from_registry(tmp_path):
             tmp_path / "out",
             registry_path,
             config_path,
+            corpus=_corpus_map(),
         )
 
 
@@ -239,6 +243,7 @@ def test_exporter_rejects_leaf_name_registry_mismatch(tmp_path):
             tmp_path / "out",
             registry_path,
             config_path,
+            corpus=_corpus_map(),
         )
 
 
@@ -255,7 +260,83 @@ def test_exporter_rejects_split_id_absent_from_canonical(tmp_path):
             tmp_path / "out",
             registry_path,
             config_path,
+            corpus=_corpus_map(),
         )
+
+
+def test_idless_non_resolved_audit_records_are_allowed(tmp_path):
+    """Stage-3B contract allows id-less audit records for non-resolved
+    outcomes; they must never fail the export and never enter training."""
+    canonical = {
+        "row-train": _canonical_record("row-train", status="resolved"),
+        "row-val": _canonical_record("row-val", status="resolved"),
+        "row-test": _canonical_record("row-test", status="resolved"),
+    }
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input", canonical)
+    # append id-less audit records exactly as canonical_dataset emits them
+    with (tmp_path / "input" / "canonical" / "all.json").open("a", encoding="utf-8") as handle:
+        pass  # rewrite below instead of appending (valid JSON)
+    with (tmp_path / "input" / "canonical" / "all.json").open("r", encoding="utf-8") as handle:
+        records = json.load(handle)
+    records.append({"record": "not-a-record", "resolution_status": "invalid_record"})
+    records.append({"resolution_status": "missing_leaf", "reason": "audit only"})
+    with (tmp_path / "input" / "canonical" / "all.json").open("w", encoding="utf-8") as handle:
+        json.dump(records, handle, ensure_ascii=False)
+
+    out = tmp_path / "out"
+    report = export_sft_dataset(
+        tmp_path / "input" / "canonical" / "all.json",
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        corpus=_corpus_map(),
+    )
+    # id-less non-resolved records are counted, never exported
+    assert report["idless_non_resolved_records"] == 2
+    assert report["canonical_resolved"] == 3
+    assert report["trainable_resolved"] == 3
+    rows = pq.read_table(out / "train.parquet").to_pylist()
+    assert {row["source_id"] for row in rows} == {"row-train"}
+
+
+def test_exporter_rejects_resolved_record_without_id(tmp_path):
+    canonical = {"row-train": _canonical_record("row-train")}
+    canonical["row-train"].pop("id")
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input", canonical)
+
+    with pytest.raises(ValueError, match="resolved canonical record without id"):
+        export_sft_dataset(
+            tmp_path / "input" / "canonical" / "all.json",
+            tmp_path / "input",
+            tmp_path / "out",
+            registry_path,
+            config_path,
+            corpus=_corpus_map(),
+        )
+
+
+def test_export_report_reports_resolved_outside_splits(tmp_path):
+    canonical = {
+        "row-train": _canonical_record("row-train", status="resolved"),
+        "row-val": _canonical_record("row-val", status="resolved"),
+        "row-test": _canonical_record("row-test", status="resolved"),
+        "orphan": _canonical_record("orphan", status="resolved"),  # not in any split
+    }
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input", canonical)
+    out = tmp_path / "out"
+    report = export_sft_dataset(
+        tmp_path / "input" / "canonical" / "all.json",
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        corpus=_corpus_map(),
+    )
+    assert report["canonical_resolved"] == 4
+    assert report["trainable_resolved"] == 3
+    assert report["resolved_outside_splits"] == 1
+    assert report["resolved_outside_split_ids"] == ["orphan"]
 
 
 def test_classification_is_never_used_as_label_and_is_untouched(tmp_path):
@@ -279,6 +360,7 @@ def test_classification_is_never_used_as_label_and_is_untouched(tmp_path):
         out,
         registry_path,
         config_path,
+        corpus=_corpus_map(),
     )
     rows = pq.read_table(out / "train.parquet").to_pylist()
     assert all(row["ground_truth"] == "C" for row in rows)
@@ -308,6 +390,7 @@ def test_cli_metadata_fields_override_task_config_and_validator_errors_nonzero(t
     (out / "test.parquet").unlink()
     assert validate_cli([
         "--dataset-dir", str(out), "--registry", str(registry_path),
+        "--corpus", str(corpus_path),
         "--metadata-fields", "field_name", "field_description",
     ]) == 1
 
@@ -323,6 +406,7 @@ def test_validator_rejects_broken_stage_pairs_and_cross_split_source_ids(tmp_pat
         out,
         registry_path,
         config_path,
+        corpus=_corpus_map(),
     )
 
     train_rows = pq.read_table(out / "train.parquet").to_pylist()
@@ -332,7 +416,7 @@ def test_validator_rejects_broken_stage_pairs_and_cross_split_source_ids(tmp_pat
         row["source_id"] = "row-train"
     pq.write_table(pa.Table.from_pylist(val_rows), out / "val.parquet")
 
-    report = validate_sft_dataset(out, registry_path, config_path)
+    report = validate_sft_dataset(out, registry_path, config_path, corpus=_corpus_map())
 
     assert report["valid"] is False
     assert any("stage1 and stage2" in error for error in report["splits"]["train"]["errors"])
@@ -350,13 +434,14 @@ def test_validator_rejects_prompt_contract_drift(tmp_path):
         out,
         registry_path,
         config_path,
+        corpus=_corpus_map(),
     )
     rows = pq.read_table(out / "train.parquet").to_pylist()
     rows[0]["messages"][0]["content"] = "wrong system contract"
     rows[0]["messages"][1]["content"] += "\ntable_name: leaked_secret"
     pq.write_table(pa.Table.from_pylist(rows), out / "train.parquet")
 
-    report = validate_sft_dataset(out, registry_path, config_path)
+    report = validate_sft_dataset(out, registry_path, config_path, corpus=_corpus_map())
 
     assert report["valid"] is False
     errors = report["splits"]["train"]["errors"]
@@ -372,7 +457,7 @@ def test_validator_rejects_empty_parquet_splits(tmp_path):
     for split in ("train", "val", "test"):
         pq.write_table(pa.table({}), out / f"{split}.parquet")
 
-    report = validate_sft_dataset(out, registry_path, config_path)
+    report = validate_sft_dataset(out, registry_path, config_path, corpus=_corpus_map())
 
     assert report["valid"] is False
     assert all(
@@ -392,13 +477,14 @@ def test_validator_returns_structured_errors_for_wrong_answers(tmp_path):
         out,
         registry_path,
         config_path,
+        corpus=_corpus_map(),
     )
     rows = pq.read_table(out / "train.parquet").to_pylist()
     rows[0]["messages"][-1]["content"] = '{"candidates":["A"]}'
     rows[1]["messages"][-1]["content"] = '{"answer":"A"}'
     pq.write_table(pa.Table.from_pylist(rows), out / "train.parquet")
 
-    report = validate_sft_dataset(out, registry_path, config_path)
+    report = validate_sft_dataset(out, registry_path, config_path, corpus=_corpus_map())
 
     assert report["valid"] is False
     errors = report["splits"]["train"]["errors"]

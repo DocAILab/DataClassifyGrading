@@ -11,12 +11,19 @@ class LengthTokenizer:
 def test_token_budget_reports_longest_rows_and_limit_violations(tmp_path: Path):
     fixture_dir = Path(__file__).parent / "fixtures"
     output_dir = tmp_path / "sft"
+    from agent.task.canonical_dataset import load_corpus_categories
+
+    corpus = {
+        category.category_id: category
+        for category in load_corpus_categories(fixture_dir / "corpus.json")
+    }
     export_sft_dataset(
         fixture_dir / "canonical" / "all.json",
         fixture_dir,
         output_dir,
         fixture_dir / "registry.json",
         fixture_dir / "task.json",
+        corpus=corpus,
     )
 
     baseline = inspect_token_budget(output_dir, LengthTokenizer(), max_length=10_000)
