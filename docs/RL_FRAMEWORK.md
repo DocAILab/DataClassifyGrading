@@ -53,19 +53,38 @@ The results keep format validity, task-contract validity, and task outcome
 separate. Stage 2 can still be evaluated when Stage 1 omitted the ground truth;
 it reports an incorrect outcome without deciding whether training should stop,
 mask, or reject. The results intentionally do not assign reward weights. SFT validation uses
-this same interface; a future VeRL reward adapter should translate these facts
-into algorithm-specific rewards rather than reimplement parsing.
+this same interface; the RL reward adapter translates these facts into
+stage-specific task rewards rather than reimplementing parsing.
+
+Stage 4A added the unified parser layer in `agent.task.parser`
+(`check_stage1_output` / `check_stage2_output` -> `ParseResult`) that never
+raises on model output and separates format validity from constraint validity;
+the evaluator and the reward adapter both consume it so there is exactly one
+contract implementation.
 
 ### Training adapters
 
 `agent.training.sft` owns messages-Parquet export, validation, the temporary
 fixture candidate policy, and tokenizer-specific budget inspection.
-`script/verl/sft/` contains the corresponding CLI and launcher adapters.
+`agent.training.rl` owns the unified RL data/parser/reward contracts:
+
+- `sample.py` -- resolved-only RL samples (RlSample: stage/source_id/messages/
+  ground_truth/candidates/metadata/reward metadata); ground truth is
+  exclusively ``target.category_id``;
+- `reward.py` -- task reward (RewardConfig / RewardResult, reward_stage1 /
+  reward_stage2); weights: 0.0 invalid, 0.3 valid-but-miss (Stage 1),
+  1.0 correct, configurable ``stage2_partial`` for Stage 2 (value pending);
+- `dataset.py` -- VeRL v0.8.0 five-field RL parquet exporter/validator
+  (`data_source` / `prompt` / `ability` / `reward_model` / `extra_info`; the
+  prompt is system+user only, no assistant gold).
+
+`script/verl/rl/` contains the corresponding CLI adapters (export/validate).
 `script/verl/common/` contains environment and optional accelerator setup shared
-by future VeRL algorithms.
+by VeRL algorithms.
 
 The current fixture policy (ground truth followed by the first four registry
-IDs) is deliberately SFT-local and is not a formal retrieval strategy.
+IDs) is deliberately shared by SFT and RL as a baseline and is NOT the
+production Stage 1 retrieval strategy.
 
 ## Dependency and configuration layout
 
@@ -79,18 +98,34 @@ a real algorithm introduces a distinct dependency.
 `rl` placeholders; add an actual Hydra configuration there when a checked-in
 launcher consumes it.
 
-## When to add RL code
+## RL landing status (after Stage 4A)
 
-Do not create empty GRPO/PPO/DAPO packages. Add `agent.training.rl` and
-`script/verl/rl/` only when the first real RL vertical slice has all of:
+Stage 4A established the reusable RL data / parser / reward contract:
 
-1. an agreed Stage 1 or Stage 2 reward contract and weights;
-2. an explicit VeRL five-field Parquet adapter
-   (`data_source`, `prompt`, `ability`, `reward_model`, `extra_info`);
-3. a checked-in fixture that can exercise the reward adapter;
-4. a CPU contract test and a small GPU smoke launcher.
+- agreed reward table (0.0 / 0.3 / 1.0 and a configurable Stage 2 partial);
+- explicit VeRL five-field Parquet adapter
+  (`data_source`, `prompt`, `ability`, `reward_model`, `extra_info`),
+  verified against verl v0.8.0 `RLHFDataset` + reward manager
+  (`non_tensor_batch["reward_model"]["ground_truth"]`);
+- CPU contract tests (`tests/rl/`) and real-data e2e on all four datasets.
+
+Still landing with the first real RL vertical slice (M4):
+
+1. a checked-in fixture that runs the reward adapter through a real VeRL
+   reward loop;
+2. a small GPU smoke launcher.
+
+## When to add training-algorithm RL code
+
+Do not create empty GRPO/PPO/DAPO packages or `cfg/verl/rl` placeholders.
+The training algorithm, rollout engine, `script/verl/rl/run.sh` launcher and
+Hydra configuration are added only when the first real RL vertical slice ships:
+
+1. agreed task reward weights (Stage 4A defaults + confirmed Stage 2 partial);
+2. a checked-in fixture that exercises the reward adapter through VeRL;
+3. a CPU contract test and a small GPU smoke launcher.
 
 At that point the VeRL-specific reward function should be a thin adapter around
-`evaluate_stage1` or `evaluate_stage2`. Algorithm changes then belong in VeRL
-configuration and algorithm-specific launchers, while task semantics remain in
-one place.
+`reward_stage1` / `reward_stage2` (which already parse via the unified parser);
+algorithm changes then belong in VeRL configuration and algorithm-specific
+launchers, while task semantics remain in one place.

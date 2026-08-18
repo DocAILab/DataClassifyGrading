@@ -10,9 +10,12 @@ from .contracts import (
 from .dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
 from .identity import code_leaf_map, compact, leaf_registry_from_corpus, qualified_category_id
 from .parser import (
+    ParseResult,
     PredictionFormatError,
     Stage1Output,
     Stage2Output,
+    check_stage1_output,
+    check_stage2_output,
     parse_stage1_output,
     parse_stage2_output,
 )
@@ -51,6 +54,9 @@ __all__ = [
     "PredictionFormatError",
     "Stage1Output",
     "Stage2Output",
+    "ParseResult",
+    "check_stage1_output",
+    "check_stage2_output",
     "parse_stage1_output",
     "parse_stage2_output",
     "Prompt",
