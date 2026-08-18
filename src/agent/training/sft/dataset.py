@@ -39,8 +39,13 @@ def _config(value: TaskConfig | str | Path) -> TaskConfig:
     return value if isinstance(value, TaskConfig) else TaskConfig.from_path(value)
 
 
-def _corpus_map(value: Mapping[str, CorpusCategory] | None) -> Mapping[str, CorpusCategory]:
-    return value or {}
+def _corpus_map(corpus: Mapping[str, CorpusCategory]) -> Mapping[str, CorpusCategory]:
+    if not corpus:
+        raise ValueError(
+            "corpus is required and must be non-empty: production Stage 2 has "
+            "no registry fallback"
+        )
+    return corpus
 
 
 def load_json_records(path: str | Path) -> list[dict[str, Any]]:
@@ -100,6 +105,21 @@ def _canonical_target(
             f"match registry category {category_id!r} name {expected_name!r}"
         )
     return category_id
+
+
+def _require_corpus_covers_registry(
+    corpus: Mapping[str, CorpusCategory],
+    registry: LeafRegistry,
+) -> None:
+    """Production invariant: the canonical corpus must define every registry
+    category so Stage 2 can always resolve candidates by category_id (no
+    fallback, no late surprise)."""
+    missing = [category_id for category_id in registry.ids if category_id not in corpus]
+    if missing:
+        raise ValueError(
+            "corpus is missing registry categories (Stage 2 cannot resolve "
+            f"them by category_id): {sorted(missing)}"
+        )
 
 
 def _row(
@@ -186,11 +206,16 @@ def export_sft_dataset(
     canonical_by_id: dict[str, dict[str, Any]] = {}
     canonical_resolved = 0
     idless_non_resolved = 0
-    for item in canonical_records:
+    for index, item in enumerate(canonical_records):
         item_id = str(item.get("id", "") or "").strip()
         status = str(item.get("resolution_status", "") or "").strip()
         if status == "resolved":
             canonical_resolved += 1
+            # every resolved record must satisfy the canonical contract
+            # (target present, category_id in registry, leaf_name matches),
+            # regardless of whether it belongs to any train/val/test split —
+            # splits decide training membership, not contract validation
+            _canonical_target(item, index, canonical_path, leaf_registry)
             if not item_id:
                 raise ValueError(
                     f"resolved canonical record without id: {canonical_path}"
@@ -206,6 +231,7 @@ def export_sft_dataset(
             raise ValueError(f"duplicate id in canonical dataset: {item_id}")
         canonical_by_id[item_id] = item
     corpus_map = _corpus_map(corpus)
+    _require_corpus_covers_registry(corpus_map, leaf_registry)
 
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",
@@ -417,6 +443,7 @@ def validate_sft_dataset(
     leaf_registry = _registry(registry)
     config = _config(task_config)
     corpus_map = _corpus_map(corpus)
+    _require_corpus_covers_registry(corpus_map, leaf_registry)
     root = Path(dataset_dir)
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",

@@ -339,6 +339,99 @@ def test_export_report_reports_resolved_outside_splits(tmp_path):
     assert report["resolved_outside_split_ids"] == ["orphan"]
 
 
+def test_resolved_outside_splits_still_undergo_contract_validation(tmp_path):
+    """Contract validation applies to EVERY resolved record, split or not:
+    a resolved record outside any split with a category_id absent from the
+    registry must fail fast."""
+    canonical = {
+        "row-train": _canonical_record("row-train", status="resolved"),
+        "row-val": _canonical_record("row-val", status="resolved"),
+        "row-test": _canonical_record("row-test", status="resolved"),
+        # resolved but belongs to no split, and its category_id is invalid
+        "orphan": _canonical_record("orphan", category_id="Z", status="resolved"),
+    }
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input", canonical)
+
+    with pytest.raises(ValueError, match="absent from the leaf registry"):
+        export_sft_dataset(
+            tmp_path / "input" / "canonical" / "all.json",
+            tmp_path / "input",
+            tmp_path / "out",
+            registry_path,
+            config_path,
+            corpus=_corpus_map(),
+        )
+
+
+def test_resolved_outside_splits_leaf_name_mismatch_fails_fast(tmp_path):
+    canonical = {
+        "row-train": _canonical_record("row-train", status="resolved"),
+        "row-val": _canonical_record("row-val", status="resolved"),
+        "row-test": _canonical_record("row-test", status="resolved"),
+        "orphan": _canonical_record("orphan", status="resolved"),
+    }
+    canonical["orphan"]["target"]["leaf_name"] = "wrong name"
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input", canonical)
+
+    with pytest.raises(ValueError, match="does not match registry category"):
+        export_sft_dataset(
+            tmp_path / "input" / "canonical" / "all.json",
+            tmp_path / "input",
+            tmp_path / "out",
+            registry_path,
+            config_path,
+            corpus=_corpus_map(),
+        )
+
+
+def test_empty_corpus_is_rejected(tmp_path):
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input")
+
+    with pytest.raises(ValueError, match="corpus is required and must be non-empty"):
+        export_sft_dataset(
+            tmp_path / "input" / "canonical" / "all.json",
+            tmp_path / "input",
+            tmp_path / "out",
+            registry_path,
+            config_path,
+            corpus={},
+        )
+
+
+def test_incomplete_corpus_is_rejected(tmp_path):
+    """Production invariant: the corpus must define every registry category;
+    a candidate whose category_id is missing from the corpus must fail fast
+    up front instead of late inside prompt building."""
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input")
+    partial = {category.category_id: category for category in CORPUS[:4]}
+
+    with pytest.raises(ValueError, match="corpus is missing registry categories"):
+        export_sft_dataset(
+            tmp_path / "input" / "canonical" / "all.json",
+            tmp_path / "input",
+            tmp_path / "out",
+            registry_path,
+            config_path,
+            corpus=partial,
+        )
+
+
+def test_validate_rejects_empty_corpus(tmp_path):
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+    export_sft_dataset(
+        tmp_path / "input" / "canonical" / "all.json",
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        corpus=_corpus_map(),
+    )
+
+    with pytest.raises(ValueError, match="corpus is required and must be non-empty"):
+        validate_sft_dataset(out, registry_path, config_path, corpus={})
+
+
 def test_classification_is_never_used_as_label_and_is_untouched(tmp_path):
     # canonical record with a level_4 that differs from target.category_id:
     # the target must win (no fallback to classification), and classification
