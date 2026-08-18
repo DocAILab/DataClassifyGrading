@@ -1,0 +1,166 @@
+{
+  "categories": [
+    {
+      "category_id": "pers_info:人力资源数据",
+      "name": "人力资源数据",
+      "description": "",
+      "path": [
+        "人力资源数据"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:任课信息",
+      "name": "任课信息",
+      "description": "",
+      "path": [
+        "任课信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:基本信息年级信息和班级信息",
+      "name": "基本信息年级信息和班级信息",
+      "description": "",
+      "path": [
+        "基本信息年级信息和班级信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学历学位信息",
+      "name": "学历学位信息",
+      "description": "",
+      "path": [
+        "学历学位信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学校概况基本信息",
+      "name": "学校概况基本信息",
+      "description": "",
+      "path": [
+        "学校概况基本信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学生个人基本信息",
+      "name": "学生个人基本信息",
+      "description": "",
+      "path": [
+        "学生个人基本信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学生敏感个人信息",
+      "name": "学生敏感个人信息",
+      "description": "",
+      "path": [
+        "学生敏感个人信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学科类科研管理",
+      "name": "学科类科研管理",
+      "description": "",
+      "path": [
+        "学科类科研管理"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学籍基本数据",
+      "name": "学籍基本数据",
+      "description": "",
+      "path": [
+        "学籍基本数据"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:学籍管理信息",
+      "name": "学籍管理信息",
+      "description": "",
+      "path": [
+        "学籍管理信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:教职工个人基本信息",
+      "name": "教职工个人基本信息",
+      "description": "",
+      "path": [
+        "教职工个人基本信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:毕业就业信息",
+      "name": "毕业就业信息",
+      "description": "",
+      "path": [
+        "毕业就业信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:离退休信息",
+      "name": "离退休信息",
+      "description": "",
+      "path": [
+        "离退休信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:系统数据",
+      "name": "系统数据",
+      "description": "",
+      "path": [
+        "系统数据"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:考核信息",
+      "name": "考核信息",
+      "description": "",
+      "path": [
+        "考核信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:考试成绩",
+      "name": "考试成绩",
+      "description": "",
+      "path": [
+        "考试成绩"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:职称信息",
+      "name": "职称信息",
+      "description": "",
+      "path": [
+        "职称信息"
+      ],
+      "code": null
+    },
+    {
+      "category_id": "pers_info:课程信息",
+      "name": "课程信息",
+      "description": "",
+      "path": [
+        "课程信息"
+      ],
+      "code": null
+    }
+  ]
+}

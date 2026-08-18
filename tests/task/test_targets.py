@@ -74,10 +74,44 @@ def test_path_category_id_is_human_readable_and_path_qualified() -> None:
         )
     )
     assert target is not None
-    # readable: contains every path level; qualified: fixed 4 slots, empty
-    # level_3 is kept as an empty slot so it cannot collide with a 3-level path
-    assert target.category_id == "finance:业务.账户信息..配置信息"
+    # readable: contains every identity level; identity is the canonical
+    # L1-L2-leaf path (finance identity_fields exclude the dataset-only
+    # level_3, so no empty slot is invented)
+    assert target.category_id == "finance:业务.账户信息.配置信息"
+    assert ".." not in target.category_id
     assert not target.category_id.startswith("finance:" + "0" * 16)
+
+
+def test_identity_fields_exclude_level3_from_finance_identity() -> None:
+    config = BUILTIN_DATASET_CONFIGS["finance"]
+    assert config.identity_fields == ("level_1", "level_2", "level_4")
+    resolver = ClassificationTargetResolver(config)
+    # same L1/L2/L4 under different level_3 values -> same canonical identity
+    with_l3 = resolver.resolve(
+        _record(
+            {
+                "level_1": "业务",
+                "level_2": "账户信息",
+                "level_3": "系统管理信息",
+                "level_4": "配置信息",
+            }
+        )
+    )
+    without_l3 = resolver.resolve(
+        _record(
+            {
+                "level_1": "业务",
+                "level_2": "账户信息",
+                "level_3": "",
+                "level_4": "配置信息",
+            }
+        )
+    )
+    assert with_l3 is not None and without_l3 is not None
+    assert with_l3.category_id == without_l3.category_id == "finance:业务.账户信息.配置信息"
+    # level_3 stays provenance in the category path
+    assert with_l3.category_path == ("业务", "账户信息", "系统管理信息", "配置信息")
+    assert without_l3.category_path == ("业务", "账户信息", "配置信息")
 
 
 def test_same_leaf_same_parents_same_id() -> None:
@@ -353,6 +387,12 @@ def test_dataset_config_validation() -> None:
         DatasetConfig(dataset="x", leaf_level="level_9")
     with pytest.raises(ValueError, match="registry_source"):
         DatasetConfig(dataset="x", registry_source="x")
+    with pytest.raises(ValueError, match="subset of path_fields"):
+        DatasetConfig(dataset="x", identity_fields=("level_9",))
+    with pytest.raises(ValueError, match="participate in identity_fields"):
+        DatasetConfig(dataset="x", identity_fields=("level_1",))
+    with pytest.raises(ValueError, match="identity_fields must be unique"):
+        DatasetConfig(dataset="x", identity_fields=("level_1", "level_1"))
 
 
 # --- corpus contract allows missing description / multiple examples -----------
