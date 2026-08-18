@@ -1,0 +1,8 @@
+{
+  "dataset": "shougang",
+  "leaf_level": "level_4",
+  "id_strategy": "code",
+  "path_fields": ["level_1", "level_2", "level_3", "level_4"],
+  "placeholder_labels": ["——"],
+  "registry_source": null
+}

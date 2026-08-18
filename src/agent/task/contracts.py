@@ -1,4 +1,15 @@
-"""Explicit task and leaf-category contracts used by SFT export/validation."""
+"""Explicit task and leaf-category contracts used by SFT export/validation.
+
+Stage 2 additions (canonical unified data contract):
+- LeafCategory now carries name / path / code in addition to category_id and
+  description. category_id is the only identity that training depends on;
+  name is NOT assumed unique (same leaf name can exist under different
+  parent paths, e.g. finance '基本信息' under 3 parents).
+- CorpusCategory is the canonical corpus category contract; it allows
+  missing descriptions and multiple examples per category.
+- SampleTarget is the canonical per-sample training target; the raw
+  classification levels are kept untouched as provenance.
+"""
 
 from __future__ import annotations
 
@@ -10,8 +21,70 @@ from typing import Any, Mapping, Sequence
 
 @dataclass(frozen=True)
 class LeafCategory:
+    """One leaf category of a dataset LeafRegistry.
+
+    - category_id: unique within one LeafRegistry; the only identity the
+      training ground truth depends on.
+    - name: human leaf name; NOT assumed unique across categories.
+    - description: optional free text (may be empty when no corpus exists).
+    - path: ancestor names from root to this leaf, e.g. shougang
+      ("生产数据域", "生产合同（订单）", "合同归并") or finance
+      ("业务", "交易信息", "交易通用信息", "交易清结算信息"). Empty levels are
+      omitted; the tuple is provenance, never an ID.
+    - code: optional stable code from a standard (e.g. guanji "A1-1-1");
+      treated as an opaque identity, digit groups are NOT interpreted as
+      level_2 / level_3.
+    """
+
     category_id: str
     description: str = ""
+    name: str = ""
+    path: tuple[str, ...] = ()
+    code: str | None = None
+
+    def __post_init__(self) -> None:
+        if not self.name:
+            # Backward compatibility: registries without an explicit name use
+            # the category_id as display name.
+            object.__setattr__(self, "name", self.category_id)
+
+
+@dataclass(frozen=True)
+class CorpusCategory:
+    """Canonical corpus category (one category may own several documents).
+
+    Allows:
+    - multiple descriptions/examples per category (examples tuple),
+    - missing description (pers_info corpus is incomplete),
+    - an incomplete corpus overall (no global completeness invariant).
+    """
+
+    category_id: str
+    name: str
+    description: str = ""
+    path: tuple[str, ...] = ()
+    code: str | None = None
+    examples: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not self.category_id.strip():
+            raise ValueError("corpus category_id must be non-empty")
+        if not self.name.strip():
+            raise ValueError("corpus category name must be non-empty")
+
+
+@dataclass(frozen=True)
+class SampleTarget:
+    """Canonical per-sample training target derived from a processed record.
+
+    The record's classification.level_1..level_4 are left untouched as
+    provenance; the training ground truth is target.category_id only.
+    """
+
+    leaf_level: str
+    leaf_name: str
+    category_id: str
+    category_path: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -50,9 +123,27 @@ class LeafRegistry:
                 category_id = str(item.get("category_id", "")).strip()
                 raw_description = item.get("description", "")
                 description = "" if raw_description is None else str(raw_description).strip()
+                raw_name = item.get("name", "")
+                name = "" if raw_name is None else str(raw_name).strip()
+                raw_path = item.get("path", ())
+                path = tuple(
+                    str(part).strip() for part in raw_path
+                ) if raw_path else ()
+                raw_code = item.get("code")
+                code = None if raw_code is None else str(raw_code).strip()
+                categories.append(
+                    LeafCategory(
+                        category_id=category_id,
+                        description=description,
+                        name=name,
+                        path=path,
+                        code=code,
+                    )
+                )
+                continue
             else:
                 raise ValueError(f"invalid leaf registry category at index {index}")
-            categories.append(LeafCategory(category_id, description))
+            categories.append(LeafCategory(category_id=category_id, description=description))
         return cls(tuple(categories))
 
     @classmethod
