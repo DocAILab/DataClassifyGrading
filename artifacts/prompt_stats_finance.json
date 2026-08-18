@@ -1,0 +1,49 @@
+{
+  "unit": "chars",
+  "tokenizer_available": false,
+  "splits": {
+    "train": {
+      "stage1": {
+        "rows": 403,
+        "max": 15373,
+        "p95": 15359,
+        "mean": 15348.7
+      },
+      "stage2": {
+        "rows": 403,
+        "max": 1741,
+        "p95": 1412,
+        "mean": 1320.5
+      }
+    },
+    "val": {
+      "stage1": {
+        "rows": 69,
+        "max": 15357,
+        "p95": 15353,
+        "mean": 15346.7
+      },
+      "stage2": {
+        "rows": 69,
+        "max": 1405,
+        "p95": 1400,
+        "mean": 1258.2
+      }
+    },
+    "test": {
+      "stage1": {
+        "rows": 57,
+        "max": 15356,
+        "p95": 15352,
+        "mean": 15347.8
+      },
+      "stage2": {
+        "rows": 57,
+        "max": 1409,
+        "p95": 1408,
+        "mean": 1317.8
+      }
+    }
+  },
+  "exceeds_max_length": []
+}

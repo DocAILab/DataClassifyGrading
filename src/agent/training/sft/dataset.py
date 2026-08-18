@@ -1,4 +1,17 @@
-"""Exporter and validator for the VeRL SFT messages parquet baseline."""
+"""Exporter and validator for the VeRL SFT messages parquet baseline.
+
+Production labels come EXCLUSIVELY from the canonical dataset contract:
+records are read from data/<dataset>/canonical/all.json, only
+resolution_status == "resolved" records with a target whose category_id
+belongs to the LeafRegistry enter training, and the ground truth is always
+record["target"]["category_id"]. classification.level_1..level_4 stay
+provenance only — there is deliberately NO fallback to them as labels.
+
+Split boundaries (train/val/test) are taken from the original split JSON
+files by record id; a split record whose id is missing from the canonical
+file is a data-consistency error (fail-fast), while resolved/unresolved
+filtering happens on the canonical status.
+"""
 
 from __future__ import annotations
 
@@ -7,7 +20,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from agent.evaluation import evaluate_stage1, evaluate_stage2
-from agent.task.contracts import LeafRegistry, TaskConfig
+from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
 from agent.task.prompts import (
     build_stage1_prompt,
     build_stage2_prompt,
@@ -26,6 +39,10 @@ def _config(value: TaskConfig | str | Path) -> TaskConfig:
     return value if isinstance(value, TaskConfig) else TaskConfig.from_path(value)
 
 
+def _corpus_map(value: Mapping[str, CorpusCategory] | None) -> Mapping[str, CorpusCategory]:
+    return value or {}
+
+
 def load_json_records(path: str | Path) -> list[dict[str, Any]]:
     source = Path(path)
     if not source.is_file():
@@ -40,23 +57,49 @@ def load_json_records(path: str | Path) -> list[dict[str, Any]]:
 
 
 def build_candidates(ground_truth: str, registry: LeafRegistry) -> list[str]:
-    """Minimal deterministic fixture policy: GT followed by first four non-GT IDs."""
+    """Deterministic baseline/test fixture policy: GT followed by the first
+    four non-GT registry IDs. This is a fixture, NOT the production Stage 1
+    retrieval policy."""
     if ground_truth not in registry.ids:
         raise ValueError(f"ground-truth category_id is absent from leaf registry: {ground_truth}")
     return [ground_truth] + [category_id for category_id in registry.ids if category_id != ground_truth][:4]
 
 
-def _label(item: Mapping[str, Any], index: int, source: Path) -> str | None:
-    classification = item.get("classification")
-    if not isinstance(classification, Mapping):
-        raise ValueError(f"item {index} in {source} has invalid classification")
-    ground_truth = str(classification.get("level_4", "")).strip()
-    status = item.get("label_status")
-    if status == "unlabeled" and ground_truth:
-        raise ValueError(f"item {index} in {source} is unlabeled but has level_4")
-    if status == "labeled" and not ground_truth:
-        raise ValueError(f"item {index} in {source} is labeled but has no level_4")
-    return ground_truth or None
+def _canonical_target(
+    item: Mapping[str, Any],
+    index: int,
+    source: Path,
+    registry: LeafRegistry,
+) -> str | None:
+    """Return the canonical ground-truth category_id, or None for records that
+    must not enter training (anything but resolution_status == "resolved").
+
+    Raises on schema/consistency violations instead of silently falling back:
+    resolved records must carry a target whose category_id belongs to the
+    registry and whose leaf_name matches the registry category name.
+    """
+    status = str(item.get("resolution_status", "") or "").strip()
+    if status != "resolved":
+        return None
+    target = item.get("target")
+    if not isinstance(target, Mapping):
+        raise ValueError(f"item {index} in {source} is resolved but has no target")
+    category_id = str(target.get("category_id", "") or "").strip()
+    if not category_id:
+        raise ValueError(f"item {index} in {source} has an empty target.category_id")
+    if category_id not in registry.ids:
+        raise ValueError(
+            f"item {index} in {source} target.category_id {category_id!r} "
+            "is absent from the leaf registry"
+        )
+    leaf_name = str(target.get("leaf_name", "") or "").strip()
+    expected_name = registry.get(category_id).name
+    if leaf_name != expected_name:
+        raise ValueError(
+            f"item {index} in {source} target.leaf_name {leaf_name!r} does not "
+            f"match registry category {category_id!r} name {expected_name!r}"
+        )
+    return category_id
 
 
 def _row(
@@ -66,13 +109,14 @@ def _row(
     registry: LeafRegistry,
     config: TaskConfig,
     stage: str,
+    corpus: Mapping[str, CorpusCategory],
 ) -> dict[str, Any]:
     metadata = item.get("metadata")
     if not isinstance(metadata, Mapping):
         raise ValueError(f"item {index} in {source} has invalid metadata")
-    ground_truth = _label(item, index, source)
+    ground_truth = _canonical_target(item, index, source, registry)
     if ground_truth is None:
-        raise ValueError("internal error: unlabeled record passed to row builder")
+        raise ValueError("internal error: unresolved record passed to row builder")
     visible_metadata = {
         field: "" if metadata.get(field) is None else metadata.get(field, "")
         for field in config.metadata_fields
@@ -85,7 +129,9 @@ def _row(
         prompt = build_stage1_prompt(visible_metadata, registry, config)
         answer = stage1_answer(candidates)
     else:
-        prompt = build_stage2_prompt(visible_metadata, candidates, registry, config)
+        prompt = build_stage2_prompt(
+            visible_metadata, candidates, registry, config, corpus=corpus or None
+        )
         answer = stage2_answer(ground_truth, candidates)
     return {
         "messages": [
@@ -112,45 +158,82 @@ def _write_parquet(rows: list[dict[str, Any]], path: Path) -> None:
 
 
 def export_sft_dataset(
-    input_dir: str | Path,
+    canonical_file: str | Path,
+    split_dir: str | Path,
     output_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
+    corpus: Mapping[str, CorpusCategory] | None = None,
 ) -> dict[str, Any]:
-    """Export each labeled JSON record as one stage1 and one stage2 SFT row."""
+    """Export canonical records to one stage1 + one stage2 SFT row per split.
+
+    Labels come exclusively from target.category_id (canonical contract);
+    split boundaries follow the original split JSON files by record id.
+    """
     leaf_registry = _registry(registry)
     config = _config(task_config)
-    input_root, output_root = Path(input_dir), Path(output_dir)
+    canonical_path, split_root, output_root = (
+        Path(canonical_file),
+        Path(split_dir),
+        Path(output_dir),
+    )
+    if not canonical_path.is_file():
+        raise FileNotFoundError(f"canonical dataset not found: {canonical_path}")
+    canonical_records = load_json_records(canonical_path)
+    canonical_by_id: dict[str, dict[str, Any]] = {}
+    for item in canonical_records:
+        item_id = str(item.get("id", "") or "").strip()
+        if not item_id:
+            raise ValueError(f"canonical record without id: {canonical_path}")
+        if item_id in canonical_by_id:
+            raise ValueError(f"duplicate id in canonical dataset: {item_id}")
+        canonical_by_id[item_id] = item
+    corpus_map = _corpus_map(corpus)
+
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",
-        "candidate_policy": "ground_truth_then_registry_order_first_four_non_ground_truth",
+        "label_source": "canonical target.category_id (resolution_status == resolved)",
+        "candidate_policy": (
+            "baseline fixture: ground_truth_then_registry_order_first_four_"
+            "non_ground_truth (not the production retrieval policy)"
+        ),
         "metadata_fields": list(config.metadata_fields),
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
+        "corpus_size": len(corpus_map),
         "splits": {},
     }
     for split in SPLITS:
-        source = input_root / f"{split}.json"
-        records = load_json_records(source)
+        source = split_root / f"{split}.json"
+        split_records = load_json_records(source)
         rows: list[dict[str, Any]] = []
-        skipped = 0
-        for index, item in enumerate(records):
-            ground_truth = _label(item, index, source)
+        skipped_unresolved = 0
+        for index, item in enumerate(split_records):
+            item_id = str(item.get("id", "") or "").strip()
+            if not item_id:
+                raise ValueError(f"split item {index} in {source} has no id")
+            canonical_item = canonical_by_id.get(item_id)
+            if canonical_item is None:
+                raise ValueError(
+                    f"split item id {item_id!r} ({source}) is absent from the "
+                    f"canonical dataset {canonical_path}"
+                )
+            ground_truth = _canonical_target(canonical_item, index, source, leaf_registry)
             if ground_truth is None:
-                skipped += 1
+                skipped_unresolved += 1
                 continue
             rows.extend(
-                _row(item, source, index, leaf_registry, config, stage)
+                _row(canonical_item, source, index, leaf_registry, config, stage, corpus_map)
                 for stage in ("stage1", "stage2")
             )
         if not rows:
-            raise ValueError(f"no labeled records available in {source}")
+            raise ValueError(f"no resolved records available in {source}")
         destination = output_root / f"{split}.parquet"
         _write_parquet(rows, destination)
         report["splits"][split] = {
-            "input_records": len(records),
+            "split_records": len(split_records),
             "exported_records": len(rows),
-            "skipped_unlabeled": skipped,
+            "skipped_not_resolved": skipped_unresolved,
             "output_file": str(destination),
         }
     output_root.mkdir(parents=True, exist_ok=True)
@@ -161,7 +244,10 @@ def export_sft_dataset(
 
 
 def _validate_row(
-    row: Mapping[str, Any], registry: LeafRegistry, config: TaskConfig
+    row: Mapping[str, Any],
+    registry: LeafRegistry,
+    config: TaskConfig,
+    corpus: Mapping[str, CorpusCategory],
 ) -> list[str]:
     errors: list[str] = []
     messages = row.get("messages")
@@ -244,7 +330,7 @@ def _validate_row(
             and all(candidate in registry.ids for candidate in candidates)
         ):
             expected_prompt = build_stage2_prompt(
-                visible_metadata, candidates, registry, config
+                visible_metadata, candidates, registry, config, corpus=corpus or None
             )
         if expected_prompt is not None and contents[:2] != [
             expected_prompt.system,
@@ -290,10 +376,12 @@ def validate_sft_dataset(
     dataset_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
+    corpus: Mapping[str, CorpusCategory] | None = None,
 ) -> dict[str, Any]:
     """Return a structured report; malformed rows are reported, not silently accepted."""
     leaf_registry = _registry(registry)
     config = _config(task_config)
+    corpus_map = _corpus_map(corpus)
     root = Path(dataset_dir)
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",
@@ -301,6 +389,7 @@ def validate_sft_dataset(
         "metadata_fields": list(config.metadata_fields),
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
+        "corpus_size": len(corpus_map),
         "splits": {},
         "cross_split_errors": [],
     }
@@ -322,7 +411,7 @@ def validate_sft_dataset(
                 if not rows:
                     details["errors"].append("parquet split must contain at least one row")
                 for index, row in enumerate(rows):
-                    for error in _validate_row(row, leaf_registry, config):
+                    for error in _validate_row(row, leaf_registry, config, corpus_map):
                         details["errors"].append(f"row {index}: {error}")
                 details["errors"].extend(_validate_stage_pairs(rows))
             except Exception as exc:  # malformed parquet is a validation failure

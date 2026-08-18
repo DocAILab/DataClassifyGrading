@@ -12,6 +12,7 @@ def test_token_budget_reports_longest_rows_and_limit_violations(tmp_path: Path):
     fixture_dir = Path(__file__).parent / "fixtures"
     output_dir = tmp_path / "sft"
     export_sft_dataset(
+        fixture_dir / "canonical" / "all.json",
         fixture_dir,
         output_dir,
         fixture_dir / "registry.json",

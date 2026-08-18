@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 from agent.task import LeafRegistry, TaskConfig
+from agent.task.canonical_dataset import load_corpus_categories
 from agent.training.sft import validate_sft_dataset
 
 
@@ -15,6 +16,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset-dir", required=True)
     parser.add_argument("--registry", required=True)
+    parser.add_argument("--corpus", help="Optional canonical corpus JSON for Stage 2 prompt checks")
     parser.add_argument("--metadata-fields", nargs="+", required=True)
     parser.add_argument("--task-config")
     parser.add_argument("--report", help="Optional path for the structured validation report")
@@ -31,10 +33,19 @@ def main(argv: list[str] | None = None) -> int:
             if not isinstance(config_data, dict):
                 raise ValueError("task config must be a JSON object")
         config_data["metadata_fields"] = args.metadata_fields
+        corpus = (
+            {
+                category.category_id: category
+                for category in load_corpus_categories(args.corpus)
+            }
+            if args.corpus
+            else None
+        )
         report = validate_sft_dataset(
             args.dataset_dir,
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
+            corpus=corpus,
         )
         if args.report:
             Path(args.report).parent.mkdir(parents=True, exist_ok=True)
