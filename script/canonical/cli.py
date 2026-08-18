@@ -102,10 +102,9 @@ def _annotate_coverage(
         if config.id_strategy == "code"
         else {}
     )
-    registry_ids = {category.category_id for category in categories}
     report.dataset_id_coverage = {
         "available": True,
-        **compute_dataset_id_coverage(dataset, registry_ids, records, config, code_map),
+        **compute_dataset_id_coverage(dataset, categories, records, config, code_map),
     }
 
 

@@ -2590,7 +2590,34 @@
       "covered": 531,
       "uncovered": 37,
       "skipped": 0,
-      "coverage_rate": 0.9349
+      "coverage_rate": 0.9349,
+      "uncovered_ids": {
+        "finance:业务.交易信息.交易清金额信息": 1,
+        "finance:业务.单位.单位基本情况": 1,
+        "finance:业务.账户信息.交易清结算信息": 1,
+        "finance:客户.单位.单位基本信息": 3,
+        "finance:客户.单位.单位基本情况": 18,
+        "finance:客户.单位.单位联系人信息": 9,
+        "finance:经营管理.技术管理.网络服务信息": 2,
+        "finance:经营管理.综合管理.基本信息（公开": 2
+      },
+      "missing_leaf": {
+        "count": 34,
+        "leaves": {
+          "交易清金额信息": 1,
+          "单位基本信息": 3,
+          "单位基本情况": 19,
+          "单位联系人信息": 9,
+          "基本信息（公开": 2
+        }
+      },
+      "path_mismatch": {
+        "count": 3,
+        "ids": {
+          "finance:业务.账户信息.交易清结算信息": 1,
+          "finance:经营管理.技术管理.网络服务信息": 2
+        }
+      }
     }
   }
 }

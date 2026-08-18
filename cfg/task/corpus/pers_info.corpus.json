@@ -188,7 +188,16 @@
       "covered": 176,
       "uncovered": 0,
       "skipped": 0,
-      "coverage_rate": 1.0
+      "coverage_rate": 1.0,
+      "uncovered_ids": {},
+      "missing_leaf": {
+        "count": 0,
+        "leaves": {}
+      },
+      "path_mismatch": {
+        "count": 0,
+        "ids": {}
+      }
     }
   }
 }

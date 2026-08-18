@@ -228,6 +228,59 @@ def test_aggregate_categories_is_deterministic() -> None:
     assert [c.category_id for c in categories] == [c.category_id for c in categories_b]
 
 
+def test_coverage_distinguishes_missing_leaf_and_path_mismatch() -> None:
+    from agent.task import CorpusCategory
+    from agent.task.canonical_corpus import compute_dataset_id_coverage
+
+    categories = [
+        CorpusCategory(
+            category_id="finance:经营管理.运营管理.网络服务信息",
+            name="网络服务信息",
+            path=("经营管理", "运营管理", "网络服务信息"),
+        )
+    ]
+    config = BUILTIN_DATASET_CONFIGS["finance"]
+    records = [
+        # covered: leaf + L1/L2 exactly as in the standard
+        {
+            "classification": {
+                "level_1": "经营管理", "level_2": "运营管理",
+                "level_3": "", "level_4": "网络服务信息",
+            }
+        },
+        # path mismatch: corpus-known leaf under a different level_2
+        {
+            "classification": {
+                "level_1": "经营管理", "level_2": "技术管理",
+                "level_3": "", "level_4": "网络服务信息",
+            }
+        },
+        # missing leaf: leaf itself absent from the standard
+        {
+            "classification": {
+                "level_1": "业务", "level_2": "账户信息",
+                "level_3": "", "level_4": "交易清金额信息",
+            }
+        },
+    ]
+    coverage = compute_dataset_id_coverage("finance", categories, records, config, {})
+    assert coverage["records"] == 3
+    assert coverage["covered"] == 1
+    assert coverage["uncovered"] == 2
+    assert coverage["missing_leaf"] == {
+        "count": 1,
+        "leaves": {"交易清金额信息": 1},
+    }
+    assert coverage["path_mismatch"] == {
+        "count": 1,
+        "ids": {"finance:经营管理.技术管理.网络服务信息": 1},
+    }
+    assert coverage["uncovered_ids"] == {
+        "finance:业务.账户信息.交易清金额信息": 1,
+        "finance:经营管理.技术管理.网络服务信息": 1,
+    }
+
+
 def json_load(path: Path) -> dict:
     with path.open(encoding="utf-8") as handle:
         return json.load(handle)

@@ -443,22 +443,34 @@ def build_pers_info_corpus(
 
 def compute_dataset_id_coverage(
     dataset: str,
-    registry_ids: set[str],
+    categories: Sequence[CorpusCategory],
     records: Sequence[Mapping[str, Any]],
     config: DatasetConfig,
     code_map: Mapping[str, str],
 ) -> dict[str, Any]:
     """How many dataset records resolve to an ID present in the registry.
 
-    Uses the stage-2 resolver semantics (code or path strategy). This is a
-    diagnostic only — it does not modify the registry or the records.
+    Uses the stage-2 resolver semantics (code or path strategy). Uncovered
+    records are split into:
+    - missing_leaf: the leaf name itself is absent from the corpus universe
+      (e.g. the 5 finance leaves without standard definitions);
+    - path_mismatch: a corpus-known leaf resolved under L1/L2 slots that
+      differ from the standard path (e.g. finance '网络服务信息' under
+      经营管理/技术管理 vs standard 经营管理/运营管理). These records are
+      NOT auto-repaired: the discrepancy may be a dataset labeling error or
+      a genuine standard/dataset hierarchy difference.
+    This is a diagnostic only — it does not modify the registry or records.
     """
     from agent.task.resolver import ClassificationTargetResolver
 
+    registry_ids = {category.category_id for category in categories}
+    registry_names = {category.name for category in categories}
     resolver = ClassificationTargetResolver(config, code_leaf_map=code_map)
     covered = 0
-    unresolved = 0
     skipped = 0
+    uncovered_by_id: Counter[str] = Counter()
+    missing_leaf_by_name: Counter[str] = Counter()
+    path_mismatch_by_id: Counter[str] = Counter()
     for record in records:
         target = resolver.resolve(record)
         if target is None:
@@ -466,13 +478,26 @@ def compute_dataset_id_coverage(
         elif target.category_id in registry_ids:
             covered += 1
         else:
-            unresolved += 1
+            uncovered_by_id[target.category_id] += 1
+            if target.leaf_name in registry_names:
+                path_mismatch_by_id[target.category_id] += 1
+            else:
+                missing_leaf_by_name[target.leaf_name] += 1
     return {
         "records": len(records),
         "covered": covered,
-        "uncovered": unresolved,
+        "uncovered": sum(uncovered_by_id.values()),
         "skipped": skipped,
         "coverage_rate": round(covered / len(records), 4) if records else 0.0,
+        "uncovered_ids": {key: value for key, value in sorted(uncovered_by_id.items())},
+        "missing_leaf": {
+            "count": sum(missing_leaf_by_name.values()),
+            "leaves": {key: value for key, value in sorted(missing_leaf_by_name.items())},
+        },
+        "path_mismatch": {
+            "count": sum(path_mismatch_by_id.values()),
+            "ids": {key: value for key, value in sorted(path_mismatch_by_id.items())},
+        },
     }
 
 
