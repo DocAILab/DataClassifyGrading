@@ -1,0 +1,1663 @@
+{
+  "dataset": "infra",
+  "source": "D:\\study\\summer_intern\\data\\knowledge\\standards_map\\guanji_dict.json",
+  "id_strategy": "code",
+  "categories": [
+    {
+      "category_id": "A1-1-1",
+      "name": "科研设备预约管理",
+      "description": "指科研检验设备预约过程中产生的信息，包括设备预约信息，审核表，取还设备记录等。",
+      "path": [],
+      "code": "A1-1-1"
+    },
+    {
+      "category_id": "A1-1-2",
+      "name": "科研进程管控",
+      "description": "指科研检验进程展示，包括委托统计及明细图像数据、进程统计图像数据等。",
+      "path": [],
+      "code": "A1-1-2"
+    },
+    {
+      "category_id": "A1-1-3",
+      "name": "非常规委托检测管理",
+      "description": "指非常规委托检测过程中产生的信息，包括委托信息，取样信息，检验报告等。",
+      "path": [],
+      "code": "A1-1-3"
+    },
+    {
+      "category_id": "A1-1-4",
+      "name": "考试管理",
+      "description": "指使用科研设备前考试过程中产生的信息，包括考试记录等。",
+      "path": [],
+      "code": "A1-1-4"
+    },
+    {
+      "category_id": "B1-1-1",
+      "name": "薄板合同产线专业化设计",
+      "description": "指薄板合同产线设计过程中产生的信息，包括专业化分工信息、过渡料需求信息等。",
+      "path": [],
+      "code": "B1-1-1"
+    },
+    {
+      "category_id": "B1-1-2",
+      "name": "厚板组板设计",
+      "description": "指厚板组板合同进行产线设计过程中产生的信息，包括板连铸出钢材组板信息、二次设计命令信息等。",
+      "path": [],
+      "code": "B1-1-2"
+    },
+    {
+      "category_id": "B1-2",
+      "name": "合同归并",
+      "description": "指将合同接收成功的、具有共同属性的、订货量较小的合同，按归并原则归并成大合同即归并合同来组织生产。",
+      "path": [],
+      "code": "B1-2"
+    },
+    {
+      "category_id": "B1-3-1",
+      "name": "合同完成能力计划",
+      "description": "指以完成合同为主要目标，进行生产制造过程的物流平衡，及对各种生产过程中的异常情况，及时调整生产内容和节奏。",
+      "path": [],
+      "code": "B1-3-1"
+    },
+    {
+      "category_id": "B1-3-2",
+      "name": "合同工序计划",
+      "description": "指以合同交货期及各工序加工周期为基准，依据客户需求、工序能力、生产加工途径和库存能力等信息人工规划各工序排产日期。",
+      "path": [],
+      "code": "B1-3-2"
+    },
+    {
+      "category_id": "B1-3-3",
+      "name": "合同材料计划",
+      "description": "指完成合同所需的用料申请计划。",
+      "path": [],
+      "code": "B1-3-3"
+    },
+    {
+      "category_id": "B1-4-1",
+      "name": "炼钢物料转用充当信息",
+      "description": "指对在制板坯、成品板坯进行单个或成批转用、充当与脱合同。",
+      "path": [],
+      "code": "B1-4-1"
+    },
+    {
+      "category_id": "B1-4-2",
+      "name": "热轧物料转用充当信息",
+      "description": "指对在制热卷、成品热卷进行单个或成批转用、充当与脱合同。",
+      "path": [],
+      "code": "B1-4-2"
+    },
+    {
+      "category_id": "B1-4-3",
+      "name": "冷轧物料转用充当信息",
+      "description": "指对在制冷卷、成品冷卷进行单个或成批转用、充当与脱合同。",
+      "path": [],
+      "code": "B1-4-3"
+    },
+    {
+      "category_id": "B1-4-4",
+      "name": "厚板物料转用充当信息",
+      "description": "指对厚板成品进行单个或成批转用、充当与脱合同。",
+      "path": [],
+      "code": "B1-4-4"
+    },
+    {
+      "category_id": "B1-5",
+      "name": "合同跟踪",
+      "description": "指实时跟踪合同下发、计划编制、合同配料、生产执行、产品发货中与合同相关的业务操作，全面掌握从合同下发到成品发货每个生产管理环节的合同进度。",
+      "path": [],
+      "code": "B1-5"
+    },
+    {
+      "category_id": "B2-1-1",
+      "name": "产线生产物料",
+      "description": "指对各产线的物料进行管理，包括物料生产路径信息，物料事件履历等。",
+      "path": [],
+      "code": "B2-1-1"
+    },
+    {
+      "category_id": "B2-1-2",
+      "name": "外购料/互供/来料加工物料信息",
+      "description": "指外购、互供、来料加工、委外加工的物料信息管理。",
+      "path": [],
+      "code": "B2-1-2"
+    },
+    {
+      "category_id": "B2-2-1",
+      "name": "炼铁配料",
+      "description": "指根据生产要求，对炼铁过程中使用的物料进行配比和投料的管理。",
+      "path": [],
+      "code": "B2-2-1"
+    },
+    {
+      "category_id": "B2-2-2",
+      "name": "炼钢配料",
+      "description": "指根据生产要求，对炼钢过程中使用的物料进行配比和投料的管理。",
+      "path": [],
+      "code": "B2-2-2"
+    },
+    {
+      "category_id": "B2-2-3",
+      "name": "要料信息",
+      "description": "指生产各环节对物料的需求信息。",
+      "path": [],
+      "code": "B2-2-3"
+    },
+    {
+      "category_id": "B2-2-4",
+      "name": "物料消耗",
+      "description": "指在生产过程中实际消耗的物料数量。",
+      "path": [],
+      "code": "B2-2-4"
+    },
+    {
+      "category_id": "B2-2-5",
+      "name": "物料消耗分摊",
+      "description": "指对生产过程中不同产品或工序的物料消耗进行分摊和归属，确保成本分配的准确性。",
+      "path": [],
+      "code": "B2-2-5"
+    },
+    {
+      "category_id": "B2-2-6",
+      "name": "物料消耗抛帐",
+      "description": "指将物料消耗数据记录入账，确保物料使用和财务核算的一致性。",
+      "path": [],
+      "code": "B2-2-6"
+    },
+    {
+      "category_id": "B3-1-1",
+      "name": "计划表项目管理",
+      "description": "指对生产计划中的各项目进行管理。",
+      "path": [],
+      "code": "B3-1-1"
+    },
+    {
+      "category_id": "B3-1-2",
+      "name": "产量指标计划",
+      "description": "指生产产量的目标和任务。",
+      "path": [],
+      "code": "B3-1-2"
+    },
+    {
+      "category_id": "B3-1-3",
+      "name": "原燃料平衡预测",
+      "description": "指对生产过程中所需的原材料和燃料进行供需预测。",
+      "path": [],
+      "code": "B3-1-3"
+    },
+    {
+      "category_id": "B3-1-4",
+      "name": "原燃料平衡计划",
+      "description": "指对原材料和燃料的供需进行规划。",
+      "path": [],
+      "code": "B3-1-4"
+    },
+    {
+      "category_id": "B3-1-5",
+      "name": "需求计划",
+      "description": "指根据生产需求制定物料和资源需求计划。",
+      "path": [],
+      "code": "B3-1-5"
+    },
+    {
+      "category_id": "B3-2-1",
+      "name": "炼钢计划",
+      "description": "指根据生产需求和工艺要求制定炼钢的生产计划。",
+      "path": [],
+      "code": "B3-2-1"
+    },
+    {
+      "category_id": "B3-2-2",
+      "name": "MCCR计划",
+      "description": "指根据生产需求和工艺要求制定连铸连轧的生产计划。",
+      "path": [],
+      "code": "B3-2-2"
+    },
+    {
+      "category_id": "B3-3",
+      "name": "热轧作业计划",
+      "description": "指对热轧过程中的各项作业进行计划和管理。",
+      "path": [],
+      "code": "B3-3"
+    },
+    {
+      "category_id": "B3-4",
+      "name": "冷轧作业计划",
+      "description": "指对冷轧过程中的各项作业进行计划和管理。",
+      "path": [],
+      "code": "B3-4"
+    },
+    {
+      "category_id": "B3-5",
+      "name": "撕分线作业计划",
+      "description": "指对撕分过程中的各项作业进行计划和管理。",
+      "path": [],
+      "code": "B3-5"
+    },
+    {
+      "category_id": "B3-6-1",
+      "name": "四大命令",
+      "description": "指生产过程中涉及的关键指令或任务。",
+      "path": [],
+      "code": "B3-6-1"
+    },
+    {
+      "category_id": "B3-6-2",
+      "name": "生产工艺指令",
+      "description": "指对生产过程中的工艺操作进行指令下达和管理，确保生产工艺的规范执行。",
+      "path": [],
+      "code": "B3-6-2"
+    },
+    {
+      "category_id": "B3-7-1",
+      "name": "彩涂漆料预测",
+      "description": "指对彩涂生产过程中使用的漆料需求进行预测。",
+      "path": [],
+      "code": "B3-7-1"
+    },
+    {
+      "category_id": "B3-7-2",
+      "name": "预排产",
+      "description": "指在生产正式开始前对排产计划进行预先安排和调整。",
+      "path": [],
+      "code": "B3-7-2"
+    },
+    {
+      "category_id": "B4-1-1",
+      "name": "铁前生产实绩",
+      "description": "指炼铁前期作业的实际生产情况。",
+      "path": [],
+      "code": "B4-1-1"
+    },
+    {
+      "category_id": "B4-1-2",
+      "name": "炼钢生产实绩",
+      "description": "指炼钢过程中的实际生产情况。",
+      "path": [],
+      "code": "B4-1-2"
+    },
+    {
+      "category_id": "B4-1-3",
+      "name": "MCCR生产实绩",
+      "description": "指连铸连轧工艺中的实际生产情况。",
+      "path": [],
+      "code": "B4-1-3"
+    },
+    {
+      "category_id": "B4-1-4",
+      "name": "热轧生产实绩",
+      "description": "指热轧工艺中的实际生产情况。",
+      "path": [],
+      "code": "B4-1-4"
+    },
+    {
+      "category_id": "B4-1-5",
+      "name": "冷轧生产实绩",
+      "description": "指冷轧工艺中的实际生产情况。",
+      "path": [],
+      "code": "B4-1-5"
+    },
+    {
+      "category_id": "B4-1-6",
+      "name": "撕分线生产实绩",
+      "description": "指撕分线工艺的实际生产情况。",
+      "path": [],
+      "code": "B4-1-6"
+    },
+    {
+      "category_id": "B4-1-7",
+      "name": "中厚板生产实绩",
+      "description": "指中厚板生产线的实际产出情况。",
+      "path": [],
+      "code": "B4-1-7"
+    },
+    {
+      "category_id": "B4-2",
+      "name": "实重管理",
+      "description": "指对生产过程中实际产出的产品重量进行管理。",
+      "path": [],
+      "code": "B4-2"
+    },
+    {
+      "category_id": "B4-3-1",
+      "name": "机清管理",
+      "description": "指使用机械设备对板坯生产中残留的杂质或附着物进行自动清理。",
+      "path": [],
+      "code": "B4-3-1"
+    },
+    {
+      "category_id": "B5-1-1",
+      "name": "铁前出入库管理",
+      "description": "指对炼铁前期工序中的原材料、回收物料等进出仓库进行管理。",
+      "path": [],
+      "code": "B5-1-1"
+    },
+    {
+      "category_id": "B5-1-2",
+      "name": "炼钢出入库管理",
+      "description": "指对炼钢工序中的物料进出仓库进行管理。",
+      "path": [],
+      "code": "B5-1-2"
+    },
+    {
+      "category_id": "B5-1-3",
+      "name": "热轧出入库管理",
+      "description": "指对热轧工序中的物料进出仓库进行管理。",
+      "path": [],
+      "code": "B5-1-3"
+    },
+    {
+      "category_id": "B5-1-4",
+      "name": "冷轧出入库管理",
+      "description": "指对冷轧工序中的物料进出仓库进行管理。",
+      "path": [],
+      "code": "B5-1-4"
+    },
+    {
+      "category_id": "B5-1-5",
+      "name": "撕分线出入库管理",
+      "description": "指对撕分线工序中的物料进出仓库进行管理。",
+      "path": [],
+      "code": "B5-1-5"
+    },
+    {
+      "category_id": "B5-1-6",
+      "name": "中厚板出入库管理",
+      "description": "指对中厚板产品及相关物料进出仓库进行管理。",
+      "path": [],
+      "code": "B5-1-6"
+    },
+    {
+      "category_id": "B5-1-7",
+      "name": "作业部综合出入库管理",
+      "description": "指对各作业部的所有物料、产品的出入库进行综合管理。",
+      "path": [],
+      "code": "B5-1-7"
+    },
+    {
+      "category_id": "B5-1-8",
+      "name": "漆料出入库管理",
+      "description": "指对彩涂生产所需的漆料的出入库进行管理。",
+      "path": [],
+      "code": "B5-1-8"
+    },
+    {
+      "category_id": "B5-1-9",
+      "name": "检验用品出入库管理",
+      "description": "指对检验用品出入库进行管理。",
+      "path": [],
+      "code": "B5-1-9"
+    },
+    {
+      "category_id": "B5-2-1",
+      "name": "料场管理",
+      "description": "指对物料堆放场地管理。",
+      "path": [],
+      "code": "B5-2-1"
+    },
+    {
+      "category_id": "B5-2-2",
+      "name": "炼钢库内管理",
+      "description": "指对炼钢工序中使用的物料在仓库内的存储、堆放和调度进行管理。",
+      "path": [],
+      "code": "B5-2-2"
+    },
+    {
+      "category_id": "B5-2-3",
+      "name": "热轧库内管理",
+      "description": "指对热轧工序中的物料在仓库内的存储、堆放和调度进行管理。",
+      "path": [],
+      "code": "B5-2-3"
+    },
+    {
+      "category_id": "B5-2-4",
+      "name": "冷轧库内管理",
+      "description": "指对冷轧工序中的物料在仓库内的存储、堆放和调度进行管理。",
+      "path": [],
+      "code": "B5-2-4"
+    },
+    {
+      "category_id": "B5-2-5",
+      "name": "撕分线库内管理",
+      "description": "指对撕分线工序中的物料在仓库内的存储、堆放和调度进行管理。",
+      "path": [],
+      "code": "B5-2-5"
+    },
+    {
+      "category_id": "B5-2-6",
+      "name": "中厚板库内管理",
+      "description": "指对中厚板产品及相关物料在仓库内的存储、堆放和调度进行管理。",
+      "path": [],
+      "code": "B5-2-6"
+    },
+    {
+      "category_id": "B5-2-7",
+      "name": "作业部综合库内管理",
+      "description": "指对作业部各类物料、产品在仓库内的存储和管理。",
+      "path": [],
+      "code": "B5-2-7"
+    },
+    {
+      "category_id": "B5-2-8",
+      "name": "彩涂漆料库内管理",
+      "description": "指对彩涂生产所使用的漆料在仓库内的存储、堆放和调度进行管理。",
+      "path": [],
+      "code": "B5-2-8"
+    },
+    {
+      "category_id": "B5-2-9",
+      "name": "检验用品库内管理",
+      "description": "指对检验用品在仓库内的存储进行管理。",
+      "path": [],
+      "code": "B5-2-9"
+    },
+    {
+      "category_id": "B5-2-10",
+      "name": "天车作业管理",
+      "description": "指对天车设备的运行和操作进行管理，确保物料和产品在仓库内的安全搬运。",
+      "path": [],
+      "code": "B5-2-10"
+    },
+    {
+      "category_id": "B6-1-1",
+      "name": "公用基准数据",
+      "description": "指对厂内物流的标准流程、操作规范和运输基准进行管理。",
+      "path": [],
+      "code": "B6-1-1"
+    },
+    {
+      "category_id": "B6-1-2",
+      "name": "铁路运输数据",
+      "description": "指通过铁路进行物料运输的管理。",
+      "path": [],
+      "code": "B6-1-2"
+    },
+    {
+      "category_id": "B6-1-3",
+      "name": "铁水运输数据",
+      "description": "指对铁水从炼铁到炼钢的输送进行管理。",
+      "path": [],
+      "code": "B6-1-3"
+    },
+    {
+      "category_id": "B6-1-4",
+      "name": "汽车运输数据",
+      "description": "指通过汽车进行物料运输的管理。",
+      "path": [],
+      "code": "B6-1-4"
+    },
+    {
+      "category_id": "B6-1-5",
+      "name": "码头运营管理",
+      "description": "指对码头物资装卸、船只调度等进行管理。",
+      "path": [],
+      "code": "B6-1-5"
+    },
+    {
+      "category_id": "B6-1-6",
+      "name": "物流管控-基础数据",
+      "description": "指对物流相关的基础数据（如仓库信息、装卸点信息等）进行系统化管理。",
+      "path": [],
+      "code": "B6-1-6"
+    },
+    {
+      "category_id": "B6-1-7",
+      "name": "物流管控-运单管理",
+      "description": "指对运输单据进行管理，包括运单分配等。",
+      "path": [],
+      "code": "B6-1-7"
+    },
+    {
+      "category_id": "B6-1-8",
+      "name": "物流管控-运单追踪",
+      "description": "指对运单的实时追踪和监控，获取货物在运输过程中的位置和状态信息。",
+      "path": [],
+      "code": "B6-1-8"
+    },
+    {
+      "category_id": "B6-1-9",
+      "name": "物流管控-排队管理",
+      "description": "指对物流流程中涉及的排队情况进行管理。",
+      "path": [],
+      "code": "B6-1-9"
+    },
+    {
+      "category_id": "B6-1-10",
+      "name": "物流管控-公告管理",
+      "description": "指对与物流相关的重要信息、公告进行发布和管理。",
+      "path": [],
+      "code": "B6-1-10"
+    },
+    {
+      "category_id": "B6-1-11",
+      "name": "物流管控-统计分析",
+      "description": "指对物流数据进行统计和分析。",
+      "path": [],
+      "code": "B6-1-11"
+    },
+    {
+      "category_id": "B6-1-12",
+      "name": "物流管控-车辆工作情况汇总",
+      "description": "指对车辆的工作情况进行汇总和管理。",
+      "path": [],
+      "code": "B6-1-12"
+    },
+    {
+      "category_id": "B6-1-13",
+      "name": "物流管控-司机情况汇总",
+      "description": "指对司机的工作情况、驾驶记录等进行汇总和管理。",
+      "path": [],
+      "code": "B6-1-13"
+    },
+    {
+      "category_id": "B6-2",
+      "name": "销售物流管理",
+      "description": "指成品从工厂到客户的运输、配送管理。",
+      "path": [],
+      "code": "B6-2"
+    },
+    {
+      "category_id": "C1-1-1",
+      "name": "产品规范管理",
+      "description": "指对产品规范码及其所代表产品的具体描述(品名、标准、牌号等)。",
+      "path": [],
+      "code": "C1-1-1"
+    },
+    {
+      "category_id": "C1-1-2",
+      "name": "冶金规范管理",
+      "description": "指根据产品质量设计的工艺管理内容，设计冶金规范体系架构，覆盖范围包括产品加工路径、各工序工艺控制目标、检化验要求等。",
+      "path": [],
+      "code": "C1-1-2"
+    },
+    {
+      "category_id": "C1-1-3",
+      "name": "质量设计要求",
+      "description": "指产品的质量设计要求，包括检化验要求、质保书要求等。",
+      "path": [],
+      "code": "C1-1-3"
+    },
+    {
+      "category_id": "C1-2-1",
+      "name": "表面质量判定处置-炼钢在线工序管理（含MCCR）",
+      "description": "指对炼钢区域连铸各个机组产出的实物板坯信息进行跟踪、质量在线判定与处置等。",
+      "path": [],
+      "code": "C1-2-1"
+    },
+    {
+      "category_id": "C1-2-2",
+      "name": "表面质量判定处置-热轧在线工序管理",
+      "description": "指对热轧区域轧制、精整、罩退、横切及热切各个机组产出的实物钢卷信息进行跟踪、质量在线判定与处置等。",
+      "path": [],
+      "code": "C1-2-2"
+    },
+    {
+      "category_id": "C1-2-3",
+      "name": "表面质量判定处置-冷轧在线工序管理",
+      "description": "指对冷轧区域酸轧、退火、热镀锌、彩涂、镀锡、罩退平整、重卷、横切、落料等各个机组产出的实物钢卷信息进行跟踪、质量在线判定与处置等。",
+      "path": [],
+      "code": "C1-2-3"
+    },
+    {
+      "category_id": "C1-2-4",
+      "name": "表面质量判定处置-酸洗在线工序管理",
+      "description": "指对酸洗区域及拉矫各个机组产出的实物钢卷信息进行跟踪、质量判定处置等。",
+      "path": [],
+      "code": "C1-2-4"
+    },
+    {
+      "category_id": "C1-2-5",
+      "name": "表面质量判定处置-中厚板在线工序管理",
+      "description": "指对中厚板区域轧制、精整、预处理、热处理等各个机组产出的实物钢卷信息进行跟踪、质量在线判定与处置等。",
+      "path": [],
+      "code": "C1-2-5"
+    },
+    {
+      "category_id": "C1-2-6",
+      "name": "质量综合判定处置-成分及性能判定",
+      "description": "指对产品的性能判定，性能不合时，及时通知责任者进行改判并作相应的处置。",
+      "path": [],
+      "code": "C1-2-6"
+    },
+    {
+      "category_id": "C1-2-7",
+      "name": "质量综合判定处置-综合判定",
+      "description": "指对物料的性能判定结果、表面判定结果进行综合判定。",
+      "path": [],
+      "code": "C1-2-7"
+    },
+    {
+      "category_id": "C1-2-8",
+      "name": "质量综合判定处置-材料处置",
+      "description": "指对材料（包括原料，在制品，成品）进行封锁和释放处理。对封锁的材料，根据不同的封锁原因进行处置，包括产品返工、改判等。",
+      "path": [],
+      "code": "C1-2-8"
+    },
+    {
+      "category_id": "C1-2-9",
+      "name": "质量综合判定处置-厚板材质判定",
+      "description": "指对钢板进行形合、材合及材质判定。",
+      "path": [],
+      "code": "C1-2-9"
+    },
+    {
+      "category_id": "C1-2-10",
+      "name": "质量综合判定处置-质量围堵与整改验证管理",
+      "description": "对质量异议合同进行相关处置。",
+      "path": [],
+      "code": "C1-2-10"
+    },
+    {
+      "category_id": "C1-3-1",
+      "name": "表面缺陷分析",
+      "description": "指根据钢卷在各生产工序中的表面缺陷分布情况，分析缺陷在生产过程中的实际衍变过程。",
+      "path": [],
+      "code": "C1-3-1"
+    },
+    {
+      "category_id": "C1-3-2",
+      "name": "过程质量分析",
+      "description": "指通过SPC分析，结合表面缺陷、工艺过程参数、产品检化验数据等，进行供货质量分析、质量特性分析等。",
+      "path": [],
+      "code": "C1-3-2"
+    },
+    {
+      "category_id": "C1-3-3",
+      "name": "质量业务经验",
+      "description": "指质量知识库，将各部门各过程中的质量业务经验和知识收集起来，分别设计质量异议知识库、质量问题知识库（含工艺攻关文档）、专家建议知识库、操作要点知识库、质量分析研究知识库等一系列相关知识库。",
+      "path": [],
+      "code": "C1-3-3"
+    },
+    {
+      "category_id": "C1-3-4",
+      "name": "质量异议/抱怨分析",
+      "description": "指对质量异议进行分析，整改。",
+      "path": [],
+      "code": "C1-3-4"
+    },
+    {
+      "category_id": "C1-3-5",
+      "name": "缺陷统计",
+      "description": "指对钢卷表面缺陷情况的统计。",
+      "path": [],
+      "code": "C1-3-5"
+    },
+    {
+      "category_id": "C1-3-6",
+      "name": "性能分析应用",
+      "description": "指对产品性能的分析。",
+      "path": [],
+      "code": "C1-3-6"
+    },
+    {
+      "category_id": "C1-4-1",
+      "name": "成品检化验及统计信息",
+      "description": "指成品的检化验及统计信息，包括委托信息、取样计划、检化验结果、样品统计信息、及时率统计信息等。",
+      "path": [],
+      "code": "C1-4-1"
+    },
+    {
+      "category_id": "C1-4-2",
+      "name": "成分信息",
+      "description": "指炼铁、炼钢工序的成分信息，包括贴水成分，铁渣成分，炼钢合金成分等。",
+      "path": [],
+      "code": "C1-4-2"
+    },
+    {
+      "category_id": "C1-4-3",
+      "name": "原燃料检验及统计信息",
+      "description": "指原燃料的检化验及统计信息，包括委托信息、取样计划、检化验结果、原燃料检验时间统计报表、样品统计信息等。",
+      "path": [],
+      "code": "C1-4-3"
+    },
+    {
+      "category_id": "C1-4-4",
+      "name": "认证管理",
+      "description": "指对认证进行管理，包括认证书基本信息、申请认证计划、认证内审结果信息等。",
+      "path": [],
+      "code": "C1-4-4"
+    },
+    {
+      "category_id": "C1-4-5",
+      "name": "检化验质量监控管理",
+      "description": "指检化验的质量监控信息，包括年度质量监控计划，质量监控有效性评价信息等。",
+      "path": [],
+      "code": "C1-4-5"
+    },
+    {
+      "category_id": "C1-4-6",
+      "name": "能力验证管理",
+      "description": "指实验室的能力验证相关信息，包括能力验证活动计划、年度实验室间对比信息等。",
+      "path": [],
+      "code": "C1-4-6"
+    },
+    {
+      "category_id": "C1-5",
+      "name": "质保书管理",
+      "description": "指产品质保书相关数据。",
+      "path": [],
+      "code": "C1-5"
+    },
+    {
+      "category_id": "C2-1-1",
+      "name": "设备基本资料",
+      "description": "指记录和管理设备的基础信息，包括设备位码信息、设备基本资料、维修技术标准等。",
+      "path": [],
+      "code": "C2-1-1"
+    },
+    {
+      "category_id": "C2-1-2",
+      "name": "设备分级管理",
+      "description": "指根据设备的重要性对设备进行分级管理，包括级别判定规则信息、分层分类判定信息等。",
+      "path": [],
+      "code": "C2-1-2"
+    },
+    {
+      "category_id": "C2-1-3",
+      "name": "固定资产基本信息",
+      "description": "指固定资产的基本信息。",
+      "path": [],
+      "code": "C2-1-3"
+    },
+    {
+      "category_id": "C2-1-4",
+      "name": "物料扩充属性管理",
+      "description": "指扩展设备物料的详细属性，便于更精确的管理和调配。",
+      "path": [],
+      "code": "C2-1-4"
+    },
+    {
+      "category_id": "C2-1-5",
+      "name": "计量设备基础信息管理",
+      "description": "指记录和维护计量设备的基础信息。",
+      "path": [],
+      "code": "C2-1-5"
+    },
+    {
+      "category_id": "C2-1-6",
+      "name": "计量设备总库管理",
+      "description": "指对企业内所有计量设备进行统一管理，跟踪设备状态。",
+      "path": [],
+      "code": "C2-1-6"
+    },
+    {
+      "category_id": "C2-1-7",
+      "name": "计量设备证书管理",
+      "description": "指管理计量设备的合格证书和相关资质证明，确保设备符合行业和法规要求。",
+      "path": [],
+      "code": "C2-1-7"
+    },
+    {
+      "category_id": "C2-1-8",
+      "name": "特种设备注册管理",
+      "description": "指对特种设备（如压力容器、起重机械等）进行登记和注册。",
+      "path": [],
+      "code": "C2-1-8"
+    },
+    {
+      "category_id": "C2-1-9",
+      "name": "特种设备总库管理",
+      "description": "指对企业内所有特种设备的管理。",
+      "path": [],
+      "code": "C2-1-9"
+    },
+    {
+      "category_id": "C2-1-10",
+      "name": "轧辊信息管理",
+      "description": "指管理轧辊设备的基本信息。",
+      "path": [],
+      "code": "C2-1-10"
+    },
+    {
+      "category_id": "C2-1-11",
+      "name": "轧辊轴承管理",
+      "description": "指对轧辊轴承的信息管理。",
+      "path": [],
+      "code": "C2-1-11"
+    },
+    {
+      "category_id": "C2-2-1",
+      "name": "点检标准管理",
+      "description": "指设备定期点检的标准和规范。",
+      "path": [],
+      "code": "C2-2-1"
+    },
+    {
+      "category_id": "C2-2-2",
+      "name": "点检计划管理",
+      "description": "指设备的点检计划，确保设备点检工作按计划执行，预防设备故障。",
+      "path": [],
+      "code": "C2-2-2"
+    },
+    {
+      "category_id": "C2-2-3",
+      "name": "点检实绩管理",
+      "description": "指记录设备点检的实际情况和结果。",
+      "path": [],
+      "code": "C2-2-3"
+    },
+    {
+      "category_id": "C2-2-4",
+      "name": "异常信息管理",
+      "description": "指记录设备的异常情况。",
+      "path": [],
+      "code": "C2-2-4"
+    },
+    {
+      "category_id": "C2-2-5",
+      "name": "检修标准管理",
+      "description": "指制定设备检修的规范和标准，确保检修过程中的操作规范、质量达标。",
+      "path": [],
+      "code": "C2-2-5"
+    },
+    {
+      "category_id": "C2-2-6",
+      "name": "检修计划管理",
+      "description": "指制定定期或不定期的检修计划，确保设备在最佳状态下运行。",
+      "path": [],
+      "code": "C2-2-6"
+    },
+    {
+      "category_id": "C2-2-7",
+      "name": "检修实绩管理",
+      "description": "指记录设备检修的实际执行情况。",
+      "path": [],
+      "code": "C2-2-7"
+    },
+    {
+      "category_id": "C2-2-8",
+      "name": "检修履历管理",
+      "description": "指记录设备的检修历史，包括检修的详细信息、检修履历实绩统计信息等。",
+      "path": [],
+      "code": "C2-2-8"
+    },
+    {
+      "category_id": "C2-2-9",
+      "name": "固定资产闲废管理",
+      "description": "指对闲置和废弃的固定资产进行登记和处理。",
+      "path": [],
+      "code": "C2-2-9"
+    },
+    {
+      "category_id": "C2-2-10",
+      "name": "固定资产折旧管理",
+      "description": "指根据固定资产的使用年限和折旧方法，记录折旧情况。",
+      "path": [],
+      "code": "C2-2-10"
+    },
+    {
+      "category_id": "C2-2-11",
+      "name": "固定资产回收管理",
+      "description": "指对废弃或报废的固定资产进行回收、再利用或处置。",
+      "path": [],
+      "code": "C2-2-11"
+    },
+    {
+      "category_id": "C2-2-12",
+      "name": "机旁管理",
+      "description": "指对设备操作位置附近的物料、备件、工具等进行管理，确保操作过程的便利性和高效性。",
+      "path": [],
+      "code": "C2-2-12"
+    },
+    {
+      "category_id": "C2-2-13",
+      "name": "备件修复管理",
+      "description": "指记录和管理设备备件的修复过程。",
+      "path": [],
+      "code": "C2-2-13"
+    },
+    {
+      "category_id": "C2-2-14",
+      "name": "计量设备计划管理",
+      "description": "指制定和管理计量设备的检修、维护和校准计划，确保设备保持精确度。",
+      "path": [],
+      "code": "C2-2-14"
+    },
+    {
+      "category_id": "C2-2-15",
+      "name": "计量设备检校与实绩管理",
+      "description": "指记录计量设备的校准和检修实际执行情况。",
+      "path": [],
+      "code": "C2-2-15"
+    },
+    {
+      "category_id": "C2-2-16",
+      "name": "计量设备履历管理",
+      "description": "指管理计量设备的生命周期信息，包括修理、封存、注销等。",
+      "path": [],
+      "code": "C2-2-16"
+    },
+    {
+      "category_id": "C2-2-17",
+      "name": "特种设备计划管理",
+      "description": "指制定特种设备的检修、维护和年检计划，确保设备在规定的时间内进行必要的检查和维护，保证其安全运行。",
+      "path": [],
+      "code": "C2-2-17"
+    },
+    {
+      "category_id": "C2-3-1",
+      "name": "作业线设备管理",
+      "description": "指对作业线各个设备的状态进行管理，包括作业线设备开停机信息，设备状态信息等。",
+      "path": [],
+      "code": "C2-3-1"
+    },
+    {
+      "category_id": "C2-3-2",
+      "name": "故障信息管理",
+      "description": "指记录设备故障的详细信息，包括作业线故障信息、计量设备故障信息等。",
+      "path": [],
+      "code": "C2-3-2"
+    },
+    {
+      "category_id": "C2-3-3",
+      "name": "大型关键设备管理",
+      "description": "指对大型关键设备的状态进行管理。",
+      "path": [],
+      "code": "C2-3-3"
+    },
+    {
+      "category_id": "C2-3-4",
+      "name": "固定资产验收管理",
+      "description": "指对企业的固定资产验收进行管理，确保资产符合标准。",
+      "path": [],
+      "code": "C2-3-4"
+    },
+    {
+      "category_id": "C2-3-5",
+      "name": "固定资产异动管理",
+      "description": "指对固定资产的异动情况进行管理，包括异动申请信息、异动计划等。",
+      "path": [],
+      "code": "C2-3-5"
+    },
+    {
+      "category_id": "C2-3-6",
+      "name": "计量设备状态变更管理",
+      "description": "指记录和管理计量设备的状态变更。",
+      "path": [],
+      "code": "C2-3-6"
+    },
+    {
+      "category_id": "C2-3-7",
+      "name": "特种设备状态变更管理",
+      "description": "指记录和管理特种设备的状态变化。",
+      "path": [],
+      "code": "C2-3-7"
+    },
+    {
+      "category_id": "C3-1-1",
+      "name": "能源计划",
+      "description": "指根据企业的生产需要，制定能源使用和供应的计划，确保能源资源的合理调配和使用。",
+      "path": [],
+      "code": "C3-1-1"
+    },
+    {
+      "category_id": "C3-1-2",
+      "name": "水质管理标准和规范管理",
+      "description": "指管理与水质相关的标准和规范。",
+      "path": [],
+      "code": "C3-1-2"
+    },
+    {
+      "category_id": "C3-2-1",
+      "name": "能源平衡管理",
+      "description": "指对企业能源的供给和消耗进行平衡管理。",
+      "path": [],
+      "code": "C3-2-1"
+    },
+    {
+      "category_id": "C3-2-2",
+      "name": "放射源管理",
+      "description": "指对放射性物质进行管理，确保符合国家安全标准，避免辐射危害。",
+      "path": [],
+      "code": "C3-2-2"
+    },
+    {
+      "category_id": "C3-2-3",
+      "name": "煤气排水器监控",
+      "description": "指对煤气排水器进行监控和维护，确保煤气排水系统的正常运行。",
+      "path": [],
+      "code": "C3-2-3"
+    },
+    {
+      "category_id": "C3-2-4",
+      "name": "全厂水质图像数据",
+      "description": "指管理整个工厂范围内的水质图像数据。",
+      "path": [],
+      "code": "C3-2-4"
+    },
+    {
+      "category_id": "C3-2-5",
+      "name": "水质监测管理",
+      "description": "指实时监控水质参数。",
+      "path": [],
+      "code": "C3-2-5"
+    },
+    {
+      "category_id": "C3-2-6",
+      "name": "水运行监测管理",
+      "description": "指监控水资源的运行情况，包括水流量等参数。",
+      "path": [],
+      "code": "C3-2-6"
+    },
+    {
+      "category_id": "C3-2-7",
+      "name": "水性能监测管理",
+      "description": "指对水质在不同使用场景下的表现进行监测。",
+      "path": [],
+      "code": "C3-2-7"
+    },
+    {
+      "category_id": "C3-2-8",
+      "name": "药剂管理",
+      "description": "指水处理过程中所使用的化学药剂的管理。",
+      "path": [],
+      "code": "C3-2-8"
+    },
+    {
+      "category_id": "C3-3-1",
+      "name": "能源实绩",
+      "description": "指记录实际的能源消耗和供应情况。",
+      "path": [],
+      "code": "C3-3-1"
+    },
+    {
+      "category_id": "C3-3-2",
+      "name": "计量点数据管理",
+      "description": "指能源生产过程中各个关键计量点的数据。",
+      "path": [],
+      "code": "C3-3-2"
+    },
+    {
+      "category_id": "C3-3-3",
+      "name": "工序能耗统计",
+      "description": "指统计各个生产工序的能源消耗情况。",
+      "path": [],
+      "code": "C3-3-3"
+    },
+    {
+      "category_id": "C3-4-1",
+      "name": "调度日志管理",
+      "description": "指记录能源调度过程中的操作日志，包括电力调度日志、动力调度日志、水道调度日志等。",
+      "path": [],
+      "code": "C3-4-1"
+    },
+    {
+      "category_id": "C3-4-2",
+      "name": "能源日报管理",
+      "description": "指企业对每日能源使用和生产情况的统计和汇总。",
+      "path": [],
+      "code": "C3-4-2"
+    },
+    {
+      "category_id": "C3-4-3",
+      "name": "能源运行支持",
+      "description": "提供能源系统运行所需的技术支持、维护和优化，确保能源系统的高效运作。",
+      "path": [],
+      "code": "C3-4-3"
+    },
+    {
+      "category_id": "C3-4-4",
+      "name": "用能申请管理",
+      "description": "指企业各部门提出的能源使用申请，确保能源资源的合理分配。",
+      "path": [],
+      "code": "C3-4-4"
+    },
+    {
+      "category_id": "C4-1",
+      "name": "监测分析管理",
+      "description": "指对环境中的各种要素进行系统的监测、数据采集和分析。",
+      "path": [],
+      "code": "C4-1"
+    },
+    {
+      "category_id": "C5-1-1",
+      "name": "数据采集",
+      "description": "指对能源计量设备采集数据的规则进行管理。",
+      "path": [],
+      "code": "C5-1-1"
+    },
+    {
+      "category_id": "C5-1-2",
+      "name": "数据管理",
+      "description": "指通过各种技术手段采集能源计量设备记录的能耗数据。",
+      "path": [],
+      "code": "C5-1-2"
+    },
+    {
+      "category_id": "C5-1-3",
+      "name": "组态画面管理",
+      "description": "指通过可视化界面（组态软件）对能源计量数据进行监控和管理。",
+      "path": [],
+      "code": "C5-1-3"
+    },
+    {
+      "category_id": "C5-2-1",
+      "name": "计量申请",
+      "description": "指衡器计量相关的申请流程管理。",
+      "path": [],
+      "code": "C5-2-1"
+    },
+    {
+      "category_id": "C5-2-2",
+      "name": "计量数据",
+      "description": "指对衡器产生的称重数据进行管理。",
+      "path": [],
+      "code": "C5-2-2"
+    },
+    {
+      "category_id": "C5-2-3",
+      "name": "监控信息",
+      "description": "指通过监控系统实时查看衡器的运行状态和称重过程。",
+      "path": [],
+      "code": "C5-2-3"
+    },
+    {
+      "category_id": "C5-2-4",
+      "name": "称重业务流程展示",
+      "description": "指通过可视化或流程图的方式展示衡器从称重到数据记录的全过程。",
+      "path": [],
+      "code": "C5-2-4"
+    },
+    {
+      "category_id": "C5-2-5",
+      "name": "报警信息",
+      "description": "指当衡器设备出现故障、超载或其他异常情况时，发出报警。",
+      "path": [],
+      "code": "C5-2-5"
+    },
+    {
+      "category_id": "C6-1-1",
+      "name": "办卡管理",
+      "description": "指为员工或外来人员办理出入卡的管理。",
+      "path": [],
+      "code": "C6-1-1"
+    },
+    {
+      "category_id": "C6-1-2",
+      "name": "授权管理",
+      "description": "指对人员权限进行设定和管理。",
+      "path": [],
+      "code": "C6-1-2"
+    },
+    {
+      "category_id": "C6-1-3",
+      "name": "通勤车管理",
+      "description": "指对乘坐通勤车进出厂人员进行管理。",
+      "path": [],
+      "code": "C6-1-3"
+    },
+    {
+      "category_id": "C6-1-4",
+      "name": "人员统计",
+      "description": "指对厂区人员进行统计，包括各区域人员统计信息、人员进出信息等。",
+      "path": [],
+      "code": "C6-1-4"
+    },
+    {
+      "category_id": "C6-2-1",
+      "name": "车辆信息",
+      "description": "指对进出厂区或指定区域的车辆进行管理，包括车辆黑名单信息、违法违规车辆信息等。",
+      "path": [],
+      "code": "C6-2-1"
+    },
+    {
+      "category_id": "C6-2-2",
+      "name": "临时车辆管理",
+      "description": "指对临时进入厂区的外部车辆进行登记、审批。",
+      "path": [],
+      "code": "C6-2-2"
+    },
+    {
+      "category_id": "C6-2-3",
+      "name": "车辆审核",
+      "description": "指对车辆进出权限进行审核和批准。",
+      "path": [],
+      "code": "C6-2-3"
+    },
+    {
+      "category_id": "C6-2-4",
+      "name": "物品携出票管理",
+      "description": "指对车辆或人员携带物品出厂的许可和记录管理。",
+      "path": [],
+      "code": "C6-2-4"
+    },
+    {
+      "category_id": "C6-2-5",
+      "name": "出厂管理",
+      "description": "指对产品或车辆出厂过程的管理，包括产成品出厂核验、空罐车初尝核验等。",
+      "path": [],
+      "code": "C6-2-5"
+    },
+    {
+      "category_id": "C6-2-6",
+      "name": "卡务管理",
+      "description": "指对出入卡办理、发放、使用和注销等进行管理。",
+      "path": [],
+      "code": "C6-2-6"
+    },
+    {
+      "category_id": "C6-2-7",
+      "name": "车辆履历管理",
+      "description": "指对进出厂区的车辆历史记录进行管理。",
+      "path": [],
+      "code": "C6-2-7"
+    },
+    {
+      "category_id": "C6-3-1",
+      "name": "道路监控",
+      "description": "指对厂区或特定区域的道路进行实时监控，确保车辆及人员活动的安全和秩序。",
+      "path": [],
+      "code": "C6-3-1"
+    },
+    {
+      "category_id": "C7-1-1",
+      "name": "安全责任制管理",
+      "description": "指通过制度明确企业内不同岗位的安全责任，包括安全责任状、安全指标信息等。",
+      "path": [],
+      "code": "C7-1-1"
+    },
+    {
+      "category_id": "C7-1-2",
+      "name": "安委会管理",
+      "description": "指企业安全生产委员会的管理。",
+      "path": [],
+      "code": "C7-1-2"
+    },
+    {
+      "category_id": "C7-1-3",
+      "name": "安全会议管理",
+      "description": "指对定期或临时召开的安全生产会议进行组织和管理。",
+      "path": [],
+      "code": "C7-1-3"
+    },
+    {
+      "category_id": "C7-1-4",
+      "name": "安全教育管理",
+      "description": "指对员工进行安全知识和技能的培训。",
+      "path": [],
+      "code": "C7-1-4"
+    },
+    {
+      "category_id": "C7-2-1",
+      "name": "重大危险源管理",
+      "description": "指对企业内可能引发重大事故的危险源进行管理，包括监控、报警等。",
+      "path": [],
+      "code": "C7-2-1"
+    },
+    {
+      "category_id": "C7-2-2",
+      "name": "危险化学品安全管理",
+      "description": "指对危险化学品进行安全管理。",
+      "path": [],
+      "code": "C7-2-2"
+    },
+    {
+      "category_id": "C7-2-3",
+      "name": "特种（设备）作业人员管理",
+      "description": "指对从事高风险特种作业的人员进行管理。",
+      "path": [],
+      "code": "C7-2-3"
+    },
+    {
+      "category_id": "C7-3-1",
+      "name": "安全生产检查",
+      "description": "指定期或临时对生产现场的安全情况进行检查。",
+      "path": [],
+      "code": "C7-3-1"
+    },
+    {
+      "category_id": "C7-3-2",
+      "name": "危险作业安全管理",
+      "description": "指对涉及高危作业的流程进行安全管理。",
+      "path": [],
+      "code": "C7-3-2"
+    },
+    {
+      "category_id": "C7-3-3",
+      "name": "工程安全管理",
+      "description": "指对建设或施工项目的安全工作进行监督和管理。",
+      "path": [],
+      "code": "C7-3-3"
+    },
+    {
+      "category_id": "C7-3-4",
+      "name": "气体安全防护管理",
+      "description": "指对气体的使用、储存和防护措施进行管理。",
+      "path": [],
+      "code": "C7-3-4"
+    },
+    {
+      "category_id": "C7-3-5",
+      "name": "动火安全管控",
+      "description": "指对涉及明火作业的人员安全进行管控，包括人员培训等。",
+      "path": [],
+      "code": "C7-3-5"
+    },
+    {
+      "category_id": "C7-4-1",
+      "name": "职业卫生体检管理",
+      "description": "指对从事有职业病风险作业的员工进行定期体检。",
+      "path": [],
+      "code": "C7-4-1"
+    },
+    {
+      "category_id": "C7-4-2",
+      "name": "职业卫生监护档案",
+      "description": "指对员工的职业健康情况和体检记录进行档案管理。",
+      "path": [],
+      "code": "C7-4-2"
+    },
+    {
+      "category_id": "C7-4-3",
+      "name": "职业病危害因素管理",
+      "description": "指对工作场所中可能导致职业病的因素进行识别、评估和控制。",
+      "path": [],
+      "code": "C7-4-3"
+    },
+    {
+      "category_id": "C7-5-1",
+      "name": "劳保信息",
+      "description": "指对劳动防护用品的发放套餐信息进行管理。",
+      "path": [],
+      "code": "C7-5-1"
+    },
+    {
+      "category_id": "C7-5-2",
+      "name": "劳保收发存",
+      "description": "指对劳动防护用品的领取、发放和库存管理。",
+      "path": [],
+      "code": "C7-5-2"
+    },
+    {
+      "category_id": "C8-1-1",
+      "name": "费用管理",
+      "description": "指对经营过程中产生的费用进行管理。",
+      "path": [],
+      "code": "C8-1-1"
+    },
+    {
+      "category_id": "C8-1-2",
+      "name": "结算管理",
+      "description": "指对企业的收支账款进行核对、结算。",
+      "path": [],
+      "code": "C8-1-2"
+    },
+    {
+      "category_id": "C8-1-3",
+      "name": "投资管理",
+      "description": "指对企业资金进行投资决策和管理。",
+      "path": [],
+      "code": "C8-1-3"
+    },
+    {
+      "category_id": "C8-1-4",
+      "name": "报表管理",
+      "description": "指对企业财务数据进行汇总，编制各类财务报表。",
+      "path": [],
+      "code": "C8-1-4"
+    },
+    {
+      "category_id": "C8-1-5",
+      "name": "审计管理",
+      "description": "指对企业的财务活动进行审计监督。",
+      "path": [],
+      "code": "C8-1-5"
+    },
+    {
+      "category_id": "C8-1-6",
+      "name": "税务管理",
+      "description": "指对企业税务事务进行管理。",
+      "path": [],
+      "code": "C8-1-6"
+    },
+    {
+      "category_id": "C8-1-7",
+      "name": "财务规划管理",
+      "description": "指对企业未来的财务活动进行预测和规划。",
+      "path": [],
+      "code": "C8-1-7"
+    },
+    {
+      "category_id": "C8-2-1",
+      "name": "计划与策略管理",
+      "description": "指企业为达成销售目标而制定的各类计划与实施策略。",
+      "path": [],
+      "code": "C8-2-1"
+    },
+    {
+      "category_id": "C8-2-2",
+      "name": "客户管理",
+      "description": "指企业在销售过程中，对客户资源的维护、跟踪、优化和开发。",
+      "path": [],
+      "code": "C8-2-2"
+    },
+    {
+      "category_id": "C8-3-1",
+      "name": "采购执行管理",
+      "description": "指具体执行采购计划的过程管理，包括采购订单信息、询价信息等。",
+      "path": [],
+      "code": "C8-3-1"
+    },
+    {
+      "category_id": "C8-3-2",
+      "name": "收货验收管理",
+      "description": "指对采购物品的接收和验收进行管理。",
+      "path": [],
+      "code": "C8-3-2"
+    },
+    {
+      "category_id": "C8-3-3",
+      "name": "退货管理",
+      "description": "指对不合格或不符合要求的采购物品进行退货处理。",
+      "path": [],
+      "code": "C8-3-3"
+    },
+    {
+      "category_id": "C8-4-1",
+      "name": "成本核算管理",
+      "description": "指对企业生产或运营过程中的成本进行核算。",
+      "path": [],
+      "code": "C8-4-1"
+    },
+    {
+      "category_id": "C8-5-1",
+      "name": "项目管理",
+      "description": "指对具体工程项目进行全面管理。",
+      "path": [],
+      "code": "C8-5-1"
+    },
+    {
+      "category_id": "C8-6-1",
+      "name": "运输合同管理",
+      "description": "指对企业涉及的物流运输合同进行管理。",
+      "path": [],
+      "code": "C8-6-1"
+    },
+    {
+      "category_id": "C8-6-2",
+      "name": "设备合同管理",
+      "description": "指对设备采购或维护相关合同的管理。",
+      "path": [],
+      "code": "C8-6-2"
+    },
+    {
+      "category_id": "C8-6-3",
+      "name": "工程合同管理",
+      "description": "指对工程项目中涉及的各类合同进行管理。",
+      "path": [],
+      "code": "C8-6-3"
+    },
+    {
+      "category_id": "C8-6-4",
+      "name": "采购合同管理",
+      "description": "指对企业物资采购过程中签订的合同进行管理。",
+      "path": [],
+      "code": "C8-6-4"
+    },
+    {
+      "category_id": "C8-6-5",
+      "name": "销售合同管理",
+      "description": "指对企业销售活动中签订的合同进行管理。",
+      "path": [],
+      "code": "C8-6-5"
+    },
+    {
+      "category_id": "C8-7-1",
+      "name": "规章制度文件管理",
+      "description": "指对公司内部规章制度文件的制定、更新、发布和存档进行管理。",
+      "path": [],
+      "code": "C8-7-1"
+    },
+    {
+      "category_id": "C8-7-2",
+      "name": "生产技术文件管理",
+      "description": "指对与生产技术相关的文件进行管理。",
+      "path": [],
+      "code": "C8-7-2"
+    },
+    {
+      "category_id": "C8-7-3",
+      "name": "战略规划文件管理",
+      "description": "指对公司战略规划相关文件的管理。",
+      "path": [],
+      "code": "C8-7-3"
+    },
+    {
+      "category_id": "C8-7-4",
+      "name": "文件统计管理",
+      "description": "指对各类文件进行统计。",
+      "path": [],
+      "code": "C8-7-4"
+    },
+    {
+      "category_id": "C8-7-5",
+      "name": "业务流程问题管理",
+      "description": "指对业务流程中的关键问题和困难点进行识别。",
+      "path": [],
+      "code": "C8-7-5"
+    },
+    {
+      "category_id": "C8-7-6",
+      "name": "业务流程改善申报管理",
+      "description": "指对员工提出改进建议和方案的管理，包括改善亮点、改善提案等。",
+      "path": [],
+      "code": "C8-7-6"
+    },
+    {
+      "category_id": "C8-7-7",
+      "name": "业务流程改善积分管理",
+      "description": "指对员工在改善活动中获得的积分进行管理。",
+      "path": [],
+      "code": "C8-7-7"
+    },
+    {
+      "category_id": "C8-7-8",
+      "name": "业务流程改善评分管理",
+      "description": "指对改进方案和成果进行评分和评估。",
+      "path": [],
+      "code": "C8-7-8"
+    },
+    {
+      "category_id": "C8-7-9",
+      "name": "优秀改善成果管理",
+      "description": "指对在改善活动中取得的突出成果进行记录。",
+      "path": [],
+      "code": "C8-7-9"
+    },
+    {
+      "category_id": "C8-7-10",
+      "name": "办公信息管理",
+      "description": "指企业日常运营中的信息流转，如通知、内部沟通等。",
+      "path": [],
+      "code": "C8-7-10"
+    },
+    {
+      "category_id": "C8-8-1",
+      "name": "员工档案管理",
+      "description": "指对员工的信息进行管理，包括入职信息等。",
+      "path": [],
+      "code": "C8-8-1"
+    },
+    {
+      "category_id": "C8-8-2",
+      "name": "培训管理",
+      "description": "指为员工提供技能提升和知识更新的培训管理。",
+      "path": [],
+      "code": "C8-8-2"
+    },
+    {
+      "category_id": "C8-8-3",
+      "name": "薪酬管理",
+      "description": "指对员工工资、奖金、福利等薪酬体系的制定和管理。",
+      "path": [],
+      "code": "C8-8-3"
+    },
+    {
+      "category_id": "C8-8-4",
+      "name": "办公用品信息",
+      "description": "指对办公用品的信息进行管理，包括办公用房、办公家具、办公设备等。",
+      "path": [],
+      "code": "C8-8-4"
+    },
+    {
+      "category_id": "C8-8-5",
+      "name": "办公用品收发存",
+      "description": "指对办公用品的领取、发放和库存管理。",
+      "path": [],
+      "code": "C8-8-5"
+    },
+    {
+      "category_id": "C8-8-6",
+      "name": "办公用品指标",
+      "description": "指为办公用品使用设定合理的消耗指标。",
+      "path": [],
+      "code": "C8-8-6"
+    },
+    {
+      "category_id": "C8-8-7",
+      "name": "干部档案管理",
+      "description": "指对公司管理人员的选拔、任命、考核管理。",
+      "path": [],
+      "code": "C8-8-7"
+    },
+    {
+      "category_id": "C8-8-8",
+      "name": "劳动组织管理",
+      "description": "指对企业中劳动组织的管理。",
+      "path": [],
+      "code": "C8-8-8"
+    },
+    {
+      "category_id": "C8-9-1",
+      "name": "分析报表",
+      "description": "指对企业运维、财务、采购、销售等数据进行分析形成的报表。",
+      "path": [],
+      "code": "C8-9-1"
+    }
+  ],
+  "build_report": {
+    "dataset": "shougang",
+    "source": "D:\\study\\summer_intern\\data\\knowledge\\standards_map\\guanji_dict.json",
+    "id_strategy": "code",
+    "entries_read": 234,
+    "categories_out": 233,
+    "aggregated": {
+      "kinds": 0,
+      "instances": 0
+    },
+    "issues": [
+      {
+        "kind": "malformed_skipped",
+        "detail": "key='NaN' category='nan'"
+      }
+    ],
+    "dataset_id_coverage": {
+      "available": true,
+      "records": 64,
+      "covered": 64,
+      "uncovered": 0,
+      "skipped": 0,
+      "coverage_rate": 1.0
+    }
+  }
+}
