@@ -1,4 +1,4 @@
-"""CLI for exporting train/val/test JSON to VeRL SFT parquet."""
+"""CLI for exporting canonical dataset records to VeRL SFT parquet."""
 
 from __future__ import annotations
 
@@ -8,15 +8,21 @@ from pathlib import Path
 import sys
 
 from agent.task import LeafRegistry, TaskConfig
+from agent.task.canonical_dataset import load_corpus_categories
 from agent.training.sft import export_sft_dataset
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--input-dir",
+        "--canonical",
         required=True,
-        help="Directory containing train.json, val.json, test.json",
+        help="data/<dataset>/canonical/all.json (canonical dataset records)",
+    )
+    parser.add_argument(
+        "--split-dir",
+        required=True,
+        help="Directory containing train.json, val.json, test.json (split boundaries by id)",
     )
     parser.add_argument(
         "--output-dir",
@@ -24,6 +30,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Destination for split parquet and export_report.json",
     )
     parser.add_argument("--registry", required=True, help="JSON leaf registry")
+    parser.add_argument(
+        "--corpus",
+        required=True,
+        help="Canonical corpus JSON (category_id/name/description/descriptions/"
+        "examples); Stage 2 resolves candidates by category_id against it",
+    )
     parser.add_argument(
         "--metadata-fields",
         nargs="+",
@@ -50,17 +62,28 @@ def main(argv: list[str] | None = None) -> int:
             if not isinstance(config_data, dict):
                 raise ValueError("task config must be a JSON object")
         config_data["metadata_fields"] = args.metadata_fields
+        corpus = (
+            {
+                category.category_id: category
+                for category in load_corpus_categories(args.corpus)
+            }
+            if args.corpus
+            else None
+        )
         report = export_sft_dataset(
-            args.input_dir,
+            args.canonical,
+            args.split_dir,
             args.output_dir,
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
+            corpus=corpus,
         )
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         print(f"export_sft_dataset: {exc}", file=sys.stderr)
         return 2
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
