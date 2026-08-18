@@ -66,7 +66,7 @@ class RlSample:
       gold response (rollout generates it).
     - ground_truth: target.category_id (the only training label).
     - candidates: the deterministic Stage 2 candidate bundle
-      (Stage 1 only); None for Stage 1. This is a fixture policy, NOT the
+      (Stage 2 only); None for Stage 1. This is a fixture policy, NOT the
       production retrieval policy.
     - metadata: prompt-visible task metadata fields (task config).
     - reward: reward routing metadata (dataset + stage).
