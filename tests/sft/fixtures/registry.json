@@ -1,9 +1,9 @@
 {
   "categories": [
-    {"category_id": "A", "description": "alpha data"},
-    {"category_id": "B", "description": "beta data"},
-    {"category_id": "C", "description": "gamma data"},
-    {"category_id": "D", "description": "delta data"},
-    {"category_id": "E", "description": "epsilon data"}
+    {"category_id": "A", "name": "alpha data", "description": "alpha data"},
+    {"category_id": "B", "name": "beta data", "description": "beta data"},
+    {"category_id": "C", "name": "gamma data", "description": "gamma data"},
+    {"category_id": "D", "name": "delta data", "description": "delta data"},
+    {"category_id": "E", "name": "epsilon data", "description": "epsilon data"}
   ]
 }

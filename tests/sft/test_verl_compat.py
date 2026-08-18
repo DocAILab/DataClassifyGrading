@@ -18,11 +18,19 @@ def test_verl_multiturn_dataset_reads_exported_messages(tmp_path: Path):
 
     fixture_dir = Path(__file__).parent / "fixtures"
     output_dir = tmp_path / "sft"
+    from agent.task.canonical_dataset import load_corpus_categories
+
+    corpus = {
+        category.category_id: category
+        for category in load_corpus_categories(fixture_dir / "corpus.json")
+    }
     export_sft_dataset(
+        fixture_dir / "canonical" / "all.json",
         fixture_dir,
         output_dir,
         fixture_dir / "registry.json",
         fixture_dir / "task.json",
+        corpus=corpus,
     )
     tokenizer = AutoTokenizer.from_pretrained(
         "Qwen/Qwen2.5-0.5B-Instruct",

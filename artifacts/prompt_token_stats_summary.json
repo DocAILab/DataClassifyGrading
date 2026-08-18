@@ -1,0 +1,34 @@
+[
+  {
+    "dataset": "finance",
+    "stage1_tokens_max": 5959,
+    "stage1_tokens_p95": 5950,
+    "stage2_tokens_max": 794,
+    "stage2_tokens_p95": 603,
+    "exceeds_32768": false
+  },
+  {
+    "dataset": "infra",
+    "stage1_tokens_max": 5079,
+    "stage1_tokens_p95": 5076,
+    "stage2_tokens_max": 353,
+    "stage2_tokens_p95": 350,
+    "exceeds_32768": false
+  },
+  {
+    "dataset": "pers_info",
+    "stage1_tokens_max": 523,
+    "stage1_tokens_p95": 517,
+    "stage2_tokens_max": 236,
+    "stage2_tokens_p95": 232,
+    "exceeds_32768": false
+  },
+  {
+    "dataset": "shougang",
+    "stage1_tokens_max": 5174,
+    "stage1_tokens_p95": 5076,
+    "stage2_tokens_max": 436,
+    "stage2_tokens_p95": 352,
+    "exceeds_32768": false
+  }
+]
