@@ -73,7 +73,9 @@ fixture candidate policy, and tokenizer-specific budget inspection.
   exclusively ``target.category_id``;
 - `reward.py` -- task reward (RewardConfig / RewardResult, reward_stage1 /
   reward_stage2); weights: 0.0 invalid, 0.3 valid-but-miss (Stage 1),
-  1.0 correct, configurable ``stage2_partial`` for Stage 2 (value pending);
+  1.0 correct, configurable ``stage2_partial`` for Stage 2
+  (provisional / pending task-policy confirmation, default 0.5 is NOT a
+  finalized reward policy);
 - `dataset.py` -- VeRL v0.8.0 five-field RL parquet exporter/validator
   (`data_source` / `prompt` / `ability` / `reward_model` / `extra_info`; the
   prompt is system+user only, no assistant gold).

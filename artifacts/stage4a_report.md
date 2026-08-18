@@ -37,7 +37,7 @@
 | metadata | Mapping[str,str] | task config 显式 metadata 字段 |
 | reward | RewardMeta | reward 路由元数据（dataset + stage） |
 
-构建规则：仅 `resolution_status == "resolved"` 进入；ground truth 为 `target.category_id`（与 registry 强校验）；**禁止 classification["level_4"] fallback**。不包含任何训练算法内部状态。
+构建规则：仅 `resolution_status == "resolved"` 进入；建立 canonical index 时，**所有 resolved 记录都调用共享的 `canonical_target()` 验证 target contract**（无论是否属于 train/val/test split）：target 存在、category_id 非空且 ∈ LeafRegistry、leaf_name 与 registry 一致、resolved 记录有稳定 id。split 只决定是否进入训练，不决定是否执行 contract validation。ground truth 为 `target.category_id`（与 registry 强校验）；**禁止 classification["level_4"] fallback**。不包含任何训练算法内部状态。
 
 ## 3. VeRL RL parquet schema（verl v0.8.0 实测）
 
@@ -52,7 +52,7 @@ reward manager 读取 `non_tensor_batch["reward_model"]["ground_truth"]`）实�
 | reward_model | struct | `{"style": "rule", "ground_truth": "<category_id>"}` |
 | extra_info | struct | `{dataset, stage, source_id, metadata, candidates?(stage2)}` |
 
-约束：resolved-only、`ground_truth ∈ registry`、确定性（两次导出字节相同）、pyarrow 可读、validator 可重建两阶段 prompt 校验、不包含训练算法内部字段、不包含 SFT assistant gold response。
+约束：resolved-only；建立 index 时全部 resolved 记录 target contract 必须验证通过、`ground_truth ∈ registry`、确定性（两次导出字节相同）、pyarrow 可读、validator 可重建两阶段 prompt 校验、不包含训练算法内部字段、不包含 SFT assistant gold response、**每个 source_id 恰好 1 条 stage1 + 1 条 stage2（重复 stage 行 → validator failure）**。
 
 ## 4. Parser contract（统一 parser，`agent.task.parser`）
 
@@ -61,7 +61,8 @@ reward manager 读取 `non_tensor_batch["reward_model"]["ground_truth"]`）实�
 `ParseResult{format_valid, constraint_valid, output, errors}`，`ok = format_valid and constraint_valid`；**对模型输出永不抛异常**。
 
 - Stage 1 校验：JSON 合法 → schema 正确（仅 `candidates`）→ 数量==5 → 无重复 → 全部 ∈ registry
-- Stage 2 校验：JSON 合法 → schema 正确（仅 `answer`）→ answer ∈ candidates
+- Stage 2 校验：JSON 合法 → schema 正确（仅 `answer`）→ answer ∈ candidates（candidates 数量==5 、无重复、全 ∈ registry）
+- **Stage 2 不要求 `ground_truth ∈ candidates`**：明确的两阶段任务语义 — Stage 1 可能召回失败，因此 `ground_truth ∉ candidates` 是合法状态，不属于数据 contract 错误，也不会被当作 Stage 2 schema 错误
 - candidates 自身非法（非 5 唯一 / 空）视为编程错误抛 `ValueError`（其来源是 dataset 而非模型）
 
 `evaluate_stage1/2` 与 reward 均消费同一层，判定逻辑收敛为单点。
@@ -79,6 +80,9 @@ reward manager 读取 `non_tensor_batch["reward_model"]["ground_truth"]`）实�
 - Stage 1 `task_correct` = ground truth ∈ candidates；Stage 2 = answer == ground truth
 - parser 错误不会抛训练中断异常（永不 raise）
 - reward 只描述任务正确性，不含任何训练算法逻辑
+- `ground_truth ∉ candidates`（Stage 1 召回失败）时，Stage 2 输入仍合法、parser 正常、合法 candidate answer 可正常计算 reward，不抛异常
+
+**`stage2_partial` 是 provisional / pending task-policy confirmation 的配置项**：默认 0.5 仅作当前过渡值，不当作已确定的最终 reward policy，本阶段不调优具体数值。
 
 ## 6. 四数据集真实 export + validate 结果（本地真实 data/，2026-08-18）
 
@@ -96,13 +100,15 @@ Stage 1 prompt 真实 tokenizer 边界（只记录不改）：finance ~5959 / in
 ## 7. tests / CI
 
 - 本地全量（无 verl 标记 2 个文件）：**145 passed**（含既有 sft/eval/task 回归）
-- `tests/rl/`：parser（invalid JSON / wrong schema / duplicate / unknown / wrong count / valid-wrong / correct）、reward（各档位 + config 覆盖 + 永不抛异常 + 编程错误仍 raise + RewardResult 字段）、dataset（unresolved 不进入、target.category_id 唯一 label、classification 不参与 GT、Stage1 全 registry、Stage2 corpus 按 category_id、列=VeRL 五字段、无 assistant、deterministic、validate 接受/报错、全 unresolved split fail-fast）、四 dataset e2e、verl-compat（`RLHFDataset` 加载，CI verl job 执行）
+- `tests/rl/`：parser（invalid JSON / wrong schema / duplicate / unknown / wrong count / valid-wrong / correct）、reward（各档位 + config 覆盖 + 永不抛异常 + 编程错误仍 raise + RewardResult 字段）、dataset（unresolved 不进入、**resolved 且不在任何 split 但 target.category_id ∉ registry → export fail-fast**、target.category_id 唯一 label、classification 不参与 GT、**Stage2 不要求 GT∈candidates 的保护测试**、**duplicate/missing stage 行 → validator failure**、Stage1 全 registry、Stage2 corpus 按 category_id、列=VeRL 五字段、无 assistant、deterministic、validate 接受/报错、全 unresolved split fail-fast）、四 dataset e2e、verl-compat（`RLHFDataset` 加载，CI verl job 执行）
 - `script/verl/rl/{export,validate}.py` CLI 已本地 smoke（pers_info 176 → train 280 / val 36 / test 36，validate valid）
 
 ## 8. 尚未确认的 task policy
 
 1. **Stage 2 partial reward 具体值**：`RewardConfig.stage2_partial` 默认 0.5，首条真实 RL vertical slice 需确认
-2. **正式 Stage 1 retrieval policy**：当前 candidate fixture（GT + registry 前四）不是正式 hard-negative 策略，未抽象 CandidatePolicy；XRAG（M3）后替换
+2. **正式 Stage 1 retrieval policy**：当前 candidate fixture（GT + registry 前四）是一个
+   temporary deterministic fixture，不是正式 production retrieval policy；本阶段不绑定任何
+   具体未来 retrieval 实现，正式策略在后续阶段另行确定。
 3. **Stage 1 max_length / 截断策略**：finance Stage1 ~5959 tokens（truncation=error 下正式训练 max_length ≥ 6200 或先定 Stage 1 截断策略）——本阶段只记录
 
 ## 9. 下一阶段训练接口需要消费的字段

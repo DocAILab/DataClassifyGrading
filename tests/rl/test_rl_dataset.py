@@ -255,6 +255,203 @@ def test_fully_unresolved_split_fails_fast(tmp_path, registry, corpus, config) -
         )
 
 
+def _canonical_with_outside_bad_target(tmp_path: Path) -> Path:
+    """Canonical edge records + one resolved record NOT in any split whose
+    target.category_id is absent from the registry."""
+    edge = _canonical_with_edge_records(tmp_path)
+    with edge.open(encoding="utf-8") as handle:
+        records = json.load(handle)
+    with (FIXTURE / "canonical" / "all.json").open(encoding="utf-8") as handle:
+        base = next(
+            record for record in json.load(handle) if record["id"] == "fixture-1"
+        )
+    bad = copy.deepcopy(base)
+    bad["id"] = "fixture-outside-bad"
+    bad["target"] = copy.deepcopy(bad["target"])
+    bad["target"]["category_id"] = "NOT_IN_REGISTRY"
+    records.append(bad)
+    path = tmp_path / "canonical-bad" / "all.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(records, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+def test_resolved_outside_split_with_bad_target_fails_fast(tmp_path, registry, corpus, config) -> None:
+    """Contract validation runs at index build, independent of split membership:
+    a resolved record absent from every split but with target.category_id outside
+    the registry must fail the export."""
+    canonical = _canonical_with_outside_bad_target(tmp_path)
+    with pytest.raises(ValueError, match="absent from the leaf registry"):
+        export_rl_dataset(
+            canonical,
+            _split_dir(tmp_path),
+            tmp_path / "out-bad",
+            "fixture_ds",
+            registry,
+            config,
+            corpus=corpus,
+        )
+
+
+def _export_valid(tmp_path: Path, name: str, registry, corpus, config) -> Path:
+    out = tmp_path / name
+    export_rl_dataset(
+        _canonical_with_edge_records(tmp_path),
+        _split_dir(tmp_path),
+        out,
+        "fixture_ds",
+        registry,
+        config,
+        corpus=corpus,
+    )
+    return out
+
+
+def _rewrite_split(path: Path, mutator) -> None:
+    import pyarrow as pa
+
+    rows = pq.read_table(path).to_pylist()
+    mutator(rows)
+    pq.write_table(pa.Table.from_pylist(rows), path)
+
+
+DUPLICATE_OR_MISSING_CASES = [
+    # (label, mutator, expected substring in the stage-pair error)
+    (
+        "duplicate-stage1",
+        lambda rows: rows.append(
+            copy.deepcopy(
+                next(
+                    r for r in rows if r["extra_info"]["stage"] == "stage1"
+                )
+            )
+        ),
+        "found 2 stage1, 1 stage2",
+    ),
+    (
+        "duplicate-stage2",
+        lambda rows: rows.append(
+            copy.deepcopy(
+                next(
+                    r for r in rows if r["extra_info"]["stage"] == "stage2"
+                )
+            )
+        ),
+        "found 1 stage1, 2 stage2",
+    ),
+    (
+        "missing-stage2",
+        lambda rows: rows.__setitem__(
+            slice(None),
+            [r for r in rows if r["extra_info"]["stage"] != "stage2"],
+        ),
+        "found 1 stage1, 0 stage2",
+    ),
+    (
+        "missing-stage1",
+        lambda rows: rows.__setitem__(
+            slice(None),
+            [r for r in rows if r["extra_info"]["stage"] != "stage1"],
+        ),
+        "found 0 stage1, 1 stage2",
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    ("label", "mutator", "expected"),
+    DUPLICATE_OR_MISSING_CASES,
+)
+def test_validate_rejects_duplicate_or_missing_stage_rows(
+    label, mutator, expected, tmp_path, registry, corpus, config
+) -> None:
+    """Every source_id must have exactly one stage1 row and one stage2 row;
+    duplicate stage rows and missing stages are validator failures."""
+    out = _export_valid(tmp_path, f"out-{label}", registry, corpus, config)
+    _rewrite_split(out / "train.parquet", mutator)
+    report = validate_rl_dataset(out, "fixture_ds", registry, config, corpus=corpus)
+    assert report["valid"] is False
+    assert any(
+        "exactly one stage1 row and one stage2 row" in error and expected in error
+        for error in report["splits"]["train"]["errors"]
+    ), report["splits"]["train"]["errors"]
+
+
+def _six_registry() -> LeafRegistry:
+    base = LeafRegistry.from_path(FIXTURE / "registry.json")
+    from agent.task import LeafCategory
+
+    return LeafRegistry(
+        tuple(base.categories) + (LeafCategory(category_id="F", name="zeta data", description="zeta data"),)
+    )
+
+
+def _six_corpus():
+    from agent.task import CorpusCategory
+
+    base = {
+        category.category_id: category
+        for category in load_corpus_categories(FIXTURE / "corpus.json")
+    }
+    base["F"] = CorpusCategory(
+        category_id="F", name="zeta data", description="zeta data"
+    )
+    return base
+
+
+def test_ground_truth_not_required_in_stage2_candidates(
+    tmp_path, config, monkeypatch
+) -> None:
+    """Two-stage semantics: a Stage 1 recall failure (ground_truth not in the
+    candidate bundle) is legal, not a Stage 2 contract error. Stage 2 rows stay
+    valid, the parser runs normally, and a valid candidate answer still computes
+    a reward without raising."""
+    import agent.training.rl.sample as rl_sample_module
+
+    def candidates_excluding_gt(ground_truth: str, reg: LeafRegistry):
+        return [candidate for candidate in reg.ids if candidate != ground_truth][:5]
+
+    monkeypatch.setattr(
+        rl_sample_module, "build_candidates", candidates_excluding_gt
+    )
+    registry = _six_registry()
+    corpus = _six_corpus()
+    out = _export_valid(tmp_path, "out-gt-out", registry, corpus, config)
+
+    rows = pq.read_table(out / "train.parquet").to_pylist()
+    stage2 = next(row for row in rows if row["extra_info"]["stage"] == "stage2")
+    ground_truth = stage2["reward_model"]["ground_truth"]
+    candidates = stage2["extra_info"]["candidates"]
+    assert ground_truth not in candidates
+
+    # validator accepts: GT missing from candidates is NOT a contract error
+    report = validate_rl_dataset(out, "fixture_ds", registry, config, corpus=corpus)
+    assert report["valid"] is True, report
+
+    # parser runs normally on a valid candidate answer
+    from agent.task import check_stage2_output
+
+    answer = candidates[0]
+    parsed = check_stage2_output(
+        json.dumps({"answer": answer}, ensure_ascii=False), candidates=candidates
+    )
+    assert parsed.ok is True
+
+    # reward computes a valid candidate answer without raising (not the GT -> partial)
+    from agent.training.rl import RewardResult, reward_stage2
+
+    reward = reward_stage2(
+        json.dumps({"answer": answer}, ensure_ascii=False),
+        ground_truth=ground_truth,
+        candidates=candidates,
+        registry=registry,
+    )
+    assert isinstance(reward, RewardResult)
+    assert reward.format_valid is True
+    assert reward.task_correct is False
+    assert reward.reward < 1.0
+
+
 def test_build_rl_samples_requires_resolved(registry, corpus, config) -> None:
     with (FIXTURE / "canonical" / "all.json").open(encoding="utf-8") as handle:
         record = json.load(handle)[0]
