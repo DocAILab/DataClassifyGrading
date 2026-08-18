@@ -57,9 +57,11 @@ class ClassificationTargetResolver:
     id_strategy "code": category_id = code_leaf_map[leaf_name]; a leaf
     without a code is unresolved (no target, reported, never silently
     remapped to another ID scheme).
-    id_strategy "path": category_id = qualified_category_id(dataset, all
-    path fields); human-readable and path-qualified, so the same leaf name
-    under different parents never collides.
+    id_strategy "path": category_id = qualified_category_id(dataset,
+    identity_fields values in canonical order); human-readable and
+    path-qualified, so the same leaf name under different parents never
+    collides. For finance, identity_fields excludes level_3 (the standard is
+    L1-L2-leaf), so level_3 stays provenance only.
     """
 
     config: DatasetConfig
@@ -93,7 +95,13 @@ class ClassificationTargetResolver:
                 self.unresolved_leaves[leaf] += 1
                 return None
         else:
-            category_id = qualified_category_id(self.config.dataset, levels)
+            identity_fields = self.config.identity_fields or self.config.path_fields
+            identity_indices = [
+                self.config.path_fields.index(field) for field in identity_fields
+            ]
+            category_id = qualified_category_id(
+                self.config.dataset, [levels[index] for index in identity_indices]
+            )
 
         category_path = tuple(part for part in levels if part)
         self.resolved += 1

@@ -44,6 +44,11 @@ class DatasetConfig:
         path fields).
       path_fields: classification fields used to build the category path and
         the ID, in order from root to leaf.
+      identity_fields: classification fields whose values form the canonical
+        category identity (in canonical order). Defaults to path_fields. For
+        finance the standard is L1-L2-leaf, so identity_fields excludes the
+        dataset-only level_3: dataset L1/L2/L4 map explicitly onto the
+        canonical L1/L2/L4 slots and level_3 stays provenance only.
       placeholder_labels: labels that are not real categories (e.g. shougang
         "——" placeholder); records with such a leaf resolve to no target.
       registry_source: optional name of another dataset whose LeafRegistry
@@ -54,6 +59,7 @@ class DatasetConfig:
     leaf_level: str = "level_4"
     id_strategy: str = "path"
     path_fields: tuple[str, ...] = DEFAULT_PATH_FIELDS
+    identity_fields: tuple[str, ...] = ()
     placeholder_labels: tuple[str, ...] = ()
     registry_source: str | None = None
 
@@ -73,6 +79,19 @@ class DatasetConfig:
                 f"leaf_level {self.leaf_level!r} must be one of path_fields "
                 f"{self.path_fields}"
             )
+        if self.identity_fields:
+            if len(set(self.identity_fields)) != len(self.identity_fields):
+                raise ValueError("identity_fields must be unique")
+            unknown = set(self.identity_fields) - set(self.path_fields)
+            if unknown:
+                raise ValueError(
+                    f"identity_fields must be a subset of path_fields, got {unknown}"
+                )
+            if self.leaf_level not in self.identity_fields:
+                raise ValueError(
+                    f"leaf_level {self.leaf_level!r} must participate in identity_fields "
+                    f"{self.identity_fields}"
+                )
         if self.registry_source == self.dataset:
             raise ValueError("registry_source must not point at the dataset itself")
 
@@ -84,6 +103,8 @@ class DatasetConfig:
             "path_fields": list(self.path_fields),
             "placeholder_labels": list(self.placeholder_labels),
         }
+        if self.identity_fields:
+            mapping["identity_fields"] = list(self.identity_fields)
         if self.registry_source is not None:
             mapping["registry_source"] = self.registry_source
         return mapping
@@ -106,11 +127,17 @@ class DatasetConfig:
         raw_source = value.get("registry_source")
         if raw_source is not None and not isinstance(raw_source, str):
             raise ValueError("dataset config registry_source must be a string or null")
+        raw_identity = value.get("identity_fields", ())
+        if not isinstance(raw_identity, (list, tuple)) or not all(
+            isinstance(field, str) for field in raw_identity
+        ):
+            raise ValueError("dataset config identity_fields must be a list of strings")
         return cls(
             dataset=raw_dataset.strip(),
             leaf_level=str(value.get("leaf_level", "level_4")).strip(),
             id_strategy=str(value.get("id_strategy", "path")).strip(),
             path_fields=tuple(field.strip() for field in raw_fields),
+            identity_fields=tuple(field.strip() for field in raw_identity),
             placeholder_labels=tuple(label.strip() for label in raw_placeholders),
             registry_source=None if raw_source is None else raw_source.strip(),
         )
@@ -134,7 +161,10 @@ BUILTIN_DATASET_CONFIGS: dict[str, DatasetConfig] = {
         id_strategy="code",
         registry_source="shougang",
     ),
-    "finance": DatasetConfig(dataset="finance"),
+    "finance": DatasetConfig(
+        dataset="finance",
+        identity_fields=("level_1", "level_2", "level_4"),
+    ),
     "pers_info": DatasetConfig(
         dataset="pers_info",
         path_fields=("level_4",),

@@ -13,19 +13,20 @@ ID strategy follows the stage-2 contract:
   digit groups are not interpreted as levels). Malformed entries (the
   'NaN' key with category 'nan') are skipped and reported, never repaired.
 - finance (financial_standards_dict): the standard is a 3-segment path
-  (L1-L2-leaf) while the dataset has 4 levels and the standard carries no
-  code; category_id is the deterministic path-qualified ID built from the
-  4-slot path with an EMPTY level_3 slot, so IDs share the resolver's ID
-  space (records whose dataset level_3 is empty resolve to the same ID).
-  The category path keeps the original 3 segments as provenance; the
-  L3 gap is reported, not guessed.
+  (L1-L2-leaf) and carries no code; category_id is the deterministic
+  path-qualified ID built from the canonical standard path itself (no
+  empty level_3 slot is invented). The dataset's level_3 is provenance
+  only and never participates in the finance category identity; the
+  resolver maps dataset L1/L2/L4 onto the canonical L1/L2/L4 slots via
+  DatasetConfig.identity_fields.
 - pers_info: no standard/corpus exists (UNKNOWN); the 18-category registry
   is derived from the complete dataset universe (all.json leaf space, never
   a train/val/test split) and is explicitly marked derived_from
   "dataset-universe" until a real corpus is confirmed.
 
 No semantic matching, no label fixing; unknowns stay unresolved and are
-listed in the build report.
+listed in the build report. Artifact sources are repo-relative logical
+paths (no machine-local absolute paths).
 """
 
 from __future__ import annotations
@@ -41,6 +42,7 @@ from agent.task.contracts import CorpusCategory
 from agent.task.dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
 from agent.task.identity import leaf_registry_from_corpus, qualified_category_id
 
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _TRAILING_CODE_RE = re.compile(
     r"\s*[\(\[（【]\s*([A-Za-z]+\d*(?:-\d+)*)\s*[\)\]）】]\s*$"
 )
@@ -69,10 +71,11 @@ class BuildReport:
     categories_out: int = 0
     issues: list[ParseIssue] = field(default_factory=list)
     aggregated: dict[str, int] = field(default_factory=dict)
+    registry_source: str | None = None
     dataset_id_coverage: dict[str, Any] = field(default_factory=dict)
 
     def to_mapping(self) -> dict[str, Any]:
-        return {
+        mapping: dict[str, Any] = {
             "dataset": self.dataset,
             "source": self.source,
             "id_strategy": self.id_strategy,
@@ -80,8 +83,20 @@ class BuildReport:
             "categories_out": self.categories_out,
             "aggregated": dict(self.aggregated),
             "issues": [issue.to_mapping() for issue in self.issues],
-            "dataset_id_coverage": self.dataset_id_coverage,
         }
+        if self.registry_source is not None:
+            mapping["registry_source"] = self.registry_source
+        mapping["dataset_id_coverage"] = self.dataset_id_coverage
+        return mapping
+
+
+def _repo_relative(path: str | Path) -> str:
+    """Repo-relative logical path (POSIX separators); falls back to the raw
+    path when the file lives outside the repository."""
+    try:
+        return Path(path).resolve().relative_to(_PROJECT_ROOT.resolve()).as_posix()
+    except ValueError:
+        return Path(path).as_posix()
 
 
 def _clean(value: Any) -> str:
@@ -155,10 +170,11 @@ def parse_financial_standard(
 ) -> tuple[list[CorpusCategory], list[ParseIssue]]:
     """Parse financial_standards_dict: ``L1-L2-leaf`` dash paths, no codes.
 
-    category_id uses the 4-slot path with an empty level_3 slot so it shares
-    the resolver's ID space; the category path keeps the original 3 segments
-    as provenance. Entries whose level_1 is outside the dataset's vocabulary
-    (e.g. '监管-*') are still part of the standard universe and kept.
+    category_id is built from the canonical standard path itself (L1-L2-leaf,
+    three slots, no invented empty level_3); the category path keeps the
+    original segments as provenance. Entries whose level_1 is outside the
+    dataset's vocabulary (e.g. '监管-*') are still part of the standard
+    universe and kept.
     """
     categories: list[CorpusCategory] = []
     issues: list[ParseIssue] = []
@@ -171,7 +187,7 @@ def parse_financial_standard(
         parts = [part.strip() for part in text.split("-")]
         if len(parts) >= 2 and all(parts):
             leaf = parts[-1]
-            slots = (parts[0], parts[1], "", leaf)
+            slots = tuple(parts)
             path = tuple(parts)
         else:
             issues.append(
@@ -237,11 +253,13 @@ def aggregate_categories(
 ) -> tuple[list[CorpusCategory], dict[str, int]]:
     """Merge entries with the same category_id.
 
-    The first entry keeps its description; every further entry's description
-    is appended to ``examples`` (a category may own several
-    descriptions/examples). Returns (categories, {"kinds": n, "instances": m})
-    where kinds = number of category_ids that occurred more than once and
-    instances = total number of extra (merged-away) entries.
+    The first entry keeps its primary ``description``; every further entry's
+    description is appended to ``descriptions`` (a category may own several
+    guide documents describing it). ``examples`` is never used for
+    descriptions: descriptions and examples stay semantically distinct.
+    Returns (categories, {"kinds": n, "instances": m}) where kinds = number
+    of category_ids that occurred more than once and instances = total
+    number of extra (merged-away) entries.
     """
     counts: Counter[str] = Counter()
     by_id: dict[str, CorpusCategory] = {}
@@ -256,9 +274,10 @@ def aggregate_categories(
                 category_id=existing.category_id,
                 name=existing.name,
                 description=existing.description,
+                descriptions=existing.descriptions + (category.description,),
                 path=existing.path,
                 code=existing.code,
-                examples=existing.examples + (category.description,),
+                examples=existing.examples,
             )
             by_id[category.category_id] = existing
     merged = {category_id: count for category_id, count in counts.items() if count > 1}
@@ -282,6 +301,8 @@ def corpus_category_to_mapping(category: CorpusCategory) -> dict[str, Any]:
         "path": list(category.path),
         "code": category.code,
     }
+    if category.descriptions:
+        mapping["descriptions"] = list(category.descriptions)
     if category.examples:
         mapping["examples"] = list(category.examples)
     return mapping
@@ -334,12 +355,35 @@ def build_shougang_corpus(
     categories, aggregated = aggregate_categories(categories)
     report = BuildReport(
         dataset=dataset,
-        source=str(Path(standard_path)),
+        source=_repo_relative(standard_path),
         id_strategy="code",
         entries_read=len(standard),
         categories_out=len(categories),
         issues=issues,
         aggregated=aggregated,
+    )
+    return categories, report
+
+
+def build_infra_corpus(
+    standard_path: str | Path,
+    dataset: str = "infra",
+) -> tuple[list[CorpusCategory], BuildReport]:
+    """Infra shares the shougang category universe (guanji) but keeps its own
+    build report and records the shared registry source explicitly."""
+    with Path(standard_path).open(encoding="utf-8") as handle:
+        standard = json.load(handle)
+    categories, issues = parse_guanji_standard(standard, dataset=dataset)
+    categories, aggregated = aggregate_categories(categories)
+    report = BuildReport(
+        dataset=dataset,
+        source=_repo_relative(standard_path),
+        id_strategy="code",
+        entries_read=len(standard),
+        categories_out=len(categories),
+        issues=issues,
+        aggregated=aggregated,
+        registry_source="shougang",
     )
     return categories, report
 
@@ -354,7 +398,7 @@ def build_finance_corpus(
     categories, aggregated = aggregate_categories(categories)
     report = BuildReport(
         dataset=dataset,
-        source=str(Path(standard_path)),
+        source=_repo_relative(standard_path),
         id_strategy="path",
         entries_read=len(standard),
         categories_out=len(categories),
@@ -443,6 +487,7 @@ __all__ = [
     "corpus_to_mapping",
     "registry_to_mapping",
     "build_shougang_corpus",
+    "build_infra_corpus",
     "build_finance_corpus",
     "build_pers_info_corpus",
     "compute_dataset_id_coverage",

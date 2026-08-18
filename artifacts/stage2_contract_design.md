@@ -43,17 +43,19 @@
     {
       "category_id": "A1-1-1",          // 唯一；与 LeafRegistry 对齐
       "name": "科研设备预约管理",        // leaf 名；不假设唯一
-      "description": "指科研检验设备预约过程中产生的信息…",  // 可空（pers_info 无 corpus 也合法）
+      "description": "指科研检验设备预约过程中产生的信息…",  // 主描述；可空
+      "descriptions": ["…另一份指南描述…"],  // 可空；同一 category 的额外描述文档（与 examples 语义分离）
       "path": ["研发数据域", "科研设备管理", "科研设备预约管理"],  // 可空；根到 leaf 名称链
       "code": "A1-1-1",                 // 可空；不透明稳定标识，数字段不做 level 解释
-      "examples": ["设备预约信息", "审核表", "取还设备记录"]   // 一个 category 多个 example；可空
+      "examples": ["设备预约信息", "审核表", "取还设备记录"]   // 可空；真正的 example，不得存放 description
     }
   ]
 }
 ```
 
-允许：一个 category 多个 description/example；category 没有 description；corpus 不完整
-（无全局完整性校验）。不再使用 bare level_4 name 作为通用 category identity。
+允许：一个 category 多个描述文档（description + descriptions）、多个 example；category
+没有 description；corpus 不完整（无全局完整性校验）。不再使用 bare level_4 name 作为通用
+category identity。
 
 **Registry 与 corpus 的关系**：生产用 `LeafRegistry` 代表 classification standard /
 corpus 的**完整 leaf universe**，由 `leaf_registry_from_corpus(categories)` 构建，
@@ -65,7 +67,7 @@ corpus 的**完整 leaf universe**，由 `leaf_registry_from_corpus(categories)`
 |---|---|---|---|
 | shougang | `code` | guanji code，如 `A1-1-1`、`B1-2` | 192/193 leaf 与 guanji 精确对齐；233 code 全部唯一；字母↔L1 100% 一致（A=研发/B=生产/C=管理）。**数字段是不透明序号，不解释为 level_2/3**。占位符 `——`（1022 样本）→ structural skip；corpus 中 leaf 无 code → unresolved（显式报告，无 fallback） |
 | infra | `code`，`registry_source="shougang"` | 同 shougang（4/4 leaf 同 code） | infra ⊂ shougang；不构建 4 类别的独立 registry（LeafRegistry 有 ≥5 条校验） |
-| finance | `path` | `finance:<L1>.<L2>.<L3>.<L4>`，如 `finance:业务.账户信息..基本信息` | fs 是 3 段 path、dataset 是 4 级，**不把 join(level_1~4) 当作 corpus identity**。ID 是 deterministic、human-readable、path-qualified（非 opaque hash）：固定 4 槽、空 level_3 保留空槽（`..`），同名不同父必然不同 ID。3 个真同名不同父 leaf（单位基本情况/基本信息/交易清结算信息）各得 2 个 ID；"配置信息"的空白变体（经营 管理/经营管理）归一化后同 1 个 ID |
+| finance | `path`（identity_fields=L1/L2/L4） | `finance:<L1>.<L2>.<L4>`，如 `finance:业务.账户信息.基本信息` | fs 是 3 段 path（L1-L2-leaf）、dataset 是 4 级，**不把 join(level_1~4) 当作 corpus identity，也不插入人为的 level_3 空槽**。canonical identity 就是 standard path 本身：resolver 通过 `DatasetConfig.identity_fields` 把 dataset L1/L2/L4 **显式映射**到 canonical L1/L2/L4 槽，level_3 只作为 provenance 不参与 identity（同 L1/L2/L4 不同 L3 的样本 → 同一 canonical ID）。ID deterministic、human-readable；同名不同父（L1/L2 不同）必然不同 ID |
 | pers_info | `path`（path_fields=level_4） | `pers_info:<leaf>`，如 `pers_info:学籍管理信息` | 仅 level_4（18 唯一，单级）；corpus 只覆盖 4/18，schema 允许 target 存在而 description 缺失 |
 
 category_id 与 display name（`LeafCategory.name` / `SampleTarget.leaf_name`）保持分离：

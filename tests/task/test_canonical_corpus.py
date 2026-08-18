@@ -14,6 +14,7 @@ from agent.task import BUILTIN_DATASET_CONFIGS, LeafRegistry, leaf_registry_from
 from agent.task.canonical_corpus import (
     aggregate_categories,
     build_finance_corpus,
+    build_infra_corpus,
     build_pers_info_corpus,
     build_shougang_corpus,
     parse_financial_standard,
@@ -77,14 +78,28 @@ def test_shougang_corpus_build_and_registry_roundtrip() -> None:
     assert set(registry2.ids) == set(registry.ids)
 
 
-def test_infra_uses_shougang_universe() -> None:
-    categories, _ = build_shougang_corpus(GUANJI_PATH, dataset="infra")
+def test_infra_uses_shougang_universe_with_own_report() -> None:
+    categories, report = build_infra_corpus(GUANJI_PATH, dataset="infra")
     assert len(categories) == 233
+    # own build report, explicitly pointing at the shared registry source
+    assert report.dataset == "infra"
+    assert report.registry_source == "shougang"
     assert BUILTIN_DATASET_CONFIGS["infra"].registry_source == "shougang"
     # infra's 4 dataset leaves are covered by the shared universe
     infra_leaves = {"厚板组板设计", "水质监测管理", "薄板合同产线专业化设计", "非常规委托检测管理"}
     names = {category.name for category in categories}
     assert infra_leaves <= names
+
+
+def test_build_reports_use_repo_relative_sources() -> None:
+    _, shougang_report = build_shougang_corpus(GUANJI_PATH, dataset="shougang")
+    _, finance_report = build_finance_corpus(FINANCIAL_PATH, dataset="finance")
+    assert shougang_report.source == "data/knowledge/standards_map/guanji_dict.json"
+    assert finance_report.source == (
+        "data/knowledge/standards_map/financial_standards_dict.json"
+    )
+    assert "\\" not in (shougang_report.source or "")
+    assert not (shougang_report.source or "").startswith("D:")
 
 
 # --- financial standard (finance) ---------------------------------------------
@@ -95,14 +110,16 @@ def test_financial_standard_parse_path_qualified_ids() -> None:
     assert len(categories) == 237
     assert issues == []
     by_id = {category.category_id: category for category in categories}
-    # 3-segment standard path -> 4-slot ID with empty level_3 slot
-    category = by_id["finance:客户.个人..个人基本概况信息"]
+    # canonical identity is the standard path itself (L1-L2-leaf, no invented
+    # empty level_3 slot)
+    category = by_id["finance:客户.个人.个人基本概况信息"]
     assert category.name == "个人基本概况信息"
-    assert category.path == ("客户", "个人", "个人基本概况信息")  # provenance keeps 3 segments
+    assert category.path == ("客户", "个人", "个人基本概况信息")
     assert category.code is None
     assert category.description  # description from the mapping key
     # entries outside the dataset vocabulary stay in the universe
     assert any(category_id.startswith("finance:监管.") for category_id in by_id)
+    assert all(".." not in category_id for category_id in by_id)
 
 
 def test_financial_standard_duplicate_aggregation() -> None:
@@ -111,19 +128,37 @@ def test_financial_standard_duplicate_aggregation() -> None:
     assert report.categories_out == 233
     # one duplicated category (业务-合约协议-基本信息 x5) -> 1 kind / 4 extra entries
     assert report.aggregated == {"kinds": 1, "instances": 4}
-    merged = next(c for c in categories if c.category_id == "finance:业务.合约协议..基本信息")
-    assert len(merged.examples) == 4  # 4 extra descriptions aggregated
+    merged = next(c for c in categories if c.category_id == "finance:业务.合约协议.基本信息")
+    # extra guide descriptions stay descriptions (semantically distinct from
+    # examples); no description is ever stored as an example
+    assert len(merged.descriptions) == 4
+    assert merged.examples == ()
     assert merged.description
 
 
-def test_financial_registry_id_space_differs_from_4level_dataset_paths() -> None:
-    # The standard has no level_3; IDs use an empty level_3 slot. A dataset
-    # record with a populated level_3 therefore resolves to an ID that is NOT
-    # in this registry (reported as coverage gap, never auto-repaired).
+def test_financial_registry_id_matches_resolver_identity_fields() -> None:
+    # The registry ID space is the canonical L1-L2-leaf path; the dataset
+    # resolver maps L1/L2/L4 onto those slots via identity_fields, so every
+    # record with a corpus-known leaf resolves into the registry regardless
+    # of its level_3 value (level_3 is provenance only).
+    from agent.task.resolver import ClassificationTargetResolver
+
     categories, _ = build_finance_corpus(FINANCIAL_PATH, dataset="finance")
     registry_ids = {category.category_id for category in categories}
-    assert "finance:业务.账户信息..基本信息" in registry_ids
-    assert "finance:业务.账户信息.系统管理信息.基本信息" not in registry_ids
+    assert "finance:业务.账户信息.基本信息" in registry_ids
+    resolver = ClassificationTargetResolver(BUILTIN_DATASET_CONFIGS["finance"])
+    target = resolver.resolve(
+        {
+            "classification": {
+                "level_1": "业务",
+                "level_2": "账户信息",
+                "level_3": "系统管理信息",
+                "level_4": "基本信息",
+            }
+        }
+    )
+    assert target is not None
+    assert target.category_id in registry_ids
 
 
 # --- pers_info ----------------------------------------------------------------
@@ -167,7 +202,7 @@ def test_pers_info_without_corpus_resolver_targets_match_registry() -> None:
 # --- aggregation unit ---------------------------------------------------------
 
 
-def test_aggregate_categories_merges_descriptions_into_examples() -> None:
+def test_aggregate_categories_merges_descriptions_into_descriptions() -> None:
     from agent.task import CorpusCategory
 
     categories = [
@@ -181,8 +216,9 @@ def test_aggregate_categories_merges_descriptions_into_examples() -> None:
     assert len(merged) == 2
     by_id = {category.category_id: category for category in merged}
     assert by_id["id1"].description == "first"
-    assert by_id["id1"].examples == ("second", "third")
-    assert by_id["id2"].examples == ()
+    assert by_id["id1"].descriptions == ("second", "third")
+    assert by_id["id1"].examples == ()  # descriptions never become examples
+    assert by_id["id2"].descriptions == ()
 
 
 def test_aggregate_categories_is_deterministic() -> None:
@@ -195,6 +231,45 @@ def test_aggregate_categories_is_deterministic() -> None:
 def json_load(path: Path) -> dict:
     with path.open(encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def test_cli_writes_fresh_out_dir_once_without_overwrite(tmp_path: Path) -> None:
+    """CLI integration: a fresh out-dir must succeed on the first run without
+    --overwrite, write every file exactly once, and refuse a second run."""
+    from script.canonical import cli as canonical_cli
+
+    out_dir = tmp_path / "out"
+    status = canonical_cli.main(
+        [
+            "--datasets", "shougang", "infra",
+            "--out-dir", str(out_dir),
+        ]
+    )
+    assert status == 0
+    expected = [
+        out_dir / "corpus" / "shougang.corpus.json",
+        out_dir / "registry" / "shougang.registry.json",
+        out_dir / "corpus" / "infra.corpus.json",
+        out_dir / "registry" / "infra.registry.json",
+    ]
+    assert all(path.is_file() for path in expected)
+    # build reports are per-dataset; infra records its shared registry source
+    with (out_dir / "corpus" / "infra.corpus.json").open(encoding="utf-8") as handle:
+        infra = json.load(handle)
+    assert infra["build_report"]["dataset"] == "infra"
+    assert infra["build_report"]["registry_source"] == "shougang"
+    # sources are repo-relative, never machine-local absolute paths
+    with (out_dir / "corpus" / "shougang.corpus.json").open(encoding="utf-8") as handle:
+        shougang = json.load(handle)
+    assert shougang["build_report"]["source"] == (
+        "data/knowledge/standards_map/guanji_dict.json"
+    )
+    # registry JSON is directly consumable by LeafRegistry.from_path
+    registry = LeafRegistry.from_path(out_dir / "registry" / "shougang.registry.json")
+    assert len(registry.ids) == 233
+    # second run without --overwrite must fail before writing anything
+    with pytest.raises(FileExistsError, match="refusing to overwrite"):
+        canonical_cli.main(["--datasets", "shougang", "--out-dir", str(out_dir)])
 
 
 @pytest.fixture(autouse=True)

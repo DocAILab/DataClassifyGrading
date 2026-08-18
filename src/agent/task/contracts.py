@@ -54,7 +54,11 @@ class CorpusCategory:
     """Canonical corpus category (one category may own several documents).
 
     Allows:
-    - multiple descriptions/examples per category (examples tuple),
+    - one primary description plus additional descriptions of the same
+      category (descriptions tuple), e.g. several guide documents that
+      describe the same leaf;
+    - genuine examples (examples tuple) kept semantically separate from
+      descriptions;
     - missing description (pers_info corpus is incomplete),
     - an incomplete corpus overall (no global completeness invariant).
     """
@@ -62,6 +66,7 @@ class CorpusCategory:
     category_id: str
     name: str
     description: str = ""
+    descriptions: tuple[str, ...] = ()
     path: tuple[str, ...] = ()
     code: str | None = None
     examples: tuple[str, ...] = ()

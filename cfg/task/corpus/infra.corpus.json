@@ -1,6 +1,6 @@
 {
   "dataset": "infra",
-  "source": "D:\\study\\summer_intern\\data\\knowledge\\standards_map\\guanji_dict.json",
+  "source": "data/knowledge/standards_map/guanji_dict.json",
   "id_strategy": "code",
   "categories": [
     {
@@ -1636,8 +1636,8 @@
     }
   ],
   "build_report": {
-    "dataset": "shougang",
-    "source": "D:\\study\\summer_intern\\data\\knowledge\\standards_map\\guanji_dict.json",
+    "dataset": "infra",
+    "source": "data/knowledge/standards_map/guanji_dict.json",
     "id_strategy": "code",
     "entries_read": 234,
     "categories_out": 233,
@@ -1651,6 +1651,7 @@
         "detail": "key='NaN' category='nan'"
       }
     ],
+    "registry_source": "shougang",
     "dataset_id_coverage": {
       "available": true,
       "records": 64,

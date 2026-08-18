@@ -1,6 +1,6 @@
 {
   "dataset": "shougang",
-  "source": "D:\\study\\summer_intern\\data\\knowledge\\standards_map\\guanji_dict.json",
+  "source": "data/knowledge/standards_map/guanji_dict.json",
   "id_strategy": "code",
   "categories": [
     {
@@ -1637,7 +1637,7 @@
   ],
   "build_report": {
     "dataset": "shougang",
-    "source": "D:\\study\\summer_intern\\data\\knowledge\\standards_map\\guanji_dict.json",
+    "source": "data/knowledge/standards_map/guanji_dict.json",
     "id_strategy": "code",
     "entries_read": 234,
     "categories_out": 233,
