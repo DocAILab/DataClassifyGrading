@@ -13,8 +13,17 @@ Reward table (Stage 1):
 
 Reward table (Stage 2):
     format/schema/answer invalid ............ 0.0
-    valid answer but wrong .................. config.stage2_partial (0.5, TBD)
+    valid answer but wrong .................. config.stage2_partial
     correct .................................. 1.0
+
+Stage 2 partial value is PROVISIONAL / pending task-policy confirmation;
+``stage2_partial`` stays a configuration item and must not be read as a
+final reward policy.
+
+Stage 2 semantics: the ground truth is NOT required to be among the
+candidates — a Stage 1 recall failure (ground_truth not in candidates) is a
+legal task state, not a Stage 2 contract error. A valid candidate answer
+still computes a reward without raising.
 """
 
 from __future__ import annotations
@@ -40,8 +49,10 @@ STAGE2_PARTIAL_DEFAULT = 0.5
 class RewardConfig:
     """Reward weights.
 
-    stage2_partial is a configuration item on purpose: its value is not
-    confirmed yet and will be tuned with the first real RL vertical slice.
+    ``stage2_partial`` is a configuration item on purpose: its value is
+    PROVISIONAL / PENDING task-policy confirmation and will be finalized
+    with the first real RL vertical slice. No value tuning happens before
+    that confirmation.
     """
 
     stage1_valid_miss: float = STAGE1_VALID_MISS_DEFAULT

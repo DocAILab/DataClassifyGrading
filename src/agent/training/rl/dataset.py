@@ -30,6 +30,7 @@ from typing import Any, Mapping
 from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
 from agent.task.prompts import build_stage1_prompt, build_stage2_prompt
 from agent.training.common import (
+    canonical_target,
     require_corpus,
     require_corpus_covers_registry,
 )
@@ -106,6 +107,11 @@ def export_rl_dataset(
         status = str(item.get("resolution_status", "") or "").strip()
         if status == "resolved":
             canonical_resolved += 1
+            # every resolved record must satisfy the canonical contract
+            # (target present, category_id in registry, leaf_name matches),
+            # regardless of whether it belongs to any train/val/test split —
+            # splits decide training membership, not contract validation
+            canonical_target(item, index, canonical_path, leaf_registry)
             if not item_id:
                 raise ValueError(
                     f"resolved canonical record without id: {canonical_path}"
@@ -334,24 +340,36 @@ def _validate_row(
 
 
 def _validate_stage_pairs(rows: list[Mapping[str, Any]]) -> list[str]:
-    """Every source_id must appear exactly once per stage with one ground truth."""
-    grouped: dict[str, dict[str, Mapping[str, Any]]] = {}
+    """Every source_id must have exactly one stage1 row AND one stage2 row.
+
+    Rows are grouped into lists per (source_id, stage) so duplicate stage
+    rows are detected instead of silently overwriting each other:
+    - stage1 + stage1 + stage2 -> failure (two stage1 rows)
+    - stage1 + stage2 + stage2 -> failure (two stage2 rows)
+    - only stage1 / only stage2  -> failure (missing one stage).
+    """
+    grouped: dict[str, dict[str, list[Mapping[str, Any]]]] = {}
     for row in rows:
         extra_info = row.get("extra_info")
         source_id = extra_info.get("source_id") if isinstance(extra_info, Mapping) else None
         stage = extra_info.get("stage") if isinstance(extra_info, Mapping) else None
         if isinstance(source_id, str) and source_id.strip() and stage in {"stage1", "stage2"}:
-            grouped.setdefault(source_id, {})[stage] = row
+            grouped.setdefault(source_id, {}).setdefault(stage, []).append(row)
     errors: list[str] = []
     for source_id, by_stage in grouped.items():
-        if set(by_stage) != {"stage1", "stage2"}:
+        count_stage1 = len(by_stage.get("stage1", []))
+        count_stage2 = len(by_stage.get("stage2", []))
+        if count_stage1 != 1 or count_stage2 != 1:
             errors.append(
-                f"source_id {source_id!r} must have exactly one stage1 and stage2 row"
+                f"source_id {source_id!r} must have exactly one stage1 row and one "
+                f"stage2 row (found {count_stage1} stage1, {count_stage2} stage2)"
             )
             continue
         ground_truths = {
-            row.get("reward_model", {}).get("ground_truth") if isinstance(row.get("reward_model"), Mapping) else None
-            for row in by_stage.values()
+            row.get("reward_model", {}).get("ground_truth")
+            if isinstance(row.get("reward_model"), Mapping)
+            else None
+            for row in by_stage["stage1"] + by_stage["stage2"]
         }
         if len(ground_truths) != 1:
             errors.append(f"source_id {source_id!r} must share one ground_truth across stages")
