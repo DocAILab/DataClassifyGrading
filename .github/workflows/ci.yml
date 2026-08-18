@@ -62,6 +62,9 @@ jobs:
       - name: Verify VeRL trainer import and Hydra entrypoint
         run: |
           python -c "import verl.trainer.sft_trainer"
+          python -c "import verl.utils.dataset.rl_dataset"
           python -m verl.trainer.sft_trainer --help > /dev/null
-      - name: Load exported parquet through VeRL
+      - name: Load exported SFT parquet through VeRL
         run: python -m pytest -q tests/sft/test_verl_compat.py
+      - name: Load exported RL parquet through VeRL RLHFDataset
+        run: python -m pytest -q tests/rl/test_rl_verl_compat.py
