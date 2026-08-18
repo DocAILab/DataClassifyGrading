@@ -1,0 +1,7394 @@
+{
+  "report": "data_alignment_report",
+  "datasets": {
+    "finance": {
+      "samples": 568,
+      "level_stats": {
+        "level_1": {
+          "nonempty": 568,
+          "nonempty_rate": 1.0,
+          "unique": 4
+        },
+        "level_2": {
+          "nonempty": 568,
+          "nonempty_rate": 1.0,
+          "unique": 7
+        },
+        "level_3": {
+          "nonempty": 381,
+          "nonempty_rate": 0.6708,
+          "unique": 10
+        },
+        "level_4": {
+          "nonempty": 568,
+          "nonempty_rate": 1.0,
+          "unique": 25
+        }
+      },
+      "population_patterns": {
+        "patterns": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 381
+          },
+          {
+            "pattern": "level_1/level_2/level_4",
+            "count": 187
+          }
+        ],
+        "unique_patterns": 2
+      },
+      "deepest_level_distribution": {
+        "level_4": 568
+      },
+      "data_level_field_distribution": {
+        "L2": 460,
+        "L4": 7,
+        "L3": 76,
+        "L1": 25
+      },
+      "full_path_samples": 381,
+      "unique_full_paths": 29,
+      "unique_full_paths_with_counts": [
+        {
+          "path": [
+            "业务",
+            "账户信息",
+            "",
+            "基本信息"
+          ],
+          "count": 175
+        },
+        {
+          "path": [
+            "业务",
+            "交易信息",
+            "交易通用信息",
+            "交易基本信息"
+          ],
+          "count": 123
+        },
+        {
+          "path": [
+            "经营管理",
+            "技术管理",
+            "系统管理信息",
+            "配置信息"
+          ],
+          "count": 85
+        },
+        {
+          "path": [
+            "业务",
+            "交易信息",
+            "交易通用信息",
+            "交易对手信息"
+          ],
+          "count": 23
+        },
+        {
+          "path": [
+            "客户",
+            "单位",
+            "单位基本信息",
+            "管理层信息"
+          ],
+          "count": 20
+        },
+        {
+          "path": [
+            "客户",
+            "单位",
+            "单位基本信息",
+            "单位基本情况"
+          ],
+          "count": 18
+        },
+        {
+          "path": [
+            "业务",
+            "交易信息",
+            "交易通用信息",
+            "交易清结算信息"
+          ],
+          "count": 18
+        },
+        {
+          "path": [
+            "业务",
+            "账户信息",
+            "",
+            "金额信息"
+          ],
+          "count": 11
+        },
+        {
+          "path": [
+            "业务",
+            "合约协议",
+            "信托业务信息",
+            "信托运用信息"
+          ],
+          "count": 10
+        },
+        {
+          "path": [
+            "客户",
+            "单位",
+            "单位标签信息",
+            "关系标签信息"
+          ],
+          "count": 9
+        }
+      ],
+      "leaf_collisions": {
+        "level_2": {
+          "count": 2,
+          "examples": [
+            {
+              "label": "单位",
+              "parents": [
+                [
+                  "业务"
+                ],
+                [
+                  "客户"
+                ]
+              ]
+            },
+            {
+              "label": "技术管理",
+              "parents": [
+                [
+                  "经营 管理"
+                ],
+                [
+                  "经营管理"
+                ]
+              ]
+            }
+          ]
+        },
+        "level_3": {
+          "count": 2,
+          "examples": [
+            {
+              "label": "单位基本信息",
+              "parents": [
+                [
+                  "业务",
+                  "单位"
+                ],
+                [
+                  "客户",
+                  "单位"
+                ]
+              ]
+            },
+            {
+              "label": "系统管理信息",
+              "parents": [
+                [
+                  "经营 管理",
+                  "技术管理"
+                ],
+                [
+                  "经营管理",
+                  "技术管理"
+                ]
+              ]
+            }
+          ]
+        },
+        "level_4": {
+          "count": 4,
+          "examples": [
+            {
+              "label": "交易清结算信息",
+              "parents": [
+                [
+                  "业务",
+                  "交易信息",
+                  "交易通用信息"
+                ],
+                [
+                  "业务",
+                  "账户信息",
+                  ""
+                ]
+              ]
+            },
+            {
+              "label": "单位基本情况",
+              "parents": [
+                [
+                  "业务",
+                  "单位",
+                  "单位基本信息"
+                ],
+                [
+                  "客户",
+                  "单位",
+                  "单位基本信息"
+                ]
+              ]
+            },
+            {
+              "label": "基本信息",
+              "parents": [
+                [
+                  "业务",
+                  "合约协议",
+                  "合同通用信息"
+                ],
+                [
+                  "业务",
+                  "账户信息",
+                  ""
+                ]
+              ]
+            },
+            {
+              "label": "配置信息",
+              "parents": [
+                [
+                  "经营 管理",
+                  "技术管理",
+                  "系统管理信息"
+                ],
+                [
+                  "经营管理",
+                  "技术管理",
+                  "系统管理信息"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "placeholder_labels": {}
+    },
+    "infra": {
+      "samples": 64,
+      "level_stats": {
+        "level_1": {
+          "nonempty": 64,
+          "nonempty_rate": 1.0,
+          "unique": 3
+        },
+        "level_2": {
+          "nonempty": 64,
+          "nonempty_rate": 1.0,
+          "unique": 3
+        },
+        "level_3": {
+          "nonempty": 64,
+          "nonempty_rate": 1.0,
+          "unique": 3
+        },
+        "level_4": {
+          "nonempty": 64,
+          "nonempty_rate": 1.0,
+          "unique": 4
+        }
+      },
+      "population_patterns": {
+        "patterns": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 64
+          }
+        ],
+        "unique_patterns": 1
+      },
+      "deepest_level_distribution": {
+        "level_4": 64
+      },
+      "data_level_field_distribution": {
+        "L3": 46,
+        "L2": 18
+      },
+      "full_path_samples": 64,
+      "unique_full_paths": 4,
+      "unique_full_paths_with_counts": [
+        {
+          "path": [
+            "研发数据域",
+            "产品研发",
+            "科研检验",
+            "非常规委托检测管理"
+          ],
+          "count": 23
+        },
+        {
+          "path": [
+            "管理数据域",
+            "能源管理",
+            "能源监测和控制管理",
+            "水质监测管理"
+          ],
+          "count": 18
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产合同（订单）",
+            "合同设计",
+            "厚板组板设计"
+          ],
+          "count": 16
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产合同（订单）",
+            "合同设计",
+            "薄板合同产线专业化设计"
+          ],
+          "count": 7
+        }
+      ],
+      "leaf_collisions": {},
+      "placeholder_labels": {}
+    },
+    "pers_info": {
+      "samples": 176,
+      "level_stats": {
+        "level_1": {
+          "nonempty": 0,
+          "nonempty_rate": 0.0,
+          "unique": 0
+        },
+        "level_2": {
+          "nonempty": 0,
+          "nonempty_rate": 0.0,
+          "unique": 0
+        },
+        "level_3": {
+          "nonempty": 0,
+          "nonempty_rate": 0.0,
+          "unique": 0
+        },
+        "level_4": {
+          "nonempty": 176,
+          "nonempty_rate": 1.0,
+          "unique": 18
+        }
+      },
+      "population_patterns": {
+        "patterns": [
+          {
+            "pattern": "level_4",
+            "count": 176
+          }
+        ],
+        "unique_patterns": 1
+      },
+      "deepest_level_distribution": {
+        "level_4": 176
+      },
+      "data_level_field_distribution": {
+        "L1": 31,
+        "L2": 98,
+        "L3": 47
+      },
+      "full_path_samples": 0,
+      "unique_full_paths": 18,
+      "unique_full_paths_with_counts": [
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "学生个人基本信息"
+          ],
+          "count": 51
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "学科类科研管理"
+          ],
+          "count": 32
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "学历学位信息"
+          ],
+          "count": 15
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "教职工个人基本信息"
+          ],
+          "count": 13
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "任课信息"
+          ],
+          "count": 10
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "基本信息年级信息和班级信息"
+          ],
+          "count": 9
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "学生敏感个人信息"
+          ],
+          "count": 7
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "人力资源数据"
+          ],
+          "count": 6
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "离退休信息"
+          ],
+          "count": 5
+        },
+        {
+          "path": [
+            "",
+            "",
+            "",
+            "考核信息"
+          ],
+          "count": 5
+        }
+      ],
+      "leaf_collisions": {},
+      "placeholder_labels": {}
+    },
+    "shougang": {
+      "samples": 19415,
+      "level_stats": {
+        "level_1": {
+          "nonempty": 19415,
+          "nonempty_rate": 1.0,
+          "unique": 3
+        },
+        "level_2": {
+          "nonempty": 19415,
+          "nonempty_rate": 1.0,
+          "unique": 15
+        },
+        "level_3": {
+          "nonempty": 19415,
+          "nonempty_rate": 1.0,
+          "unique": 54
+        },
+        "level_4": {
+          "nonempty": 19415,
+          "nonempty_rate": 1.0,
+          "unique": 193
+        }
+      },
+      "population_patterns": {
+        "patterns": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 19415
+          }
+        ],
+        "unique_patterns": 1
+      },
+      "deepest_level_distribution": {
+        "level_4": 19415
+      },
+      "data_level_field_distribution": {
+        "L3": 4328,
+        "L2": 14188,
+        "L1": 899
+      },
+      "full_path_samples": 19415,
+      "unique_full_paths": 203,
+      "unique_full_paths_with_counts": [
+        {
+          "path": [
+            "管理数据域",
+            "能源管理",
+            "能源消耗管理",
+            "计量点数据管理"
+          ],
+          "count": 990
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产合同（订单）",
+            "合同设计",
+            "厚板组板设计"
+          ],
+          "count": 516
+        },
+        {
+          "path": [
+            "生产数据域",
+            "产出管理",
+            "生产实绩",
+            "冷轧生产实绩"
+          ],
+          "count": 488
+        },
+        {
+          "path": [
+            "生产数据域",
+            "产出管理",
+            "生产实绩",
+            "炼钢生产实绩"
+          ],
+          "count": 472
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产仓储",
+            "库内管理",
+            "炼钢库内管理"
+          ],
+          "count": 462
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产计划",
+            "中厚板作业计划",
+            "四大命令"
+          ],
+          "count": 412
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产计划",
+            "炼钢作业计划",
+            "MCCR计划"
+          ],
+          "count": 369
+        },
+        {
+          "path": [
+            "管理数据域",
+            "经营管理",
+            "经营分析报表管理",
+            "分析报表"
+          ],
+          "count": 360
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产合同（订单）",
+            "合同计划",
+            "合同材料计划"
+          ],
+          "count": 323
+        },
+        {
+          "path": [
+            "生产数据域",
+            "生产仓储",
+            "库内管理",
+            "热轧库内管理"
+          ],
+          "count": 321
+        }
+      ],
+      "leaf_collisions": {
+        "level_4": {
+          "count": 1,
+          "examples": [
+            {
+              "label": "——",
+              "parents": [
+                [
+                  "生产数据域",
+                  "产出管理",
+                  "实重管理"
+                ],
+                [
+                  "生产数据域",
+                  "物流管理",
+                  "销售物流管理"
+                ],
+                [
+                  "生产数据域",
+                  "生产合同（订单）",
+                  "合同归并"
+                ],
+                [
+                  "生产数据域",
+                  "生产合同（订单）",
+                  "合同跟踪"
+                ],
+                [
+                  "生产数据域",
+                  "生产合同（订单）",
+                  "转用充当"
+                ],
+                [
+                  "生产数据域",
+                  "生产计划",
+                  "中厚板作业计划"
+                ],
+                [
+                  "生产数据域",
+                  "生产计划",
+                  "冷轧作业计划"
+                ],
+                [
+                  "生产数据域",
+                  "生产计划",
+                  "撕分线作业计划"
+                ],
+                [
+                  "生产数据域",
+                  "生产计划",
+                  "热轧作业计划"
+                ],
+                [
+                  "管理数据域",
+                  "环境管理",
+                  "监测分析管理"
+                ],
+                [
+                  "管理数据域",
+                  "生产质量管理",
+                  "质保书管理"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "placeholder_labels": {
+        "——": 1022
+      }
+    }
+  },
+  "standards": {
+    "corpus:finance": {
+      "file": "corpus.json",
+      "entries": 237,
+      "value_type": "dict",
+      "value_keys": {
+        "id:str": 237,
+        "text:str": 237,
+        "metadata:dict": 237
+      },
+      "corpus_document_format": true,
+      "categories": {
+        "total": 237,
+        "unique": 220,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 12,
+          "instances": 17
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "基本信息",
+            "count": 7
+          },
+          {
+            "category": "传统鉴别信息",
+            "count": 2
+          },
+          {
+            "category": "公私间关系信息",
+            "count": 2
+          },
+          {
+            "category": "行为信息",
+            "count": 2
+          },
+          {
+            "category": "基础标签信息",
+            "count": 2
+          },
+          {
+            "category": "关系标签信息",
+            "count": 2
+          },
+          {
+            "category": "签约标签信息",
+            "count": 2
+          },
+          {
+            "category": "交易类标签信息",
+            "count": 2
+          },
+          {
+            "category": "行为标签信息",
+            "count": 2
+          },
+          {
+            "category": "风险标签信息",
+            "count": 2
+          }
+        ]
+      },
+      "leaves": {
+        "total": 237,
+        "unique": 220,
+        "duplicate_leaf_kinds": 12,
+        "duplicate_leaf_instances": 17,
+        "duplicate_leaf_examples": [
+          {
+            "name": "基本信息",
+            "count": 7
+          },
+          {
+            "name": "传统鉴别信息",
+            "count": 2
+          },
+          {
+            "name": "公私间关系信息",
+            "count": 2
+          },
+          {
+            "name": "行为信息",
+            "count": 2
+          },
+          {
+            "name": "基础标签信息",
+            "count": 2
+          },
+          {
+            "name": "关系标签信息",
+            "count": 2
+          },
+          {
+            "name": "签约标签信息",
+            "count": 2
+          },
+          {
+            "name": "交易类标签信息",
+            "count": 2
+          },
+          {
+            "name": "行为标签信息",
+            "count": 2
+          },
+          {
+            "name": "风险标签信息",
+            "count": 2
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "个人基本概况信息",
+          "name": "个人基本概况信息",
+          "code": "",
+          "dash_parts": [
+            "个人基本概况信息"
+          ]
+        },
+        {
+          "raw": "个人财产信息",
+          "name": "个人财产信息",
+          "code": "",
+          "dash_parts": [
+            "个人财产信息"
+          ]
+        },
+        {
+          "raw": "个人联系信息",
+          "name": "个人联系信息",
+          "code": "",
+          "dash_parts": [
+            "个人联系信息"
+          ]
+        },
+        {
+          "raw": "个人健康生理信息",
+          "name": "个人健康生理信息",
+          "code": "",
+          "dash_parts": [
+            "个人健康生理信息"
+          ]
+        },
+        {
+          "raw": "个人地理位置信息",
+          "name": "个人地理位置信息",
+          "code": "",
+          "dash_parts": [
+            "个人地理位置信息"
+          ]
+        }
+      ]
+    },
+    "standard:beijing_fta_dict.json": {
+      "file": "beijing_fta_dict.json",
+      "entries": 39,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 39,
+        "class:str": 39,
+        "ref:str": 39
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 39,
+        "unique": 37,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 7,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 1,
+          "instances": 2
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "纳入出口管制或技术出口管理事项的数据。",
+            "count": 3
+          }
+        ]
+      },
+      "leaves": {
+        "total": 39,
+        "unique": 37,
+        "duplicate_leaf_kinds": 1,
+        "duplicate_leaf_instances": 2,
+        "duplicate_leaf_examples": [
+          {
+            "name": "纳入出口管制或技术出口管理事项的数据。",
+            "count": 3
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "涉及军事管理区、国防科工单位以及县级以上党政机关等重要敏感区域的地理信息、人员流量、车辆流量等数据；在向政府机关、军工企业及其他敏感重要机构提供车联网信息服务过程中产生的不宜公开信息。",
+          "name": "涉及军事管理区、国防科工单位以及县级以上党政机关等重要敏感区域的地理信息、人员流量、车辆流量等数据；在向政府机关、军工企业及其他敏感重要机构提供车联网信息服务过程中产生的不宜公开信息。",
+          "code": "",
+          "dash_parts": [
+            "涉及军事管理区、国防科工单位以及县级以上党政机关等重要敏感区域的地理信息、人员流量、车辆流量等数据；在向政府机关、军工企业及其他敏感重要机构提供车联网信息服务过程中产生的不宜公开信息。"
+          ]
+        },
+        {
+          "raw": "车辆流量、物流等反映突发运行情况的数据。",
+          "name": "车辆流量、物流等反映突发运行情况的数据。",
+          "code": "",
+          "dash_parts": [
+            "车辆流量、物流等反映突发运行情况的数据。"
+          ]
+        },
+        {
+          "raw": "能够反映一定区域内汽车充电网运行情况的数据。",
+          "name": "能够反映一定区域内汽车充电网运行情况的数据。",
+          "code": "",
+          "dash_parts": [
+            "能够反映一定区域内汽车充电网运行情况的数据。"
+          ]
+        },
+        {
+          "raw": "包含人脸信息、车牌信息、路牌信息等的车外视频、图像数据",
+          "name": "包含人脸信息、车牌信息、路牌信息等的车外视频、图像数据",
+          "code": "",
+          "dash_parts": [
+            "包含人脸信息、车牌信息、路牌信息等的车外视频、图像数据"
+          ]
+        },
+        {
+          "raw": "包含车辆远程操控、车辆工况等的关键车联网信息服务数据。",
+          "name": "包含车辆远程操控、车辆工况等的关键车联网信息服务数据。",
+          "code": "",
+          "dash_parts": [
+            "包含车辆远程操控、车辆工况等的关键车联网信息服务数据。"
+          ]
+        }
+      ]
+    },
+    "standard:education_dict.json": {
+      "file": "education_dict.json",
+      "entries": 113,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 113,
+        "class:str": 113,
+        "ref:str": 113
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 113,
+        "unique": 113,
+        "with_code": 113,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 0,
+          "instances": 0
+        },
+        "duplicate_categories_examples": []
+      },
+      "leaves": {
+        "total": 113,
+        "unique": 109,
+        "duplicate_leaf_kinds": 3,
+        "duplicate_leaf_instances": 4,
+        "duplicate_leaf_examples": [
+          {
+            "name": "基本信息",
+            "count": 3
+          },
+          {
+            "name": "身份信息",
+            "count": 2
+          },
+          {
+            "name": "培训信息",
+            "count": 2
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 3,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": [
+            {
+              "leaf": "培训信息",
+              "categories": [
+                "A3-5:培训信息",
+                "A4-3:培训信息"
+              ]
+            },
+            {
+              "leaf": "基本信息",
+              "categories": [
+                "A1-1:基本信息",
+                "A3-1:基本信息",
+                "A4-1:基本信息"
+              ]
+            },
+            {
+              "leaf": "身份信息",
+              "categories": [
+                "A1-2:身份信息",
+                "A3-3:身份信息"
+              ]
+            }
+          ]
+        }
+      },
+      "codes": {
+        "total": 113,
+        "unique": 113,
+        "depth_distribution": {
+          "2": 113
+        },
+        "short_codes": [
+          {
+            "code": "A1-1",
+            "name": "基本信息"
+          },
+          {
+            "code": "A1-10",
+            "name": "录取信息"
+          },
+          {
+            "code": "A1-2",
+            "name": "身份信息"
+          },
+          {
+            "code": "A1-3",
+            "name": "留学信息"
+          },
+          {
+            "code": "A1-4",
+            "name": "体质健康信息"
+          },
+          {
+            "code": "A1-5",
+            "name": "家庭成员信息"
+          },
+          {
+            "code": "A1-6",
+            "name": "资助信息"
+          },
+          {
+            "code": "A1-7",
+            "name": "家庭经济信息"
+          },
+          {
+            "code": "A1-9",
+            "name": "应征信息"
+          },
+          {
+            "code": "A2-1",
+            "name": "学生住宿信息"
+          },
+          {
+            "code": "A2-2",
+            "name": "勤工俭学信息"
+          },
+          {
+            "code": "A2-3",
+            "name": "学生入学信息"
+          },
+          {
+            "code": "A2-4",
+            "name": "学籍信息"
+          },
+          {
+            "code": "A2-5",
+            "name": "学历学位信息"
+          },
+          {
+            "code": "A2-6",
+            "name": "档案信息"
+          },
+          {
+            "code": "A2-7",
+            "name": "处分信息"
+          },
+          {
+            "code": "A2-8",
+            "name": "奖励信息"
+          },
+          {
+            "code": "A2-9",
+            "name": "人才培养信息"
+          },
+          {
+            "code": "A3-1",
+            "name": "基本信息"
+          },
+          {
+            "code": "A3-2",
+            "name": "资格信息"
+          }
+        ],
+        "format_examples": [
+          "A1-1",
+          "A1-2",
+          "A1-3",
+          "A1-4",
+          "A1-5",
+          "A1-6",
+          "A1-7",
+          "A3-6"
+        ]
+      },
+      "format_examples": [
+        {
+          "raw": "A1-1:基本信息",
+          "name": "基本信息",
+          "code": "A1-1",
+          "dash_parts": [
+            "基本信息"
+          ]
+        },
+        {
+          "raw": "A1-2:身份信息",
+          "name": "身份信息",
+          "code": "A1-2",
+          "dash_parts": [
+            "身份信息"
+          ]
+        },
+        {
+          "raw": "A1-3:留学信息",
+          "name": "留学信息",
+          "code": "A1-3",
+          "dash_parts": [
+            "留学信息"
+          ]
+        },
+        {
+          "raw": "A1-4:体质健康信息",
+          "name": "体质健康信息",
+          "code": "A1-4",
+          "dash_parts": [
+            "体质健康信息"
+          ]
+        },
+        {
+          "raw": "A1-5:家庭成员信息",
+          "name": "家庭成员信息",
+          "code": "A1-5",
+          "dash_parts": [
+            "家庭成员信息"
+          ]
+        }
+      ]
+    },
+    "standard:financial_standards_dict.json": {
+      "file": "financial_standards_dict.json",
+      "entries": 237,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 237,
+        "class:str": 237,
+        "ref:str": 237
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 237,
+        "unique": 233,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 237,
+          "examples": [
+            "客户-个人-个人基本概况信息",
+            "客户-个人-个人财产信息",
+            "客户-个人-个人联系信息",
+            "客户-个人-个人健康生理信息",
+            "客户-个人-个人地理位置信息"
+          ]
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 1,
+          "instances": 4
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "业务-合约协议-基本信息",
+            "count": 5
+          }
+        ]
+      },
+      "leaves": {
+        "total": 237,
+        "unique": 220,
+        "duplicate_leaf_kinds": 12,
+        "duplicate_leaf_instances": 17,
+        "duplicate_leaf_examples": [
+          {
+            "name": "基本信息",
+            "count": 7
+          },
+          {
+            "name": "传统鉴别信息",
+            "count": 2
+          },
+          {
+            "name": "公私间关系信息",
+            "count": 2
+          },
+          {
+            "name": "行为信息",
+            "count": 2
+          },
+          {
+            "name": "基础标签信息",
+            "count": 2
+          },
+          {
+            "name": "关系标签信息",
+            "count": 2
+          },
+          {
+            "name": "签约标签信息",
+            "count": 2
+          },
+          {
+            "name": "交易类标签信息",
+            "count": 2
+          },
+          {
+            "name": "行为标签信息",
+            "count": 2
+          },
+          {
+            "name": "风险标签信息",
+            "count": 2
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 12,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": [
+            {
+              "leaf": "交易类标签信息",
+              "categories": [
+                "客户-个人-交易类标签信息",
+                "客户-单位-交易类标签信息"
+              ]
+            },
+            {
+              "leaf": "价值标签信息",
+              "categories": [
+                "客户-个人-价值标签信息",
+                "客户-单位-价值标签信息"
+              ]
+            },
+            {
+              "leaf": "传统鉴别信息",
+              "categories": [
+                "客户-个人-传统鉴别信息",
+                "客户-单位-传统鉴别信息"
+              ]
+            },
+            {
+              "leaf": "公私间关系信息",
+              "categories": [
+                "客户-个人-公私间关系信息",
+                "客户-单位-公私间关系信息"
+              ]
+            },
+            {
+              "leaf": "关系标签信息",
+              "categories": [
+                "客户-个人-关系标签信息",
+                "客户-单位-关系标签信息"
+              ]
+            },
+            {
+              "leaf": "分类信息",
+              "categories": [
+                "经营管理-综合管理-分类信息",
+                "经营管理-营销服务-分类信息"
+              ]
+            },
+            {
+              "leaf": "基本信息",
+              "categories": [
+                "业务-合约协议-基本信息",
+                "业务-账户信息-基本信息",
+                "经营管理-营销服务-基本信息"
+              ]
+            },
+            {
+              "leaf": "基础标签信息",
+              "categories": [
+                "客户-个人-基础标签信息",
+                "客户-单位-基础标签信息"
+              ]
+            },
+            {
+              "leaf": "签约标签信息",
+              "categories": [
+                "客户-个人-签约标签信息",
+                "客户-单位-签约标签信息"
+              ]
+            },
+            {
+              "leaf": "行为信息",
+              "categories": [
+                "客户-个人-行为信息",
+                "客户-单位-行为信息"
+              ]
+            }
+          ]
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "客户-个人-个人基本概况信息",
+          "name": "客户-个人-个人基本概况信息",
+          "code": "",
+          "dash_parts": [
+            "客户",
+            "个人",
+            "个人基本概况信息"
+          ]
+        },
+        {
+          "raw": "客户-个人-个人财产信息",
+          "name": "客户-个人-个人财产信息",
+          "code": "",
+          "dash_parts": [
+            "客户",
+            "个人",
+            "个人财产信息"
+          ]
+        },
+        {
+          "raw": "客户-个人-个人联系信息",
+          "name": "客户-个人-个人联系信息",
+          "code": "",
+          "dash_parts": [
+            "客户",
+            "个人",
+            "个人联系信息"
+          ]
+        },
+        {
+          "raw": "客户-个人-个人健康生理信息",
+          "name": "客户-个人-个人健康生理信息",
+          "code": "",
+          "dash_parts": [
+            "客户",
+            "个人",
+            "个人健康生理信息"
+          ]
+        },
+        {
+          "raw": "客户-个人-个人地理位置信息",
+          "name": "客户-个人-个人地理位置信息",
+          "code": "",
+          "dash_parts": [
+            "客户",
+            "个人",
+            "个人地理位置信息"
+          ]
+        }
+      ]
+    },
+    "standard:general_personal_info_dict.json": {
+      "file": "general_personal_info_dict.json",
+      "entries": 7,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 7,
+        "class:str": 7,
+        "ref:str": 7
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 7,
+        "unique": 7,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 0,
+          "instances": 0
+        },
+        "duplicate_categories_examples": []
+      },
+      "leaves": {
+        "total": 7,
+        "unique": 7,
+        "duplicate_leaf_kinds": 0,
+        "duplicate_leaf_instances": 0,
+        "duplicate_leaf_examples": [],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "个人基本资料",
+          "name": "个人基本资料",
+          "code": "",
+          "dash_parts": [
+            "个人基本资料"
+          ]
+        },
+        {
+          "raw": "网络身份标识信息",
+          "name": "网络身份标识信息",
+          "code": "",
+          "dash_parts": [
+            "网络身份标识信息"
+          ]
+        },
+        {
+          "raw": "个人教育工作信息",
+          "name": "个人教育工作信息",
+          "code": "",
+          "dash_parts": [
+            "个人教育工作信息"
+          ]
+        },
+        {
+          "raw": "个人通信信息",
+          "name": "个人通信信息",
+          "code": "",
+          "dash_parts": [
+            "个人通信信息"
+          ]
+        },
+        {
+          "raw": "联系人信息",
+          "name": "联系人信息",
+          "code": "",
+          "dash_parts": [
+            "联系人信息"
+          ]
+        }
+      ]
+    },
+    "standard:general_personal_info_expanded.json": {
+      "file": "general_personal_info_expanded.json",
+      "entries": 6,
+      "value_type": "str",
+      "value_keys": {},
+      "corpus_document_format": false,
+      "categories": {
+        "total": 6,
+        "unique": 6,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 0,
+          "instances": 0
+        },
+        "duplicate_categories_examples": []
+      },
+      "leaves": {
+        "total": 6,
+        "unique": 6,
+        "duplicate_leaf_kinds": 0,
+        "duplicate_leaf_instances": 0,
+        "duplicate_leaf_examples": [],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "个人姓名、生日、性别、民族、国籍、家庭关系、住址、个人电话号码、电子邮件地址等",
+          "name": "个人姓名、生日、性别、民族、国籍、家庭关系、住址、个人电话号码、电子邮件地址等",
+          "code": "",
+          "dash_parts": [
+            "个人姓名、生日、性别、民族、国籍、家庭关系、住址、个人电话号码、电子邮件地址等"
+          ]
+        },
+        {
+          "raw": "个人信息主体账号、IP地址、个人数字证书等",
+          "name": "个人信息主体账号、IP地址、个人数字证书等",
+          "code": "",
+          "dash_parts": [
+            "个人信息主体账号、IP地址、个人数字证书等"
+          ]
+        },
+        {
+          "raw": "个人职业、职位、工作单位、学历、学位、教育经历、工作经历、培训记录、成绩单等",
+          "name": "个人职业、职位、工作单位、学历、学位、教育经历、工作经历、培训记录、成绩单等",
+          "code": "",
+          "dash_parts": [
+            "个人职业、职位、工作单位、学历、学位、教育经历、工作经历、培训记录、成绩单等"
+          ]
+        },
+        {
+          "raw": "通信记录和内容、短信、彩信、电子邮件,以及描述个人通信的数据(通常称为元数据)等",
+          "name": "通信记录和内容、短信、彩信、电子邮件,以及描述个人通信的数据(通常称为元数据)等",
+          "code": "",
+          "dash_parts": [
+            "通信记录和内容、短信、彩信、电子邮件,以及描述个人通信的数据(通常称为元数据)等"
+          ]
+        },
+        {
+          "raw": "通讯录、好友列表、群列表、电子邮件地址列表等",
+          "name": "通讯录、好友列表、群列表、电子邮件地址列表等",
+          "code": "",
+          "dash_parts": [
+            "通讯录、好友列表、群列表、电子邮件地址列表等"
+          ]
+        }
+      ]
+    },
+    "standard:guanji_dict.json": {
+      "file": "guanji_dict.json",
+      "entries": 234,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 234
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 234,
+        "unique": 234,
+        "with_code": 233,
+        "multi_component_names": {
+          "count": 18,
+          "examples": [
+            "物流管控-基础数据",
+            "物流管控-运单管理",
+            "物流管控-运单追踪",
+            "物流管控-排队管理",
+            "物流管控-公告管理"
+          ]
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 0,
+          "instances": 0
+        },
+        "duplicate_categories_examples": []
+      },
+      "leaves": {
+        "total": 234,
+        "unique": 234,
+        "duplicate_leaf_kinds": 0,
+        "duplicate_leaf_instances": 0,
+        "duplicate_leaf_examples": [],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 233,
+        "unique": 233,
+        "depth_distribution": {
+          "2": 9,
+          "3": 224
+        },
+        "short_codes": [
+          {
+            "code": "B1-2",
+            "name": "合同归并"
+          },
+          {
+            "code": "B1-5",
+            "name": "合同跟踪"
+          },
+          {
+            "code": "B3-3",
+            "name": "热轧作业计划"
+          },
+          {
+            "code": "B3-4",
+            "name": "冷轧作业计划"
+          },
+          {
+            "code": "B3-5",
+            "name": "撕分线作业计划"
+          },
+          {
+            "code": "B4-2",
+            "name": "实重管理"
+          },
+          {
+            "code": "B6-2",
+            "name": "销售物流管理"
+          },
+          {
+            "code": "C1-5",
+            "name": "质保书管理"
+          },
+          {
+            "code": "C4-1",
+            "name": "监测分析管理"
+          }
+        ],
+        "format_examples": [
+          "A1-1-1",
+          "A1-1-2",
+          "A1-1-3",
+          "A1-1-4",
+          "B1-1-1",
+          "B1-1-2",
+          "B1-2",
+          "B1-3-1"
+        ]
+      },
+      "format_examples": [
+        {
+          "raw": "科研设备预约管理（A1-1-1）",
+          "name": "科研设备预约管理",
+          "code": "A1-1-1",
+          "dash_parts": [
+            "科研设备预约管理"
+          ]
+        },
+        {
+          "raw": "科研进程管控（A1-1-2）",
+          "name": "科研进程管控",
+          "code": "A1-1-2",
+          "dash_parts": [
+            "科研进程管控"
+          ]
+        },
+        {
+          "raw": "非常规委托检测管理（A1-1-3）",
+          "name": "非常规委托检测管理",
+          "code": "A1-1-3",
+          "dash_parts": [
+            "非常规委托检测管理"
+          ]
+        },
+        {
+          "raw": "考试管理（A1-1-4）",
+          "name": "考试管理",
+          "code": "A1-1-4",
+          "dash_parts": [
+            "考试管理"
+          ]
+        },
+        {
+          "raw": "薄板合同产线专业化设计（B1-1-1）",
+          "name": "薄板合同产线专业化设计",
+          "code": "B1-1-1",
+          "dash_parts": [
+            "薄板合同产线专业化设计"
+          ]
+        }
+      ]
+    },
+    "standard:iov_standards_dict.json": {
+      "file": "iov_standards_dict.json",
+      "entries": 33,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 33,
+        "class:str": 33,
+        "ref:str": 33
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 33,
+        "unique": 11,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 11,
+          "instances": 22
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "车联网移动终端应用软件基础属性数据",
+            "count": 3
+          },
+          {
+            "category": "车联网服务平台基础属性数据",
+            "count": 3
+          },
+          {
+            "category": "车辆运行工况类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆静态工况类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆外部环境感知数据",
+            "count": 3
+          },
+          {
+            "category": "智能决策控车类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆远程监控类数据",
+            "count": 3
+          },
+          {
+            "category": "信息娱乐类数据",
+            "count": 3
+          },
+          {
+            "category": "交通安全管控类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆后市场服务类数据",
+            "count": 3
+          }
+        ]
+      },
+      "leaves": {
+        "total": 33,
+        "unique": 11,
+        "duplicate_leaf_kinds": 11,
+        "duplicate_leaf_instances": 22,
+        "duplicate_leaf_examples": [
+          {
+            "name": "车联网移动终端应用软件基础属性数据",
+            "count": 3
+          },
+          {
+            "name": "车联网服务平台基础属性数据",
+            "count": 3
+          },
+          {
+            "name": "车辆运行工况类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆静态工况类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆外部环境感知数据",
+            "count": 3
+          },
+          {
+            "name": "智能决策控车类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆远程监控类数据",
+            "count": 3
+          },
+          {
+            "name": "信息娱乐类数据",
+            "count": 3
+          },
+          {
+            "name": "交通安全管控类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆后市场服务类数据",
+            "count": 3
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "车联网移动终端应用软件基础属性数据",
+          "name": "车联网移动终端应用软件基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网移动终端应用软件基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网移动终端应用软件基础属性数据",
+          "name": "车联网移动终端应用软件基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网移动终端应用软件基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网服务平台基础属性数据",
+          "name": "车联网服务平台基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网服务平台基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网服务平台基础属性数据",
+          "name": "车联网服务平台基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网服务平台基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网服务平台基础属性数据",
+          "name": "车联网服务平台基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网服务平台基础属性数据"
+          ]
+        }
+      ]
+    },
+    "standard:iov_white_papers_dict.json": {
+      "file": "iov_white_papers_dict.json",
+      "entries": 33,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 33,
+        "class:str": 33,
+        "ref:str": 33
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 33,
+        "unique": 28,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 5,
+          "instances": 5
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "车辆基本数据",
+            "count": 2
+          },
+          {
+            "category": "车联网移动终端应用软件基础属性数据",
+            "count": 2
+          },
+          {
+            "category": "车联网服务平台基础属性数据",
+            "count": 2
+          },
+          {
+            "category": "时空定位信息",
+            "count": 2
+          },
+          {
+            "category": "用户服务使用信息",
+            "count": 2
+          }
+        ]
+      },
+      "leaves": {
+        "total": 33,
+        "unique": 28,
+        "duplicate_leaf_kinds": 5,
+        "duplicate_leaf_instances": 5,
+        "duplicate_leaf_examples": [
+          {
+            "name": "车辆基本数据",
+            "count": 2
+          },
+          {
+            "name": "车联网移动终端应用软件基础属性数据",
+            "count": 2
+          },
+          {
+            "name": "车联网服务平台基础属性数据",
+            "count": 2
+          },
+          {
+            "name": "时空定位信息",
+            "count": 2
+          },
+          {
+            "name": "用户服务使用信息",
+            "count": 2
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "车辆基本数据",
+          "name": "车辆基本数据",
+          "code": "",
+          "dash_parts": [
+            "车辆基本数据"
+          ]
+        },
+        {
+          "raw": "车辆基本数据",
+          "name": "车辆基本数据",
+          "code": "",
+          "dash_parts": [
+            "车辆基本数据"
+          ]
+        },
+        {
+          "raw": "车联网移动终端应用软件基础属性数据",
+          "name": "车联网移动终端应用软件基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网移动终端应用软件基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网移动终端应用软件基础属性数据",
+          "name": "车联网移动终端应用软件基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网移动终端应用软件基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网服务平台基础属性数据",
+          "name": "车联网服务平台基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网服务平台基础属性数据"
+          ]
+        }
+      ]
+    },
+    "standard:iov_white_papers_dict_before.json": {
+      "file": "iov_white_papers_dict_before.json",
+      "entries": 133,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 133,
+        "class:str": 133,
+        "ref:str": 133
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 133,
+        "unique": 99,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 21,
+          "instances": 34
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "用户服务使用信息",
+            "count": 4
+          },
+          {
+            "category": "车辆基本数据",
+            "count": 3
+          },
+          {
+            "category": "车联网移动终端应用软件基础属性数据",
+            "count": 3
+          },
+          {
+            "category": "车联网服务平台基础属性数据",
+            "count": 3
+          },
+          {
+            "category": "信息娱乐类数据",
+            "count": 3
+          },
+          {
+            "category": "交通安全管控类数据或交通安全管控类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆运行工况类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆静态工况类数据",
+            "count": 3
+          },
+          {
+            "category": "智能决策控车类数据",
+            "count": 3
+          },
+          {
+            "category": "车辆远程监控类数据",
+            "count": 3
+          }
+        ]
+      },
+      "leaves": {
+        "total": 133,
+        "unique": 99,
+        "duplicate_leaf_kinds": 21,
+        "duplicate_leaf_instances": 34,
+        "duplicate_leaf_examples": [
+          {
+            "name": "用户服务使用信息",
+            "count": 4
+          },
+          {
+            "name": "车辆基本数据",
+            "count": 3
+          },
+          {
+            "name": "车联网移动终端应用软件基础属性数据",
+            "count": 3
+          },
+          {
+            "name": "车联网服务平台基础属性数据",
+            "count": 3
+          },
+          {
+            "name": "信息娱乐类数据",
+            "count": 3
+          },
+          {
+            "name": "交通安全管控类数据或交通安全管控类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆运行工况类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆静态工况类数据",
+            "count": 3
+          },
+          {
+            "name": "智能决策控车类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆远程监控类数据",
+            "count": 3
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "车辆基本数据",
+          "name": "车辆基本数据",
+          "code": "",
+          "dash_parts": [
+            "车辆基本数据"
+          ]
+        },
+        {
+          "raw": "车辆基本数据",
+          "name": "车辆基本数据",
+          "code": "",
+          "dash_parts": [
+            "车辆基本数据"
+          ]
+        },
+        {
+          "raw": "车辆基本数据",
+          "name": "车辆基本数据",
+          "code": "",
+          "dash_parts": [
+            "车辆基本数据"
+          ]
+        },
+        {
+          "raw": "车联网移动终端应用软件基础属性数据",
+          "name": "车联网移动终端应用软件基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网移动终端应用软件基础属性数据"
+          ]
+        },
+        {
+          "raw": "车联网移动终端应用软件基础属性数据",
+          "name": "车联网移动终端应用软件基础属性数据",
+          "code": "",
+          "dash_parts": [
+            "车联网移动终端应用软件基础属性数据"
+          ]
+        }
+      ]
+    },
+    "standard:sensitive_personal_info_dict.json": {
+      "file": "sensitive_personal_info_dict.json",
+      "entries": 8,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 8,
+        "class:str": 8,
+        "ref:str": 8
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 8,
+        "unique": 8,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 0,
+          "instances": 0
+        },
+        "duplicate_categories_examples": []
+      },
+      "leaves": {
+        "total": 8,
+        "unique": 8,
+        "duplicate_leaf_kinds": 0,
+        "duplicate_leaf_instances": 0,
+        "duplicate_leaf_examples": [],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "生物识别信息",
+          "name": "生物识别信息",
+          "code": "",
+          "dash_parts": [
+            "生物识别信息"
+          ]
+        },
+        {
+          "raw": "宗教信仰信息",
+          "name": "宗教信仰信息",
+          "code": "",
+          "dash_parts": [
+            "宗教信仰信息"
+          ]
+        },
+        {
+          "raw": "特定身份信息",
+          "name": "特定身份信息",
+          "code": "",
+          "dash_parts": [
+            "特定身份信息"
+          ]
+        },
+        {
+          "raw": "医疗健康信息",
+          "name": "医疗健康信息",
+          "code": "",
+          "dash_parts": [
+            "医疗健康信息"
+          ]
+        },
+        {
+          "raw": "金融账户信息",
+          "name": "金融账户信息",
+          "code": "",
+          "dash_parts": [
+            "金融账户信息"
+          ]
+        }
+      ]
+    },
+    "standard:sensitive_personal_info_expanded.json": {
+      "file": "sensitive_personal_info_expanded.json",
+      "entries": 8,
+      "value_type": "str",
+      "value_keys": {},
+      "corpus_document_format": false,
+      "categories": {
+        "total": 8,
+        "unique": 8,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 2,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 0,
+          "instances": 0
+        },
+        "duplicate_categories_examples": []
+      },
+      "leaves": {
+        "total": 8,
+        "unique": 8,
+        "duplicate_leaf_kinds": 0,
+        "duplicate_leaf_instances": 0,
+        "duplicate_leaf_examples": [],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "个人基因、人脸、声纹、步态、指纹、掌纹、眼纹、耳廓、虹膜等生物识别信息",
+          "name": "个人基因、人脸、声纹、步态、指纹、掌纹、眼纹、耳廓、虹膜等生物识别信息",
+          "code": "",
+          "dash_parts": [
+            "个人基因、人脸、声纹、步态、指纹、掌纹、眼纹、耳廓、虹膜等生物识别信息"
+          ]
+        },
+        {
+          "raw": "个人信仰的宗教、加入的宗教组织、宗教组织中的职位、参加的宗教活动、特殊宗教习俗等个人信息",
+          "name": "个人信仰的宗教、加入的宗教组织、宗教组织中的职位、参加的宗教活动、特殊宗教习俗等个人信息",
+          "code": "",
+          "dash_parts": [
+            "个人信仰的宗教、加入的宗教组织、宗教组织中的职位、参加的宗教活动、特殊宗教习俗等个人信息"
+          ]
+        },
+        {
+          "raw": "残障人士身份信息、不适宜公开的职业身份信息(如军人、警察)等个人信息",
+          "name": "残障人士身份信息、不适宜公开的职业身份信息(如军人、警察)等个人信息",
+          "code": "",
+          "dash_parts": [
+            "残障人士身份信息、不适宜公开的职业身份信息(如军人、警察)等个人信息"
+          ]
+        },
+        {
+          "raw": "1.与个人的身体或心理的伤害、疾病、残疾、疾病风险或隐私有关的健康状况信息,如病症、既往病史、家族病史、传染病史、体检报告、生育信息等2.在疾病预防、诊断、治疗、护理、康复等医疗服务过程中收集和产生的个人信息,如医疗就诊记录(如医疗意见、住院志、医嘱单、手术及麻醉记录、护理记录、用药记录)、医疗设备数据(如检验报告、检查报告)等",
+          "name": "1.与个人的身体或心理的伤害、疾病、残疾、疾病风险或隐私有关的健康状况信息,如病症、既往病史、家族病史、传染病史、体检报告、生育信息等2.在疾病预防、诊断、治疗、护理、康复等医疗服务过程中收集和产生的个人信息,如医疗就诊记录(如医疗意见、住院志、医嘱单、手术及麻醉记录、护理记录、用药记录)、医疗设备数据(如检验报告、检查报告)等",
+          "code": "",
+          "dash_parts": [
+            "1.与个人的身体或心理的伤害、疾病、残疾、疾病风险或隐私有关的健康状况信息,如病症、既往病史、家族病史、传染病史、体检报告、生育信息等2.在疾病预防、诊断、治疗、护理、康复等医疗服务过程中收集和产生的个人信息,如医疗就诊记录(如医疗意见、住院志、医嘱单、手术及麻醉记录、护理记录、用药记录)、医疗设备数据(如检验报告、检查报告)等"
+          ]
+        },
+        {
+          "raw": "个人的银行、证券、基金、保险、公积金等账户的账号及密码,公积金联名账号、支付账号、银行卡磁道数据(或芯片等效信息)以及基于账户信息产生的支付标记信息、个人收入明细等个人信息",
+          "name": "个人的银行、证券、基金、保险、公积金等账户的账号及密码,公积金联名账号、支付账号、银行卡磁道数据(或芯片等效信息)以及基于账户信息产生的支付标记信息、个人收入明细等个人信息",
+          "code": "",
+          "dash_parts": [
+            "个人的银行、证券、基金、保险、公积金等账户的账号及密码,公积金联名账号、支付账号、银行卡磁道数据(或芯片等效信息)以及基于账户信息产生的支付标记信息、个人收入明细等个人信息"
+          ]
+        }
+      ]
+    },
+    "standard:shanghai_fta_dict.json": {
+      "file": "shanghai_fta_dict.json",
+      "entries": 64,
+      "value_type": "dict",
+      "value_keys": {
+        "category:str": 64,
+        "class:str": 64,
+        "ref:str": 64
+      },
+      "corpus_document_format": false,
+      "categories": {
+        "total": 64,
+        "unique": 63,
+        "with_code": 0,
+        "multi_component_names": {
+          "count": 0,
+          "examples": []
+        },
+        "long_description": 0,
+        "malformed": 0,
+        "duplicate_categories": {
+          "kinds": 1,
+          "instances": 1
+        },
+        "duplicate_categories_examples": [
+          {
+            "category": "车辆信息",
+            "count": 2
+          }
+        ]
+      },
+      "leaves": {
+        "total": 64,
+        "unique": 63,
+        "duplicate_leaf_kinds": 1,
+        "duplicate_leaf_instances": 1,
+        "duplicate_leaf_examples": [
+          {
+            "name": "车辆信息",
+            "count": 2
+          }
+        ],
+        "ambiguous_leaves": {
+          "count": 0,
+          "note": "leaf = last dash component when the name is multi-part (path interpretation); same leaf under different full categories",
+          "examples": []
+        }
+      },
+      "codes": {
+        "total": 0,
+        "unique": 0,
+        "depth_distribution": {},
+        "short_codes": [],
+        "format_examples": []
+      },
+      "format_examples": [
+        {
+          "raw": "产业研究报告",
+          "name": "产业研究报告",
+          "code": "",
+          "dash_parts": [
+            "产业研究报告"
+          ]
+        },
+        {
+          "raw": "宏观经济分析报告",
+          "name": "宏观经济分析报告",
+          "code": "",
+          "dash_parts": [
+            "宏观经济分析报告"
+          ]
+        },
+        {
+          "raw": "结算管理数据",
+          "name": "结算管理数据",
+          "code": "",
+          "dash_parts": [
+            "结算管理数据"
+          ]
+        },
+        {
+          "raw": "供应商管理数据",
+          "name": "供应商管理数据",
+          "code": "",
+          "dash_parts": [
+            "供应商管理数据"
+          ]
+        },
+        {
+          "raw": "投资者管理数据",
+          "name": "投资者管理数据",
+          "code": "",
+          "dash_parts": [
+            "投资者管理数据"
+          ]
+        }
+      ]
+    }
+  },
+  "alignment": {
+    "finance": {
+      "candidate_leaf_level": {
+        "level_4": 568
+      },
+      "best_corpus": {
+        "corpus": "corpus:finance",
+        "leaf_matched_unique": 20,
+        "leaf_total_unique": 25,
+        "leaf_normalized_sample_rate": 0.9401
+      },
+      "matches": {
+        "corpus:finance": {
+          "dataset": "finance",
+          "corpus": "corpus:finance",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 534,
+              "sample_rate": 0.9401
+            },
+            "leaf_normalized": {
+              "samples": 534,
+              "sample_rate": 0.9401
+            },
+            "leaf_ancestor": {
+              "samples": 534,
+              "sample_rate": 0.9401
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 34,
+              "sample_rate": 0.0599
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 20,
+            "ambiguous": 0,
+            "unmatched": 5
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "交易清金额信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位联系人信息",
+            "基本信息（公开"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:beijing_fta_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:education_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:education_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 183,
+              "sample_rate": 0.3222
+            },
+            "leaf_normalized": {
+              "samples": 183,
+              "sample_rate": 0.3222
+            },
+            "leaf_ancestor": {
+              "samples": 183,
+              "sample_rate": 0.3222
+            },
+            "ambiguous": {
+              "samples": 183,
+              "sample_rate": 0.3222
+            },
+            "unmatched": {
+              "samples": 385,
+              "sample_rate": 0.6778
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 1,
+            "ambiguous": 1,
+            "unmatched": 24
+          },
+          "ambiguous_leaf_examples": [
+            {
+              "leaf": "基本信息",
+              "categories": [
+                "A1-1:基本信息",
+                "A3-1:基本信息",
+                "A4-1:基本信息"
+              ]
+            }
+          ],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:financial_standards_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 230,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 525,
+              "sample_rate": 0.9243
+            },
+            "normalized_path": {
+              "samples": 531,
+              "sample_rate": 0.9349
+            },
+            "leaf_exact": {
+              "samples": 534,
+              "sample_rate": 0.9401
+            },
+            "leaf_normalized": {
+              "samples": 534,
+              "sample_rate": 0.9401
+            },
+            "leaf_ancestor": {
+              "samples": 531,
+              "sample_rate": 0.9349
+            },
+            "ambiguous": {
+              "samples": 199,
+              "sample_rate": 0.3504
+            },
+            "unmatched": {
+              "samples": 34,
+              "sample_rate": 0.0599
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 20,
+            "ambiguous": 3,
+            "unmatched": 5
+          },
+          "ambiguous_leaf_examples": [
+            {
+              "leaf": "传统鉴别信息",
+              "categories": [
+                "客户-个人-传统鉴别信息",
+                "客户-单位-传统鉴别信息"
+              ]
+            },
+            {
+              "leaf": "关系标签信息",
+              "categories": [
+                "客户-个人-关系标签信息",
+                "客户-单位-关系标签信息"
+              ]
+            },
+            {
+              "leaf": "基本信息",
+              "categories": [
+                "业务-合约协议-基本信息",
+                "业务-账户信息-基本信息",
+                "经营管理-营销服务-基本信息"
+              ]
+            }
+          ],
+          "unmatched_leaf_examples": [
+            "交易清金额信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位联系人信息",
+            "基本信息（公开"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:general_personal_info_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "dataset": "finance",
+          "corpus": "standard:general_personal_info_expanded.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:guanji_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:iov_standards_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:iov_standards_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:iov_white_papers_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "dataset": "finance",
+          "corpus": "standard:iov_white_papers_dict_before.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:sensitive_personal_info_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "dataset": "finance",
+          "corpus": "standard:sensitive_personal_info_expanded.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "dataset": "finance",
+          "corpus": "standard:shanghai_fta_dict.json",
+          "samples": 568,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 568,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 25,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 25
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        }
+      }
+    },
+    "infra": {
+      "candidate_leaf_level": {
+        "level_4": 64
+      },
+      "best_corpus": {
+        "corpus": "standard:guanji_dict.json",
+        "leaf_matched_unique": 4,
+        "leaf_total_unique": 4,
+        "leaf_normalized_sample_rate": 1.0
+      },
+      "matches": {
+        "corpus:finance": {
+          "dataset": "infra",
+          "corpus": "corpus:finance",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:beijing_fta_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:education_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:education_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:financial_standards_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:general_personal_info_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "dataset": "infra",
+          "corpus": "standard:general_personal_info_expanded.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:guanji_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 64,
+              "sample_rate": 1.0
+            },
+            "leaf_normalized": {
+              "samples": 64,
+              "sample_rate": 1.0
+            },
+            "leaf_ancestor": {
+              "samples": 64,
+              "sample_rate": 1.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 0,
+              "sample_rate": 0.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 4,
+            "ambiguous": 0,
+            "unmatched": 0
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": []
+        },
+        "standard:iov_standards_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:iov_standards_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:iov_white_papers_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "dataset": "infra",
+          "corpus": "standard:iov_white_papers_dict_before.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:sensitive_personal_info_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "dataset": "infra",
+          "corpus": "standard:sensitive_personal_info_expanded.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "dataset": "infra",
+          "corpus": "standard:shanghai_fta_dict.json",
+          "samples": 64,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 64,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 4,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 4
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        }
+      }
+    },
+    "pers_info": {
+      "candidate_leaf_level": {
+        "level_4": 176
+      },
+      "best_corpus": {
+        "corpus": "standard:education_dict.json",
+        "leaf_matched_unique": 4,
+        "leaf_total_unique": 18,
+        "leaf_normalized_sample_rate": 0.1989
+      },
+      "matches": {
+        "corpus:finance": {
+          "dataset": "pers_info",
+          "corpus": "corpus:finance",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:beijing_fta_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:education_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:education_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 35,
+              "sample_rate": 0.1989
+            },
+            "leaf_normalized": {
+              "samples": 35,
+              "sample_rate": 0.1989
+            },
+            "leaf_ancestor": {
+              "samples": 35,
+              "sample_rate": 0.1989
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 141,
+              "sample_rate": 0.8011
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 4,
+            "ambiguous": 0,
+            "unmatched": 14
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "基本信息年级信息和班级信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "系统数据",
+            "考试成绩",
+            "职称信息",
+            "课程信息"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:financial_standards_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:general_personal_info_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:general_personal_info_expanded.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:guanji_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:iov_standards_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:iov_standards_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:iov_white_papers_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:iov_white_papers_dict_before.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:sensitive_personal_info_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:sensitive_personal_info_expanded.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "dataset": "pers_info",
+          "corpus": "standard:shanghai_fta_dict.json",
+          "samples": 176,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 176,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 18,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 18
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        }
+      }
+    },
+    "shougang": {
+      "candidate_leaf_level": {
+        "level_4": 19415
+      },
+      "best_corpus": {
+        "corpus": "standard:guanji_dict.json",
+        "leaf_matched_unique": 192,
+        "leaf_total_unique": 193,
+        "leaf_normalized_sample_rate": 0.9474
+      },
+      "matches": {
+        "corpus:finance": {
+          "dataset": "shougang",
+          "corpus": "corpus:finance",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:beijing_fta_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:education_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:education_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:financial_standards_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:general_personal_info_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "dataset": "shougang",
+          "corpus": "standard:general_personal_info_expanded.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:guanji_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 18393,
+              "sample_rate": 0.9474
+            },
+            "leaf_normalized": {
+              "samples": 18393,
+              "sample_rate": 0.9474
+            },
+            "leaf_ancestor": {
+              "samples": 18393,
+              "sample_rate": 0.9474
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 1022,
+              "sample_rate": 0.0526
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 192,
+            "ambiguous": 0,
+            "unmatched": 1
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "——"
+          ]
+        },
+        "standard:iov_standards_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:iov_standards_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:iov_white_papers_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "dataset": "shougang",
+          "corpus": "standard:iov_white_papers_dict_before.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:sensitive_personal_info_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "dataset": "shougang",
+          "corpus": "standard:sensitive_personal_info_expanded.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_normalized": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_ancestor": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19415,
+              "sample_rate": 1.0
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 0,
+            "ambiguous": 0,
+            "unmatched": 193
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "dataset": "shougang",
+          "corpus": "standard:shanghai_fta_dict.json",
+          "samples": 19415,
+          "corpus_path_entries_for_dataset": 0,
+          "coverage": {
+            "full_path_exact": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "normalized_path": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "leaf_exact": {
+              "samples": 66,
+              "sample_rate": 0.0034
+            },
+            "leaf_normalized": {
+              "samples": 66,
+              "sample_rate": 0.0034
+            },
+            "leaf_ancestor": {
+              "samples": 66,
+              "sample_rate": 0.0034
+            },
+            "ambiguous": {
+              "samples": 0,
+              "sample_rate": 0.0
+            },
+            "unmatched": {
+              "samples": 19349,
+              "sample_rate": 0.9966
+            }
+          },
+          "unique_leaf_labels": {
+            "total": 193,
+            "matched": 1,
+            "ambiguous": 0,
+            "unmatched": 192
+          },
+          "ambiguous_leaf_examples": [],
+          "unmatched_leaf_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        }
+      }
+    }
+  },
+  "conclusions": {
+    "datasets_found": [
+      "finance",
+      "infra",
+      "pers_info",
+      "shougang"
+    ],
+    "dataset_to_corpus": {
+      "finance": {
+        "corpus": "corpus:finance",
+        "leaf_matched": 20,
+        "leaf_total": 25
+      },
+      "infra": {
+        "corpus": "standard:guanji_dict.json",
+        "leaf_matched": 4,
+        "leaf_total": 4
+      },
+      "pers_info": {
+        "corpus": "standard:education_dict.json",
+        "leaf_matched": 4,
+        "leaf_total": 18
+      },
+      "shougang": {
+        "corpus": "standard:guanji_dict.json",
+        "leaf_matched": 192,
+        "leaf_total": 193
+      }
+    },
+    "classification_depth": {
+      "finance": {
+        "deepest_level": {
+          "level_4": 568
+        },
+        "full_path_samples": 381,
+        "patterns": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 381
+          },
+          {
+            "pattern": "level_1/level_2/level_4",
+            "count": 187
+          }
+        ]
+      },
+      "infra": {
+        "deepest_level": {
+          "level_4": 64
+        },
+        "full_path_samples": 64,
+        "patterns": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 64
+          }
+        ]
+      },
+      "pers_info": {
+        "deepest_level": {
+          "level_4": 176
+        },
+        "full_path_samples": 0,
+        "patterns": [
+          {
+            "pattern": "level_4",
+            "count": 176
+          }
+        ]
+      },
+      "shougang": {
+        "deepest_level": {
+          "level_4": 19415
+        },
+        "full_path_samples": 19415,
+        "patterns": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 19415
+          }
+        ]
+      }
+    },
+    "recommended_leaf_level": {
+      "finance": {
+        "level": "level_4",
+        "reason": "语料 (corpus:finance / financial_standards) 的 category 对应 level_4 名；数据集 25 个 leaf，语料 220 个 leaf（冷启动：语料 ≫ 标注）"
+      },
+      "infra": {
+        "level": "level_4",
+        "reason": "guanji_dict leaf 与 level_4 一一对应（4/4）"
+      },
+      "pers_info": {
+        "level": "level_4",
+        "reason": "唯一被填充的级别（单级分类，深度 1）"
+      },
+      "shougang": {
+        "level": "level_4",
+        "reason": "guanji_dict leaf 与 level_4 一一对应（192/193，排除 '——' 占位符）"
+      }
+    },
+    "coverage_summary": {
+      "finance": {
+        "corpus:finance": {
+          "leaf_normalized_sample_rate": 0.9401,
+          "leaf_exact_sample_rate": 0.9401,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 34
+        },
+        "standard:beijing_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:education_dict.json": {
+          "leaf_normalized_sample_rate": 0.3222,
+          "leaf_exact_sample_rate": 0.3222,
+          "ambiguous_samples": 183,
+          "unmatched_samples": 385
+        },
+        "standard:financial_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.9401,
+          "leaf_exact_sample_rate": 0.9401,
+          "ambiguous_samples": 199,
+          "unmatched_samples": 34
+        },
+        "standard:general_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:general_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:guanji_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:iov_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:iov_white_papers_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        },
+        "standard:shanghai_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 568
+        }
+      },
+      "infra": {
+        "corpus:finance": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:beijing_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:education_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:financial_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:general_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:general_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:guanji_dict.json": {
+          "leaf_normalized_sample_rate": 1.0,
+          "leaf_exact_sample_rate": 1.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 0
+        },
+        "standard:iov_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:iov_white_papers_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        },
+        "standard:shanghai_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 64
+        }
+      },
+      "pers_info": {
+        "corpus:finance": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:beijing_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:education_dict.json": {
+          "leaf_normalized_sample_rate": 0.1989,
+          "leaf_exact_sample_rate": 0.1989,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 141
+        },
+        "standard:financial_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:general_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:general_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:guanji_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:iov_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:iov_white_papers_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        },
+        "standard:shanghai_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 176
+        }
+      },
+      "shougang": {
+        "corpus:finance": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:beijing_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:education_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:financial_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:general_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:general_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:guanji_dict.json": {
+          "leaf_normalized_sample_rate": 0.9474,
+          "leaf_exact_sample_rate": 0.9474,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 1022
+        },
+        "standard:iov_standards_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:iov_white_papers_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "leaf_normalized_sample_rate": 0.0,
+          "leaf_exact_sample_rate": 0.0,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19415
+        },
+        "standard:shanghai_fta_dict.json": {
+          "leaf_normalized_sample_rate": 0.0034,
+          "leaf_exact_sample_rate": 0.0034,
+          "ambiguous_samples": 0,
+          "unmatched_samples": 19349
+        }
+      }
+    },
+    "ambiguous_unmatched": {
+      "finance": {
+        "corpus:finance": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 5,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "交易清金额信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位联系人信息",
+            "基本信息（公开"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:education_dict.json": {
+          "ambiguous_unique_leaves": 1,
+          "unmatched_unique_leaves": 24,
+          "ambiguous_examples": [
+            {
+              "leaf": "基本信息",
+              "categories": [
+                "A1-1:基本信息",
+                "A3-1:基本信息",
+                "A4-1:基本信息"
+              ]
+            }
+          ],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "ambiguous_unique_leaves": 3,
+          "unmatched_unique_leaves": 5,
+          "ambiguous_examples": [
+            {
+              "leaf": "传统鉴别信息",
+              "categories": [
+                "客户-个人-传统鉴别信息",
+                "客户-单位-传统鉴别信息"
+              ]
+            },
+            {
+              "leaf": "关系标签信息",
+              "categories": [
+                "客户-个人-关系标签信息",
+                "客户-单位-关系标签信息"
+              ]
+            },
+            {
+              "leaf": "基本信息",
+              "categories": [
+                "业务-合约协议-基本信息",
+                "业务-账户信息-基本信息",
+                "经营管理-营销服务-基本信息"
+              ]
+            }
+          ],
+          "unmatched_examples": [
+            "交易清金额信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位联系人信息",
+            "基本信息（公开"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:iov_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 25,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "个人基本概况信息",
+            "个人联系信息",
+            "交易基本信息",
+            "交易对手信息",
+            "交易清结算信息",
+            "交易清金额信息",
+            "交易记账信息",
+            "交易金额信息",
+            "传统鉴别信息",
+            "信托运用信息",
+            "关系标签信息",
+            "单位基本信息",
+            "单位基本情况",
+            "单位基本概况",
+            "单位联系人信息"
+          ]
+        }
+      },
+      "infra": {
+        "corpus:finance": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:education_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 0,
+          "ambiguous_examples": [],
+          "unmatched_examples": []
+        },
+        "standard:iov_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 4,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "厚板组板设计",
+            "水质监测管理",
+            "薄板合同产线专业化设计",
+            "非常规委托检测管理"
+          ]
+        }
+      },
+      "pers_info": {
+        "corpus:finance": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:education_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 14,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "基本信息年级信息和班级信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "系统数据",
+            "考试成绩",
+            "职称信息",
+            "课程信息"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:iov_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 18,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "人力资源数据",
+            "任课信息",
+            "基本信息年级信息和班级信息",
+            "学历学位信息",
+            "学校概况基本信息",
+            "学生个人基本信息",
+            "学生敏感个人信息",
+            "学科类科研管理",
+            "学籍基本数据",
+            "学籍管理信息",
+            "教职工个人基本信息",
+            "毕业就业信息",
+            "离退休信息",
+            "系统数据",
+            "考核信息"
+          ]
+        }
+      },
+      "shougang": {
+        "corpus:finance": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:beijing_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:education_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:financial_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:general_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:general_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:guanji_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 1,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "——"
+          ]
+        },
+        "standard:iov_standards_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:iov_white_papers_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:iov_white_papers_dict_before.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:sensitive_personal_info_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:sensitive_personal_info_expanded.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 193,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        },
+        "standard:shanghai_fta_dict.json": {
+          "ambiguous_unique_leaves": 0,
+          "unmatched_unique_leaves": 192,
+          "ambiguous_examples": [],
+          "unmatched_examples": [
+            "MCCR生产实绩",
+            "MCCR计划",
+            "——",
+            "业务流程改善申报管理",
+            "业务流程改善积分管理",
+            "业务流程改善评分管理",
+            "业务流程问题管理",
+            "中厚板出入库管理",
+            "中厚板库内管理",
+            "中厚板生产实绩",
+            "临时车辆管理",
+            "产品规范管理",
+            "产线生产物料",
+            "产量指标计划",
+            "人员统计"
+          ]
+        }
+      }
+    },
+    "leaf_name_collisions": {
+      "finance": {
+        "level_2": 2,
+        "level_3": 2,
+        "level_4": 4
+      },
+      "infra": {},
+      "pers_info": {},
+      "shougang": {
+        "level_4": 1
+      }
+    },
+    "schema_issues": [
+      {
+        "severity": "high",
+        "where": "finance/level_1",
+        "issue": "whitespace-inconsistent labels: both '经营 管理' and '经营管理' exist",
+        "detail": "unique level_1 labels include a spaced and an unspaced variant"
+      },
+      {
+        "severity": "high",
+        "where": "finance",
+        "issue": "level_3 is empty on 187 of 568 samples while level_4 is fully populated; 3-level paths are incomplete",
+        "detail": [
+          {
+            "pattern": "level_1/level_2/level_3/level_4",
+            "count": 381
+          },
+          {
+            "pattern": "level_1/level_2/level_4",
+            "count": 187
+          }
+        ]
+      },
+      {
+        "severity": "medium",
+        "where": "finance/level_4",
+        "issue": "truncated label '基本信息（公开' with unbalanced parenthesis",
+        "detail": "present in dataset; does not match any corpus category"
+      },
+      {
+        "severity": "medium",
+        "where": "finance/level_4",
+        "issue": "'交易清金额信息' vs '交易清结算信息': likely typo, needs human confirmation",
+        "detail": "both labels exist"
+      },
+      {
+        "severity": "high",
+        "where": "corpus:finance (data/finance/corpus.json)",
+        "issue": "leaf-only corpus: category identity is the bare level_4 name; no path/code is kept, so any future leaf-name collision is unresolvable",
+        "detail": "all 220 unique level_4 labels; no path or code fields"
+      },
+      {
+        "severity": "medium",
+        "where": "corpus:finance",
+        "issue": "6 labels contain stray internal spaces vs financial_standards (e.g. '其他类中间业务 信息'); exact-match coverage drops without whitespace normalization",
+        "detail": "whitespace-normalized matching recovers them"
+      },
+      {
+        "severity": "medium",
+        "where": "standard:financial_standards_dict.json",
+        "issue": "duplicate full categories 1 kinds / 4 extra instances; e.g. '业务-合约协议-基本信息' x5",
+        "detail": [
+          {
+            "category": "业务-合约协议-基本信息",
+            "count": 5
+          }
+        ]
+      },
+      {
+        "severity": "medium",
+        "where": "standard:financial_standards_dict.json",
+        "issue": "same leaf name under different parents (12 leaf kinds map to multiple full categories); leaf-only matching is ambiguous",
+        "detail": [
+          {
+            "leaf": "交易类标签信息",
+            "categories": [
+              "客户-个人-交易类标签信息",
+              "客户-单位-交易类标签信息"
+            ]
+          },
+          {
+            "leaf": "价值标签信息",
+            "categories": [
+              "客户-个人-价值标签信息",
+              "客户-单位-价值标签信息"
+            ]
+          },
+          {
+            "leaf": "传统鉴别信息",
+            "categories": [
+              "客户-个人-传统鉴别信息",
+              "客户-单位-传统鉴别信息"
+            ]
+          },
+          {
+            "leaf": "公私间关系信息",
+            "categories": [
+              "客户-个人-公私间关系信息",
+              "客户-单位-公私间关系信息"
+            ]
+          },
+          {
+            "leaf": "关系标签信息",
+            "categories": [
+              "客户-个人-关系标签信息",
+              "客户-单位-关系标签信息"
+            ]
+          },
+          {
+            "leaf": "分类信息",
+            "categories": [
+              "经营管理-综合管理-分类信息",
+              "经营管理-营销服务-分类信息"
+            ]
+          },
+          {
+            "leaf": "基本信息",
+            "categories": [
+              "业务-合约协议-基本信息",
+              "业务-账户信息-基本信息",
+              "经营管理-营销服务-基本信息"
+            ]
+          },
+          {
+            "leaf": "基础标签信息",
+            "categories": [
+              "客户-个人-基础标签信息",
+              "客户-单位-基础标签信息"
+            ]
+          },
+          {
+            "leaf": "签约标签信息",
+            "categories": [
+              "客户-个人-签约标签信息",
+              "客户-单位-签约标签信息"
+            ]
+          },
+          {
+            "leaf": "行为信息",
+            "categories": [
+              "客户-个人-行为信息",
+              "客户-单位-行为信息"
+            ]
+          }
+        ]
+      },
+      {
+        "severity": "high",
+        "where": "standard:financial_standards_dict.json vs finance dataset",
+        "issue": "层级体系不一致：fs 全部 237 条为 3 段路径（L1-L2-leaf），而 finance 数据集为 4 级（L1-L2-L3-leaf）；fs 不携带 level_3。另有 7 条以 '监管' 为 L1 的类目（监管-数据报送/数据收取-*）不在 finance 数据集的任何 level 词表中（数据集 L1 仅 业务/客户/经营管理）",
+        "detail": "7 条: 监管-数据报送-监管指标上报信息 / 监管-数据报送-监管明细数据上报信息 / 监管-数据报送-金融统计信息 / 监管-数据收取-评价、处罚与违规信息 / 监管-数据收取-统计分析信息 / 监管-数据收取-预警信息 / 监管-数据收取-审计信息"
+      },
+      {
+        "severity": "info",
+        "where": "corpus:finance",
+        "issue": "corpus 的 '重复 category' 是同一 level_4 下的多条文档（12 个 label 共 29 条文档），不是 category 本身重复",
+        "detail": [
+          {
+            "category": "基本信息",
+            "count": 7
+          },
+          {
+            "category": "传统鉴别信息",
+            "count": 2
+          },
+          {
+            "category": "公私间关系信息",
+            "count": 2
+          },
+          {
+            "category": "行为信息",
+            "count": 2
+          },
+          {
+            "category": "基础标签信息",
+            "count": 2
+          },
+          {
+            "category": "关系标签信息",
+            "count": 2
+          },
+          {
+            "category": "签约标签信息",
+            "count": 2
+          },
+          {
+            "category": "交易类标签信息",
+            "count": 2
+          },
+          {
+            "category": "行为标签信息",
+            "count": 2
+          },
+          {
+            "category": "风险标签信息",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "severity": "high",
+        "where": "cross-corpus leaf collision",
+        "issue": "shougang leaf '供应商管理数据'（66 样本）同时出现在 guanji_dict 与 shanghai_fta_dict 中；finance leaf '基本信息' 同时出现在 financial_standards （3 个父路径）与 education_dict（3 个 code）中 —— 跨语料同名 leaf 无法仅靠 leaf 字符串区分",
+        "detail": "shougang↔shanghai_fta 0.3% 样本覆盖即此冲突；需要 path/code 才能消歧"
+      },
+      {
+        "severity": "high",
+        "where": "shougang/level_4",
+        "issue": "'——' placeholder used as a label on 1022 samples (5.3%); it is not a real category and collides across many parent paths",
+        "detail": [
+          {
+            "label": "——",
+            "parents": [
+              [
+                "生产数据域",
+                "产出管理",
+                "实重管理"
+              ],
+              [
+                "生产数据域",
+                "物流管理",
+                "销售物流管理"
+              ],
+              [
+                "生产数据域",
+                "生产合同（订单）",
+                "合同归并"
+              ],
+              [
+                "生产数据域",
+                "生产合同（订单）",
+                "合同跟踪"
+              ],
+              [
+                "生产数据域",
+                "生产合同（订单）",
+                "转用充当"
+              ],
+              [
+                "生产数据域",
+                "生产计划",
+                "中厚板作业计划"
+              ],
+              [
+                "生产数据域",
+                "生产计划",
+                "冷轧作业计划"
+              ],
+              [
+                "生产数据域",
+                "生产计划",
+                "撕分线作业计划"
+              ],
+              [
+                "生产数据域",
+                "生产计划",
+                "热轧作业计划"
+              ],
+              [
+                "管理数据域",
+                "环境管理",
+                "监测分析管理"
+              ],
+              [
+                "管理数据域",
+                "生产质量管理",
+                "质保书管理"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "severity": "medium",
+        "where": "data_level field (all datasets)",
+        "issue": "data_level distribution does not match classification depth; semantics unknown",
+        "detail": {
+          "finance": {
+            "L2": 460,
+            "L4": 7,
+            "L3": 76,
+            "L1": 25
+          },
+          "infra": {
+            "L3": 46,
+            "L2": 18
+          },
+          "pers_info": {
+            "L1": 31,
+            "L2": 98,
+            "L3": 47
+          },
+          "shougang": {
+            "L3": 4328,
+            "L2": 14188,
+            "L1": 899
+          }
+        }
+      },
+      {
+        "severity": "high",
+        "where": "pers_info",
+        "issue": "single-level classification: only level_4 is populated (18 labels); no path exists",
+        "detail": [
+          {
+            "pattern": "level_4",
+            "count": 176
+          }
+        ]
+      },
+      {
+        "severity": "high",
+        "where": "pers_info alignment",
+        "issue": "14/18 leaf labels match no standard in data/knowledge/standards_map/",
+        "detail": "education_dict covers 4 (任课信息/学历学位信息/离退休信息/考核信息); general/sensitive personal info dicts cover 0"
+      },
+      {
+        "severity": "info",
+        "where": "standard:guanji_dict.json",
+        "issue": "codes A1-1-1 / B1-2: letter prefix maps 1:1 to level_1 (A=研发数据域, B=生产数据域, C=管理数据域, 192/192 proven); digit groups are ordinals with variable depth (2 or 3 groups) and cannot be mapped to level_2/level_3 from data",
+        "detail": {
+          "total": 233,
+          "unique": 233,
+          "depth_distribution": {
+            "2": 9,
+            "3": 224
+          },
+          "short_codes": [
+            {
+              "code": "B1-2",
+              "name": "合同归并"
+            },
+            {
+              "code": "B1-5",
+              "name": "合同跟踪"
+            },
+            {
+              "code": "B3-3",
+              "name": "热轧作业计划"
+            },
+            {
+              "code": "B3-4",
+              "name": "冷轧作业计划"
+            },
+            {
+              "code": "B3-5",
+              "name": "撕分线作业计划"
+            },
+            {
+              "code": "B4-2",
+              "name": "实重管理"
+            },
+            {
+              "code": "B6-2",
+              "name": "销售物流管理"
+            },
+            {
+              "code": "C1-5",
+              "name": "质保书管理"
+            },
+            {
+              "code": "C4-1",
+              "name": "监测分析管理"
+            }
+          ],
+          "format_examples": [
+            "A1-1-1",
+            "A1-1-2",
+            "A1-1-3",
+            "A1-1-4",
+            "B1-1-1",
+            "B1-1-2",
+            "B1-2",
+            "B1-3-1"
+          ]
+        }
+      },
+      {
+        "severity": "medium",
+        "where": "standard:iov_standards_dict.json",
+        "issue": "category 名严重重复：33 条目仅 11 个唯一 name (22 个重复实例)，同一 name 对应多条 不同 class/ref 条目 —— leaf 名无法作为唯一标识",
+        "detail": [
+          {
+            "name": "车联网移动终端应用软件基础属性数据",
+            "count": 3
+          },
+          {
+            "name": "车联网服务平台基础属性数据",
+            "count": 3
+          },
+          {
+            "name": "车辆运行工况类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆静态工况类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆外部环境感知数据",
+            "count": 3
+          },
+          {
+            "name": "智能决策控车类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆远程监控类数据",
+            "count": 3
+          },
+          {
+            "name": "信息娱乐类数据",
+            "count": 3
+          },
+          {
+            "name": "交通安全管控类数据",
+            "count": 3
+          },
+          {
+            "name": "车辆后市场服务类数据",
+            "count": 3
+          }
+        ]
+      },
+      {
+        "severity": "medium",
+        "where": "general_personal_info_expanded.json",
+        "issue": "expanded 变体丢失 category 名称：value 只保留描述性文本 （原始 *_dict 的 category name 不在其中），无法与数据集 leaf 对齐",
+        "detail": [
+          {
+            "raw": "个人姓名、生日、性别、民族、国籍、家庭关系、住址、个人电话号码、电子邮件地址等",
+            "name": "个人姓名、生日、性别、民族、国籍、家庭关系、住址、个人电话号码、电子邮件地址等",
+            "code": "",
+            "dash_parts": [
+              "个人姓名、生日、性别、民族、国籍、家庭关系、住址、个人电话号码、电子邮件地址等"
+            ]
+          },
+          {
+            "raw": "个人信息主体账号、IP地址、个人数字证书等",
+            "name": "个人信息主体账号、IP地址、个人数字证书等",
+            "code": "",
+            "dash_parts": [
+              "个人信息主体账号、IP地址、个人数字证书等"
+            ]
+          }
+        ]
+      },
+      {
+        "severity": "medium",
+        "where": "sensitive_personal_info_expanded.json",
+        "issue": "expanded 变体丢失 category 名称：value 只保留描述性文本 （原始 *_dict 的 category name 不在其中），无法与数据集 leaf 对齐",
+        "detail": [
+          {
+            "raw": "个人基因、人脸、声纹、步态、指纹、掌纹、眼纹、耳廓、虹膜等生物识别信息",
+            "name": "个人基因、人脸、声纹、步态、指纹、掌纹、眼纹、耳廓、虹膜等生物识别信息",
+            "code": "",
+            "dash_parts": [
+              "个人基因、人脸、声纹、步态、指纹、掌纹、眼纹、耳廓、虹膜等生物识别信息"
+            ]
+          },
+          {
+            "raw": "个人信仰的宗教、加入的宗教组织、宗教组织中的职位、参加的宗教活动、特殊宗教习俗等个人信息",
+            "name": "个人信仰的宗教、加入的宗教组织、宗教组织中的职位、参加的宗教活动、特殊宗教习俗等个人信息",
+            "code": "",
+            "dash_parts": [
+              "个人信仰的宗教、加入的宗教组织、宗教组织中的职位、参加的宗教活动、特殊宗教习俗等个人信息"
+            ]
+          }
+        ]
+      }
+    ],
+    "unknowns": [
+      "finance level_4 '交易清金额信息' is likely a typo for '交易清结算信息', but both exist as distinct labels; correction needs human confirmation.",
+      "finance level_4 '单位基本信息' / '单位基本情况' / '单位联系人信息' 在两个语料中均无定义 （corpus:finance 只有 '单位基本概况'）；是否为同一类别的命名不一致需要人工确认。",
+      "data_level field semantics are inconsistent with classification depth (e.g. finance has L2 on 460/568 samples although every sample fills 4 levels); meaning of data_level needs human confirmation.",
+      "pers_info has no corpus in the repo covering 14/18 leaf labels; the intended standard document is unknown (education_dict covers only 4).",
+      "guanji code digit groups (e.g. '1-1' in A1-1-1, '2' in B1-2) cannot be mapped to level_2/level_3 names from data alone; the original guide is needed to confirm. Letter prefix maps to level_1 with 100% consistency (A=研发数据域, B=生产数据域, C=管理数据域, proven on 192/192 leaves).",
+      "shougang '——' placeholder semantics (unclassified vs not-applicable) needs human confirmation.",
+      "finance level_4 '基本信息（公开' is a truncated label with an unbalanced parenthesis; expected full form needs the source file.",
+      "financial_standards duplicate full category '业务-合约协议-基本信息' x5: whether this is intentional (multiple class/ref rows) needs the source document.",
+      "education_dict codes (A1-1 / A3-3 / A4-1 ...) 与 pers_info 无层级可对照 （pers_info 只有单级分类），code 到分类的映射无法从数据证明。",
+      "finance↔education_dict 的 32.2% 覆盖全部来自 '基本信息' 一个 leaf 的跨域撞名，不代表 pers_info/education 是 finance 的语料；是否移除该误匹配需要人工确认。"
+    ]
+  }
+}
