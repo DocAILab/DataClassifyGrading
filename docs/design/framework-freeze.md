@@ -46,6 +46,12 @@ contract**，而不是重新设计 classification pipeline；classification 层�
 映射与分类正确性语义，**不是**「Stage2 JSON 只能有 answer 一个字段」。classification
 identity / PromptChoice 分类映射不变；grading 契约后续作为新增契约引入。
 
+**parser 不共用 / 不修改**：现有 `check_stage2_choices`（以及 `check_stage1_choices`）
+是 frozen 的 **classification-only 严格 parser**，语义只覆盖 `answer choice → canonical
+category_id` 分类解码。未来若加入 grading，**不修改**它；而是**新增**一个
+joint/grading-aware parser 来解析含 grading 字段的新输出 schema，并**复用**上述
+classification 语义（`answer` 字段仍走同一 choice → canonical 解码）。
+
 ### 1.2 Not frozen：synthetic candidate construction（fixture，非生产策略）
 
 当前 SFT/RL 数据流用 `build_candidates()`（GT + registry 前四个 negatives +
