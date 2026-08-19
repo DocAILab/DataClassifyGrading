@@ -62,15 +62,20 @@ raises on model output and separates format validity from constraint validity;
 the evaluator and the reward adapter both consume it so there is exactly one
 contract implementation.
 
-Phase 7 (prompt-choice identity) added the SHARED choice-aware layer in the
-same parser module (`check_stage1_choices` / `check_stage2_choices` ->
+Phase 6 introduced the prompt-facing choice protocol
+(PromptChoiceRegistry, global Stage 1 ids and local Stage 2 ids), keeping
+the canonical category_id out of prompts and model outputs.
+
+Phase 7 adds the shared choice-aware parser/decode layer in the same parser
+module (`check_stage1_choices` / `check_stage2_choices` ->
 `ChoiceParseResult`): model rollouts answer with choice ids (Stage 1 global
 ids, Stage 2 local bundle ids), which this layer validates (JSON/schema,
 count, uniqueness, known ids / 1..5) and decodes to canonical category_ids
 BEFORE the existing evaluation (`evaluate_stage1_choices` /
 `evaluate_stage2_choices`) and reward entry points
-(`reward_stage1_choices` / `reward_stage2_choices`) apply. Choice validation
-is implemented exactly once; `RewardConfig`, reward numbers, canonical
+(`reward_stage1_choices` / `reward_stage2_choices`) apply, completing the
+task-level choice-to-canonical reward contract. Choice validation is
+implemented exactly once; `RewardConfig`, reward numbers, canonical
 registry/ground truth/candidates are unchanged. `RewardResult` gained a
 `constraint_valid` flag (additive) so "valid but wrong" (partial credit) is
 distinguishable from "invalid" (zero).
@@ -130,10 +135,11 @@ Still landing with the first real RL vertical slice (M4):
    reward loop;
 2. a small GPU smoke launcher.
 
-The prompt-choice identity branch (`feat/prompt-choice-identity`) has landed
-the choice protocol end-to-end (prompt-facing ids <-> canonical category ids)
-including the shared choice-aware decode layer consumed by evaluation and
-reward (see Evaluation module); it is pending merge to master.
+The task-level choice-to-canonical contract is now complete on master: Phase
+6 (prompt-facing choice protocol, PromptChoiceRegistry with global Stage 1
+ids and local Stage 2 ids) and Phase 7 (shared choice-aware parser/decode
+layer consumed by evaluation and reward; see the Evaluation module) are both
+merged.
 
 ## When to add training-algorithm RL code
 
