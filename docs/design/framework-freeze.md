@@ -1,12 +1,15 @@
-# Framework Freeze（阶段 13.5）
+# Classification Framework Freeze（阶段 13.5）
 
-本文件把两阶段叶分类工程的关键接口声明为 **frozen**。冻结后，后续算法实验
-（GRPO / RLOO / ReMax / PPO-DAPO 等）除真正 bug 外**不得修改**这些层；
-算法差异只允许落在 launcher / Hydra 配置 / 算法层（见 §完整流程清单）。
+本文件把**分类（classification）管道**的关键接口声明为 **frozen**（classification
+pipeline / classification contract **frozen for experiments**）。冻结范围**只覆盖
+classification**（§1 清单）；**data_level / grading 不在冻结范围内**（见 §1.1，语义
+待确认）。冻结后，后续算法实验（GRPO / RLOO / ReMax / PPO-DAPO 等）除真正 bug 外
+**不得修改**这些层；算法差异只允许落在 launcher / Hydra 配置 / 算法层（见
+§完整流程清单）。
 
 冻结日期：Phase 13.5（2026-08-19，Phase 11/12/13 smoke 与 7B SFT baseline 均已 PASS）。
 
-## 1. Frozen contracts（冻结接口清单）
+## 1. Frozen contracts（分类管道冻结接口清单）
 
 | # | 层 | 内容 / 入口 | 不得修改的点 |
 |---|---|---|---|
@@ -19,7 +22,25 @@
 | 7 | VeRL reward adapter | `agent.training.rl.verl_adapter.compute_score` | choice-aware 路由（`<dataset>/stage<1|2>`），不实现 parser/reward 表 |
 | 8 | evaluation protocol | `agent.evaluation.classification`（`evaluate_stage{1,2}_choices`）+ `script/verl/sft/evaluate_baseline.py`（factorized/proxy）+ `script/verl/sft/evaluate_true_e2e.py`（true E2E） | 指标定义：stage1 format/contract/Recall@5；stage2 conditional / format/contract；true E2E（Stage2 用 Stage1 预测 Top-5） |
 
-## 2. 模型起点与 RL 初始化（冻结）
+### 1.1 Not frozen / pending clarification（data_level / grading）
+
+以下内容**当前不冻结**，仓库内语义 / 契约未定：
+
+- `data_level` 语义（L1–L4 业务定义 / 分级规则 / 标准文档）——仓库无正式定义，UNKNOWN
+- grading target schema（分级目标的数据结构）
+- grading prompt / output contract（分级提示词与输出格式）
+- grading parser / evaluator（分级解析与评估）
+- grading reward（分级奖励）
+- classification + grading 联合指标（分类与分级联合评估）
+
+> `data_level` is currently preserved as source provenance only. Its promotion to a
+> supervised grading target is pending confirmation of the L1-L4 business
+> definition and task protocol.
+
+未来若加入 grading，是在 **frozen classification contract 之上新增一个 grading
+contract**，而不是重新设计 classification pipeline；classification 层保持冻结不动。
+
+## 2. 模型起点与 RL 初始化（分类实验约束）
 
 - 所有正式实验统一使用 **Qwen/Qwen2.5-7B-Instruct**（小规模功能链路可用
   Qwen2.5-0.5B-Instruct 作为 config 开关打通，不改变语义）。
@@ -41,9 +62,9 @@ SFT 训练：script/verl/sft/run_baseline.sh → verl.trainer.sft_trainer（LoRA
    ├─> script/verl/sft/evaluate_baseline.py     — factorized/proxy 指标（Stage2 用 parquet 预构造 bundle）
    └─> script/verl/sft/evaluate_true_e2e.py     — true E2E（Stage2 由 Stage1 预测 Top-5 动态构建）
 
-RL（在冻结层之上只改算法层）：
+RL（在冻结的分类层之上只改算法层）：
    script/verl/rl/grpo_smoke.sh -> verl.trainer.main_ppo
-     ├─ reward.custom_reward_function.path=pkg://agent.training.rl.verl_adapter（冻结）
+     ├─ reward.custom_reward_function.path=pkg://agent.training.rl.verl_adapter（分类路径，frozen）
      └─ algorithm.* / actor.* / rollout.*（launcher 层，可换）
 ```
 
