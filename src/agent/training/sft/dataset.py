@@ -1,7 +1,7 @@
 """Exporter and validator for the VeRL SFT messages parquet baseline.
 
 Production labels come EXCLUSIVELY from the canonical dataset contract:
-records are read from data/<dataset>/canonical/all.json, only
+records are read from data/canonical/<dataset>/all.json, only
 resolution_status == "resolved" records with a target whose category_id
 belongs to the LeafRegistry enter training, and the ground truth is always
 record["target"]["category_id"]. classification.level_1..level_4 stay
