@@ -15,10 +15,10 @@ classification**（§1 清单）；**data_level / grading 不在冻结范围内*
 |---|---|---|---|
 | 1 | canonical category_id | `agent.task.contracts.LeafRegistry` / `SampleTarget`；`data/<ds>/canonical/all.json` | 唯一身份：`target.category_id`；`classification.level_*` 仅 provenance，禁止 reintroduce level_4 fallback |
 | 2 | PromptChoice protocol | `agent.task.prompt_choices.PromptChoiceRegistry`（global "1".."N" / stage2 local "1".."5"） | choice id 映射、display name 规则；canonical id 永不进 prompt/不作为模型动作 |
-| 3 | candidate policy | `agent.task.prompts.build_stage1_prompt`（全 registry）/ `build_stage2_prompt`（5 candidate bundle，按 category_id 查 corpus） | 现行为准：Stage1 全目录无 description；Stage2 bundle=5；hard-negative 策略不抽象（沿用 GT+registry 前四 fixture 策略） |
+| 3 | candidate / Stage 输入输出契约 | `agent.task.prompts.build_stage1_prompt` / `build_stage2_prompt` | 冻结的是**契约**：Stage1 恰好输出 Top-5 candidate；decode 后为 canonical category_ids；Stage2 恰好接收 5 个 predicted candidate category_ids；Stage2 候选顺序决定 local choice id 1..5。**不冻结**：离线合成候选构造（build_candidates 为 fixture 而非生产检索策略）、负采样 / hard-negative 策略、候选采样改进（见 §1.2） |
 | 4 | parquet schema | SFT：`messages/stage/source_id/metadata/ground_truth/candidates`；RL：`data_source/prompt/ability/reward_model/extra_info` | 列名与语义；label 唯一来源 `target.category_id`；assistant supervision = choice-id JSON |
 | 5 | parser / decode | `agent.task.parser.check_stage1_choices / check_stage2_choices / check_stage{1,2}_output` | 严格 JSON + 精确 schema + 无 fuzzy fallback；decode 到 canonical 后才进入正确性逻辑 |
-| 6 | reward contract | `agent.training.rl.reward`（RewardConfig 0/0.3/1.0 + stage2_partial(0.5 provisional)） | 数值表与 `reward_stage{1,2}_choices` / `reward_for_choice_result`（decode 先行，表不变） |
+| 6 | reward contract（框架） | `agent.training.rl.reward` + `reward_for_choice_result` | 冻结：choice 输出→严格 parser→choice decode→canonical category_id→reward adapter 路由→malformed/constraint-invalid 处理框架。**不冻结**：仍标 provisional 的 reward 系数（如 stage2_partial=0.5 数值）与后续由任务定义确认的 reward weighting（见 §1.3）；当前 reward.py 数值不动 |
 | 7 | VeRL reward adapter | `agent.training.rl.verl_adapter.compute_score` | choice-aware 路由（`<dataset>/stage<1|2>`），不实现 parser/reward 表 |
 | 8 | evaluation protocol | `agent.evaluation.classification`（`evaluate_stage{1,2}_choices`）+ `script/verl/sft/evaluate_baseline.py`（factorized/proxy）+ `script/verl/sft/evaluate_true_e2e.py`（true E2E） | 指标定义：stage1 format/contract/Recall@5；stage2 conditional / format/contract；true E2E（Stage2 用 Stage1 预测 Top-5） |
 
@@ -40,10 +40,39 @@ classification**（§1 清单）；**data_level / grading 不在冻结范围内*
 未来若加入 grading，是在 **frozen classification contract 之上新增一个 grading
 contract**，而不是重新设计 classification pipeline；classification 层保持冻结不动。
 
+**grading 允许 additive 扩展**：若后续确认 Stage2 需同时输出 classification + grading，
+允许对 Stage2 output schema 做 **additive** 扩展，例如
+`{"answer":"3","data_level":"L2"}`。冻结的是「`answer` choice → canonical category_id」
+映射与分类正确性语义，**不是**「Stage2 JSON 只能有 answer 一个字段」。classification
+identity / PromptChoice 分类映射不变；grading 契约后续作为新增契约引入。
+
+### 1.2 Not frozen：synthetic candidate construction（fixture，非生产策略）
+
+当前 SFT/RL 数据流用 `build_candidates()`（GT + registry 前四个 negatives +
+deterministic permutation）为样本合成候选；源码明确它属 **fixture，不是生产 Stage1
+检索策略**，因此**不冻结**，`build_candidates()` 本身也不改：
+
+- 离线 SFT/RL 合成候选构造
+- 负采样策略 / hard-negative 策略
+- 未来候选采样 / 召回改进（正式检索需按需求另行设计）
+
+候选相关冻结的只有 §1 表 row 3 的输入输出**契约**。
+
+### 1.3 Not frozen：provisional reward coefficient
+
+- 冻结：reward **框架**（choice 输出→严格 parser→canonical decode→reward adapter
+  路由→malformed/constraint-invalid 的 0/partial 映射框架）。
+- **不冻结**：仍标 provisional 的 reward 数值（例如 Stage-2 `stage2_partial` 当前默认
+  0.5）；最终权重待任务定义确认后由配置决定。当前 `reward.py` 数值不动。
+
 ## 2. 模型起点与 RL 初始化（分类实验约束）
 
 - 所有正式实验统一使用 **Qwen/Qwen2.5-7B-Instruct**（小规模功能链路可用
   Qwen2.5-0.5B-Instruct 作为 config 开关打通，不改变语义）。
+- Phase 13 的 SFT checkpoint（如 `global_step_140`）是 reproducible SFT baseline /
+  candidate downstream-initialization artifact，**不冻结**任何具体 checkpoint；RL
+  初始化选择属于实验配置（run config），不在本冻结契约内。
+- **不得用 test 指标选择 checkpoint**（Phase 13.5 起为硬约束）。
 
 ## 3. 完整流程清单（数据处理 → 训练 → 评估 → 其他 RL 算法）
 
@@ -67,6 +96,9 @@ RL（在冻结的分类层之上只改算法层）：
      ├─ reward.custom_reward_function.path=pkg://agent.training.rl.verl_adapter（分类路径，frozen）
      └─ algorithm.* / actor.* / rollout.*（launcher 层，可换）
 ```
+
+> 候选构造（`build_candidates`：GT+registry 前四 negatives+固定 permutation）目前是
+> **合成 fixture**，非生产检索策略；正式候选采样 / 召回需按需求另行设计（见 §1.2）。
 
 ### 3.1 各阶段输入/输出示例（真实数据 · pers_info）
 
