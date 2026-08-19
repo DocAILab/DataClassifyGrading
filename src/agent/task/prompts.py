@@ -49,10 +49,9 @@ def build_stage1_prompt(
 ) -> Prompt:
     choices = choices or PromptChoiceRegistry.from_registry(registry)
     system = (
-        "You are a leaf-category candidate retriever. Return only one JSON object, "
-        'with exactly this shape: {"candidates":["1","2","3","4","5"]}. '
-        "The candidates array must contain exactly 5 unique choice ids from the "
-        "catalog. "
+        "You are a leaf-category candidate retriever. Return exactly one JSON object "
+        'with key "candidates". '
+        "The value must contain exactly five unique choice ids from the catalog. "
         "Do not output Markdown, commentary, canonical category ids, or any other keys."
     )
     catalog = [
@@ -109,8 +108,9 @@ def build_stage2_prompt(
                 }
             )
     system = (
-        "You are a leaf-category reranker. Return only one JSON object, exactly "
-        '{"answer":"1"}. The answer must be one of the five candidate ids 1-5. '
+        "You are a leaf-category reranker. Return exactly one JSON object with key "
+        '"answer". '
+        'Its value must be one of the five candidate ids "1" through "5". '
         "Do not output Markdown, commentary, or any other keys."
     )
     user = (

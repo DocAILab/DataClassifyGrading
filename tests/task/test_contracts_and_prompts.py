@@ -42,8 +42,11 @@ def test_prompts_have_strict_stage_contracts_and_no_chatml_tokens() -> None:
         choices=choices,
     )
 
-    assert '"candidates"' in stage1.system and "exactly 5" in stage1.system
-    assert '"answer"' in stage2.system and "one of the five" in stage2.system
+    assert '"candidates"' in stage1.system and "exactly five" in stage1.system
+    assert '"answer"' in stage2.system and '"1" through "5"' in stage2.system
+    # position-bias guard: system contracts must not showcase real legal ids
+    assert '["1","2","3","4","5"]' not in stage1.system
+    assert '{"answer":"1"}' not in stage2.system
     prompt_text = stage1.system + stage1.user + stage2.system + stage2.user
     assert all(
         token not in prompt_text
