@@ -681,7 +681,7 @@ def build_report(overwrite: bool) -> dict[str, Any]:
         "datasets": dataset_stats,
         "standards": standard_stats,
         "alignment": alignment,
-        "conclusions": build_conclusions(dataset_stats, standard_stats, alignment),
+        "conclusions": build_conclusions(dataset_stats, standard_stats, alignment, datasets),
     }
     _write_json(DEFAULT_OUT_DIR / "data_alignment_report.json", report, overwrite)
     _write_markdown(report, DEFAULT_OUT_DIR / "data_alignment_report.md", overwrite)
@@ -692,6 +692,7 @@ def build_conclusions(
     dataset_stats: dict[str, Any],
     standard_stats: dict[str, Any],
     alignment: dict[str, Any],
+    records: dict[str, list[dict[str, Any]]],
 ) -> dict[str, Any]:
     return {
         "datasets_found": sorted(dataset_stats),
@@ -774,7 +775,9 @@ def build_conclusions(
             }
             for name, stats in dataset_stats.items()
         },
-        "schema_issues": build_schema_issues(dataset_stats, standard_stats, alignment),
+        "schema_issues": build_schema_issues(
+            dataset_stats, standard_stats, alignment, records
+        ),
         "unknowns": [
             "finance level_4 '交易清金额信息' is likely a typo for '交易清结算信息', but both "
             "exist as distinct labels; correction needs human confirmation.",
@@ -804,23 +807,55 @@ def build_conclusions(
     }
 
 
+def _whitespace_variants(
+    records: list[dict[str, Any]], field: str
+) -> dict[str, list[str]]:
+    """Return {crushed_key: sorted distinct raw labels} for `field` labels that
+    collapse to one name after whitespace removal but differ in raw text.
+
+    Read-only: detects and reports suspicious variants; it never repairs them.
+    """
+    grouped: dict[str, set[str]] = defaultdict(set)
+    for record in records:
+        label = (record.get("classification") or {}).get(field)
+        if not label:
+            continue
+        grouped[compact(str(label))].add(str(label))
+    return {
+        key: sorted(raws)
+        for key, raws in grouped.items()
+        if len(raws) > 1
+    }
+
+
 def build_schema_issues(
     dataset_stats: dict[str, Any],
     standard_stats: dict[str, Any],
     alignment: dict[str, Any],
+    records: dict[str, list[dict[str, Any]]],
 ) -> list[dict[str, Any]]:
     issues: list[dict[str, Any]] = []
 
     finance = dataset_stats["finance"]
     l1 = finance["level_stats"]["level_1"]
-    issues.append(
-        {
-            "severity": "high",
-            "where": "finance/level_1",
-            "issue": "whitespace-inconsistent labels: both '经营 管理' and '经营管理' exist",
-            "detail": "unique level_1 labels include a spaced and an unspaced variant",
-        }
-    )
+    l1_variants = _whitespace_variants(records.get("finance", []), "level_1")
+    if l1_variants:
+        grouped_text = "; ".join(
+            f"{' / '.join(raws)} -> `{key}`" for key, raws in l1_variants.items()
+        )
+        issues.append(
+            {
+                "severity": "high",
+                "where": "finance/level_1",
+                "issue": (
+                    "whitespace-inconsistent labels: "
+                    f"{len(l1_variants)} group(s) with identical name after "
+                    "whitespace removal but different raw text"
+                ),
+                "detail": grouped_text + " — fix in the upstream input "
+                "(data/finance/all.json), never auto-repair.",
+            }
+        )
     l3 = finance["level_stats"]["level_3"]
     issues.append(
         {

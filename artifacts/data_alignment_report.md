@@ -7,7 +7,7 @@
 
 | dataset | samples | L1 | L2 | L3 | L4 | 完整 4 级路径 | 最深级别分布 | data_level 字段分布 |
 |---|---|---|---|---|---|---|---|---|
-| finance | 568 | 4 (100.0%) | 7 (100.0%) | 10 (67.1%) | 25 (100.0%) | 381 | {'level_4': 568} | {'L2': 460, 'L4': 7, 'L3': 76, 'L1': 25} |
+| finance | 568 | 3 (100.0%) | 7 (100.0%) | 10 (67.1%) | 25 (100.0%) | 381 | {'level_4': 568} | {'L2': 460, 'L4': 7, 'L3': 76, 'L1': 25} |
 | infra | 64 | 3 (100.0%) | 3 (100.0%) | 3 (100.0%) | 4 (100.0%) | 64 | {'level_4': 64} | {'L3': 46, 'L2': 18} |
 | pers_info | 176 | 0 (0.0%) | 0 (0.0%) | 0 (0.0%) | 18 (100.0%) | 0 | {'level_4': 176} | {'L1': 31, 'L2': 98, 'L3': 47} |
 | shougang | 19415 | 3 (100.0%) | 15 (100.0%) | 54 (100.0%) | 193 (100.0%) | 19415 | {'level_4': 19415} | {'L3': 4328, 'L2': 14188, 'L1': 899} |
@@ -17,19 +17,16 @@
 - 填充模式（样本数）：
   - `level_1/level_2/level_3/level_4` × 381
   - `level_1/level_2/level_4` × 187
-- 唯一完整路径数：29
+- 唯一完整路径数：28
 - leaf 同名不同父路径 (collision)：
-  - level_2: 2 个 label 出现在不同父路径下
+  - level_2: 1 个 label 出现在不同父路径下
     - `单位` ← 业务 ; 客户
-    - `技术管理` ← 经营 管理 ; 经营管理
-  - level_3: 2 个 label 出现在不同父路径下
+  - level_3: 1 个 label 出现在不同父路径下
     - `单位基本信息` ← 业务/单位 ; 客户/单位
-    - `系统管理信息` ← 经营 管理/技术管理 ; 经营管理/技术管理
-  - level_4: 4 个 label 出现在不同父路径下
+  - level_4: 3 个 label 出现在不同父路径下
     - `交易清结算信息` ← 业务/交易信息/交易通用信息 ; 业务/账户信息/
     - `单位基本情况` ← 业务/单位/单位基本信息 ; 客户/单位/单位基本信息
     - `基本信息` ← 业务/合约协议/合同通用信息 ; 业务/账户信息/
-    - `配置信息` ← 经营 管理/技术管理/系统管理信息 ; 经营管理/技术管理/系统管理信息
 
 ### dataset `infra`
 
@@ -133,7 +130,7 @@
   - ambiguous leaf 示例：[{'leaf': '基本信息', 'categories': ['A1-1:基本信息', 'A3-1:基本信息', 'A4-1:基本信息']}]
   - unmatched leaf 示例：['个人基本概况信息', '个人联系信息', '交易基本信息', '交易对手信息', '交易清结算信息', '交易清金额信息', '交易记账信息', '交易金额信息', '传统鉴别信息', '信托运用信息', '关系标签信息', '单位基本信息', '单位基本情况', '单位基本概况', '单位联系人信息']
 - **standard:financial_standards_dict.json**：
-  - full_path_exact=525 normalized_path=531 leaf_exact=534 leaf_normalized=534 leaf_ancestor=531 ambiguous=199 unmatched=34
+  - full_path_exact=531 normalized_path=531 leaf_exact=534 leaf_normalized=534 leaf_ancestor=531 ambiguous=199 unmatched=34
   - ambiguous leaf 示例：[{'leaf': '传统鉴别信息', 'categories': ['客户-个人-传统鉴别信息', '客户-单位-传统鉴别信息']}, {'leaf': '关系标签信息', 'categories': ['客户-个人-关系标签信息', '客户-单位-关系标签信息']}, {'leaf': '基本信息', 'categories': ['业务-合约协议-基本信息', '业务-账户信息-基本信息', '经营管理-营销服务-基本信息']}]
   - unmatched leaf 示例：['交易清金额信息', '单位基本信息', '单位基本情况', '单位联系人信息', '基本信息（公开']
 - **standard:general_personal_info_dict.json**：
@@ -486,14 +483,13 @@
 
 ### 4.7 leaf name collision
 
-- `finance`：{'level_2': 2, 'level_3': 2, 'level_4': 4}
+- `finance`：{'level_2': 1, 'level_3': 1, 'level_4': 3}
 - `infra`：无
 - `pers_info`：无
 - `shougang`：{'level_4': 1}
 
 ### 4.8 当前 schema 存在的问题
 
-- **[high] finance/level_1**：whitespace-inconsistent labels: both '经营 管理' and '经营管理' exist
 - **[high] finance**：level_3 is empty on 187 of 568 samples while level_4 is fully populated; 3-level paths are incomplete
 - **[medium] finance/level_4**：truncated label '基本信息（公开' with unbalanced parenthesis
 - **[medium] finance/level_4**：'交易清金额信息' vs '交易清结算信息': likely typo, needs human confirmation
