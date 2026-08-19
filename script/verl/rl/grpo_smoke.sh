@@ -23,7 +23,7 @@
 #
 # Run from the repo root in the RL venv (verl + vllm + ray):
 #   DATASET=pers_info DATACLASSIFY_REGISTRY_DIR=cfg/task/registry \
-#     REWARD_LOG_DIR=/root/autodl-tmp/phase12/obs \
+#     REWARD_LOG_DIR=<obs-dir> \
 #     TRAIN_FILE=... VAL_FILE=... MODEL_PATH=... bash script/verl/rl/grpo_smoke.sh
 set -euo pipefail
 
