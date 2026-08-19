@@ -70,10 +70,9 @@ the context limit with a large margin — the old worst case was ~6000 tokens
 canonical-id stats (`prompt_token_stats_*.json`, `prompt_stats_*.json`,
 `prompt_token_stats_summary.json`) unchanged for regressions and comparison;
 `artifacts/generated/prompt_stats/choice_id/` holds the new choice-protocol
-stats. Regenerate with
+stats. Regenerate (reproduces the tables above) with
 `python -m script.verl.sft.prompt_stats --dataset-dir data/sft/<ds> --model
-Qwen/Qwen2.5-7B-Instruct --report <out>.json` (or the Phase-9 script under
-`tmp/re_export/` reproducing the exact tables above).
+Qwen/Qwen2.5-7B-Instruct --report <out>.json`.
 
 ## 6. Note: PromptChoice is not only about length
 
