@@ -20,9 +20,12 @@ from .reward import (
     STAGE2_PARTIAL_DEFAULT,
     RewardConfig,
     RewardResult,
+    reward_for_choice_result,
     reward_for_parse_result,
     reward_stage1,
+    reward_stage1_choices,
     reward_stage2,
+    reward_stage2_choices,
 )
 from .sample import (
     RewardMeta,
@@ -49,6 +52,9 @@ __all__ = [
     "reward_stage1",
     "reward_stage2",
     "reward_for_parse_result",
+    "reward_stage1_choices",
+    "reward_stage2_choices",
+    "reward_for_choice_result",
     "RL_SPLITS",
     "VERL_RL_COLUMNS",
     "export_rl_dataset",

@@ -10,30 +10,26 @@ choice ids instead:
 evaluate_stage1/2 consume the unified parser (check_stage1_output /
 check_stage2_output) so the reward adapter and the evaluator share one
 contract implementation. evaluate_stage1_choices / evaluate_stage2_choices
-are thin adapters: they parse and decode the choice protocol BEFORE
-delegating to the canonical evaluators, so choice ids never leak into
-correctness logic and no canonical check logic is duplicated.
+consume the SHARED choice-aware layer (check_stage1_choices /
+check_stage2_choices) and apply the same canonical correctness facts on
+the decoded category ids, so choice validation is implemented exactly
+once across evaluation and reward.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-import json
 from typing import Sequence
 
 from agent.task import LeafRegistry
 from agent.task.parser import (
-    PredictionFormatError,
+    Stage2Output,
+    check_stage1_choices,
     check_stage1_output,
+    check_stage2_choices,
     check_stage2_output,
-    parse_stage1_output,
-    parse_stage2_output,
 )
-from agent.task.prompt_choices import (
-    PromptChoiceError,
-    PromptChoiceRegistry,
-    decode_stage2_answer,
-)
+from agent.task.prompt_choices import PromptChoiceRegistry
 
 
 @dataclass(frozen=True)
@@ -87,28 +83,23 @@ def evaluate_stage1_choices(
 ) -> Stage1Evaluation:
     """Evaluate a choice-id Stage 1 output; decode BEFORE canonical logic.
 
-    The model answers with global choice ids ("1".."N"); the returned
-    prediction is the decoded canonical category_id tuple. Invalid choice
-    ids / wrong counts / duplicates yield an explicit invalid result with
-    no name or fuzzy fallback. Delegates to evaluate_stage1 with the
-    decoded canonical payload, so the canonical contract logic is never
-    duplicated.
+    Consumes the shared choice-aware check (check_stage1_choices) so
+    evaluation and reward share one choice validation implementation; the
+    returned prediction is the decoded canonical category_id tuple. Invalid
+    choice ids / wrong counts / duplicates yield an explicit invalid result
+    with no name or fuzzy fallback.
     """
     if ground_truth not in registry.ids:
         raise ValueError("ground_truth must belong to the leaf registry")
     choices = choices or PromptChoiceRegistry.from_registry(registry)
-    try:
-        output = parse_stage1_output(solution)
-    except PredictionFormatError as exc:
-        return Stage1Evaluation(None, False, False, False, (str(exc),))
-    try:
-        decoded = choices.decode_candidates(output.candidates)
-    except PromptChoiceError as exc:
-        return Stage1Evaluation(None, True, False, False, (str(exc),))
-    return evaluate_stage1(
-        json.dumps({"candidates": list(decoded)}, ensure_ascii=False, separators=(",", ":")),
-        ground_truth=ground_truth,
-        registry=registry,
+    result = check_stage1_choices(solution, choices=choices)
+    if not result.format_valid:
+        return Stage1Evaluation(None, False, False, False, result.errors)
+    if not result.constraint_valid:
+        return Stage1Evaluation(None, True, False, False, result.errors)
+    assert result.decoded is not None
+    return Stage1Evaluation(
+        result.decoded, True, True, ground_truth in result.decoded, ()
     )
 
 
@@ -150,10 +141,11 @@ def evaluate_stage2_choices(
     """Evaluate a local-id Stage 2 output; decode BEFORE canonical logic.
 
     The model answers with a LOCAL bundle id ("1".."5" in candidate order);
-    the returned prediction is the decoded canonical category_id. Anything
-    but an exact local id yields an explicit invalid result with no name or
-    fuzzy fallback. Delegates to evaluate_stage2 with the decoded canonical
-    payload, so the canonical contract logic is never duplicated.
+    the returned prediction is the decoded canonical category_id. Consumes
+    the shared choice-aware check (check_stage2_choices) so evaluation and
+    reward share one choice validation implementation. Anything but an
+    exact local id yields an explicit invalid result with no name or fuzzy
+    fallback.
     """
     if ground_truth not in registry.ids:
         raise ValueError("ground_truth must belong to the leaf registry")
@@ -163,17 +155,15 @@ def evaluate_stage2_choices(
         or any(candidate not in registry.ids for candidate in candidates)
     ):
         raise ValueError("candidates must be 5 unique IDs from the leaf registry")
-    try:
-        output = parse_stage2_output(solution)
-    except PredictionFormatError as exc:
-        return Stage2Evaluation(None, False, False, False, (str(exc),))
-    try:
-        decoded = decode_stage2_answer(output.answer, tuple(candidates))
-    except PromptChoiceError as exc:
-        return Stage2Evaluation(output.answer, True, False, False, (str(exc),))
-    return evaluate_stage2(
-        json.dumps({"answer": decoded}, ensure_ascii=False, separators=(",", ":")),
-        ground_truth=ground_truth,
-        candidates=candidates,
-        registry=registry,
+    result = check_stage2_choices(solution, candidates=candidates)
+    if not result.format_valid:
+        return Stage2Evaluation(None, False, False, False, result.errors)
+    if not result.constraint_valid:
+        assert isinstance(result.output, Stage2Output)
+        return Stage2Evaluation(
+            result.output.answer, True, False, False, result.errors
+        )
+    assert result.decoded is not None
+    return Stage2Evaluation(
+        result.decoded, True, True, result.decoded == ground_truth, ()
     )
