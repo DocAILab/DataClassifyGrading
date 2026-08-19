@@ -1,4 +1,4 @@
-# Critical versions verified on Ubuntu 22.04 / Python 3.12 / CUDA 12.8 / RTX 5090.
+# Critical versions verified on Ubuntu 22.04 / Python 3.12 / CUDA 12.8 / NVIDIA Blackwell GPU.
 torch==2.8.0
 verl==0.8.0
 accelerate==1.14.0

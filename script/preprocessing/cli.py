@@ -63,7 +63,7 @@ def resolve_default_input(dataset: str) -> Path:
     """Find a conventional CSV/XLSX raw input for a dataset."""
     dataset = _normalize_dataset_name(dataset)
     raw_dir = PROJECT_ROOT / "data" / "raw"
-    # The plural form keeps compatibility with files such as infras.xlsx.
+    # The plural form keeps compatibility with files such as <dataset>s.xlsx.
     stems = (dataset, f"{dataset}s")
     candidates = [
         raw_dir / f"{stem}{suffix}"

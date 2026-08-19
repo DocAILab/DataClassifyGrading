@@ -19,9 +19,9 @@ PyTorch 2.8.0 from the cu128 index, applies
 set `REUSE_SYSTEM_TORCH=1` to avoid storing a duplicate PyTorch stack:
 
 ```bash
-PYTHON_BOOTSTRAP=/root/miniconda3/bin/python \
+PYTHON_BOOTSTRAP=/path/to/system/python \
 REUSE_SYSTEM_TORCH=1 \
-VERL_ENV_DIR=/root/autodl-tmp/envs/verl \
+VERL_ENV_DIR=<persistent-disk>/envs/verl \
   bash script/verl/common/create_env.sh
 ```
 
@@ -158,8 +158,8 @@ PyTorch 2.8.0+cu128, VeRL 0.8.0, and PyArrow 25.0.1:
 
 ## Verified GPU smoke
 
-The same environment was verified on 2026-08-16 with one RTX 5090 (32,607 MiB,
-compute capability 12.0, driver 580.105.08):
+The same environment was verified on 2026-08-16 with one recent 32 GB NVIDIA
+GPU (Blackwell-generation, compute capability 12.0):
 
 - BF16 CUDA matrix multiplication: passed;
 - Qwen2.5-0.5B-Instruct, LoRA rank 8, single-GPU FSDP, SDPA: 2 steps passed;
@@ -190,10 +190,10 @@ CUDA_HOME=/usr/local/cuda-12.8 MAX_JOBS=2 \
 The default build version is 2.8.3. To avoid compiler OOM on the 90GB host, the
 installer defaults to two build jobs, one NVCC thread, and only architecture
 `sm_120`; override `FLASH_ATTN_CUDA_ARCHS` for a portable multi-architecture
-wheel. Compilation success is not sufficient: RTX 5090 is a Blackwell GPU,
-while upstream FlashAttention2 documentation does not explicitly list Blackwell
-among its supported GPU families. After a direct forward/backward kernel test,
-run the VeRL path explicitly:
+wheel. Compilation success is not sufficient: the target GPU is a
+Blackwell-generation NVIDIA GPU, while upstream FlashAttention2 documentation
+does not explicitly list Blackwell among its supported GPU families. After a
+direct forward/backward kernel test, run the VeRL path explicitly:
 
 ```bash
 ATTENTION_IMPL=flash_attention_2 STEPS=1 EPOCHS=1 \
