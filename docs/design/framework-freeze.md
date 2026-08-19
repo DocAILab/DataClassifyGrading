@@ -51,6 +51,10 @@ RL（在冻结层之上只改算法层）：
 
 **(1) 输入 · 数据处理前（raw canonical record）**
 
+> **待分类数据是什么**：一个数据库**字段（column）**。原始记录 metadata 存全量字段信息
+> （库/表名、字段名、字段描述、类型、值），经 `TaskConfig.metadata_fields` 显式裁剪后
+> 才进入 prompt（见 (3)，pers_info/finance/infra 均只暴露 `field_name, field_description`）。
+
 ```json
 {
   "id": "f374612b-7a1b-52c4-97b0-fb0851603dd6",
@@ -87,6 +91,13 @@ Retrieve five candidate leaf categories from this catalog:
 Field metadata:
 {"field_name":"eid","field_description":"指导老师工号"}
 ```
+
+> **待分类数据（在 input 中的位置）＝ user prompt 末尾 `Field metadata` 块**：
+> 它就是上面那条 **字段**。原始记录 metadata 为
+> `{"database_name":"USR_DATAI","table_name":"T_JW_BKSCXCY","field_name":"eid",
+>  "field_description":"指导老师工号","field_type":"STRING", …}`，
+> 经 `TaskConfig.metadata_fields` 只暴露前两个（其余如库/表名、字段类型、值都不进 prompt）。
+> 模型的任务=**仅凭这个字段（名+描述）从目录里选出 5 个候选叶类**。
 模型输出（SFT final 实际, hit case）→ choice decode → canonical Top-5：
 ```json
 {"candidates":["4","1","2","3","11"]}
@@ -130,7 +141,7 @@ extra_info   = {"candidates": null | [5 个 canonical id], "dataset": "pers_info
                 "metadata": {"field_name":…, "field_description":…}, "source_id": …}
 ```
 
-**实现其他 RL 算法的改动面**（各 4B/12 报告约定）：
+**实现其他 RL 算法的改动面**：
 - 只改 `script/verl/rl/grpo_smoke.sh` 的算法/采样配置：`algorithm.adv_estimator`
   （grpo→dapo/rloo），RLHF-style 需加 critic/ref/`use_kl_loss` 相关配置。
 - rollout 后端 / 显存旋钮在 launcher env（`ENFORCE_EAGER` / `PARAM_OFFLOAD` /
