@@ -19,6 +19,13 @@ from .parser import (
     parse_stage1_output,
     parse_stage2_output,
 )
+from .prompt_choices import (
+    PromptChoice,
+    PromptChoiceError,
+    PromptChoiceRegistry,
+    decode_stage2_answer,
+    encode_stage2_answer,
+)
 from .prompts import (
     Prompt,
     build_stage1_prompt,
@@ -59,6 +66,11 @@ __all__ = [
     "check_stage2_output",
     "parse_stage1_output",
     "parse_stage2_output",
+    "PromptChoice",
+    "PromptChoiceError",
+    "PromptChoiceRegistry",
+    "decode_stage2_answer",
+    "encode_stage2_answer",
     "Prompt",
     "build_stage1_prompt",
     "build_stage2_prompt",
