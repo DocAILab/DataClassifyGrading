@@ -1,0 +1,139 @@
+{
+ "tokenizer": "Qwen/Qwen2.5-7B-Instruct",
+ "splits": {
+  "train": {
+   "stage1": {
+    "tokens": {
+     "rows": 140,
+     "max": 266,
+     "p95": 260,
+     "mean": 255.5
+    },
+    "chars": {
+     "rows": 140,
+     "max": 747,
+     "p95": 740,
+     "mean": 730.0
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 140,
+     "max": 202,
+     "p95": 196,
+     "mean": 191.3
+    },
+    "chars": {
+     "rows": 140,
+     "max": 707,
+     "p95": 700,
+     "mean": 689.0
+    }
+   }
+  },
+  "val": {
+   "stage1": {
+    "tokens": {
+     "rows": 18,
+     "max": 260,
+     "p95": 259,
+     "mean": 256.6
+    },
+    "chars": {
+     "rows": 18,
+     "max": 742,
+     "p95": 742,
+     "mean": 735.7
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 18,
+     "max": 196,
+     "p95": 195,
+     "mean": 192.7
+    },
+    "chars": {
+     "rows": 18,
+     "max": 702,
+     "p95": 702,
+     "mean": 695.6
+    }
+   }
+  },
+  "test": {
+   "stage1": {
+    "tokens": {
+     "rows": 18,
+     "max": 259,
+     "p95": 258,
+     "mean": 255.4
+    },
+    "chars": {
+     "rows": 18,
+     "max": 739,
+     "p95": 738,
+     "mean": 732.9
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 18,
+     "max": 196,
+     "p95": 195,
+     "mean": 191.9
+    },
+    "chars": {
+     "rows": 18,
+     "max": 698,
+     "p95": 698,
+     "mean": 692.3
+    }
+   }
+  }
+ },
+ "prompt_only": {
+  "train": {
+   "stage1": {
+    "rows": 140,
+    "max": 248,
+    "p95": 241,
+    "mean": 237.3
+   },
+   "stage2": {
+    "rows": 140,
+    "max": 192,
+    "p95": 186,
+    "mean": 181.3
+   }
+  },
+  "val": {
+   "stage1": {
+    "rows": 18,
+    "max": 242,
+    "p95": 241,
+    "mean": 238.6
+   },
+   "stage2": {
+    "rows": 18,
+    "max": 186,
+    "p95": 185,
+    "mean": 182.7
+   }
+  },
+  "test": {
+   "stage1": {
+    "rows": 18,
+    "max": 241,
+    "p95": 240,
+    "mean": 237.3
+   },
+   "stage2": {
+    "rows": 18,
+    "max": 186,
+    "p95": 185,
+    "mean": 181.9
+   }
+  }
+ }
+}

@@ -1,6 +1,6 @@
 """Per-dataset configuration for the canonical training target.
 
-Decision basis: artifacts/data_alignment_report (stage 1). Each dataset gets
+Decision basis: artifacts/generated/alignment/data_alignment_report (stage 1). Each dataset gets
 an explicit category_id strategy instead of a single global rule:
 
 - shougang: guanji codes are stable and unique (233 codes, letter prefix

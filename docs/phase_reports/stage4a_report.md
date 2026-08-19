@@ -20,7 +20,7 @@
 - `src/agent/training/rl/__init__.py` / `sample.py` / `reward.py` / `dataset.py` — RL 数据 / reward / VeRL parquet 契约
 - `script/verl/rl/__init__.py` / `export.py` / `validate.py` — CLI 适配器
 - `tests/rl/test_rl_parser.py` / `test_rl_reward.py` / `test_rl_dataset.py` / `test_rl_canonical_e2e.py` / `test_rl_verl_compat.py`
-- `artifacts/stage4a_report.md`（本文件）
+- `docs/phase_reports/stage4a_report.md`（本文件）
 
 ## 2. RL sample schema
 
