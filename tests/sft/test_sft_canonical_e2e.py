@@ -13,7 +13,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 
-from agent.task import LeafRegistry, TaskConfig
+from agent.task import LeafRegistry, PromptChoiceRegistry, TaskConfig
 from agent.task.canonical_dataset import load_corpus_categories
 from agent.training.sft import export_sft_dataset, validate_sft_dataset
 
@@ -148,15 +148,72 @@ def test_no_unresolved_samples_in_exports(exports: dict) -> None:
             assert details["skipped_not_resolved"] == unresolved_in_split, (dataset, split)
 
 
+def _stage1_catalog(user: str) -> list:
+    """Extract the JSON catalog array from a Stage 1 user message."""
+    body = user.split("\n", 1)[1].split("\nField metadata:", 1)[0]
+    return json.loads(body)
+
+
 def test_stage1_candidate_universe_is_full_registry(exports: dict) -> None:
     for dataset, bundle in exports.items():
         registry = LeafRegistry.from_path(bundle["registry_path"])
         rows = pq.read_table(bundle["out"] / "train.parquet").to_pylist()
         stage1 = next(row for row in rows if row["stage"] == "stage1")
         user = stage1["messages"][1]["content"]
-        # the stage-1 catalog renders every registry category as id+name
-        assert user.count('"category_id"') == len(registry.categories), dataset
-        assert f'"name": "{registry.categories[0].name}"' in user
+        # the stage-1 catalog renders every registry category as compact
+        # [choice_id, display_name] pairs; canonical ids never appear
+        assert '"category_id"' not in user, dataset
+        catalog = _stage1_catalog(user)
+        assert isinstance(catalog, list) and len(catalog) == len(registry.categories), dataset
+        assert all(isinstance(entry, list) and len(entry) == 2 for entry in catalog), dataset
+        assert [entry[0] for entry in catalog] == [
+            str(index) for index in range(1, len(catalog) + 1)
+        ], dataset
+        display_names = [entry[1] for entry in catalog]
+        assert len(set(display_names)) == len(display_names), dataset
+
+
+def test_finance_duplicate_leaf_names_are_disambiguated(exports: dict) -> None:
+    bundle = exports["finance"]
+    registry = LeafRegistry.from_path(bundle["registry_path"])
+    rows = pq.read_table(bundle["out"] / "train.parquet").to_pylist()
+    stage1 = next(row for row in rows if row["stage"] == "stage1")
+    catalog = _stage1_catalog(stage1["messages"][1]["content"])
+    # duplicate leaf names (e.g. 基本信息) render as parent-qualified suffixes
+    for category in registry.categories:
+        if category.name == "基本信息":
+            display = next(
+                entry[1] for entry in catalog if entry[1].endswith("基本信息")
+            )
+            assert display != "基本信息", category.category_id
+            assert " / " in display
+    # every display name still resolves to exactly one canonical category
+    choices = PromptChoiceRegistry.from_registry(registry)
+    for entry in catalog:
+        assert choices.category_id_of(entry[0]) in registry.ids
+
+
+def test_shougang_and_infra_short_codes_keep_canonical_contract(exports: dict) -> None:
+    """Code-strategy registries (A1-1-1 ...) must keep canonical category_ids
+    in ground_truth/candidates while prompts use choice ids."""
+    for dataset in ("shougang", "infra"):
+        bundle = exports[dataset]
+        registry = LeafRegistry.from_path(bundle["registry_path"])
+        # code strategy intact: every category carries its guanji code id
+        assert all(category.code for category in registry.categories), dataset
+        assert all(category.category_id == category.code for category in registry.categories), dataset
+        rows = pq.read_table(bundle["out"] / "train.parquet").to_pylist()
+        for row in rows:
+            assert row["ground_truth"] in registry.ids, (dataset, row["source_id"])
+            assert all(candidate in registry.ids for candidate in row["candidates"])
+        stage1 = next(row for row in rows if row["stage"] == "stage1")
+        assert '"category_id"' not in stage1["messages"][1]["content"]
+        choices = PromptChoiceRegistry.from_registry(registry)
+        # decoded assistant answer must round-trip to canonical candidates
+        decoded = choices.decode_candidates(
+            json.loads(stage1["messages"][-1]["content"])["candidates"]
+        )
+        assert list(decoded) == stage1["candidates"]
 
 
 def test_stage2_corpus_lookup_by_category_id(exports: dict) -> None:

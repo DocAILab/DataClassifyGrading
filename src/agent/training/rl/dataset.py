@@ -133,8 +133,9 @@ def export_rl_dataset(
         "version": "verl 0.8.0 five-field schema (data_source/prompt/ability/reward_model/extra_info)",
         "label_source": "canonical target.category_id (resolution_status == resolved)",
         "candidate_policy": (
-            "baseline fixture: ground_truth_then_registry_order_first_four_"
-            "non_ground_truth (not the production retrieval policy)"
+            "baseline fixture: (ground_truth + first four registry negatives) "
+            "permuted deterministically by stable source_id (not position-fixed, "
+            "not the production retrieval policy)"
         ),
         "dataset": dataset,
         "metadata_fields": list(config.metadata_fields),
@@ -334,8 +335,26 @@ def _validate_row(
             expected_prompt.user,
         ]:
             errors.append("prompt does not match registry and task contract")
-        if stage == "stage1" and contents and contents[1].count('"category_id"') != len(registry.categories):
-            errors.append("stage1 prompt must render the full leaf registry catalog")
+        if stage == "stage1" and contents:
+            user = contents[1]
+            if '"category_id"' in user:
+                errors.append("stage1 prompt must not expose canonical category ids")
+            try:
+                catalog = json.loads(
+                    user.split("\n", 1)[1].split("\nField metadata:", 1)[0]
+                )
+            except (json.JSONDecodeError, AttributeError):
+                errors.append("stage1 prompt catalog must be a JSON array")
+            else:
+                if (
+                    not isinstance(catalog, list)
+                    or len(catalog) != len(registry.categories)
+                    or any(
+                        not (isinstance(entry, list) and len(entry) == 2)
+                        for entry in catalog
+                    )
+                ):
+                    errors.append("stage1 prompt must render the full leaf registry catalog")
     return errors
 
 

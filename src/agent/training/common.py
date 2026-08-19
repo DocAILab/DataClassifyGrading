@@ -8,8 +8,9 @@ imports.
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from agent.task.contracts import CorpusCategory, LeafRegistry
 
@@ -51,13 +52,47 @@ def canonical_target(
     return category_id
 
 
-def build_candidates(ground_truth: str, registry: LeafRegistry) -> list[str]:
-    """Deterministic baseline/test fixture policy: GT followed by the first
-    four non-GT registry IDs. This is a fixture, NOT the production Stage 1
-    retrieval policy."""
+def build_candidates(
+    ground_truth: str,
+    registry: LeafRegistry,
+    *,
+    source_id: str,
+) -> list[str]:
+    """Deterministic candidate bundle shared by SFT and RL for one sample.
+
+    Baseline fixture policy (no hard negatives): the ground truth plus the
+    first four non-GT registry ids, then permuted deterministically from the
+    stable ``source_id``. The permutation keeps the bundle reproducible
+    (same source_id always yields the same ordering, across runs and across
+    the SFT/RL exporters) while preventing the ground truth from sitting at
+    a fixed position — which would otherwise leak a systematic
+    ``{"answer":"1"}`` bias into every Stage 2 sample. This is a fixture,
+    NOT the production Stage 1 retrieval policy.
+    """
     if ground_truth not in registry.ids:
-        raise ValueError(f"ground-truth category_id is absent from leaf registry: {ground_truth}")
-    return [ground_truth] + [category_id for category_id in registry.ids if category_id != ground_truth][:4]
+        raise ValueError(
+            f"ground-truth category_id is absent from leaf registry: {ground_truth}"
+        )
+    base = [ground_truth] + [
+        category_id for category_id in registry.ids if category_id != ground_truth
+    ][:4]
+    return _permute(base, source_id)
+
+
+def _permute(items: Sequence[str], source_id: str) -> list[str]:
+    """Deterministic Fisher–Yates shuffle keyed by a stable sha256 digest.
+
+    ``hash()`` is randomized per process (PYTHONHASHSEED) and must never be
+    used as a reproducibility seed; sha256 over the UTF-8 source_id is
+    stable across runs, machines and processes. There is no runtime
+    randomness.
+    """
+    digest = hashlib.sha256(source_id.encode("utf-8")).digest()
+    result = list(items)
+    for index in range(len(result) - 1, 0, -1):
+        swap = digest[index % len(digest)] % (index + 1)
+        result[index], result[swap] = result[swap], result[index]
+    return result
 
 
 def require_corpus(corpus: Mapping[str, CorpusCategory]) -> Mapping[str, CorpusCategory]:

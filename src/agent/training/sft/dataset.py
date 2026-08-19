@@ -19,8 +19,9 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from agent.evaluation import evaluate_stage1, evaluate_stage2
+from agent.evaluation import evaluate_stage1_choices, evaluate_stage2_choices
 from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
+from agent.task.prompt_choices import PromptChoiceRegistry
 from agent.task.prompts import (
     build_stage1_prompt,
     build_stage2_prompt,
@@ -84,13 +85,19 @@ def _row(
     source_id = str(item.get("id", "")).strip()
     if not source_id:
         raise ValueError(f"item {index} in {source} has no stable id")
-    candidates = build_candidates(ground_truth, registry)
+    candidates = build_candidates(ground_truth, registry, source_id=source_id)
+    choices = PromptChoiceRegistry.from_registry(registry)
     if stage == "stage1":
-        prompt = build_stage1_prompt(visible_metadata, registry, config)
-        answer = stage1_answer(candidates)
+        prompt = build_stage1_prompt(visible_metadata, registry, config, choices=choices)
+        answer = stage1_answer(candidates, choices=choices)
     else:
         prompt = build_stage2_prompt(
-            visible_metadata, candidates, registry, config, corpus=corpus or None
+            visible_metadata,
+            candidates,
+            registry,
+            config,
+            corpus=corpus or None,
+            choices=choices,
         )
         answer = stage2_answer(ground_truth, candidates)
     return {
@@ -176,9 +183,15 @@ def export_sft_dataset(
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",
         "label_source": "canonical target.category_id (resolution_status == resolved)",
+        "prompt_identity": (
+            "choice ids in messages; ground_truth/candidates stay canonical "
+            "category_id (PromptChoiceRegistry, display names = shortest "
+            "unique path suffix)"
+        ),
         "candidate_policy": (
-            "baseline fixture: ground_truth_then_registry_order_first_four_"
-            "non_ground_truth (not the production retrieval policy)"
+            "baseline fixture: (ground_truth + first four registry negatives) "
+            "permuted deterministically by stable source_id (not position-fixed, "
+            "not the production retrieval policy)"
         ),
         "metadata_fields": list(config.metadata_fields),
         "task_name": config.task_name,
@@ -247,6 +260,7 @@ def _validate_row(
     corpus: Mapping[str, CorpusCategory],
 ) -> list[str]:
     errors: list[str] = []
+    choices = PromptChoiceRegistry.from_registry(registry)
     messages = row.get("messages")
     if not isinstance(messages, list) or len(messages) != 3:
         return ["messages must contain system, user, assistant"]
@@ -292,16 +306,17 @@ def _validate_row(
         isinstance(ground_truth, str) and ground_truth in registry.ids
     )
     if stage == "stage1" and ground_truth_is_valid:
-        evaluation = evaluate_stage1(
+        evaluation = evaluate_stage1_choices(
             assistant,
             ground_truth=ground_truth,
             registry=registry,
+            choices=choices,
         )
         errors.extend(f"stage1 evaluation: {error}" for error in evaluation.errors)
         if evaluation.prediction is None or list(evaluation.prediction) != candidates:
             errors.append("stage1 answer must exactly match the five candidates")
     elif stage == "stage2" and candidates_belong_to_registry and ground_truth_is_valid:
-        evaluation = evaluate_stage2(
+        evaluation = evaluate_stage2_choices(
             assistant,
             ground_truth=ground_truth,
             candidates=tuple(candidates),
@@ -320,14 +335,21 @@ def _validate_row(
     elif all(isinstance(content, str) for content in contents):
         expected_prompt = None
         if stage == "stage1":
-            expected_prompt = build_stage1_prompt(visible_metadata, registry, config)
+            expected_prompt = build_stage1_prompt(
+                visible_metadata, registry, config, choices=choices
+            )
         elif (
             stage == "stage2"
             and candidates_are_valid
             and all(candidate in registry.ids for candidate in candidates)
         ):
             expected_prompt = build_stage2_prompt(
-                visible_metadata, candidates, registry, config, corpus=corpus or None
+                visible_metadata,
+                candidates,
+                registry,
+                config,
+                corpus=corpus or None,
+                choices=choices,
             )
         if expected_prompt is not None and contents[:2] != [
             expected_prompt.system,
@@ -335,10 +357,15 @@ def _validate_row(
         ]:
             errors.append("system/user prompt does not match registry and task contract")
 
-    if isinstance(ground_truth, str) and ground_truth in registry.ids:
-        expected = build_candidates(ground_truth, registry)
+    if (
+        isinstance(ground_truth, str)
+        and ground_truth in registry.ids
+        and isinstance(source_id, str)
+        and source_id.strip()
+    ):
+        expected = build_candidates(ground_truth, registry, source_id=source_id)
         if candidates != expected:
-            errors.append("candidates do not follow deterministic registry order")
+            errors.append("candidates do not follow the deterministic source-seeded bundle order")
     return errors
 
 

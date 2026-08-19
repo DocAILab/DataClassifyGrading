@@ -124,11 +124,21 @@ def test_target_category_id_is_the_only_label(exported) -> None:
 
 
 def test_stage1_prompt_uses_full_registry(exported, registry) -> None:
+    from agent.task import PromptChoiceRegistry
+
     rows = pq.read_table(exported["out"] / "train.parquet").to_pylist()
     stage1 = next(row for row in rows if row["extra_info"]["stage"] == "stage1")
     user = stage1["prompt"][1]["content"]
-    assert user.count('"category_id"') == len(registry.categories)
-    assert user.count('"name"') == len(registry.categories)
+    # compact [choice_id, display_name] catalog; canonical ids never shown
+    assert '"category_id"' not in user
+    catalog = json.loads(user.split("\n", 1)[1].split("\nField metadata:", 1)[0])
+    assert len(catalog) == len(registry.categories)
+    assert [entry[0] for entry in catalog] == [
+        str(index) for index in range(1, len(registry.categories) + 1)
+    ]
+    assert len({entry[1] for entry in catalog}) == len(registry.categories)
+    choices = PromptChoiceRegistry.from_registry(registry)
+    assert [choices.category_id_of(entry[0]) for entry in catalog] == list(registry.ids)
 
 
 def test_stage2_corpus_lookup_by_category_id(exported, corpus) -> None:
@@ -408,7 +418,7 @@ def test_ground_truth_not_required_in_stage2_candidates(
     a reward without raising."""
     import agent.training.rl.sample as rl_sample_module
 
-    def candidates_excluding_gt(ground_truth: str, reg: LeafRegistry):
+    def candidates_excluding_gt(ground_truth: str, reg: LeafRegistry, *, source_id: str):
         return [candidate for candidate in reg.ids if candidate != ground_truth][:5]
 
     monkeypatch.setattr(

@@ -124,7 +124,8 @@ def build_rl_samples(
     Only resolved records may be passed (the caller filters on
     resolution_status); the ground truth is validated as target.category_id
     with the registry as the final constraint. Stage 2 candidates reuse the
-    deterministic fixture policy (GT + first four non-GT registry IDs).
+    deterministic fixture policy (GT + four non-GT registry ids, permuted
+    deterministically by the stable source_id).
     """
     ground_truth = canonical_target(item, index, source, registry)
     if ground_truth is None:
@@ -133,7 +134,7 @@ def build_rl_samples(
     if not source_id:
         raise ValueError(f"item {index} in {source} has no stable id")
     metadata = visible_metadata(item.get("metadata", {}), config)
-    candidates = tuple(build_candidates(ground_truth, registry))
+    candidates = tuple(build_candidates(ground_truth, registry, source_id=source_id))
     stage1_prompt = build_stage1_prompt(metadata, registry, config)
     stage2_prompt = build_stage2_prompt(
         metadata, candidates, registry, config, corpus=corpus or None
