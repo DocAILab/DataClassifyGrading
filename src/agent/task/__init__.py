@@ -10,11 +10,14 @@ from .contracts import (
 from .dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
 from .identity import code_leaf_map, compact, leaf_registry_from_corpus, qualified_category_id
 from .parser import (
+    ChoiceParseResult,
     ParseResult,
     PredictionFormatError,
     Stage1Output,
     Stage2Output,
+    check_stage1_choices,
     check_stage1_output,
+    check_stage2_choices,
     check_stage2_output,
     parse_stage1_output,
     parse_stage2_output,
@@ -62,8 +65,11 @@ __all__ = [
     "Stage1Output",
     "Stage2Output",
     "ParseResult",
+    "ChoiceParseResult",
     "check_stage1_output",
     "check_stage2_output",
+    "check_stage1_choices",
+    "check_stage2_choices",
     "parse_stage1_output",
     "parse_stage2_output",
     "PromptChoice",

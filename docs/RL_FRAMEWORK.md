@@ -62,6 +62,24 @@ raises on model output and separates format validity from constraint validity;
 the evaluator and the reward adapter both consume it so there is exactly one
 contract implementation.
 
+Phase 6 introduced the prompt-facing choice protocol
+(PromptChoiceRegistry, global Stage 1 ids and local Stage 2 ids), keeping
+the canonical category_id out of prompts and model outputs.
+
+Phase 7 adds the shared choice-aware parser/decode layer in the same parser
+module (`check_stage1_choices` / `check_stage2_choices` ->
+`ChoiceParseResult`): model rollouts answer with choice ids (Stage 1 global
+ids, Stage 2 local bundle ids), which this layer validates (JSON/schema,
+count, uniqueness, known ids / 1..5) and decodes to canonical category_ids
+BEFORE the existing evaluation (`evaluate_stage1_choices` /
+`evaluate_stage2_choices`) and reward entry points
+(`reward_stage1_choices` / `reward_stage2_choices`) apply, completing the
+task-level choice-to-canonical reward contract. Choice validation is
+implemented exactly once; `RewardConfig`, reward numbers, canonical
+registry/ground truth/candidates are unchanged. `RewardResult` gained a
+`constraint_valid` flag (additive) so "valid but wrong" (partial credit) is
+distinguishable from "invalid" (zero).
+
 ### Training adapters
 
 `agent.training.sft` owns messages-Parquet export, validation, the temporary
@@ -116,6 +134,12 @@ Still landing with the first real RL vertical slice (M4):
 1. a checked-in fixture that runs the reward adapter through a real VeRL
    reward loop;
 2. a small GPU smoke launcher.
+
+The task-level choice-to-canonical contract is now complete on master: Phase
+6 (prompt-facing choice protocol, PromptChoiceRegistry with global Stage 1
+ids and local Stage 2 ids) and Phase 7 (shared choice-aware parser/decode
+layer consumed by evaluation and reward; see the Evaluation module) are both
+merged.
 
 ## When to add training-algorithm RL code
 
