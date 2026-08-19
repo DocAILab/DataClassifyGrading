@@ -90,7 +90,10 @@ fixture candidate policy, and tokenizer-specific budget inspection.
   ground_truth/candidates/metadata/reward metadata); ground truth is
   exclusively ``target.category_id``;
 - `reward.py` -- task reward (RewardConfig / RewardResult, reward_stage1 /
-  reward_stage2); weights: 0.0 invalid, 0.3 valid-but-miss (Stage 1),
+  reward_stage2, plus the choice-protocol entry points
+  reward_stage1_choices / reward_stage2_choices / reward_for_choice_result
+  that decode choice ids to canonical category ids via the shared choice
+  parser BEFORE the same reward table applies); weights: 0.0 invalid, 0.3 valid-but-miss (Stage 1),
   1.0 correct, configurable ``stage2_partial`` for Stage 2
   (provisional / pending task-policy confirmation, default 0.5 is NOT a
   finalized reward policy);
@@ -151,7 +154,10 @@ Hydra configuration are added only when the first real RL vertical slice ships:
 2. a checked-in fixture that exercises the reward adapter through VeRL;
 3. a CPU contract test and a small GPU smoke launcher.
 
-At that point the VeRL-specific reward function should be a thin adapter around
-`reward_stage1` / `reward_stage2` (which already parse via the unified parser);
-algorithm changes then belong in VeRL configuration and algorithm-specific
-launchers, while task semantics remain in one place.
+At that point the VeRL-specific reward function is a thin adapter around
+`reward_stage1_choices` / `reward_stage2_choices` (Phase 12, `verl_adapter.py` -- routes
+VeRL `compute_score` by `<dataset>/stage<1|2>` to the choice-aware reward,
+which parses choice ids via the shared choice parser and decodes to canonical
+category ids before the unchanged reward table); algorithm changes then
+belong in VeRL configuration and algorithm-specific launchers, while task
+semantics remain in one place.
