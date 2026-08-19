@@ -124,7 +124,7 @@ def test_exporter_writes_messages_parquet_and_report(tmp_path):
     )["valid"] is True
 
 
-def test_stage1_prompt_catalog_contains_id_and_name(tmp_path):
+def test_stage1_prompt_catalog_uses_choice_ids_and_display_names(tmp_path):
     registry_path, config_path, _ = _write_inputs(tmp_path / "input")
     out = tmp_path / "out"
     export_sft_dataset(
@@ -138,8 +138,34 @@ def test_stage1_prompt_catalog_contains_id_and_name(tmp_path):
     rows = pq.read_table(out / "train.parquet").to_pylist()
     stage1 = next(row for row in rows if row["stage"] == "stage1")
     user = stage1["messages"][1]["content"]
-    assert '"category_id": "A"' in user and '"name": "alpha data"' in user
+    assert '"category_id"' not in user  # canonical ids never enter the prompt
+    assert '["1", "alpha data"]' in user
+    assert '"3"' in user  # every choice id is rendered
     assert "gamma desc" not in user  # descriptions stay out of Stage 1
+
+
+def test_assistant_answers_use_choice_ids_but_metadata_stays_canonical(tmp_path):
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+    export_sft_dataset(
+        tmp_path / "input" / "canonical" / "all.json",
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        corpus=_corpus_map(),
+    )
+    rows = pq.read_table(out / "train.parquet").to_pylist()
+    stage1 = next(row for row in rows if row["stage"].startswith("stage1"))
+    stage2 = next(row for row in rows if row["stage"].startswith("stage2"))
+    # GT "C" -> choice id 3; fixture candidates [C,A,B,D,E] -> choice ids 3,1,2,4,5
+    assert stage1["messages"][-1]["content"] == '{"candidates":["3","1","2","4","5"]}'
+    assert stage2["messages"][-1]["content"] == '{"answer":"1"}'
+    # messages speak choice ids, but metadata stays canonical category_id
+    assert stage1["ground_truth"] == "C"
+    assert stage2["ground_truth"] == "C"
+    assert stage1["candidates"] == ["C", "A", "B", "D", "E"]
+    assert stage2["candidates"] == ["C", "A", "B", "D", "E"]
 
 
 def test_stage2_prompt_resolves_corpus_by_category_id(tmp_path):
@@ -156,8 +182,10 @@ def test_stage2_prompt_resolves_corpus_by_category_id(tmp_path):
     rows = pq.read_table(out / "train.parquet").to_pylist()
     stage2 = next(row for row in rows if row["stage"] == "stage2")
     user = stage2["messages"][1]["content"]
+    assert '"id":"1"' in user  # local bundle id, not canonical id
     assert '"name":"alpha data"' in user
     assert '"descriptions":[]' in user and '"examples":["ex1"]' in user
+    assert '"category_id"' not in user
 
 
 def test_candidate_construction_is_deterministic_and_gt_first():
@@ -573,8 +601,8 @@ def test_validator_returns_structured_errors_for_wrong_answers(tmp_path):
         corpus=_corpus_map(),
     )
     rows = pq.read_table(out / "train.parquet").to_pylist()
-    rows[0]["messages"][-1]["content"] = '{"candidates":["A"]}'
-    rows[1]["messages"][-1]["content"] = '{"answer":"A"}'
+    rows[0]["messages"][-1]["content"] = '{"candidates":["1"]}'
+    rows[1]["messages"][-1]["content"] = '{"answer":"2"}'
     pq.write_table(pa.Table.from_pylist(rows), out / "train.parquet")
 
     report = validate_sft_dataset(out, registry_path, config_path, corpus=_corpus_map())

@@ -334,8 +334,26 @@ def _validate_row(
             expected_prompt.user,
         ]:
             errors.append("prompt does not match registry and task contract")
-        if stage == "stage1" and contents and contents[1].count('"category_id"') != len(registry.categories):
-            errors.append("stage1 prompt must render the full leaf registry catalog")
+        if stage == "stage1" and contents:
+            user = contents[1]
+            if '"category_id"' in user:
+                errors.append("stage1 prompt must not expose canonical category ids")
+            try:
+                catalog = json.loads(
+                    user.split("\n", 1)[1].split("\nField metadata:", 1)[0]
+                )
+            except (json.JSONDecodeError, AttributeError):
+                errors.append("stage1 prompt catalog must be a JSON array")
+            else:
+                if (
+                    not isinstance(catalog, list)
+                    or len(catalog) != len(registry.categories)
+                    or any(
+                        not (isinstance(entry, list) and len(entry) == 2)
+                        for entry in catalog
+                    )
+                ):
+                    errors.append("stage1 prompt must render the full leaf registry catalog")
     return errors
 
 

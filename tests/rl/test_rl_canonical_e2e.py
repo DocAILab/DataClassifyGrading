@@ -157,12 +157,26 @@ def test_no_unresolved_samples_in_exports(exports: dict) -> None:
 
 
 def test_stage1_candidate_universe_is_full_registry(exports: dict) -> None:
+    from agent.task import PromptChoiceRegistry
+
     for dataset, bundle in exports.items():
         registry = LeafRegistry.from_path(bundle["registry_path"])
         rows = pq.read_table(bundle["out"] / "train.parquet").to_pylist()
         stage1 = next(row for row in rows if row["extra_info"]["stage"] == "stage1")
         user = stage1["prompt"][1]["content"]
-        assert user.count('"category_id"') == len(registry.categories), dataset
+        # compact [choice_id, display_name] catalog; canonical ids never shown
+        assert '"category_id"' not in user, dataset
+        catalog = json.loads(user.split("\n", 1)[1].split("\nField metadata:", 1)[0])
+        assert len(catalog) == len(registry.categories), dataset
+        assert [entry[0] for entry in catalog] == [
+            str(index) for index in range(1, len(catalog) + 1)
+        ], dataset
+        display_names = [entry[1] for entry in catalog]
+        assert len(set(display_names)) == len(display_names), dataset
+        choices = PromptChoiceRegistry.from_registry(registry)
+        assert [choices.category_id_of(entry[0]) for entry in catalog] == list(
+            registry.ids
+        ), dataset
 
 
 def test_stage2_corpus_lookup_by_category_id(exports: dict) -> None:
