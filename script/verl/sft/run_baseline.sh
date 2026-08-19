@@ -3,10 +3,13 @@
 #
 # Trains on a Phase-8 choice-protocol SFT parquet split and records every
 # hyper-parameter + the resolved verl config so the baseline is fully
-# reproducible (this checkpoint seeds the later GRPO/RLOO/ReMax runs).
+# reproducible. The resulting checkpoint is a reproducible SFT baseline and a
+# candidate downstream-initialization artifact; it is NOT a frozen requirement,
+# and no specific checkpoint (only the base model Qwen/Qwen2.5-7B-Instruct) is
+# fixed for experiments.
 #
-# Pre-gates: contract validation (soft) + token-budget with the real model
-# chat template (hard, only blocks if a row exceeds MAX_LENGTH at
+# Pre-gates: contract validation (HARD: aborts on failure) + token-budget with
+# the real model chat template (HARD, only blocks if a row exceeds MAX_LENGTH at
 # truncation=error). Every run dumps:
 #   <OUTPUT_DIR>/hyperparams.json   (this launcher's explicit knobs)
 #   <OUTPUT_DIR>/train_config.json  (verl resolved Hydra config dump)
@@ -46,13 +49,21 @@ LORA_ALPHA="${LORA_ALPHA:-16}"
 TARGET_MODULES="${TARGET_MODULES:-all-linear}"
 ATTENTION_IMPL="${ATTENTION_IMPL:-sdpa}"
 GRAD_CKPT="${GRAD_CKPT:-true}"
-SAVE_FREQ="${SAVE_FREQ:-10}"
+SAVE_FREQ="${SAVE_FREQ:-50}"
 TEST_FREQ="${TEST_FREQ:-5}"
 NUM_WORKERS="${NUM_WORKERS:-0}"
-MAX_CKPT_KEEP="${MAX_CKPT_KEEP:-null}"
+# LoRA/FSDP checkpoints include the FULL base weights (~15GB per step for 7B),
+# so keep a bounded set and a low-frequency save default to avoid filling disk.
+MAX_CKPT_KEEP="${MAX_CKPT_KEEP:-4}"
 
 GPUS="${NUM_GPUS:-1}"
-GRAD_ACCUM=$(( TRAIN_BATCH_SIZE / (MICRO_BATCH_SIZE_PER_GPU * GPUS) ))
+_DP_EFF_BATCH=$(( MICRO_BATCH_SIZE_PER_GPU * GPUS ))
+if (( TRAIN_BATCH_SIZE % _DP_EFF_BATCH != 0 )); then
+  echo "error: TRAIN_BATCH_SIZE ($TRAIN_BATCH_SIZE) must be divisible by" \
+       "MICRO_BATCH_SIZE_PER_GPU x GPUS ($_DP_EFF_BATCH); refusing to silently truncate" >&2
+  exit 2
+fi
+GRAD_ACCUM=$(( TRAIN_BATCH_SIZE / _DP_EFF_BATCH ))
 
 export TOKENIZERS_PARALLELISM=false
 export HYDRA_FULL_ERROR=1
@@ -74,17 +85,17 @@ for split in train val test; do
   fi
 done
 
-# ---- soft gate: contract validation report ----
-if "$PYTHON_BIN" -m script.verl.sft.validate \
+# ---- hard gate: contract validation (never train on contract-invalid data) ----
+if ! "$PYTHON_BIN" -m script.verl.sft.validate \
     --dataset-dir "$DATA_DIR" \
     --registry "cfg/task/registry/$DATASET.registry.json" \
     --corpus "cfg/task/corpus/$DATASET.corpus.json" \
     --metadata-fields field_name field_description \
     --report "$OUTPUT_DIR/validate.report.json" > "$OUTPUT_DIR/validate.out" 2>&1; then
-  echo "[baseline] validate: valid"
-else
-  echo "[baseline] validate: FAILED (see $OUTPUT_DIR/validate.out)" >&2
+  echo "error: contract validation failed (see $OUTPUT_DIR/validate.out)" >&2
+  exit 2
 fi
+echo "[baseline] validate: valid"
 
 # ---- hard gate: token budget ----
 if ! "$PYTHON_BIN" -m script.verl.sft.check_token_budget \
