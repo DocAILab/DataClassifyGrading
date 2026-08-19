@@ -1,14 +1,65 @@
-"""Strict parsers for model outputs in the two-stage classification task."""
+"""Strict parsers for model outputs in the two-stage classification task.
+
+Two layers, sharing the exact JSON-shape parsers:
+
+- ``parse_stage1_output`` / ``parse_stage2_output`` raise
+  ``PredictionFormatError`` on malformed JSON/schema (used by SFT
+  validation);
+- ``check_stage1_output`` / ``check_stage2_output`` never raise on model
+  output: they return a structured ``ParseResult`` separating format
+  validity (JSON + schema) from constraint validity (candidate count /
+  uniqueness / registry membership, or answer membership). RL rewards and
+  the evaluator consume this layer so malformed model output can never
+  crash a training loop.
+"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 import json
-from typing import Any
+from typing import Any, Sequence
+
+from .contracts import LeafRegistry
 
 
 class PredictionFormatError(ValueError):
     """Raised when a model output does not match the exact JSON shape."""
+
+
+@dataclass(frozen=True)
+class ParseResult:
+    """Structured parse outcome for one model output; never raised.
+
+    - format_valid: the output is a JSON object with exactly the required
+      schema (stage1: only ``candidates``; stage2: only ``answer``).
+    - constraint_valid: the parsed values satisfy the task constraints
+      (stage1: exactly ``expected_count`` unique candidates from the
+      registry; stage2: the answer belongs to the candidate list).
+    - output: the parsed shape (when format_valid), so consumers never
+      need to re-parse.
+    - errors: human-readable failure reasons; empty when both valid.
+    """
+
+    format_valid: bool
+    constraint_valid: bool
+    output: "Stage1Output | Stage2Output | None" = None
+    errors: tuple[str, ...] = ()
+
+    @property
+    def ok(self) -> bool:
+        return self.format_valid and self.constraint_valid
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.format_valid, bool) or not isinstance(
+            self.constraint_valid, bool
+        ):
+            raise ValueError("ParseResult validity flags must be bool")
+        if self.errors and self.format_valid and self.constraint_valid:
+            raise ValueError("a fully valid ParseResult must carry no errors")
+        if not isinstance(self.errors, tuple) or not all(
+            isinstance(error, str) for error in self.errors
+        ):
+            raise ValueError("ParseResult errors must be a tuple of strings")
 
 
 @dataclass(frozen=True)
@@ -53,3 +104,66 @@ def parse_stage2_output(text: str) -> Stage2Output:
     if not isinstance(answer, str):
         raise PredictionFormatError("stage2 answer must be a string")
     return Stage2Output(answer)
+
+
+def _check_candidates(
+    candidates: tuple[str, ...],
+    registry: LeafRegistry,
+    expected_count: int,
+) -> tuple[bool, tuple[str, ...]]:
+    """Stage 1 constraint checks: exact count, no duplicates, all in registry."""
+    errors: list[str] = []
+    if len(candidates) != expected_count:
+        errors.append(
+            f"stage1 prediction must contain exactly {expected_count} candidates"
+        )
+    if len(set(candidates)) != len(candidates):
+        errors.append("stage1 candidates must be unique")
+    if any(candidate not in registry.ids for candidate in candidates):
+        errors.append("stage1 candidates must belong to the leaf registry")
+    return (not errors, tuple(errors))
+
+
+def check_stage1_output(
+    text: str,
+    *,
+    registry: LeafRegistry,
+    expected_count: int = 5,
+) -> ParseResult:
+    """Unified Stage 1 parser + contract validation; never raises on model output.
+
+    Validates, in order: JSON object, exact schema (only ``candidates``),
+    candidate count, uniqueness, and registry membership. The parsed
+    candidates are kept on the result even when constraints fail so callers
+    can inspect what the model actually produced.
+    """
+    if expected_count < 1:
+        raise ValueError("expected_count must be positive")
+    try:
+        output = parse_stage1_output(text)
+    except PredictionFormatError as exc:
+        return ParseResult(False, False, None, (str(exc),))
+    valid, errors = _check_candidates(output.candidates, registry, expected_count)
+    return ParseResult(True, valid, output, errors)
+
+
+def check_stage2_output(text: str, *, candidates: Sequence[str]) -> ParseResult:
+    """Unified Stage 2 parser + contract validation; never raises on model output.
+
+    Validates: JSON object, exact schema (only ``answer``), and answer
+    membership in the candidate list. Candidates originate from the dataset
+    (not the model), so an invalid candidate list is a programming error
+    and raises.
+    """
+    if isinstance(candidates, (str, bytes)) or not candidates:
+        raise ValueError("stage2 candidates must be a non-empty sequence of strings")
+    candidate_ids = tuple(candidates)
+    if not all(isinstance(candidate, str) and candidate for candidate in candidate_ids):
+        raise ValueError("stage2 candidates must be non-empty strings")
+    try:
+        output = parse_stage2_output(text)
+    except PredictionFormatError as exc:
+        return ParseResult(False, False, None, (str(exc),))
+    valid = output.answer in candidate_ids
+    errors = () if valid else ("stage2 answer must be one of the candidates",)
+    return ParseResult(True, valid, output, errors)
