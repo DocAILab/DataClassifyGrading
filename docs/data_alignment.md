@@ -7,12 +7,20 @@
 
 ## 1. dataset ↔ 对应 corpus/standard
 
-| dataset | 对齐 source | leaf 匹配 | 备注 |
-|---|---|---|---|
-| finance | `corpus:finance` / `financial_standards_dict.json` | 20/25（94%） | 语料 220 leaf ≫ 标注 25；fs 是 3 段路径（L1-L2-leaf），数据集是 4 级，**不把 join(level_1..4) 当身份** |
-| infra | `standard:guanji_dict.json` | 4/4（100%） | infra ⊂ shougang，共享 code 空间 |
-| pers_info | `standard:education_dict.json` | 4/18（≈20%） | 单级分类（仅 level_4）；14/18 leaf 无任何语料定义 |
-| shougang | `standard:guanji_dict.json` | 192/193（94.7%） | 排除 `——` 占位符；code 唯一、字母↔L1 100% |
+两种覆盖率口径（均来自生成报告，精确匹配/空白归一化）：
+
+- **unique leaf coverage**：数据集唯一 leaf 中能在语料命中的比例（leaf 维度）；
+- **sample leaf_exact coverage**：样本级精确匹配率（样本维度）。
+
+| dataset | 对齐 source | unique leaf coverage | sample leaf_exact coverage | 备注 |
+|---|---|---|---|---|
+| finance | `corpus:finance` / `financial_standards_dict.json` | 20/25（80%） | 534/568（94.0%） | 语料 220 leaf ≫ 标注 25；fs 是 3 段路径（L1-L2-leaf），数据集是 4 级，**不把 join(level_1..4) 当身份** |
+| infra | `standard:guanji_dict.json` | 4/4（100%） | 64/64（100%） | infra ⊂ shougang，共享 code 空间 |
+| pers_info | `standard:education_dict.json` | 4/18（≈22%） | 35/176（19.9%） | 单级分类（仅 level_4）；14/18 leaf 无任何语料定义 |
+| shougang | `standard:guanji_dict.json` | 192/193（≈99.5%） | 18393/19415（94.7%） | 样本口径下未匹配的 1022 条即 `——` 占位符（structural skip）；code 唯一、字母↔L1 100% |
+
+> 注意：finance/shougang 的样本级匹配率（94.0%/94.7%）与 unique leaf
+> 覆盖（80%/≈99.5%）分母不同（样本数 vs leaf 数），不要混读。
 
 训练推荐 leaf level 全部为 **level_4**。
 

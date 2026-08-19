@@ -5,8 +5,10 @@ truth for registry, corpus, ground truth, SFT labels, evaluation and reward.
 
 ## 1. One identity: canonical `category_id`
 
-- **`target.category_id` is the ONLY training label** across SFT and RL. It is
-  unique within one dataset's `LeafRegistry`.
+- **`target.category_id` is the only canonical semantic ground-truth identity**
+  across SFT and RL. It is unique within one dataset's `LeafRegistry`.
+  Model-facing supervision/actions use derived choice ids (see
+  `docs/design/prompt_interface.md`) — the model never generates canonical ids.
 - `classification.level_1..level_4` are **provenance only** — never read as a
   label, never fallback. There is deliberately **no `level_4` fallback**.
 - Prompt-facing **choice ids are a derived, decoupled view** (see

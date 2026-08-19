@@ -9,9 +9,10 @@ is decoded to canonical ids at the LLM boundary.
 - Canonical ids are internal identity (`finance:业务.账户信息.基本信息`) — long,
   verbose, and **must not become model actions** (generated ids would be
   brittle and leak internal taxonomy structure).
-- Choice ids are compact (`"1".."N"`), deterministic, and give the model a small
-  action space. This is a **decoupling/identity** decision, not only a token
-  reduction one (see `docs/prompt_length_analysis.md` §6).
+- Choice ids are compact (`"1".."N"`), deterministic, and provide a **compact
+  action representation** (they do not reduce the number of categories). This
+  is a **decoupling/identity** decision, not only a token reduction one (see
+  `docs/prompt_length_analysis.md` §6).
 
 ## 2. Mapping (`src/agent/task/prompt_choices.py`)
 

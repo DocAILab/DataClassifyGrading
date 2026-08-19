@@ -41,9 +41,9 @@ old canonical-id stats, choice_id/ = new choice-protocol stats).
 Per-record combined mean (train): finance 6483.7 → 3029.4 tokens (**−53.3%**,
 abs. saving ≈ 3454); infra/shougang 5393 → 2876 (**−46.7%**); pers_info 737.9 →
 446.8 (−39.5%). ~99% of the absolute saving comes from **Stage 1**
-(finance/infra/shougang ≈ 98–99%), where the full 233-category registry used to
-be rendered with verbose canonical ids and is now a compact
-`[choice_id, display_name]` catalog. Stage 2 (the 5-candidate bundle) was
+(finance/infra/shougang ≈ 98–99%), where the full registry (finance/infra/
+shougang 233 categories; pers_info 18) used to be rendered with verbose
+canonical ids and is now a compact `[choice_id, display_name]` catalog. Stage 2 (the 5-candidate bundle) was
 already compact, so it gains only 7–15%.
 
 ## 3. finance vs shougang: which is longest now — and a reversal
