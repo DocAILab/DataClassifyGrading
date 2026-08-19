@@ -4,7 +4,7 @@
 
 ```text
 raw
-  ↓ preprocessing（学长）
+  ↓ preprocessing
 processed
   ↓ canonical resolution（script/canonical，冻结契约）
 canonical
@@ -13,7 +13,7 @@ parquet（data/sft、data/rl）
 ```
 
 - `raw/`：source of truth 的原始导入物（CSV/XLSX / 原始包）。**训练脚本不得直接修改**。
-  当前仓库只保留占位（`data/raw/.gitkeep`）；真原始表格由学长侧
+  当前仓库只保留占位（`data/raw/.gitkeep`）；真原始表格由数据维护方在
   `data/raw/<dataset>.{csv,xlsx}` 提供（preprocessing `prepare` 默认查找该路径）。
 - `processed/<dataset>/`：预处理结果（`all.json` + `train.json` / `val.json` /
   `test.json` + `split_report.json`）。split 按 record id 隔离，是后续 canonical 的
