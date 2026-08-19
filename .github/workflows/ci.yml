@@ -68,3 +68,5 @@ jobs:
         run: python -m pytest -q tests/sft/test_verl_compat.py
       - name: Load exported RL parquet through VeRL RLHFDataset
         run: python -m pytest -q tests/rl/test_rl_verl_compat.py
+      - name: Drive choice reward through verL reward cfg loader (CPU reward loop)
+        run: python -m pytest -q tests/rl/test_rl_verl_adapter_compat.py
