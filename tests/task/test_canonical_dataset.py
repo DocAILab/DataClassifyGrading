@@ -1,7 +1,7 @@
 """Stage-3B tests: canonical dataset resolution against the LeafRegistry.
 
 Fixture tests run on checked-in standards_map files / inline data (CI-safe).
-Real-data integration assertions run only when data/<dataset>/all.json is
+Real-data integration assertions run only when data/processed/<dataset>/all.json is
 available locally and exercise the full build_canonical_dataset pipeline.
 """
 
@@ -233,8 +233,8 @@ def test_pers_info_without_description_still_resolves(pers_registry: LeafRegistr
 
 
 def _write_tmp_dataset(tmp_path: Path, dataset: str, records: list[dict]) -> None:
-    data_dir = tmp_path / "data"
-    out = data_dir / dataset / "all.json"
+    data_root = tmp_path / "data"
+    out = data_root / "processed" / dataset / "all.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as handle:
         json.dump(records, handle, ensure_ascii=False)
@@ -260,7 +260,8 @@ def test_pipeline_preserves_classification_and_keeps_unresolved(
     _write_tmp_dataset(tmp_path, "finance", records)
     result = build_canonical_dataset(
         "finance",
-        data_dir=tmp_path / "data",
+        processed_dir=tmp_path / "data" / "processed",
+        canonical_dir=tmp_path / "data" / "canonical",
         registry_dir=REGISTRY_DIR,
         corpus_dir=CORPUS_DIR,
         overwrite=False,
@@ -274,7 +275,7 @@ def test_pipeline_preserves_classification_and_keeps_unresolved(
     }
     assert result.resolved_targets_in_registry is True
 
-    with (tmp_path / "data" / "finance" / "canonical" / "all.json").open(encoding="utf-8") as handle:
+    with (tmp_path / "data" / "canonical" / "finance" / "all.json").open(encoding="utf-8") as handle:
         canonical = json.load(handle)
     by_id = {record["id"]: record for record in canonical}
     # classification is provenance, never rewritten (whitespace preserved)
@@ -299,7 +300,8 @@ def _run_cli(tmp_path: Path, *extra: str) -> int:
 
     return targets_cli.main(
         [
-            "--data-dir", str(tmp_path / "data"),
+            "--processed-dir", str(tmp_path / "data" / "processed"),
+            "--canonical-dir", str(tmp_path / "data" / "canonical"),
             "--registry-dir", str(REGISTRY_DIR),
             "--corpus-dir", str(CORPUS_DIR),
             *extra,
@@ -316,8 +318,8 @@ def test_cli_first_run_succeeds_and_second_fails(tmp_path: Path) -> None:
     _write_tmp_dataset(tmp_path, "finance", records)
     # first run without --overwrite on a fresh out-dir succeeds
     assert _run_cli(tmp_path, "--dataset", "finance") == 0
-    assert (tmp_path / "data" / "finance" / "canonical" / "all.json").is_file()
-    assert (tmp_path / "data" / "finance" / "canonical" / "resolution_report.json").is_file()
+    assert (tmp_path / "data" / "canonical" / "finance" / "all.json").is_file()
+    assert (tmp_path / "data" / "canonical" / "finance" / "resolution_report.json").is_file()
     # second run without --overwrite fails fast before writing anything
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         _run_cli(tmp_path, "--dataset", "finance")
@@ -330,11 +332,11 @@ def test_cli_is_deterministic_across_two_runs(tmp_path: Path) -> None:
     ]
     _write_tmp_dataset(tmp_path, "finance", records)
     assert _run_cli(tmp_path, "--dataset", "finance") == 0
-    first_all = (tmp_path / "data" / "finance" / "canonical" / "all.json").read_bytes()
-    first_report = (tmp_path / "data" / "finance" / "canonical" / "resolution_report.json").read_bytes()
+    first_all = (tmp_path / "data" / "canonical" / "finance" / "all.json").read_bytes()
+    first_report = (tmp_path / "data" / "canonical" / "finance" / "resolution_report.json").read_bytes()
     assert _run_cli(tmp_path, "--dataset", "finance", "--overwrite") == 0
-    second_all = (tmp_path / "data" / "finance" / "canonical" / "all.json").read_bytes()
-    second_report = (tmp_path / "data" / "finance" / "canonical" / "resolution_report.json").read_bytes()
+    second_all = (tmp_path / "data" / "canonical" / "finance" / "all.json").read_bytes()
+    second_report = (tmp_path / "data" / "canonical" / "finance" / "resolution_report.json").read_bytes()
     assert first_all == second_all
     assert first_report == second_report
 
@@ -376,7 +378,8 @@ def test_code_unresolved_pipeline_no_crash(tmp_path: Path) -> None:
     )
     result = build_canonical_dataset(
         "shougang",
-        data_dir=tmp_path / "data",
+        processed_dir=tmp_path / "data" / "processed",
+        canonical_dir=tmp_path / "data" / "canonical",
         registry_dir=REGISTRY_DIR,  # real shared guanji registry (233)
         corpus_dir=tmp_path / "corpus",
     )
@@ -385,7 +388,7 @@ def test_code_unresolved_pipeline_no_crash(tmp_path: Path) -> None:
         "count": 1,
         "by_leaf": {"科研进程管控": 1},
     }
-    with (tmp_path / "data" / "shougang" / "canonical" / "all.json").open(encoding="utf-8") as handle:
+    with (tmp_path / "data" / "canonical" / "shougang" / "all.json").open(encoding="utf-8") as handle:
         canonical = json.load(handle)
     by_id = {record["id"]: record for record in canonical}
     assert by_id["has-code"]["resolution_status"] == "resolved"
@@ -409,21 +412,22 @@ def test_cross_dataset_fail_fast_no_partial_writes(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError, match="input dataset not found"):
         targets_cli.main(
             [
-                "--data-dir", str(tmp_path / "data"),
+                "--processed-dir", str(tmp_path / "data" / "processed"),
+            "--canonical-dir", str(tmp_path / "data" / "canonical"),
                 "--registry-dir", str(REGISTRY_DIR),
                 "--corpus-dir", str(CORPUS_DIR),
                 "--datasets", "finance", "shougang",
             ]
         )
-    assert not (tmp_path / "data" / "finance" / "canonical").exists()
-    assert not (tmp_path / "data" / "shougang" / "canonical").exists()
+    assert not (tmp_path / "data" / "canonical" / "finance").exists()
+    assert not (tmp_path / "data" / "canonical" / "shougang").exists()
 
 
 def test_invalid_record_non_mapping_is_audited(tmp_path: Path) -> None:
     """Non-object records (bare strings in the JSON array) resolve to
     invalid_record instead of raising AttributeError, and stay auditable."""
-    data_dir = tmp_path / "data"
-    out = data_dir / "finance" / "all.json"
+    data_root = tmp_path / "data"
+    out = data_root / "processed" / "finance" / "all.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as handle:
         json.dump(
@@ -438,12 +442,12 @@ def test_invalid_record_non_mapping_is_audited(tmp_path: Path) -> None:
         )
     result = build_canonical_dataset(
         "finance",
-        data_dir=data_dir,
+        processed_dir=data_root / "processed", canonical_dir=data_root / "canonical",
         registry_dir=REGISTRY_DIR,
         corpus_dir=CORPUS_DIR,
     )
     assert result.status_counts == {"invalid_record": 3, "resolved": 1}
-    with (data_dir / "finance" / "canonical" / "all.json").open(encoding="utf-8") as handle:
+    with (data_root / "canonical" / "finance" / "all.json").open(encoding="utf-8") as handle:
         canonical = json.load(handle)
     invalid = [r for r in canonical if r["resolution_status"] == "invalid_record"]
     assert len(invalid) == 3
@@ -461,14 +465,14 @@ def test_invalid_record_non_mapping_is_audited(tmp_path: Path) -> None:
 @pytest.fixture(scope="module")
 def real_data_dir() -> Path | None:
     path = ROOT / "data"
-    if not (path / "finance" / "all.json").is_file():
+    if not (path / "processed" / "finance" / "all.json").is_file():
         return None
     return path
 
 
 def _copy_real_input(tmp_path: Path, dataset: str, real_data: Path) -> Path:
-    src = real_data / dataset / "all.json"
-    dst = tmp_path / "data" / dataset / "all.json"
+    src = real_data / "processed" / dataset / "all.json"
+    dst = tmp_path / "data" / "processed" / dataset / "all.json"
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dst)
     return dst
@@ -479,7 +483,8 @@ def test_real_finance_counts(tmp_path: Path, real_data_dir: Path | None) -> None
         pytest.skip("real data/ not available")
     _copy_real_input(tmp_path, "finance", real_data_dir)
     result = build_canonical_dataset(
-        "finance", data_dir=tmp_path / "data",
+        "finance", processed_dir=tmp_path / "data" / "processed",
+        canonical_dir=tmp_path / "data" / "canonical",
         registry_dir=REGISTRY_DIR, corpus_dir=CORPUS_DIR,
     )
     assert result.input_records == 568
@@ -507,7 +512,8 @@ def test_real_infra_counts(tmp_path: Path, real_data_dir: Path | None) -> None:
         pytest.skip("real data/ not available")
     _copy_real_input(tmp_path, "infra", real_data_dir)
     result = build_canonical_dataset(
-        "infra", data_dir=tmp_path / "data",
+        "infra", processed_dir=tmp_path / "data" / "processed",
+        canonical_dir=tmp_path / "data" / "canonical",
         registry_dir=REGISTRY_DIR, corpus_dir=CORPUS_DIR,
     )
     assert result.status_counts == {"resolved": 64}
@@ -519,7 +525,8 @@ def test_real_pers_info_counts(tmp_path: Path, real_data_dir: Path | None) -> No
         pytest.skip("real data/ not available")
     _copy_real_input(tmp_path, "pers_info", real_data_dir)
     result = build_canonical_dataset(
-        "pers_info", data_dir=tmp_path / "data",
+        "pers_info", processed_dir=tmp_path / "data" / "processed",
+        canonical_dir=tmp_path / "data" / "canonical",
         registry_dir=REGISTRY_DIR, corpus_dir=CORPUS_DIR,
     )
     assert result.status_counts == {"resolved": 176}
@@ -531,7 +538,8 @@ def test_real_shougang_counts(tmp_path: Path, real_data_dir: Path | None) -> Non
         pytest.skip("real data/ not available")
     _copy_real_input(tmp_path, "shougang", real_data_dir)
     result = build_canonical_dataset(
-        "shougang", data_dir=tmp_path / "data",
+        "shougang", processed_dir=tmp_path / "data" / "processed",
+        canonical_dir=tmp_path / "data" / "canonical",
         registry_dir=REGISTRY_DIR, corpus_dir=CORPUS_DIR,
     )
     assert result.status_counts == {

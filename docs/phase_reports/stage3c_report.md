@@ -1,5 +1,11 @@
 # 阶段 3C：canonical data contract 接入 SFT 数据流水线
 
+> **2026-08 data layout migration note**：本文档正文中的路径为迁移前的旧布局
+> （`data/<ds>/all.json` + `data/<ds>/canonical/`）。新布局：
+> `data/processed/<ds>/all.json`（含 splits）→ `data/canonical/<ds>/all.json`
+> （canonical 契约）→ `data/sft/<ds>/`、`data/rl/<ds>/`（parquet）。
+> 内容/语义未变，仅目录结构。
+
 ## 1. 修改/新增文件
 
 修改：

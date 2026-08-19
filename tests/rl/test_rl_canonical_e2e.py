@@ -1,7 +1,7 @@
 """End-to-end stage-4A validation on real data (skipped in CI without data/).
 
 Exercises the full RL data path on the four production datasets:
-data/<ds>/canonical/all.json -> resolved-only export -> VeRL v0.8.0 RL
+data/canonical/<ds>/all.json -> resolved-only export -> VeRL v0.8.0 RL
 parquet, asserting registry consistency, candidate-fidelity, determinism,
 VeRL-compatible column shape and validate_rl_dataset acceptance.
 """
@@ -24,6 +24,8 @@ from agent.training.rl import (
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
+CANONICAL = DATA / "canonical"
+PROCESSED = DATA / "processed"
 REGISTRY_DIR = ROOT / "cfg" / "task" / "registry"
 CORPUS_DIR = ROOT / "cfg" / "task" / "corpus"
 DATASETS = ("finance", "infra", "pers_info", "shougang")
@@ -34,12 +36,12 @@ METADATA_FIELDS = ["field_name", "field_description"]
 
 
 def _trainable_resolved(dataset: str) -> int:
-    with (DATA / dataset / "canonical" / "all.json").open(encoding="utf-8") as handle:
+    with (CANONICAL / dataset / "all.json").open(encoding="utf-8") as handle:
         canonical = json.load(handle)
     by_id = {str(record.get("id")): record for record in canonical}
     split_ids: set[str] = set()
     for split in ("train", "val", "test"):
-        with (DATA / dataset / f"{split}.json").open(encoding="utf-8") as handle:
+        with (PROCESSED / dataset / f"{split}.json").open(encoding="utf-8") as handle:
             for record in json.load(handle):
                 split_ids.add(str(record.get("id")))
     return sum(
@@ -51,7 +53,7 @@ def _trainable_resolved(dataset: str) -> int:
 
 @pytest.fixture(scope="module")
 def real_data_available() -> bool:
-    return all((DATA / dataset / "canonical" / "all.json").is_file() for dataset in DATASETS)
+    return all((CANONICAL / dataset / "all.json").is_file() for dataset in DATASETS)
 
 
 @pytest.fixture(scope="module")
@@ -70,8 +72,8 @@ def exports(tmp_path_factory, real_data_available: bool):
         config = TaskConfig.from_mapping({"metadata_fields": list(METADATA_FIELDS)})
         out = out_root / dataset
         report = export_rl_dataset(
-            DATA / dataset / "canonical" / "all.json",
-            DATA / dataset,
+            CANONICAL / dataset / "all.json",
+            PROCESSED / dataset,
             out,
             dataset,
             registry_path,
@@ -102,7 +104,7 @@ def test_resolved_counts_match_canonical_pipeline(exports: dict) -> None:
 
 def test_canonical_resolved_counts_are_stable(exports: dict) -> None:
     for dataset, expected in EXPECTED_CANONICAL_RESOLVED.items():
-        with (DATA / dataset / "canonical" / "all.json").open(encoding="utf-8") as handle:
+        with (CANONICAL / dataset / "all.json").open(encoding="utf-8") as handle:
             canonical = json.load(handle)
         resolved = sum(
             1 for record in canonical if record.get("resolution_status") == "resolved"
@@ -142,9 +144,9 @@ def test_no_assistant_gold_and_no_algorithm_fields(exports: dict) -> None:
 def test_no_unresolved_samples_in_exports(exports: dict) -> None:
     for dataset, bundle in exports.items():
         for split, details in bundle["report"]["splits"].items():
-            with (DATA / dataset / f"{split}.json").open(encoding="utf-8") as handle:
+            with (PROCESSED / dataset / f"{split}.json").open(encoding="utf-8") as handle:
                 split_records = json.load(handle)
-            with (DATA / dataset / "canonical" / "all.json").open(encoding="utf-8") as handle:
+            with (CANONICAL / dataset / "all.json").open(encoding="utf-8") as handle:
                 canonical = json.load(handle)
             canonical_by_id = {str(record.get("id")): record for record in canonical}
             unresolved_in_split = sum(
@@ -203,8 +205,8 @@ def test_export_is_deterministic(exports: dict, tmp_path: Path) -> None:
     for dataset, bundle in exports.items():
         out2 = tmp_path / f"{dataset}-again"
         report2 = export_rl_dataset(
-            DATA / dataset / "canonical" / "all.json",
-            DATA / dataset,
+            CANONICAL / dataset / "all.json",
+            PROCESSED / dataset,
             out2,
             dataset,
             bundle["registry_path"],

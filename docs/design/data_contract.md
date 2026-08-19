@@ -15,7 +15,7 @@ truth for registry, corpus, ground truth, SFT labels, evaluation and reward.
   `docs/design/prompt_interface.md`); they never leak back into canonical
   records or reward semantics.
 
-## 2. Canonical sample schema (`data/<dataset>/canonical/all.json`)
+## 2. Canonical sample schema (`data/canonical/<dataset>/all.json`)
 
 Input sample keeps the original fields (`classification`, `metadata`,
 `data_level`, `label_status`, …) untouched as provenance. The resolver
@@ -72,7 +72,7 @@ appends:
 Only records with `resolution_status == "resolved"` **and** `target.category_id ∈
 LeafRegistry` **and** `target.leaf_name == registry.get(category_id).name`
 enter training; violations fail fast (no silent skip). Split membership follows
-the original `data/<dataset>/{train,val,test}.json` by record id. `canonical`
+the original `data/processed/<dataset>/{train,val,test}.json` by record id. `canonical`
 resolved / trainable counts (trainable = resolved within split boundaries):
 
 | dataset | canonical resolved | trainable | outside splits |

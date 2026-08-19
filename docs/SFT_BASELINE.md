@@ -28,7 +28,7 @@ VERL_ENV_DIR=<persistent-disk>/envs/verl \
 ## Export
 
 Training labels come **exclusively** from the canonical dataset contract:
-records are read from `data/<dataset>/canonical/all.json`, only
+records are read from `data/canonical/<dataset>/all.json`, only
 `resolution_status == "resolved"` records with a target whose `category_id`
 belongs to the LeafRegistry enter training, and the ground truth is always
 `target.category_id`. `classification.level_1..level_4` stay provenance only;
@@ -44,8 +44,8 @@ resolves the five candidates by category_id against the canonical corpus.
 
 ```bash
 python -m script.verl.sft.export \
-  --canonical data/pers_info/canonical/all.json \
-  --split-dir data/pers_info \
+  --canonical data/canonical/pers_info/all.json \
+  --split-dir data/processed/pers_info \
   --output-dir data/sft/pers_info \
   --registry cfg/task/registry/pers_info.registry.json \
   --corpus cfg/task/corpus/pers_info.corpus.json \

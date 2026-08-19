@@ -9,13 +9,17 @@ absent from the universe (missing_leaf) stay unresolved and are never
 auto-repaired.
 
 Output design (per dataset):
-    data/<dataset>/canonical/all.json
+    data/canonical/<dataset>/all.json
         every input record, unchanged (classification untouched), plus:
           - "resolution_status": one of the ResolutionStatus values
           - "target": canonical target (only for resolved records)
-    data/<dataset>/canonical/resolution_report.json
+    data/canonical/<dataset>/resolution_report.json
         status counts, unresolved details, registry facts, deterministic
         metadata (input sha256; no timestamps, no machine-local paths).
+
+Input runs from data/processed/<dataset>/all.json (preprocessing output);
+canonical is a pure path-renumbering of the processed layer, never a rewrite
+of samples / labels / split membership.
 """
 
 from __future__ import annotations
@@ -163,18 +167,23 @@ def resolve_record(
 def prepare_canonical_dataset(
     dataset: str,
     *,
-    data_dir: str | Path,
+    processed_dir: str | Path,
+    canonical_dir: str | Path,
     registry_dir: str | Path,
     corpus_dir: str | Path,
 ) -> tuple[CanonicalDatasetResult, list[dict[str, Any]]]:
     """Load, validate, resolve and build the report for one dataset.
 
-    Pure computation: writes nothing. The caller decides when to write via
-    write_canonical_dataset(), which enables cross-dataset fail-fast (no
-    partial outputs when any selected dataset fails).
+    Reads the processed records (``processed_dir/<dataset>/all.json``) and
+    resolves them against the LeafRegistry; the canonical contract is targeted
+    at ``canonical_dir/<dataset>/all.json``. Pure computation: writes nothing.
+    The caller decides when to write via write_canonical_dataset(), which
+    enables cross-dataset fail-fast (no partial outputs when any selected
+    dataset fails).
     """
-    data_dir = Path(data_dir)
-    input_path = data_dir / dataset / "all.json"
+    processed_dir = Path(processed_dir)
+    canonical_dir = Path(canonical_dir)
+    input_path = processed_dir / dataset / "all.json"
     if not input_path.is_file():
         raise FileNotFoundError(f"input dataset not found: {input_path}")
 
@@ -250,7 +259,7 @@ def prepare_canonical_dataset(
                 code_unresolved_by_leaf[result.leaf] += 1
         output_records.append(canonical)
 
-    out_dir = data_dir / dataset / "canonical"
+    out_dir = canonical_dir / dataset
     out_all = out_dir / "all.json"
 
     unresolved_details: dict[str, Any] = {
@@ -308,15 +317,22 @@ def write_canonical_dataset(
 def build_canonical_dataset(
     dataset: str,
     *,
-    data_dir: str | Path,
+    processed_dir: str | Path,
+    canonical_dir: str | Path,
     registry_dir: str | Path,
     corpus_dir: str | Path,
     overwrite: bool = False,
 ) -> CanonicalDatasetResult:
-    """Convenience wrapper: prepare + overwrite/existence check + write."""
-    data_dir = Path(data_dir)
-    out_all = data_dir / dataset / "canonical" / "all.json"
-    out_report = data_dir / dataset / "canonical" / "resolution_report.json"
+    """Convenience wrapper: prepare + overwrite/existence check + write.
+
+    Reads processed records from ``processed_dir/<dataset>/all.json`` and
+    writes the canonical contract to ``canonical_dir/<dataset>/all.json`` +
+    ``resolution_report.json``.
+    """
+    processed_dir = Path(processed_dir)
+    canonical_dir = Path(canonical_dir)
+    out_all = canonical_dir / dataset / "all.json"
+    out_report = canonical_dir / dataset / "resolution_report.json"
     if (out_all.exists() or out_report.exists()) and not overwrite:
         raise FileExistsError(
             f"canonical output exists for {dataset}: {out_all.parent} "
@@ -324,7 +340,8 @@ def build_canonical_dataset(
         )
     result, output_records = prepare_canonical_dataset(
         dataset,
-        data_dir=data_dir,
+        processed_dir=processed_dir,
+        canonical_dir=canonical_dir,
         registry_dir=registry_dir,
         corpus_dir=corpus_dir,
     )

@@ -1,6 +1,6 @@
 """End-to-end stage-3C validation on real data (skipped in CI without data/).
 
-Exercises the full canonical pipeline: data/<ds>/canonical/all.json ->
+Exercises the full canonical pipeline: data/canonical/<ds>/all.json ->
 resolved-only export -> stage1/stage2 parquet, asserting registry
 consistency, universe completeness, determinism and VeRL-readable output.
 """
@@ -19,6 +19,8 @@ from agent.training.sft import export_sft_dataset, validate_sft_dataset
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
+CANONICAL = DATA / "canonical"
+PROCESSED = DATA / "processed"
 REGISTRY_DIR = ROOT / "cfg" / "task" / "registry"
 CORPUS_DIR = ROOT / "cfg" / "task" / "corpus"
 DATASETS = ("finance", "infra", "pers_info", "shougang")
@@ -31,12 +33,12 @@ METADATA_FIELDS = ["field_name", "field_description"]
 def _trainable_resolved(dataset: str) -> int:
     """Resolved canonical records whose id lies inside the original split
     boundaries (computed from the real data, never hard-coded)."""
-    with (DATA / dataset / "canonical" / "all.json").open(encoding="utf-8") as handle:
+    with (CANONICAL / dataset / "all.json").open(encoding="utf-8") as handle:
         canonical = json.load(handle)
     by_id = {str(record.get("id")): record for record in canonical}
     split_ids: set[str] = set()
     for split in ("train", "val", "test"):
-        with (DATA / dataset / f"{split}.json").open(encoding="utf-8") as handle:
+        with (PROCESSED / dataset / f"{split}.json").open(encoding="utf-8") as handle:
             for record in json.load(handle):
                 split_ids.add(str(record.get("id")))
     return sum(
@@ -48,7 +50,7 @@ def _trainable_resolved(dataset: str) -> int:
 
 @pytest.fixture(scope="module")
 def real_data_available() -> bool:
-    return all((DATA / dataset / "canonical" / "all.json").is_file() for dataset in DATASETS)
+    return all((CANONICAL / dataset / "all.json").is_file() for dataset in DATASETS)
 
 
 @pytest.fixture(scope="module")
@@ -68,8 +70,8 @@ def exports(tmp_path_factory, real_data_available: bool):
         config = TaskConfig.from_mapping({"metadata_fields": list(METADATA_FIELDS)})
         out = out_root / dataset
         report = export_sft_dataset(
-            DATA / dataset / "canonical" / "all.json",
-            DATA / dataset,
+            CANONICAL / dataset / "all.json",
+            PROCESSED / dataset,
             out,
             registry_path,
             config,
@@ -101,7 +103,7 @@ def test_canonical_resolved_counts_are_stable(exports: dict) -> None:
     """Stage-3B canonical resolved counts hold; records outside the split
     boundaries are reported (data-pipeline fact), not silently added."""
     for dataset, expected in EXPECTED_CANONICAL_RESOLVED.items():
-        with (DATA / dataset / "canonical" / "all.json").open(encoding="utf-8") as handle:
+        with (CANONICAL / dataset / "all.json").open(encoding="utf-8") as handle:
             canonical = json.load(handle)
         resolved = sum(
             1 for record in canonical if record.get("resolution_status") == "resolved"
@@ -133,10 +135,10 @@ def test_no_unresolved_samples_in_exports(exports: dict) -> None:
         report = bundle["report"]
         # split records that are not resolved are skipped, never exported
         for split, details in report["splits"].items():
-            with (DATA / dataset / f"{split}.json").open(encoding="utf-8") as handle:
+            with (PROCESSED / dataset / f"{split}.json").open(encoding="utf-8") as handle:
                 split_records = json.load(handle)
             canonical_by_id = {}
-            with (DATA / dataset / "canonical" / "all.json").open(encoding="utf-8") as handle:
+            with (CANONICAL / dataset / "all.json").open(encoding="utf-8") as handle:
                 for record in json.load(handle):
                     canonical_by_id[str(record.get("id"))] = record
             unresolved_in_split = sum(
@@ -244,8 +246,8 @@ def test_export_is_deterministic(exports: dict, tmp_path: Path) -> None:
     for dataset, bundle in exports.items():
         out2 = tmp_path / f"{dataset}-again"
         report2 = export_sft_dataset(
-            DATA / dataset / "canonical" / "all.json",
-            DATA / dataset,
+            CANONICAL / dataset / "all.json",
+            PROCESSED / dataset,
             out2,
             bundle["registry_path"],
             bundle["config"],

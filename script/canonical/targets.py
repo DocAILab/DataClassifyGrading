@@ -3,11 +3,12 @@
 Usage:
     python -m script.canonical.targets [--dataset finance] [--datasets ...] [--overwrite]
 
-Writes per dataset:
-    data/<dataset>/canonical/all.json
+Input:   data/processed/<dataset>/all.json (normalized records)
+Writes into data/canonical/<dataset>/:
+    all.json
         every input record unchanged (classification untouched) plus
         "resolution_status" and, for resolved records, "target".
-    data/<dataset>/canonical/resolution_report.json
+    resolution_report.json
         status counts, unresolved details, registry facts, input sha256.
 
 The LeafRegistry is the final constraint: a resolver target only counts as
@@ -36,7 +37,19 @@ DEFAULT_DATASETS = ("shougang", "infra", "finance", "pers_info")
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--data-dir", type=Path, default=PROJECT_ROOT / "data")
+    parser.add_argument(
+        "--processed-dir",
+        type=Path,
+        default=PROJECT_ROOT / "data" / "processed",
+        help="Where processed records live: processed-dir/<dataset>/all.json",
+    )
+    parser.add_argument(
+        "--canonical-dir",
+        type=Path,
+        default=PROJECT_ROOT / "data" / "canonical",
+        help="Where the canonical contract is written: canonical-dir/<dataset>/",
+    )
+
     parser.add_argument("--registry-dir", type=Path, default=PROJECT_ROOT / "cfg" / "task" / "registry")
     parser.add_argument("--corpus-dir", type=Path, default=PROJECT_ROOT / "cfg" / "task" / "corpus")
     parser.add_argument("--dataset", type=str, choices=list(DEFAULT_DATASETS))
@@ -59,10 +72,10 @@ def main(argv: list[str] | None = None) -> int:
     # 1. fail fast before building/writing anything
     if not args.overwrite:
         existing = [
-            Path(args.data_dir) / dataset / "canonical" / name
+            Path(args.canonical_dir) / dataset / name
             for dataset in datasets
             for name in ("all.json", "resolution_report.json")
-            if (Path(args.data_dir) / dataset / "canonical" / name).exists()
+            if (Path(args.canonical_dir) / dataset / name).exists()
         ]
         if existing:
             raise FileExistsError(
@@ -78,7 +91,8 @@ def main(argv: list[str] | None = None) -> int:
         prepared.append(
             prepare_canonical_dataset(
                 dataset,
-                data_dir=args.data_dir,
+                processed_dir=args.processed_dir,
+                canonical_dir=args.canonical_dir,
                 registry_dir=args.registry_dir,
                 corpus_dir=args.corpus_dir,
             )
