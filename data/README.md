@@ -13,8 +13,8 @@ parquet（data/sft、data/rl）
 ```
 
 - `raw/`：source of truth 的原始导入物（CSV/XLSX / 原始包）。**训练脚本不得直接修改**。
-  当前仓库只保留占位（`data/raw/.gitkeep`）；真原始表格由数据维护方在
-  `data/raw/<dataset>.{csv,xlsx}` 提供（preprocessing `prepare` 默认查找该路径）。
+  真原始表格由数据维护方在 `data/raw/<dataset>.{csv,xlsx}` 提供（preprocessing
+  `prepare` 默认查找该路径）。`data/raw/` 为 gitignored，需要时由脚本/维护方创建。
 - `processed/<dataset>/`：预处理结果（`all.json` + `train.json` / `val.json` /
   `test.json` + `split_report.json`）。split 按 record id 隔离，是后续 canonical 的
   输入层，也是 `data/<dataset>` 归一化源层的正式位置。
@@ -137,6 +137,10 @@ python -m script.verl.sft.evaluate_true_e2e --model-path <merged> \
 - 原 `data/<dataset>/all.json + splits`（预处理归一化源层）→ `data/processed/<dataset>/`。
 - 原 `data/<dataset>/canonical/*` → `data/canonical/<dataset>/`。
 - 新增 `data/raw/`（原始物）、`data/legacy/`（历史遗留物）。
+- **注意：data 数据文件均为 gitignored，本 PR 不会通过 git 自动迁移现有本地数据。**
+  已有旧布局（`data/<dataset>/`）的环境需要手动将 `all.json`+splits 移至
+  `data/processed/<ds>/`、`canonical/*` 移至 `data/canonical/<ds>/`，
+  或按 `data/README.md` §「如何使用 data/processed」从 raw 重新生成。
 - 删除与 `all.json` 逐字节重复的 `data/shougang/all_shougang.json`。
 - `data/<dataset>/corpus.json`（legacy finance corpus，仅 analysis 对照用）→
   `data/legacy/finance.corpus.json`；正式 corpus 唯一来源为 `cfg/task/corpus/`。

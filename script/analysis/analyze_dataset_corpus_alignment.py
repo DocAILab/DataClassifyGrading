@@ -626,7 +626,11 @@ def discover_corpora() -> dict[str, tuple[Path, list[dict[str, Any]]]]:
     # by the dataset/corpus alignment via canonical records, not here.
     if DEFAULT_LEGACY_DIR.is_dir():
         for path in sorted(DEFAULT_LEGACY_DIR.glob("*.corpus.json")):
-            corpora[f"corpus:{path.stem}"] = (path, _iter_entries(path))
+            # 文件形如 finance.corpus.json -> dataset "finance"（避免 Path.stem
+            # 产生 finance.corpus 双后缀，与下游 build_schema_issues 的硬编码
+            # "corpus:<dataset>" 保持一致）
+            dataset = path.name.removesuffix(".corpus.json")
+            corpora[f"corpus:{dataset}"] = (path, _iter_entries(path))
     standards_dir = DEFAULT_DATA_DIR / "knowledge" / "standards_map"
     for path in sorted(standards_dir.glob("*.json")):
         if path.name == "generate_standards_map.py":
