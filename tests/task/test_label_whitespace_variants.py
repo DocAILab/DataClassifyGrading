@@ -4,13 +4,13 @@ This check is intentionally READ-ONLY: it detects classification labels where
 removing all whitespace produces the same key but the raw strings differ
 (e.g. ``"经营 管理"`` vs ``"经营管理"``) and REPORTS them. It never
 auto-repairs labels — label fixes are manual upstream edits in
-``data/<dataset>/all.json`` (the formal input), and this test exists so a
+``data/processed/<dataset>/all.json`` (the formal input), and this test exists so a
 re-introduced variant is caught before downstream artifacts are regenerated.
 
 Two tiers, matching the repo's CI convention:
 
 - logic tier: runs always on inline data (CI-safe),
-- data tier: skips when ``data/<dataset>/all.json`` is unavailable locally.
+- data tier: skips when ``data/processed/<dataset>/all.json`` is unavailable locally.
 """
 
 from __future__ import annotations
@@ -97,7 +97,7 @@ def test_find_whitespace_variants_clean_labels_report_nothing() -> None:
 
 @pytest.mark.parametrize("dataset", DATASETS)
 def test_real_dataset_has_no_whitespace_variant_labels(dataset: str) -> None:
-    record_path = DATA_DIR / dataset / "all.json"
+    record_path = DATA_DIR / "processed" / dataset / "all.json"
     if not record_path.is_file():
         pytest.skip(f"data/{dataset}/all.json not available")
 

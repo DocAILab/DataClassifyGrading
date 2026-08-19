@@ -3,7 +3,7 @@ string matching (no semantic models, no fuzzy auto-fixing of labels).
 
 Reads:
   - datasets:     data/processed/<dataset>/all.json (normalized TransClass JSON)
-  - leaf corpora: data/<dataset>/corpus.json (level_4 + description documents)
+  - leaf corpora: data/legacy/*.corpus.json (legacy/archived dataset corpus)
   - standards:    data/knowledge/standards_map/*.json
 
 Writes:
