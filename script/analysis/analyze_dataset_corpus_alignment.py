@@ -2,7 +2,7 @@
 string matching (no semantic models, no fuzzy auto-fixing of labels).
 
 Reads:
-  - datasets:     data/<dataset>/all.json (normalized TransClass JSON)
+  - datasets:     data/processed/<dataset>/all.json (normalized TransClass JSON)
   - leaf corpora: data/<dataset>/corpus.json (level_4 + description documents)
   - standards:    data/knowledge/standards_map/*.json
 
@@ -25,6 +25,10 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_DIR = PROJECT_ROOT / "data"
+# post-migration layout: normalized records live under processed/
+DEFAULT_PROCESSED_DIR = DEFAULT_DATA_DIR / "processed"
+# legacy / archived dataset-level artifacts (never a formal corpus source)
+DEFAULT_LEGACY_DIR = DEFAULT_DATA_DIR / "legacy"
 DEFAULT_OUT_DIR = PROJECT_ROOT / "artifacts" / "generated" / "alignment"
 
 CLASSIFICATION_FIELDS = ("level_1", "level_2", "level_3", "level_4")
@@ -158,7 +162,7 @@ def _json_safe(value: Any) -> Any:
 
 
 def load_dataset(name: str) -> list[dict[str, Any]]:
-    path = DEFAULT_DATA_DIR / name / "all.json"
+    path = DEFAULT_PROCESSED_DIR / name / "all.json"
     with path.open("r", encoding="utf-8") as file:
         data = json.load(file)
     if not isinstance(data, list):
@@ -608,7 +612,7 @@ def match_dataset_to_corpus(
 
 def discover_datasets() -> dict[str, list[dict[str, Any]]]:
     datasets: dict[str, list[dict[str, Any]]] = {}
-    for child in sorted(DEFAULT_DATA_DIR.iterdir()):
+    for child in sorted(DEFAULT_PROCESSED_DIR.iterdir()):
         all_path = child / "all.json"
         if child.is_dir() and all_path.is_file():
             datasets[child.name] = load_dataset(child.name)
@@ -617,10 +621,12 @@ def discover_datasets() -> dict[str, list[dict[str, Any]]]:
 
 def discover_corpora() -> dict[str, tuple[Path, list[dict[str, Any]]]]:
     corpora: dict[str, tuple[Path, list[dict[str, Any]]]] = {}
-    for child in sorted(DEFAULT_DATA_DIR.iterdir()):
-        corpus_path = child / "corpus.json"
-        if child.is_dir() and corpus_path.is_file():
-            corpora[f"corpus:{child.name}"] = (corpus_path, _iter_entries(corpus_path))
+    # legacy dataset-level corpus (e.g. the archive-only finance corpus, now
+    # under data/legacy/); the formal corpus is cfg/task/corpus and is covered
+    # by the dataset/corpus alignment via canonical records, not here.
+    if DEFAULT_LEGACY_DIR.is_dir():
+        for path in sorted(DEFAULT_LEGACY_DIR.glob("*.corpus.json")):
+            corpora[f"corpus:{path.stem}"] = (path, _iter_entries(path))
     standards_dir = DEFAULT_DATA_DIR / "knowledge" / "standards_map"
     for path in sorted(standards_dir.glob("*.json")):
         if path.name == "generate_standards_map.py":
@@ -853,7 +859,7 @@ def build_schema_issues(
                     "whitespace removal but different raw text"
                 ),
                 "detail": grouped_text + " — fix in the upstream input "
-                "(data/finance/all.json), never auto-repair.",
+                "(data/processed/finance/all.json), never auto-repair.",
             }
         )
     l3 = finance["level_stats"]["level_3"]
@@ -888,7 +894,7 @@ def build_schema_issues(
     issues.append(
         {
             "severity": "high",
-            "where": "corpus:finance (data/finance/corpus.json)",
+            "where": "corpus:finance (data/legacy/finance.corpus.json)",
             "issue": "leaf-only corpus: category identity is the bare level_4 name; "
             "no path/code is kept, so any future leaf-name collision is unresolvable",
             "detail": "all 220 unique level_4 labels; no path or code fields",
@@ -1089,7 +1095,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     add("# 数据对齐分析报告 (dataset ↔ corpus alignment)")
     add("")
     add("> 方法约束：仅使用精确字符串与空白归一化匹配，不使用语义模型或模糊匹配修标签。")
-    add("> 数据来源：`data/<dataset>/all.json`、`data/<dataset>/corpus.json`、`data/knowledge/standards_map/*.json`。")
+    add("> 数据来源：`data/processed/<dataset>/all.json`、`data/legacy/*.corpus.json`、`data/knowledge/standards_map/*.json`。")
     add("")
 
     # 1. datasets
@@ -1234,7 +1240,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     conclusions = report["conclusions"]
     add("### 4.1 实际有哪些 dataset")
     add("")
-    add(", ".join(f"`{name}`" for name in conclusions["datasets_found"]) + "（以存在 `all.json` 为准）")
+    add(", ".join(f"`{name}`" for name in conclusions["datasets_found"]) + "（以存在 processed/all.json 为准）")
     add("")
     add("### 4.2 每个 dataset 对应哪个 corpus")
     add("")

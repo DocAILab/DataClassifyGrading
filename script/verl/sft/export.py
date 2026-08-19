@@ -17,7 +17,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--canonical",
         required=True,
-        help="data/<dataset>/canonical/all.json (canonical dataset records)",
+        help="data/canonical/<dataset>/all.json (canonical dataset records)",
     )
     parser.add_argument(
         "--split-dir",

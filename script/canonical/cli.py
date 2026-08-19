@@ -12,7 +12,7 @@ Writes per dataset:
 Sources:
 - shougang / infra: data/knowledge/standards_map/guanji_dict.json
 - finance:          data/knowledge/standards_map/financial_standards_dict.json
-- pers_info:        data/<dataset>/all.json (dataset universe, no standard exists)
+- pers_info:        data/processed/<dataset>/all.json (dataset universe, no standard exists)
 
 All builds and coverage diagnostics are computed before anything is written;
 every output file is written exactly once. Artifact sources are
@@ -60,9 +60,11 @@ def _load_json(path: Path) -> Any:
 
 
 def _load_records(data_dir: Path, dataset: str) -> list[dict[str, Any]]:
-    records = _load_json(data_dir / dataset / "all.json")
+    records = _load_json(data_dir / "processed" / dataset / "all.json")
     if not isinstance(records, list):
-        raise ValueError(f"{data_dir / dataset / 'all.json'} must be a JSON list")
+        raise ValueError(
+            f"{data_dir / 'processed' / dataset / 'all.json'} must be a JSON list"
+        )
     return records
 
 
@@ -91,7 +93,7 @@ def _annotate_coverage(
     data_dir: Path,
 ) -> None:
     """Read-only registry vs resolver-ID coverage; mutates the report only."""
-    records_path = data_dir / dataset / "all.json"
+    records_path = data_dir / "processed" / dataset / "all.json"
     if not records_path.is_file():
         report.dataset_id_coverage = {"available": False}
         return
