@@ -6,11 +6,7 @@ from dataclasses import dataclass
 from typing import Sequence
 
 from agent.task import LeafRegistry
-from agent.task.parser import (
-    PredictionFormatError,
-    parse_stage1_output,
-    parse_stage2_output,
-)
+from agent.task.parser import check_stage1_output, check_stage2_output
 
 
 @dataclass(frozen=True)
@@ -37,29 +33,21 @@ def evaluate_stage1(
     ground_truth: str,
     registry: LeafRegistry,
 ) -> Stage1Evaluation:
-    """Evaluate format, candidate constraints, and Recall@5 separately."""
+    """Evaluate format, candidate constraints, and Recall@5 separately.
+
+    Correctness facts come from the unified parser (check_stage1_output) so
+    the reward adapter and the evaluator share one contract implementation.
+    """
     if ground_truth not in registry.ids:
         raise ValueError("ground_truth must belong to the leaf registry")
-    try:
-        output = parse_stage1_output(solution)
-    except PredictionFormatError as exc:
-        return Stage1Evaluation(None, False, False, False, (str(exc),))
-
-    errors: list[str] = []
-    candidates = output.candidates
-    if len(candidates) != 5:
-        errors.append("stage1 prediction must contain exactly 5 candidates")
-    if len(set(candidates)) != len(candidates):
-        errors.append("stage1 candidates must be unique")
-    if any(candidate not in registry.ids for candidate in candidates):
-        errors.append("stage1 candidates must belong to the leaf registry")
-    contract_valid = not errors
+    result = check_stage1_output(solution, registry=registry)
+    recalled = result.ok and ground_truth in result.output.candidates
     return Stage1Evaluation(
-        candidates,
-        True,
-        contract_valid,
-        contract_valid and ground_truth in candidates,
-        tuple(errors),
+        result.output.candidates if result.format_valid else None,
+        result.format_valid,
+        result.ok,
+        recalled,
+        result.errors,
     )
 
 
@@ -79,17 +67,13 @@ def evaluate_stage2(
         or any(candidate not in registry.ids for candidate in candidates)
     ):
         raise ValueError("candidates must be 5 unique IDs from the leaf registry")
-    try:
-        output = parse_stage2_output(solution)
-    except PredictionFormatError as exc:
-        return Stage2Evaluation(None, False, False, False, (str(exc),))
-
-    contract_valid = output.answer in candidates
-    errors = () if contract_valid else ("stage2 answer must be one of the candidates",)
+    result = check_stage2_output(solution, candidates=candidates)
+    contract_valid = result.ok
+    errors = () if contract_valid else result.errors
     return Stage2Evaluation(
-        output.answer,
-        True,
+        result.output.answer if result.format_valid else None,
+        result.format_valid,
         contract_valid,
-        contract_valid and output.answer == ground_truth,
+        contract_valid and result.output.answer == ground_truth,
         errors,
     )
