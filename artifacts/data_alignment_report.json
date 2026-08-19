@@ -7,7 +7,7 @@
         "level_1": {
           "nonempty": 568,
           "nonempty_rate": 1.0,
-          "unique": 4
+          "unique": 3
         },
         "level_2": {
           "nonempty": 568,
@@ -48,7 +48,7 @@
         "L1": 25
       },
       "full_path_samples": 381,
-      "unique_full_paths": 29,
+      "unique_full_paths": 28,
       "unique_full_paths_with_counts": [
         {
           "path": [
@@ -75,7 +75,7 @@
             "系统管理信息",
             "配置信息"
           ],
-          "count": 85
+          "count": 91
         },
         {
           "path": [
@@ -143,7 +143,7 @@
       ],
       "leaf_collisions": {
         "level_2": {
-          "count": 2,
+          "count": 1,
           "examples": [
             {
               "label": "单位",
@@ -155,22 +155,11 @@
                   "客户"
                 ]
               ]
-            },
-            {
-              "label": "技术管理",
-              "parents": [
-                [
-                  "经营 管理"
-                ],
-                [
-                  "经营管理"
-                ]
-              ]
             }
           ]
         },
         "level_3": {
-          "count": 2,
+          "count": 1,
           "examples": [
             {
               "label": "单位基本信息",
@@ -184,24 +173,11 @@
                   "单位"
                 ]
               ]
-            },
-            {
-              "label": "系统管理信息",
-              "parents": [
-                [
-                  "经营 管理",
-                  "技术管理"
-                ],
-                [
-                  "经营管理",
-                  "技术管理"
-                ]
-              ]
             }
           ]
         },
         "level_4": {
-          "count": 4,
+          "count": 3,
           "examples": [
             {
               "label": "交易清结算信息",
@@ -245,21 +221,6 @@
                   "业务",
                   "账户信息",
                   ""
-                ]
-              ]
-            },
-            {
-              "label": "配置信息",
-              "parents": [
-                [
-                  "经营 管理",
-                  "技术管理",
-                  "系统管理信息"
-                ],
-                [
-                  "经营管理",
-                  "技术管理",
-                  "系统管理信息"
                 ]
               ]
             }
@@ -2655,8 +2616,8 @@
           "corpus_path_entries_for_dataset": 230,
           "coverage": {
             "full_path_exact": {
-              "samples": 525,
-              "sample_rate": 0.9243
+              "samples": 531,
+              "sample_rate": 0.9349
             },
             "normalized_path": {
               "samples": 531,
@@ -6908,9 +6869,9 @@
     },
     "leaf_name_collisions": {
       "finance": {
-        "level_2": 2,
-        "level_3": 2,
-        "level_4": 4
+        "level_2": 1,
+        "level_3": 1,
+        "level_4": 3
       },
       "infra": {},
       "pers_info": {},
@@ -6919,12 +6880,6 @@
       }
     },
     "schema_issues": [
-      {
-        "severity": "high",
-        "where": "finance/level_1",
-        "issue": "whitespace-inconsistent labels: both '经营 管理' and '经营管理' exist",
-        "detail": "unique level_1 labels include a spaced and an unspaced variant"
-      },
       {
         "severity": "high",
         "where": "finance",
