@@ -62,6 +62,19 @@ raises on model output and separates format validity from constraint validity;
 the evaluator and the reward adapter both consume it so there is exactly one
 contract implementation.
 
+Phase 7 (prompt-choice identity) added the SHARED choice-aware layer in the
+same parser module (`check_stage1_choices` / `check_stage2_choices` ->
+`ChoiceParseResult`): model rollouts answer with choice ids (Stage 1 global
+ids, Stage 2 local bundle ids), which this layer validates (JSON/schema,
+count, uniqueness, known ids / 1..5) and decodes to canonical category_ids
+BEFORE the existing evaluation (`evaluate_stage1_choices` /
+`evaluate_stage2_choices`) and reward entry points
+(`reward_stage1_choices` / `reward_stage2_choices`) apply. Choice validation
+is implemented exactly once; `RewardConfig`, reward numbers, canonical
+registry/ground truth/candidates are unchanged. `RewardResult` gained a
+`constraint_valid` flag (additive) so "valid but wrong" (partial credit) is
+distinguishable from "invalid" (zero).
+
 ### Training adapters
 
 `agent.training.sft` owns messages-Parquet export, validation, the temporary
@@ -116,6 +129,11 @@ Still landing with the first real RL vertical slice (M4):
 1. a checked-in fixture that runs the reward adapter through a real VeRL
    reward loop;
 2. a small GPU smoke launcher.
+
+The prompt-choice identity branch (`feat/prompt-choice-identity`) has landed
+the choice protocol end-to-end (prompt-facing ids <-> canonical category ids)
+including the shared choice-aware decode layer consumed by evaluation and
+reward (see Evaluation module); it is pending merge to master.
 
 ## When to add training-algorithm RL code
 
