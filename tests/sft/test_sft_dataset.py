@@ -145,6 +145,8 @@ def test_stage1_prompt_catalog_uses_choice_ids_and_display_names(tmp_path):
 
 
 def test_assistant_answers_use_choice_ids_but_metadata_stays_canonical(tmp_path):
+    from agent.task.prompt_choices import PromptChoiceRegistry, decode_stage2_answer
+
     registry_path, config_path, _ = _write_inputs(tmp_path / "input")
     out = tmp_path / "out"
     export_sft_dataset(
@@ -158,14 +160,41 @@ def test_assistant_answers_use_choice_ids_but_metadata_stays_canonical(tmp_path)
     rows = pq.read_table(out / "train.parquet").to_pylist()
     stage1 = next(row for row in rows if row["stage"].startswith("stage1"))
     stage2 = next(row for row in rows if row["stage"].startswith("stage2"))
-    # GT "C" -> choice id 3; fixture candidates [C,A,B,D,E] -> choice ids 3,1,2,4,5
-    assert stage1["messages"][-1]["content"] == '{"candidates":["3","1","2","4","5"]}'
-    assert stage2["messages"][-1]["content"] == '{"answer":"1"}'
+    choices = PromptChoiceRegistry.from_registry(LeafRegistry.from_mapping(REGISTRY))
+    # messages speak choice ids; decoding restores the canonical bundle / GT
+    stage1_choice_ids = json.loads(stage1["messages"][-1]["content"])["candidates"]
+    assert choices.decode_candidates(stage1_choice_ids) == tuple(stage1["candidates"])
+    stage2_local_id = json.loads(stage2["messages"][-1]["content"])["answer"]
+    assert decode_stage2_answer(stage2_local_id, tuple(stage2["candidates"])) == "C"
     # messages speak choice ids, but metadata stays canonical category_id
     assert stage1["ground_truth"] == "C"
     assert stage2["ground_truth"] == "C"
-    assert stage1["candidates"] == ["C", "A", "B", "D", "E"]
-    assert stage2["candidates"] == ["C", "A", "B", "D", "E"]
+    assert stage1["candidates"] == stage2["candidates"]
+    assert all(candidate in LeafRegistry.from_mapping(REGISTRY).ids for candidate in stage2["candidates"])
+
+
+def test_stage2_assistant_answers_are_not_position_fixed(tmp_path):
+    """Phase 6: GT must not sit at local position 1 in every Stage 2 sample,
+    otherwise every gold is {'answer':'1'}."""
+    registry_path, config_path, _ = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+    export_sft_dataset(
+        tmp_path / "input" / "canonical" / "all.json",
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        corpus=_corpus_map(),
+    )
+    answers = set()
+    for split in ("train", "val", "test"):
+        rows = pq.read_table(out / f"{split}.parquet").to_pylist()
+        for row in rows:
+            if row["stage"] == "stage2":
+                answers.add(row["messages"][-1]["content"])
+    assert answers
+    assert len(answers) > 1  # deterministic: row-train@2, row-val@4, row-test@4
+    assert all(answer != '{"answer":"1"}' for answer in answers)
 
 
 def test_stage2_prompt_resolves_corpus_by_category_id(tmp_path):
@@ -188,13 +217,20 @@ def test_stage2_prompt_resolves_corpus_by_category_id(tmp_path):
     assert '"category_id"' not in user
 
 
-def test_candidate_construction_is_deterministic_and_gt_first():
+def test_candidate_construction_is_deterministic_and_source_seeded():
     from agent.training.sft import build_candidates
 
     registry = LeafRegistry.from_mapping(REGISTRY)
-    expected = ["D", "A", "B", "C", "E"]
-    assert build_candidates("D", registry) == expected
-    assert build_candidates("D", registry) == expected
+    # same source_id -> identical permuted bundle
+    assert build_candidates("C", registry, source_id="row-train") == build_candidates(
+        "C", registry, source_id="row-train"
+    )
+    # GT present, exactly 5 unique
+    bundle = build_candidates("C", registry, source_id="row-train")
+    assert len(bundle) == 5 and len(set(bundle)) == 5 and "C" in bundle
+    # GT is not fixed at position 1
+    assert build_candidates("C", registry, source_id="row-train").index("C") != 0
+    assert build_candidates("C", registry, source_id="row-val").index("C") != 0
 
 
 def test_unresolved_records_never_enter_training(tmp_path):
@@ -602,7 +638,10 @@ def test_validator_returns_structured_errors_for_wrong_answers(tmp_path):
     )
     rows = pq.read_table(out / "train.parquet").to_pylist()
     rows[0]["messages"][-1]["content"] = '{"candidates":["1"]}'
-    rows[1]["messages"][-1]["content"] = '{"answer":"2"}'
+    # row-train: GT "C" sits at local position 2 (bundle E,C,D,A,B), so "3" is
+    # a valid-but-wrong answer (-> "D") and must trigger an "equal ground_truth"
+    # error, while invalid local ids stay contract errors
+    rows[1]["messages"][-1]["content"] = '{"answer":"3"}'
     pq.write_table(pa.Table.from_pylist(rows), out / "train.parquet")
 
     report = validate_sft_dataset(out, registry_path, config_path, corpus=_corpus_map())

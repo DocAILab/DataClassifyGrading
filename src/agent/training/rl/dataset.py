@@ -133,8 +133,9 @@ def export_rl_dataset(
         "version": "verl 0.8.0 five-field schema (data_source/prompt/ability/reward_model/extra_info)",
         "label_source": "canonical target.category_id (resolution_status == resolved)",
         "candidate_policy": (
-            "baseline fixture: ground_truth_then_registry_order_first_four_"
-            "non_ground_truth (not the production retrieval policy)"
+            "baseline fixture: (ground_truth + first four registry negatives) "
+            "permuted deterministically by stable source_id (not position-fixed, "
+            "not the production retrieval policy)"
         ),
         "dataset": dataset,
         "metadata_fields": list(config.metadata_fields),

@@ -418,7 +418,7 @@ def test_ground_truth_not_required_in_stage2_candidates(
     a reward without raising."""
     import agent.training.rl.sample as rl_sample_module
 
-    def candidates_excluding_gt(ground_truth: str, reg: LeafRegistry):
+    def candidates_excluding_gt(ground_truth: str, reg: LeafRegistry, *, source_id: str):
         return [candidate for candidate in reg.ids if candidate != ground_truth][:5]
 
     monkeypatch.setattr(
