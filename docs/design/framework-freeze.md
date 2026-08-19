@@ -23,15 +23,11 @@
 
 - 所有正式实验统一使用 **Qwen/Qwen2.5-7B-Instruct**（小规模功能链路可用
   Qwen2.5-0.5B-Instruct 作为 config 开关打通，不改变语义）。
-- RL 共同初始化默认 **SFT final = `global_step_140`（merged HF `merged_step140`）**
-  （Phase 13）；该选择仅作起点，后续若完成更完整的 SFT 训练，再统一重选一个
-  SFT checkpoint，选定后同样冻结。
-- **不得用 test 指标选择 checkpoint**（Phase 13.5 起为硬约束）。
 
 ## 3. 完整流程清单（数据处理 → 训练 → 评估 → 其他 RL 算法）
 
 ```text
-学长预处理/corpus
+预处理/corpus
    └─> data/<ds>/canonical/all.json + split JSON（split 按 id 隔离）
         ├─> script/verl/sft/export      （canonical → SFT messages parquet，choice protocol）
         ├─> script/verl/rl/export       （canonical → RL 五字段 parquet）
@@ -51,7 +47,90 @@ RL（在冻结层之上只改算法层）：
      └─ algorithm.* / actor.* / rollout.*（launcher 层，可换）
 ```
 
-**实现其他 RL 算法（RLOO / ReMax / PPO-DAPO）的改动面**（各 4B/12 报告约定）：
+### 3.1 各阶段输入/输出示例（真实数据 · pers_info）
+
+**(1) 输入 · 数据处理前（raw canonical record）**
+
+```json
+{
+  "id": "f374612b-7a1b-52c4-97b0-fb0851603dd6",
+  "key": "dpname",
+  "label_status": "labeled",
+  "metadata": { "database_name": "CCENSE", "table_name": "M_BASE_CUSTDEPT",
+                 "field_name": "DPNAME", "field_description": "部门" },
+  "classification": { "level_1": "", "level_4": "学校概况基本信息" },
+  "resolution_status": "resolved",
+  "target": { "leaf_level": "level_4", "leaf_name": "学校概况基本信息",
+               "category_id": "pers_info:学校概况基本信息" }   // 唯一 label 来源
+}
+```
+
+**(2) 处理后 · SFT parquet 行（`data/sft/pers_info/test.parquet`, stage1）**
+
+```text
+stage=stage1   source_id=016e8ce6-…   ground_truth=pers_info:教职工个人基本信息
+messages[0] system  = You are a leaf-category candidate retriever. …（见 (3)）
+messages[1] user    = （见 (3) 的确切 user prompt）
+messages[2] assistant (gold supervision, choice-id JSON) = {"candidates":["2","11","4","3","1"]}
+```
+
+**(3) Stage 1 prompt + output**
+
+system（逐字）：
+```
+You are a leaf-category candidate retriever. Return exactly one JSON object with key "candidates". The value must contain exactly five unique choice ids from the catalog. Do not output Markdown, commentary, canonical category ids, or any other keys.
+```
+user（逐字，目录节选：完整 18 项为 `[choice_id, display_name]`，无 description/无 canonical id）：
+```json
+Retrieve five candidate leaf categories from this catalog:
+[["1", "人力资源数据"], ["2", "任课信息"], ["3", "基本信息年级信息和班级信息"], …(共 18 项)…, ["18", "课程信息"]]
+Field metadata:
+{"field_name":"eid","field_description":"指导老师工号"}
+```
+模型输出（SFT final 实际, hit case）→ choice decode → canonical Top-5：
+```json
+{"candidates":["4","1","2","3","11"]}
+  "4"  → pers_info:学历学位信息        "1"  → pers_info:人力资源数据
+  "2"  → pers_info:任课信息            "3"  → pers_info:基本信息年级信息和班级信息
+ "11"  → pers_info:教职工个人基本信息   ← GT ∈ Top-5 ✓
+```
+malformed 输出（不 crash，判 format/contract fail → reward 0）：
+```json
+{"candidates":[{"id":17,"name":"职称信息"}, …]}   // 旧 id/name 对象形状，非 choice-id 字符串数组
+```
+
+**(4) Stage 2 prompt（由 Stage1 预测 Top-5 动态构建）+ output**
+
+system（逐字）：
+```
+You are a leaf-category reranker. Return exactly one JSON object with key "answer". Its value must be one of the five candidate ids "1" through "5". Do not output Markdown, commentary, or any other keys.
+```
+user（逐字 — bundle 的 5 个 candidate **= 上面预测的 Top-5**，local id 1..5，description/examples 取自 canonical corpus）：
+```json
+Candidate bundle:
+[{"id":"1","name":"学历学位信息","description":"","descriptions":[],"examples":[]},{"id":"2","name":"人力资源数据",…},{"id":"3","name":"任课信息",…},{"id":"4","name":"基本信息年级信息和班级信息",…},{"id":"5","name":"教职工个人基本信息",…}]
+Field metadata:
+{"field_name":"eid","field_description":"指导老师工号"}
+```
+输出 → local bundle-id decode：
+```json
+correct   : {"answer":"5"}  → 预测 Top-5[4] = pers_info:教职工个人基本信息 == GT → e2e TRUE
+wrong     : {"answer":"1"}  → 预测 Top-5[0] = 学历学位信息            != GT → e2e FALSE
+malformed : "1"（裸 id，base 常见）→ format fail → 0，不 crash
+```
+
+**(5) 处理后 · RL parquet 行（`data/rl/pers_info/train.parquet`，五字段，brief）**
+
+```text
+data_source  = pers_info/stage1 | pers_info/stage2
+prompt       = [system, user]（与 SFT 相同 choice-protocol 文本，无 assistant gold）
+ability      = data_classification
+reward_model = {"ground_truth": "pers_info:…", "style": "rule"}
+extra_info   = {"candidates": null | [5 个 canonical id], "dataset": "pers_info",
+                "metadata": {"field_name":…, "field_description":…}, "source_id": …}
+```
+
+**实现其他 RL 算法的改动面**（各 4B/12 报告约定）：
 - 只改 `script/verl/rl/grpo_smoke.sh` 的算法/采样配置：`algorithm.adv_estimator`
   （grpo→dapo/rloo），RLHF-style 需加 critic/ref/`use_kl_loss` 相关配置。
 - rollout 后端 / 显存旋钮在 launcher env（`ENFORCE_EAGER` / `PARAM_OFFLOAD` /
@@ -61,7 +140,7 @@ RL（在冻结层之上只改算法层）：
 - **不需要改**：canonical/parquet/parser/prompt/reward 表/evaluator/VeRL 源码
   （零 vendored patch，兼容只靠 pip 依赖 + 配置）。
 
-## 4. True-E2E evaluator（阶段 13.5 新增）
+## 4. True-E2E evaluator
 
 `script/verl/sft/evaluate_true_e2e.py`：raw test → `build_stage1_prompt` →
 greedy → `check_stage1_choices` decode 真实 canonical Top-5 → 按这 5 个
@@ -72,3 +151,27 @@ Top-5）+ format/contract 失败率；true E2E acc。metric 命名：
 **Proxy E2E**（`evaluate_baseline` 的 `proxy_e2e`）与 **True E2E**（本 evaluator）必须区分。
 单测：`tests/evaluation/test_evaluate_true_e2e.py`（stage1 miss / hit+correct /
 hit+wrong / malformed 不 crash / candidates==预测 Top-5）。
+
+### 4.1 true-E2E 样例（SFT final · pers_info test · greedy/seed=42）
+
+**【success】source=fb23c995-…   gt=pers_info:教职工个人基本信息**
+```text
+stage1 输出 : {"candidates":["4","1","2","3","11"]}
+            → decode Top-5: [学历学位信息, 人力资源数据, 任课信息, 基本信息年级信息和班级信息, 教职工个人基本信息]  ← 含 GT ✓
+动态 stage2 : 用该 Top-5 构建 bundle（见 §3.1(4)，bundle id = 该 Top-5 的位置）
+stage2 输出 : {"answer":"5"}  → 断言 stage2 candidates == 预测 Top-5 ✓
+final       : pers_info:教职工个人基本信息 == GT → TRUE E2E ✓
+```
+
+**【fail：Stage1 miss】source=016e8ce6-…   gt=pers_info:教职工个人基本信息**
+```text
+stage1 输出 : {"candidates":["3","4","2","1","17"]}
+            → decode Top-5: [基本信息年级信息和班级信息, 学历学位信息, 任课信息, 人力资源数据, 职称信息]  ← 不含 GT ✗
+stage2 输出 : {"answer":"4"}  → 人力资源数据（预测 bundle 第 4 项）
+final       : pers_info:人力资源数据 ≠ GT （GT 不在候选，Stage2 无法命中）→ TRUE E2E ✗
+```
+
+**【fail：malformed stage2】（stage1 命中但 stage2 非 JSON）**
+```text
+stage1 输出含 GT，stage2 输出裸 "1"（base 常见）→ format/contract fail → reward 0 → TRUE E2E ✗（不 crash，结构化失败）
+```
