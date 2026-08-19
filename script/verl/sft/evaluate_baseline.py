@@ -10,12 +10,14 @@ For each row the prompt is the exported conversation WITHOUT the assistant gold
 for every model: greedy, ``do_sample=False``, ``num_beams=1``, fixed
 ``max_new_tokens`` and seed.
 
-Metrics (per the Phase-13 spec):
+Metrics (per the Phase-13 spec; Stage 2 here is scored against the
+PRE-BUILT gold-containing bundle from the parquet, so the "end-to-end"
+metric below is the FACTORIZED / PROXY e2e, not the true pipeline e2e —
+see ``script/verl/sft/evaluate_true_e2e.py`` for the real chained evaluator):
 - stage1: format_valid, contract_valid, recall@5 (GT in the 5 predicted ids)
 - stage2: format_valid, contract_valid, accuracy-overall,
           accuracy-when-GT-in-candidates (and counts)
-- end-to-end: stage1 recall (same source) AND stage2 correct, per source_id
-  (stage1 recall x stage2 final correctness)
+- proxy_e2e: stage1 recall (same source) AND stage2 correct (gold bundle)
 
 Usage (server, in the SFT venv):
   python -m script.verl.sft.evaluate_baseline \
@@ -84,7 +86,7 @@ def aggregate_baseline(records: list[dict[str, Any]]) -> dict[str, Any]:
     )
     s2["correct_count"] = correct
 
-    # --- end-to-end: stage1 recall AND stage2 correct on the same source ---
+    # --- factorized/proxy e2e: stage1 recall AND stage2 correct (gold bundle) ---
     by_source: dict[str, dict[str, bool]] = defaultdict(dict)
     for r in records:
         by_source[r["source_id"]][r["stage"]] = r
@@ -100,7 +102,7 @@ def aggregate_baseline(records: list[dict[str, Any]]) -> dict[str, Any]:
         "correct_rate": e2e_correct / len(by_source) if by_source else 0.0,
     }
 
-    return {"stage1": s1, "stage2": s2, "end_to_end": e2e}
+    return {"stage1": s1, "stage2": s2, "proxy_e2e": e2e}
 
 
 def _evaluate_rows(
