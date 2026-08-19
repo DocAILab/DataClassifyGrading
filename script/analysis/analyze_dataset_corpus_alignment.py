@@ -7,8 +7,8 @@ Reads:
   - standards:    data/knowledge/standards_map/*.json
 
 Writes:
-  - artifacts/data_alignment_report.json
-  - artifacts/data_alignment_report.md
+  - artifacts/generated/alignment/data_alignment_report.json
+  - artifacts/generated/alignment/data_alignment_report.md
 
 The script never modifies data/ or src/.
 """
@@ -25,7 +25,7 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_DIR = PROJECT_ROOT / "data"
-DEFAULT_OUT_DIR = PROJECT_ROOT / "artifacts"
+DEFAULT_OUT_DIR = PROJECT_ROOT / "artifacts" / "generated" / "alignment"
 
 CLASSIFICATION_FIELDS = ("level_1", "level_2", "level_3", "level_4")
 CODE_RE = re.compile(r"[A-Za-z]+\d*(?:-\d+)*")
@@ -1314,15 +1314,15 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Analyze dataset <-> corpus alignment (exact/normalized matching only) "
-            "and write artifacts/data_alignment_report.json + .md"
+            "and write artifacts/generated/alignment/data_alignment_report.json + .md"
         )
     )
     parser.add_argument("--overwrite", action="store_true", help="Overwrite outputs")
     args = parser.parse_args(argv)
 
     build_report(overwrite=args.overwrite)
-    print("wrote: artifacts/data_alignment_report.json")
-    print("wrote: artifacts/data_alignment_report.md")
+    print("wrote: artifacts/generated/alignment/data_alignment_report.json")
+    print("wrote: artifacts/generated/alignment/data_alignment_report.md")
     return 0
 
 

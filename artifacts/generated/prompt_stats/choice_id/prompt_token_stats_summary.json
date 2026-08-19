@@ -1,0 +1,473 @@
+{
+ "tokenizer": "Qwen/Qwen2.5-7B-Instruct",
+ "datasets": {
+  "finance": {
+   "splits": {
+    "train": {
+     "stage1": {
+      "tokens": {
+       "rows": 403,
+       "max": 2553,
+       "p95": 2543,
+       "mean": 2535.4
+      },
+      "chars": {
+       "rows": 403,
+       "max": 5048,
+       "p95": 5033,
+       "mean": 5023.1
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 403,
+       "max": 740,
+       "p95": 560,
+       "mean": 494.0
+      },
+      "chars": {
+       "rows": 403,
+       "max": 1579,
+       "p95": 1261,
+       "mean": 1163.3
+      }
+     }
+    },
+    "val": {
+     "stage1": {
+      "tokens": {
+       "rows": 69,
+       "max": 2543,
+       "p95": 2538,
+       "mean": 2534.6
+      },
+      "chars": {
+       "rows": 69,
+       "max": 5031,
+       "p95": 5027,
+       "mean": 5020.7
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 69,
+       "max": 556,
+       "p95": 554,
+       "mean": 453.7
+      },
+      "chars": {
+       "rows": 69,
+       "max": 1254,
+       "p95": 1249,
+       "mean": 1097.1
+      }
+     }
+    },
+    "test": {
+     "stage1": {
+      "tokens": {
+       "rows": 57,
+       "max": 2539,
+       "p95": 2537,
+       "mean": 2535.3
+      },
+      "chars": {
+       "rows": 57,
+       "max": 5030,
+       "p95": 5026,
+       "mean": 5022.3
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 57,
+       "max": 560,
+       "p95": 558,
+       "mean": 495.1
+      },
+      "chars": {
+       "rows": 57,
+       "max": 1258,
+       "p95": 1257,
+       "mean": 1160.8
+      }
+     }
+    }
+   },
+   "vs_legacy_train": {
+    "stage1": {
+     "old_mean": 5940.8,
+     "new_mean": 2535.4,
+     "old_p95": 5950,
+     "new_p95": 2543,
+     "old_max": 5959,
+     "new_max": 2553,
+     "p95_reduction_pct": 57.3,
+     "max_reduction_pct": 57.2
+    },
+    "stage2": {
+     "old_mean": 542.9,
+     "new_mean": 494.0,
+     "old_p95": 603,
+     "new_p95": 560,
+     "old_max": 794,
+     "new_max": 740,
+     "p95_reduction_pct": 7.1,
+     "max_reduction_pct": 6.8
+    }
+   },
+   "train_stage2_gt_position_hist": null
+  },
+  "infra": {
+   "splits": {
+    "train": {
+     "stage1": {
+      "tokens": {
+       "rows": 40,
+       "max": 2588,
+       "p95": 2587,
+       "mean": 2581.6
+      },
+      "chars": {
+       "rows": 40,
+       "max": 4978,
+       "p95": 4977,
+       "mean": 4966.6
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 40,
+       "max": 316,
+       "p95": 315,
+       "mean": 294.7
+      },
+      "chars": {
+       "rows": 40,
+       "max": 884,
+       "p95": 883,
+       "mean": 854.8
+      }
+     }
+    },
+    "val": {
+     "stage1": {
+      "tokens": {
+       "rows": 15,
+       "max": 2589,
+       "p95": 2583,
+       "mean": 2579.9
+      },
+      "chars": {
+       "rows": 15,
+       "max": 4973,
+       "p95": 4973,
+       "mean": 4965.1
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 15,
+       "max": 311,
+       "p95": 305,
+       "mean": 301.9
+      },
+      "chars": {
+       "rows": 15,
+       "max": 876,
+       "p95": 876,
+       "mean": 868.1
+      }
+     }
+    },
+    "test": {
+     "stage1": {
+      "tokens": {
+       "rows": 9,
+       "max": 2593,
+       "p95": 2590,
+       "mean": 2588.1
+      },
+      "chars": {
+       "rows": 9,
+       "max": 4982,
+       "p95": 4980,
+       "mean": 4976.1
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 9,
+       "max": 321,
+       "p95": 318,
+       "mean": 316.1
+      },
+      "chars": {
+       "rows": 9,
+       "max": 888,
+       "p95": 886,
+       "mean": 882.1
+      }
+     }
+    }
+   },
+   "vs_legacy_train": {
+    "stage1": {
+     "old_mean": 5066.6,
+     "new_mean": 2581.6,
+     "old_p95": 5073,
+     "new_p95": 2587,
+     "old_max": 5074,
+     "new_max": 2588,
+     "p95_reduction_pct": 49.0,
+     "max_reduction_pct": 49.0
+    },
+    "stage2": {
+     "old_mean": 326.7,
+     "new_mean": 294.7,
+     "old_p95": 347,
+     "new_p95": 315,
+     "old_max": 348,
+     "new_max": 316,
+     "p95_reduction_pct": 9.2,
+     "max_reduction_pct": 9.2
+    }
+   },
+   "train_stage2_gt_position_hist": null
+  },
+  "pers_info": {
+   "splits": {
+    "train": {
+     "stage1": {
+      "tokens": {
+       "rows": 140,
+       "max": 266,
+       "p95": 260,
+       "mean": 255.5
+      },
+      "chars": {
+       "rows": 140,
+       "max": 747,
+       "p95": 740,
+       "mean": 730.0
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 140,
+       "max": 202,
+       "p95": 196,
+       "mean": 191.3
+      },
+      "chars": {
+       "rows": 140,
+       "max": 707,
+       "p95": 700,
+       "mean": 689.0
+      }
+     }
+    },
+    "val": {
+     "stage1": {
+      "tokens": {
+       "rows": 18,
+       "max": 260,
+       "p95": 259,
+       "mean": 256.6
+      },
+      "chars": {
+       "rows": 18,
+       "max": 742,
+       "p95": 742,
+       "mean": 735.7
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 18,
+       "max": 196,
+       "p95": 195,
+       "mean": 192.7
+      },
+      "chars": {
+       "rows": 18,
+       "max": 702,
+       "p95": 702,
+       "mean": 695.6
+      }
+     }
+    },
+    "test": {
+     "stage1": {
+      "tokens": {
+       "rows": 18,
+       "max": 259,
+       "p95": 258,
+       "mean": 255.4
+      },
+      "chars": {
+       "rows": 18,
+       "max": 739,
+       "p95": 738,
+       "mean": 732.9
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 18,
+       "max": 196,
+       "p95": 195,
+       "mean": 191.9
+      },
+      "chars": {
+       "rows": 18,
+       "max": 698,
+       "p95": 698,
+       "mean": 692.3
+      }
+     }
+    }
+   },
+   "vs_legacy_train": {
+    "stage1": {
+     "old_mean": 512.3,
+     "new_mean": 255.5,
+     "old_p95": 517,
+     "new_p95": 260,
+     "old_max": 523,
+     "new_max": 266,
+     "p95_reduction_pct": 49.7,
+     "max_reduction_pct": 49.1
+    },
+    "stage2": {
+     "old_mean": 225.6,
+     "new_mean": 191.3,
+     "old_p95": 232,
+     "new_p95": 196,
+     "old_max": 236,
+     "new_max": 202,
+     "p95_reduction_pct": 15.5,
+     "max_reduction_pct": 14.4
+    }
+   },
+   "train_stage2_gt_position_hist": null
+  },
+  "shougang": {
+   "splits": {
+    "train": {
+     "stage1": {
+      "tokens": {
+       "rows": 14521,
+       "max": 2672,
+       "p95": 2588,
+       "mean": 2582.5
+      },
+      "chars": {
+       "rows": 14521,
+       "max": 5075,
+       "p95": 4980,
+       "mean": 4968.6
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 14521,
+       "max": 376,
+       "p95": 313,
+       "mean": 293.8
+      },
+      "chars": {
+       "rows": 14521,
+       "max": 959,
+       "p95": 883,
+       "mean": 853.8
+      }
+     }
+    },
+    "val": {
+     "stage1": {
+      "tokens": {
+       "rows": 1926,
+       "max": 2626,
+       "p95": 2590,
+       "mean": 2582.5
+      },
+      "chars": {
+       "rows": 1926,
+       "max": 5016,
+       "p95": 4982,
+       "mean": 4968.7
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 1926,
+       "max": 363,
+       "p95": 316,
+       "mean": 293.3
+      },
+      "chars": {
+       "rows": 1926,
+       "max": 942,
+       "p95": 886,
+       "mean": 853.6
+      }
+     }
+    },
+    "test": {
+     "stage1": {
+      "tokens": {
+       "rows": 1946,
+       "max": 2689,
+       "p95": 2590,
+       "mean": 2582.7
+      },
+      "chars": {
+       "rows": 1946,
+       "max": 5093,
+       "p95": 4981,
+       "mean": 4968.8
+      }
+     },
+     "stage2": {
+      "tokens": {
+       "rows": 1946,
+       "max": 404,
+       "p95": 320,
+       "mean": 297.4
+      },
+      "chars": {
+       "rows": 1946,
+       "max": 981,
+       "p95": 888,
+       "mean": 858.0
+      }
+     }
+    }
+   },
+   "vs_legacy_train": {
+    "stage1": {
+     "old_mean": 5067.1,
+     "new_mean": 2582.5,
+     "old_p95": 5073,
+     "new_p95": 2588,
+     "old_max": 5157,
+     "new_max": 2672,
+     "p95_reduction_pct": 49.0,
+     "max_reduction_pct": 48.2
+    },
+    "stage2": {
+     "old_mean": 326.0,
+     "new_mean": 293.8,
+     "old_p95": 345,
+     "new_p95": 313,
+     "old_max": 408,
+     "new_max": 376,
+     "p95_reduction_pct": 9.3,
+     "max_reduction_pct": 7.8
+    }
+   },
+   "train_stage2_gt_position_hist": null
+  }
+ }
+}

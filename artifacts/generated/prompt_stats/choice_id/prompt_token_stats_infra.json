@@ -1,0 +1,139 @@
+{
+ "tokenizer": "Qwen/Qwen2.5-7B-Instruct",
+ "splits": {
+  "train": {
+   "stage1": {
+    "tokens": {
+     "rows": 40,
+     "max": 2588,
+     "p95": 2587,
+     "mean": 2581.6
+    },
+    "chars": {
+     "rows": 40,
+     "max": 4978,
+     "p95": 4977,
+     "mean": 4966.6
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 40,
+     "max": 316,
+     "p95": 315,
+     "mean": 294.7
+    },
+    "chars": {
+     "rows": 40,
+     "max": 884,
+     "p95": 883,
+     "mean": 854.8
+    }
+   }
+  },
+  "val": {
+   "stage1": {
+    "tokens": {
+     "rows": 15,
+     "max": 2589,
+     "p95": 2583,
+     "mean": 2579.9
+    },
+    "chars": {
+     "rows": 15,
+     "max": 4973,
+     "p95": 4973,
+     "mean": 4965.1
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 15,
+     "max": 311,
+     "p95": 305,
+     "mean": 301.9
+    },
+    "chars": {
+     "rows": 15,
+     "max": 876,
+     "p95": 876,
+     "mean": 868.1
+    }
+   }
+  },
+  "test": {
+   "stage1": {
+    "tokens": {
+     "rows": 9,
+     "max": 2593,
+     "p95": 2590,
+     "mean": 2588.1
+    },
+    "chars": {
+     "rows": 9,
+     "max": 4982,
+     "p95": 4980,
+     "mean": 4976.1
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 9,
+     "max": 321,
+     "p95": 318,
+     "mean": 316.1
+    },
+    "chars": {
+     "rows": 9,
+     "max": 888,
+     "p95": 886,
+     "mean": 882.1
+    }
+   }
+  }
+ },
+ "prompt_only": {
+  "train": {
+   "stage1": {
+    "rows": 40,
+    "max": 2570,
+    "p95": 2569,
+    "mean": 2562.7
+   },
+   "stage2": {
+    "rows": 40,
+    "max": 306,
+    "p95": 305,
+    "mean": 284.7
+   }
+  },
+  "val": {
+   "stage1": {
+    "rows": 15,
+    "max": 2571,
+    "p95": 2565,
+    "mean": 2561.9
+   },
+   "stage2": {
+    "rows": 15,
+    "max": 301,
+    "p95": 295,
+    "mean": 291.9
+   }
+  },
+  "test": {
+   "stage1": {
+    "rows": 9,
+    "max": 2575,
+    "p95": 2572,
+    "mean": 2570.1
+   },
+   "stage2": {
+    "rows": 9,
+    "max": 311,
+    "p95": 308,
+    "mean": 306.1
+   }
+  }
+ }
+}

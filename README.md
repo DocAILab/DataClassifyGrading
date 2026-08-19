@@ -45,3 +45,33 @@ pytest -q
 数据契约、导出命令和服务器 smoke-test 入口见
 [`docs/SFT_BASELINE.md`](docs/SFT_BASELINE.md)；公共 seam 与 RL 接入条件见
 [`docs/RL_FRAMEWORK.md`](docs/RL_FRAMEWORK.md)。
+
+## 文档与产物结构
+
+`docs/` 存放项目文档，`artifacts/generated/` 存放可由脚本重新生成的分析产物。
+
+```text
+docs/                  文档：设计说明、分析结论、阶段报告
+├── design/            设计文档（data_contract / prompt_interface）
+├── phase_reports/     阶段报告
+├── data_alignment.md
+├── prompt_length_analysis.md
+├── SFT_BASELINE.md / RL_FRAMEWORK.md / 新数据集运行说明.md
+
+artifacts/generated/   生成产物：统计结果、对齐报告等可复现输出
+├── alignment/         对齐报告（data_alignment_report.json/.md）
+└── prompt_stats/      统计产物
+    ├── canonical_id_baseline/   旧 canonical-id 统计（baseline）
+    └── choice_id/               choice-protocol 新统计
+```
+
+关键文档：
+
+| 文档 | 内容 |
+|---|---|
+| [`docs/design/data_contract.md`](docs/design/data_contract.md) | canonical category_id 数据契约（registry/corpus/target、身份策略、训练入口规则） |
+| [`docs/design/prompt_interface.md`](docs/design/prompt_interface.md) | prompt-facing choice protocol（choice id ↔ canonical id、共享解码层） |
+| [`docs/prompt_length_analysis.md`](docs/prompt_length_analysis.md) | prompt token 分析（old∽new、Stage1 收益、worst-case 2689/32768） |
+| [`docs/data_alignment.md`](docs/data_alignment.md) | dataset ↔ corpus/standard 对齐人工结论 |
+
+`docs/reports/` 为本地 gitignored 调研/smoke scratch，不入库。

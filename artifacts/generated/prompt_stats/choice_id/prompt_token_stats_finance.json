@@ -1,0 +1,139 @@
+{
+ "tokenizer": "Qwen/Qwen2.5-7B-Instruct",
+ "splits": {
+  "train": {
+   "stage1": {
+    "tokens": {
+     "rows": 403,
+     "max": 2553,
+     "p95": 2543,
+     "mean": 2535.4
+    },
+    "chars": {
+     "rows": 403,
+     "max": 5048,
+     "p95": 5033,
+     "mean": 5023.1
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 403,
+     "max": 740,
+     "p95": 560,
+     "mean": 494.0
+    },
+    "chars": {
+     "rows": 403,
+     "max": 1579,
+     "p95": 1261,
+     "mean": 1163.3
+    }
+   }
+  },
+  "val": {
+   "stage1": {
+    "tokens": {
+     "rows": 69,
+     "max": 2543,
+     "p95": 2538,
+     "mean": 2534.6
+    },
+    "chars": {
+     "rows": 69,
+     "max": 5031,
+     "p95": 5027,
+     "mean": 5020.7
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 69,
+     "max": 556,
+     "p95": 554,
+     "mean": 453.7
+    },
+    "chars": {
+     "rows": 69,
+     "max": 1254,
+     "p95": 1249,
+     "mean": 1097.1
+    }
+   }
+  },
+  "test": {
+   "stage1": {
+    "tokens": {
+     "rows": 57,
+     "max": 2539,
+     "p95": 2537,
+     "mean": 2535.3
+    },
+    "chars": {
+     "rows": 57,
+     "max": 5030,
+     "p95": 5026,
+     "mean": 5022.3
+    }
+   },
+   "stage2": {
+    "tokens": {
+     "rows": 57,
+     "max": 560,
+     "p95": 558,
+     "mean": 495.1
+    },
+    "chars": {
+     "rows": 57,
+     "max": 1258,
+     "p95": 1257,
+     "mean": 1160.8
+    }
+   }
+  }
+ },
+ "prompt_only": {
+  "train": {
+   "stage1": {
+    "rows": 403,
+    "max": 2534,
+    "p95": 2524,
+    "mean": 2515.9
+   },
+   "stage2": {
+    "rows": 403,
+    "max": 730,
+    "p95": 550,
+    "mean": 484.0
+   }
+  },
+  "val": {
+   "stage1": {
+    "rows": 69,
+    "max": 2523,
+    "p95": 2518,
+    "mean": 2514.6
+   },
+   "stage2": {
+    "rows": 69,
+    "max": 546,
+    "p95": 544,
+    "mean": 443.7
+   }
+  },
+  "test": {
+   "stage1": {
+    "rows": 57,
+    "max": 2520,
+    "p95": 2518,
+    "mean": 2515.8
+   },
+   "stage2": {
+    "rows": 57,
+    "max": 550,
+    "p95": 548,
+    "mean": 485.1
+   }
+  }
+ }
+}

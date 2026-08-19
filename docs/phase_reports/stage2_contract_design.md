@@ -1,6 +1,6 @@
 # 阶段 2：最小统一数据 contract 设计
 
-> 依据：`artifacts/data_alignment_report.md/.json`（阶段 1）。
+> 依据：`artifacts/generated/alignment/data_alignment_report.md/.json`（阶段 1）。
 > 原则：不自动修复报告中的 UNKNOWN 数据问题；`classification.level_1~level_4`
 > 原样保留作为 provenance；训练 ground truth 最终只依赖 `target.category_id`。
 

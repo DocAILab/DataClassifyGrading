@@ -13,7 +13,7 @@
 - `script/verl/sft/prompt_stats.py` — prompt 长度统计（字符级 + 可选 tokenizer）
 - `tests/sft/test_sft_canonical_e2e.py` — 真实数据端到端（CI 无 data/ 时 skip）
 - `tests/sft/test_prompt_stats.py`、`tests/sft/fixtures/canonical/`
-- `artifacts/prompt_stats_{finance,shougang}.json`、`artifacts/prompt_token_stats_{finance,shougang}.json`
+- `artifacts/generated/prompt_stats/legacy/prompt_stats_{finance,shougang}.json`、`artifacts/generated/prompt_stats/legacy/prompt_token_stats_{finance,shougang}.json`
 
 ## 2. 新 SFT 数据流
 
