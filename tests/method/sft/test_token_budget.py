@@ -27,3 +27,26 @@ def test_token_budget_reports_longest_rows_and_limit_violations(tmp_path: Path):
     assert baseline["splits"]["train"]["longest_source_id"] == "fixture-1"
     assert constrained["valid"] is False
     assert constrained["splits"]["train"]["over_limit"] == 2
+
+
+def test_token_budget_accepts_explicit_train_val_without_test(tmp_path: Path):
+    fixture_dir = Path(__file__).parent / "fixtures"
+    output_dir = tmp_path / "sft"
+    export_sft_dataset(
+        fixture_dir,
+        output_dir,
+        fixture_dir / "registry.json",
+        fixture_dir / "task.json",
+        splits=("train", "val"),
+    )
+
+    report = inspect_token_budget(
+        output_dir,
+        LengthTokenizer(),
+        max_length=10_000,
+        splits=("train", "val"),
+    )
+
+    assert report["valid"] is True
+    assert set(report["splits"]) == {"train", "val"}
+    assert report["real_test_split_read"] is False

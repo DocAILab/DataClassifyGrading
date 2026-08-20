@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import os
 import shutil
 import subprocess
@@ -6,8 +7,8 @@ import subprocess
 import pytest
 
 
-ROOT = Path(__file__).resolve().parents[2]
-LAUNCHER = ROOT / "script" / "verl" / "sft" / "run.sh"
+ROOT = Path(__file__).resolve().parents[3]
+LAUNCHER = ROOT / "src" / "method" / "sft" / "script" / "run.sh"
 
 
 def _run_launcher(*overrides: str) -> subprocess.CompletedProcess[str]:
@@ -40,3 +41,18 @@ def test_sdpa_accepts_explicit_safe_remove_padding_override() -> None:
     )
 
     assert result.returncode == 0
+
+
+def test_official_smoke_defaults_to_field_name_only() -> None:
+    task = json.loads(
+        (ROOT / "tests" / "method" / "sft" / "fixtures" / "task.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    launcher = (ROOT / "src" / "method" / "sft" / "script" / "smoke.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert task["metadata_fields"] == ["field_name"]
+    assert "--metadata-fields field_name field_description" not in launcher
+    assert launcher.count("--metadata-fields field_name") == 2

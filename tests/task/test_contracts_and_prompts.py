@@ -62,3 +62,13 @@ def test_invalid_registry_is_rejected() -> None:
 def test_task_config_rejects_non_string_metadata_fields() -> None:
     with pytest.raises(ValueError, match="must be strings"):
         TaskConfig.from_mapping({"metadata_fields": [1]})
+
+
+def test_stage1_prompt_includes_registry_descriptions_as_auxiliary_corpus() -> None:
+    registry = LeafRegistry.from_mapping(REGISTRY)
+    config = TaskConfig.from_mapping({"metadata_fields": ["field_name"]})
+
+    prompt = build_stage1_prompt({"field_name": "email"}, registry, config)
+
+    assert "alpha data" in prompt.user
+    assert "beta data" in prompt.user

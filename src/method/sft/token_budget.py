@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 
-SPLITS = ("train", "val", "test")
+PRODUCTION_SPLITS = ("train", "val")
 
 
 def _token_length(tokenized: Any) -> int:
@@ -32,6 +32,7 @@ def inspect_token_budget(
     tokenizer: Any,
     *,
     max_length: int,
+    splits: tuple[str, ...] | list[str] = PRODUCTION_SPLITS,
 ) -> dict[str, Any]:
     """Measure chat-template lengths and report rows exceeding ``max_length``."""
     if max_length <= 0:
@@ -41,13 +42,20 @@ def inspect_token_budget(
     except ImportError as exc:  # pragma: no cover - dependency installation issue
         raise RuntimeError("token-budget inspection requires pyarrow") from exc
 
+    requested = tuple(splits)
+    if not requested or any(split not in PRODUCTION_SPLITS for split in requested):
+        raise ValueError("splits must be a non-empty subset of: train, val")
+    if len(set(requested)) != len(requested):
+        raise ValueError("split names must be unique")
     root = Path(dataset_dir)
     report: dict[str, Any] = {
         "valid": True,
         "max_length": max_length,
+        "requested_splits": list(requested),
+        "real_test_split_read": False,
         "splits": {},
     }
-    for split in SPLITS:
+    for split in requested:
         path = root / f"{split}.parquet"
         if not path.is_file():
             raise FileNotFoundError(f"missing parquet split: {path}")

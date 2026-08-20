@@ -6,6 +6,7 @@ import pytest
 
 from agent.task import LeafRegistry, TaskConfig
 from method.sft import export_sft_dataset, validate_sft_dataset
+from method.sft.dataset import load_splits
 from method.sft.script.export import main as export_cli
 from method.sft.script.validate import main as validate_cli
 
@@ -110,7 +111,7 @@ def test_cli_metadata_fields_override_task_config_and_validator_errors_nonzero(t
         "--dataset-dir", str(out), "--registry", str(registry_path),
         "--metadata-fields", "field_name", "field_description",
     ]) == 0
-    (out / "test.parquet").unlink()
+    (out / "val.parquet").unlink()
     assert validate_cli([
         "--dataset-dir", str(out), "--registry", str(registry_path),
         "--metadata-fields", "field_name", "field_description",
@@ -191,3 +192,42 @@ def test_validator_returns_structured_errors_for_wrong_answers(tmp_path):
     errors = report["splits"]["train"]["errors"]
     assert any("stage1 answer" in error for error in errors)
     assert any("equal ground_truth" in error for error in errors)
+
+
+def test_load_splits_explicit_train_val_never_opens_test(tmp_path):
+    (tmp_path / "train.json").write_text("[]", encoding="utf-8")
+    (tmp_path / "val.json").write_text("[]", encoding="utf-8")
+    (tmp_path / "test.json").write_text("not-json", encoding="utf-8")
+
+    assert load_splits(tmp_path, ("train", "val")) == {"train": [], "val": []}
+
+
+def test_load_splits_rejects_test_before_file_access(tmp_path):
+    (tmp_path / "test.json").write_text("not-json", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="test"):
+        load_splits(tmp_path, ("test",))
+
+
+def test_field_name_only_export_reports_input_and_external_corpus_contract(tmp_path):
+    registry_path, config_path = _write_inputs(tmp_path / "input")
+    config_path.write_text(
+        json.dumps({"task_name": "field_name_level4", "metadata_fields": ["field_name"]}),
+        encoding="utf-8",
+    )
+
+    out = tmp_path / "out"
+    report = export_sft_dataset(
+        tmp_path / "input", out, registry_path, config_path, splits=("train", "val")
+    )
+    rows = pq.read_table(out / "train.parquet").to_pylist()
+
+    assert report["requested_splits"] == ["train", "val"]
+    assert report["real_test_split_read"] is False
+    assert report["metadata_fields"] == ["field_name"]
+    assert report["supervision_target"] == "classification.level_4"
+    assert report["external_corpus"] == "leaf_registry_descriptions"
+    assert all(row["metadata"] == {"field_name": "email"} for row in rows)
+    serialized = json.dumps(rows, ensure_ascii=False)
+    assert "contact address" not in serialized
+    assert "secret_table" not in serialized
