@@ -136,32 +136,38 @@ def _scoped_annotations(
 ) -> tuple[ScopedAnnotation, ...]:
     """Build gold-scope annotations from per-entry annotation sightings.
 
-    Groups sightings by (type, text, merged_range); a merged range with one
-    anchor value yields exactly ONE annotation covering every entry in that
-    range. ``start_row/end_row`` come from the merged-range provenance (or the
-    cell's own row for a single cell), never from the observed member subset.
+    Groups sightings by ``(type, text, scope_key)`` where scope_key is the
+    merged range ("J93:J132") — or the cell itself ("J55") for an unmerged
+    cell. Two unmerged cells with identical text are therefore DIFFERENT
+    annotations (each keeps its own row), never merged into one spanning
+    range. ``start_row/end_row`` come from the merged-range provenance or the
+    single cell's own row, never from the observed member subset.
     """
-    groups: dict[tuple[str, str, str | None], list[tuple[int, str, str, int, int]]] = defaultdict(list)
+    groups: dict[tuple[str, str, str], list[tuple[int, str, str, int, int]]] = defaultdict(list)
     for row, entry_id, type_, text, source_cell, merged_range, start, end in rows:
         if not text:
             continue
-        groups[(type_, text, merged_range)].append((row, entry_id, source_cell, start, end))
+        scope_key = merged_range or source_cell or f"cell-{row}"
+        groups[(type_, text, scope_key)].append((row, entry_id, source_cell, start, end))
 
     annotations: list[ScopedAnnotation] = []
-    for (type_, text, merged_range), members in groups.items():
+    for (type_, text, scope_key), members in groups.items():
         members.sort(key=lambda m: (m[3] if m[3] is not None else m[0], m[0]))
         start_rows = [m[3] if m[3] is not None else m[0] for m in members]
         end_rows = [m[4] if m[4] is not None else m[0] for m in members]
         start_row = min(start_rows)
         end_row = max(end_rows)
         source_cell = members[0][2]
+        # a merged range always contains ':' (e.g. "J93:J132"); a plain cell
+        # ("J55") is not a range -> merged_range=None keeps the single scope
+        merged_range = scope_key if ":" in scope_key else None
         annotation_id = f"{dataset}-{type_}-{start_row}-{end_row}"
         annotations.append(
             ScopedAnnotation(
                 annotation_id=annotation_id,
                 type=type_,
                 text=text,
-                source_cell=source_cell,
+                source_cell=source_cell or scope_key,
                 merged_range=merged_range,
                 start_row=start_row,
                 end_row=end_row,
@@ -387,7 +393,7 @@ def build_shougang_standard(
 
 
 def _push_annotation_sighting(
-    rows: list[tuple[int, str, str, str, str, str]],
+    rows: list[tuple[int, str, str, str, str, str, int, int]],
     row: int,
     entry_id: str,
     type_: str,

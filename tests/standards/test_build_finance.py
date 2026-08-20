@@ -195,3 +195,28 @@ def test_finance_empty_department_opinion_produces_no_annotation():
     entries = [_entry(level_1="客户", level_2="个人", level_3="个人身份鉴别信息", leaf="特有账户信息", row=55)]
     standard, _ = build_finance_standard(entries, source_file="f", source_sheet="Table 1")
     assert standard.scoped_annotations == ()
+
+
+def test_finance_identical_text_in_two_unmerged_cells_is_two_annotations():
+    # regression: J5 and J10 both carry the same text but are NOT merged; they
+    # must stay two separate scoped annotations (each its own row), never one
+    # annotation spanning rows 5..10.
+    def sighting(row):
+        return _entry(
+            level_1="客户", level_2="个人", level_3="个人自然信息",
+            leaf="个人基本概况信息" if row == 5 else "个人财产信息",
+            raw_level="3", row=row,
+            remark="相同的备注文字",
+            provenance={"remark": {"source_cell": "J%d" % row, "merged_range": None,
+                                    "start_row": row, "end_row": row}},
+        )
+
+    standard, _ = build_finance_standard(
+        [sighting(5), sighting(10)], source_file="f", source_sheet="Table 1"
+    )
+    by_id = {a.annotation_id: a for a in standard.scoped_annotations}
+    assert set(by_id) == {"finance-remark-5-5", "finance-remark-10-10"}
+    assert by_id["finance-remark-5-5"].merged_range is None
+    assert by_id["finance-remark-5-5"].start_row == 5
+    assert by_id["finance-remark-10-10"].start_row == 10
+    assert len(standard.scoped_annotations) == 2

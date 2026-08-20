@@ -254,7 +254,8 @@ def read_guanji_catalog(path: str | Path) -> ReaderResult:
                 leaf = clean(leaf_h.value)
                 description = clean(leaf_h_def.value)
             content = clean(resolver.cell(row, SHOUGANG_COLS["CONTENT"]).value)
-            raw_level = str(resolver.cell(row, SHOUGANG_COLS["LEVEL"]).value).strip()
+            _level_cell = resolver.cell(row, SHOUGANG_COLS["LEVEL"]).value
+            raw_level = str(_level_cell).strip() if _level_cell is not None else ""
             resource = clean(resolver.cell(row, SHOUGANG_COLS["RESOURCE"]).value)
             l1di = resolver.cell(row, SHOUGANG_COLS["L1_DEF"])
             l2di = resolver.cell(row, SHOUGANG_COLS["L2_DEF"])
