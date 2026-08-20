@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
+import random
 from typing import Any, Mapping
 
 from agent.evaluation import evaluate_stage1, evaluate_stage2
@@ -17,6 +19,7 @@ from agent.task.prompts import (
 
 SPLITS = ("train", "val", "test")
 PRODUCTION_SPLITS = ("train", "val")
+CANDIDATE_POLICY_VERSION = "random_shuffled_v1"
 
 
 def _registry(value: LeafRegistry | str | Path) -> LeafRegistry:
@@ -61,6 +64,29 @@ def build_candidates(ground_truth: str, registry: LeafRegistry) -> list[str]:
     if ground_truth not in registry.ids:
         raise ValueError(f"ground-truth category_id is absent from leaf registry: {ground_truth}")
     return [ground_truth] + [category_id for category_id in registry.ids if category_id != ground_truth][:4]
+
+
+def build_random_shuffled_candidates(
+    ground_truth: str,
+    registry: LeafRegistry,
+    *,
+    source_id: str,
+    seed: int = 42,
+) -> list[str]:
+    """Return one golden label and four stable random negatives in shuffled order."""
+    stable_id = source_id.strip()
+    if not stable_id:
+        raise ValueError("source_id must be non-empty")
+    if ground_truth not in registry.ids:
+        raise ValueError("ground truth must belong to the leaf registry")
+    negatives = [value for value in registry.ids if value != ground_truth]
+    if len(negatives) < 4:
+        raise ValueError("at least five unique registry labels are required")
+    digest = hashlib.sha256(f"{seed}\0{stable_id}".encode("utf-8")).digest()
+    rng = random.Random(int.from_bytes(digest[:16], "big"))
+    candidates = [ground_truth, *rng.sample(negatives, 4)]
+    rng.shuffle(candidates)
+    return candidates
 
 
 def _label(item: Mapping[str, Any], index: int, source: Path) -> str | None:

@@ -6,7 +6,7 @@ import pytest
 
 from agent.task import LeafRegistry, TaskConfig
 from method.sft import export_sft_dataset, validate_sft_dataset
-from method.sft.dataset import load_splits
+from method.sft.dataset import build_random_shuffled_candidates, load_splits
 from method.sft.script.export import main as export_cli
 from method.sft.script.validate import main as validate_cli
 
@@ -67,6 +67,57 @@ def test_candidate_construction_is_deterministic_and_gt_first():
     expected = ["D", "A", "B", "C", "E"]
     assert build_candidates("D", registry) == expected
     assert build_candidates("D", registry) == expected
+
+
+def test_random_shuffled_candidates_are_valid_and_deterministic():
+    registry = LeafRegistry.from_mapping(REGISTRY)
+
+    first = build_random_shuffled_candidates(
+        "A", registry, source_id="row-17", seed=42
+    )
+    second = build_random_shuffled_candidates(
+        "A", registry, source_id="row-17", seed=42
+    )
+
+    assert first == second
+    assert len(first) == len(set(first)) == 5
+    assert first.count("A") == 1
+    assert set(first) <= set(registry.ids)
+    assert build_random_shuffled_candidates(
+        "A", registry, source_id="row-17", seed=137
+    ) != first
+
+
+def test_random_shuffled_candidates_do_not_fix_golden_position():
+    registry = LeafRegistry.from_mapping(REGISTRY)
+
+    positions = {
+        build_random_shuffled_candidates(
+            "A", registry, source_id=f"row-{index}", seed=42
+        ).index("A")
+        for index in range(100)
+    }
+
+    assert positions == {0, 1, 2, 3, 4}
+
+
+@pytest.mark.parametrize("source_id", ["", "   "])
+def test_random_shuffled_candidates_require_source_id(source_id):
+    registry = LeafRegistry.from_mapping(REGISTRY)
+
+    with pytest.raises(ValueError, match="source_id"):
+        build_random_shuffled_candidates(
+            "A", registry, source_id=source_id, seed=42
+        )
+
+
+def test_random_shuffled_candidates_reject_oov_golden():
+    registry = LeafRegistry.from_mapping(REGISTRY)
+
+    with pytest.raises(ValueError, match="ground truth"):
+        build_random_shuffled_candidates(
+            "outside", registry, source_id="row-1", seed=42
+        )
 
 
 def test_exporter_rejects_labeled_record_without_leaf_ground_truth(tmp_path):
