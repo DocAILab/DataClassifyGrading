@@ -36,18 +36,18 @@ snapshot_download(
 )
 PY
 fi
-"$PYTHON_BIN" -m script.verl.sft.export \
+"$PYTHON_BIN" -m method.sft.script.export \
   --input-dir tests/sft/fixtures \
   --output-dir "$SMOKE_DATA_DIR" \
   --registry tests/sft/fixtures/registry.json \
   --task-config tests/sft/fixtures/task.json \
   --metadata-fields field_name field_description
-"$PYTHON_BIN" -m script.verl.sft.validate \
+"$PYTHON_BIN" -m method.sft.script.validate \
   --dataset-dir "$SMOKE_DATA_DIR" \
   --registry tests/sft/fixtures/registry.json \
   --task-config tests/sft/fixtures/task.json \
   --metadata-fields field_name field_description
-"$PYTHON_BIN" -m script.verl.sft.check_token_budget \
+"$PYTHON_BIN" -m method.sft.script.check_token_budget \
   --dataset-dir "$SMOKE_DATA_DIR" \
   --model "$MODEL_PATH" \
   --max-length 512

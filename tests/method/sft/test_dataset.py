@@ -5,9 +5,9 @@ import pyarrow.parquet as pq
 import pytest
 
 from agent.task import LeafRegistry, TaskConfig
-from agent.training.sft import export_sft_dataset, validate_sft_dataset
-from script.verl.sft.export import main as export_cli
-from script.verl.sft.validate import main as validate_cli
+from method.sft import export_sft_dataset, validate_sft_dataset
+from method.sft.script.export import main as export_cli
+from method.sft.script.validate import main as validate_cli
 
 
 REGISTRY = {
@@ -60,7 +60,7 @@ def test_exporter_writes_messages_parquet_and_report(tmp_path):
 
 
 def test_candidate_construction_is_deterministic_and_gt_first():
-    from agent.training.sft import build_candidates
+    from method.sft import build_candidates
 
     registry = LeafRegistry.from_mapping(REGISTRY)
     expected = ["D", "A", "B", "C", "E"]

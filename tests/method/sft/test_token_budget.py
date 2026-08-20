@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from agent.training.sft import export_sft_dataset, inspect_token_budget
+from method.sft import export_sft_dataset, inspect_token_budget
 
 
 class LengthTokenizer:

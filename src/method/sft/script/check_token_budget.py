@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import sys
 
-from agent.training.sft import inspect_token_budget
+from method.sft import inspect_token_budget
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

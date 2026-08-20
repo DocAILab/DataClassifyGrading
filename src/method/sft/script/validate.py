@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 
 from agent.task import LeafRegistry, TaskConfig
-from agent.training.sft import validate_sft_dataset
+from method.sft import validate_sft_dataset
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
