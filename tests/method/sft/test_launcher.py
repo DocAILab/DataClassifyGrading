@@ -15,6 +15,8 @@ def _run_launcher(*overrides: str) -> subprocess.CompletedProcess[str]:
     bash = shutil.which("bash")
     if bash is None:
         pytest.skip("bash is required for launcher tests")
+    if os.name == "nt" and "system32" in bash.lower():
+        pytest.skip("WSL bash cannot resolve this Windows worktree path")
     env = os.environ.copy()
     env["PYTHON_BIN"] = shutil.which("true") or "true"
     return subprocess.run(
