@@ -15,6 +15,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dataset-dir", required=True)
     parser.add_argument("--model", required=True, help="Local path or Hugging Face model ID")
     parser.add_argument("--max-length", type=int, required=True)
+    parser.add_argument("--splits", nargs="+", default=["train", "val"])
     parser.add_argument("--report")
     return parser.parse_args(argv)
 
@@ -29,6 +30,7 @@ def main(argv: list[str] | None = None) -> int:
             args.dataset_dir,
             tokenizer,
             max_length=args.max_length,
+            splits=args.splits,
         )
         rendered = json.dumps(report, ensure_ascii=False, indent=2)
         if args.report:

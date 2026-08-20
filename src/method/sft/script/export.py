@@ -37,6 +37,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "metadata_fields take precedence"
         ),
     )
+    parser.add_argument("--splits", nargs="+", default=["train", "val"])
     return parser.parse_args(argv)
 
 
@@ -55,6 +56,7 @@ def main(argv: list[str] | None = None) -> int:
             args.output_dir,
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
+            splits=args.splits,
         )
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         print(f"export_sft_dataset: {exc}", file=sys.stderr)

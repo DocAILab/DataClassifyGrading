@@ -16,6 +16,7 @@ from agent.task.prompts import (
 )
 
 SPLITS = ("train", "val", "test")
+PRODUCTION_SPLITS = ("train", "val")
 
 
 def _registry(value: LeafRegistry | str | Path) -> LeafRegistry:
@@ -37,6 +38,22 @@ def load_json_records(path: str | Path) -> list[dict[str, Any]]:
     if not all(isinstance(item, dict) for item in value):
         raise ValueError(f"input split items must be objects: {source}")
     return value
+
+
+def load_splits(
+    input_dir: str | Path,
+    splits: tuple[str, ...] | list[str] = PRODUCTION_SPLITS,
+) -> dict[str, list[dict[str, Any]]]:
+    """Load explicit production splits without resolving or opening test data."""
+    requested = tuple(splits)
+    if not requested:
+        raise ValueError("at least one split is required")
+    if any(split not in PRODUCTION_SPLITS for split in requested):
+        raise ValueError("only train and val splits are permitted; test is forbidden")
+    if len(set(requested)) != len(requested):
+        raise ValueError("split names must be unique")
+    root = Path(input_dir)
+    return {split: load_json_records(root / f"{split}.json") for split in requested}
 
 
 def build_candidates(ground_truth: str, registry: LeafRegistry) -> list[str]:
@@ -116,6 +133,7 @@ def export_sft_dataset(
     output_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
+    splits: tuple[str, ...] | list[str] = PRODUCTION_SPLITS,
 ) -> dict[str, Any]:
     """Export each labeled JSON record as one stage1 and one stage2 SFT row."""
     leaf_registry = _registry(registry)
@@ -125,13 +143,16 @@ def export_sft_dataset(
         "format": "verl_sft_messages_parquet",
         "candidate_policy": "ground_truth_then_registry_order_first_four_non_ground_truth",
         "metadata_fields": list(config.metadata_fields),
+        "supervision_target": "classification.level_4",
+        "external_corpus": "leaf_registry_descriptions",
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
         "splits": {},
+        "requested_splits": list(splits),
+        "real_test_split_read": False,
     }
-    for split in SPLITS:
+    for split, records in load_splits(input_root, splits).items():
         source = input_root / f"{split}.json"
-        records = load_json_records(source)
         rows: list[dict[str, Any]] = []
         skipped = 0
         for index, item in enumerate(records):
@@ -290,11 +311,17 @@ def validate_sft_dataset(
     dataset_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
+    splits: tuple[str, ...] | list[str] = PRODUCTION_SPLITS,
 ) -> dict[str, Any]:
     """Return a structured report; malformed rows are reported, not silently accepted."""
     leaf_registry = _registry(registry)
     config = _config(task_config)
     root = Path(dataset_dir)
+    requested = tuple(splits)
+    if not requested or any(split not in PRODUCTION_SPLITS for split in requested):
+        raise ValueError("splits must be a non-empty subset of: train, val")
+    if len(set(requested)) != len(requested):
+        raise ValueError("split names must be unique")
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",
         "valid": True,
@@ -303,13 +330,15 @@ def validate_sft_dataset(
         "registry_size": len(leaf_registry.categories),
         "splits": {},
         "cross_split_errors": [],
+        "requested_splits": list(requested),
+        "real_test_split_read": False,
     }
     try:
         import pyarrow.parquet as pq
     except ImportError as exc:  # pragma: no cover
         raise RuntimeError("SFT validation requires pyarrow") from exc
     source_ids_by_split: dict[str, set[str]] = {}
-    for split in SPLITS:
+    for split in requested:
         path = root / f"{split}.parquet"
         details = {"rows": 0, "errors": []}
         rows: list[Mapping[str, Any]] = []
@@ -337,8 +366,8 @@ def validate_sft_dataset(
         if details["errors"]:
             report["valid"] = False
 
-    for left_index, left in enumerate(SPLITS):
-        for right in SPLITS[left_index + 1 :]:
+    for left_index, left in enumerate(requested):
+        for right in requested[left_index + 1 :]:
             overlap = source_ids_by_split[left] & source_ids_by_split[right]
             if overlap:
                 examples = ", ".join(sorted(overlap)[:5])

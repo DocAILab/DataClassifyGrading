@@ -23,6 +23,13 @@ def _metadata_text(metadata: Mapping[str, object], config: TaskConfig) -> str:
     return json.dumps(selected, ensure_ascii=False, separators=(",", ":"))
 
 
+def _registry_corpus(registry: LeafRegistry) -> list[dict[str, str]]:
+    return [
+        {"category_id": category.category_id, "description": category.description}
+        for category in registry.categories
+    ]
+
+
 def build_stage1_prompt(
     metadata: Mapping[str, object], registry: LeafRegistry, config: TaskConfig
 ) -> Prompt:
@@ -35,8 +42,10 @@ def build_stage1_prompt(
         "Do not output Markdown, commentary, or any other keys."
     )
     user = (
-        "Retrieve five candidate leaf categories from this registry:\n"
-        + json.dumps(list(registry.ids), ensure_ascii=False)
+        "Retrieve five candidate leaf categories from this external label corpus:\n"
+        + json.dumps(
+            _registry_corpus(registry), ensure_ascii=False, separators=(",", ":")
+        )
         + "\nField metadata:\n"
         + _metadata_text(metadata, config)
     )

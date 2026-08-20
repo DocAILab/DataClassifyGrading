@@ -17,6 +17,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--registry", required=True)
     parser.add_argument("--metadata-fields", nargs="+", required=True)
     parser.add_argument("--task-config")
+    parser.add_argument("--splits", nargs="+", default=["train", "val"])
     parser.add_argument("--report", help="Optional path for the structured validation report")
     return parser.parse_args(argv)
 
@@ -35,6 +36,7 @@ def main(argv: list[str] | None = None) -> int:
             args.dataset_dir,
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
+            splits=args.splits,
         )
         if args.report:
             Path(args.report).parent.mkdir(parents=True, exist_ok=True)

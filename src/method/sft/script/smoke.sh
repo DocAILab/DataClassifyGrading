@@ -37,16 +37,16 @@ snapshot_download(
 PY
 fi
 "$PYTHON_BIN" -m method.sft.script.export \
-  --input-dir tests/sft/fixtures \
+  --input-dir tests/method/sft/fixtures \
   --output-dir "$SMOKE_DATA_DIR" \
-  --registry tests/sft/fixtures/registry.json \
-  --task-config tests/sft/fixtures/task.json \
-  --metadata-fields field_name field_description
+  --registry tests/method/sft/fixtures/registry.json \
+  --task-config tests/method/sft/fixtures/task.json \
+  --metadata-fields field_name
 "$PYTHON_BIN" -m method.sft.script.validate \
   --dataset-dir "$SMOKE_DATA_DIR" \
-  --registry tests/sft/fixtures/registry.json \
-  --task-config tests/sft/fixtures/task.json \
-  --metadata-fields field_name field_description
+  --registry tests/method/sft/fixtures/registry.json \
+  --task-config tests/method/sft/fixtures/task.json \
+  --metadata-fields field_name
 "$PYTHON_BIN" -m method.sft.script.check_token_budget \
   --dataset-dir "$SMOKE_DATA_DIR" \
   --model "$MODEL_PATH" \
