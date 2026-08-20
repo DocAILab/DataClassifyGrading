@@ -65,6 +65,12 @@ def load_registry(registry_file: str | Path) -> LeafRegistry:
 
 def load_corpus_categories(corpus_file: str | Path) -> list[CorpusCategory]:
     """Deserialize a canonical corpus JSON back into CorpusCategory objects."""
+    from agent.task.contracts import (
+        CorpusCategory,
+        CorpusScopedAnnotation,
+        StandardEntryView,
+    )
+
     with Path(corpus_file).open(encoding="utf-8") as handle:
         data = json.load(handle)
     categories: list[CorpusCategory] = []
@@ -84,9 +90,24 @@ def load_corpus_categories(corpus_file: str | Path) -> list[CorpusCategory]:
                     else None
                 ),
                 examples=tuple(str(part) for part in item.get("examples", ())),
+                standard_entry_ids=tuple(
+                    str(part) for part in item.get("standard_entry_ids", ())
+                ),
+                standard_entries=tuple(
+                    StandardEntryView.from_mapping(entry)
+                    for entry in item.get("standard_entries", ())
+                    if isinstance(entry, dict)
+                ),
+                scoped_annotations=tuple(
+                    CorpusScopedAnnotation.from_mapping(annotation)
+                    for annotation in item.get("scoped_annotations", ())
+                    if isinstance(annotation, dict)
+                ),
             )
         )
     return categories
+
+
 
 
 @dataclass(frozen=True)

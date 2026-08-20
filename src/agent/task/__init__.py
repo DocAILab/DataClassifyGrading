@@ -2,9 +2,11 @@
 
 from .contracts import (
     CorpusCategory,
+    CorpusScopedAnnotation,
     LeafCategory,
     LeafRegistry,
     SampleTarget,
+    StandardEntryView,
     TaskConfig,
 )
 from .dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
@@ -48,6 +50,8 @@ __all__ = [
     "LeafCategory",
     "LeafRegistry",
     "CorpusCategory",
+    "CorpusScopedAnnotation",
+    "StandardEntryView",
     "SampleTarget",
     "TaskConfig",
     "DatasetConfig",

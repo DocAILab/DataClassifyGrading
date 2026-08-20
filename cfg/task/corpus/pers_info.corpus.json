@@ -172,6 +172,9 @@
     "id_strategy": "path",
     "entries_read": 18,
     "categories_out": 18,
+    "standard_entries_out": 0,
+    "excluded_categories": [],
+    "standard_name": "",
     "aggregated": {
       "kinds": 0,
       "instances": 0

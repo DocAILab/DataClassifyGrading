@@ -13,7 +13,7 @@ Stage 2 additions (canonical unified data contract):
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -50,6 +50,103 @@ class LeafCategory:
 
 
 @dataclass(frozen=True)
+class CorpusScopedAnnotation:
+    """Task-layer view of a standard scoped annotation attached to a category.
+
+    Mirrors agent.standards.contracts.ScopedAnnotation without importing the
+    standards package from the task layer (avoids package-init cycles).
+    """
+
+    annotation_id: str
+    type: str
+    text: str
+    source_cell: str = ""
+    merged_range: str | None = None
+    start_row: int | None = None
+    end_row: int | None = None
+    applies_to_standard_entry_ids: tuple[str, ...] = ()
+
+    def to_mapping(self) -> dict[str, Any]:
+        return {
+            "annotation_id": self.annotation_id,
+            "type": self.type,
+            "text": self.text,
+            "source_cell": self.source_cell,
+            "merged_range": self.merged_range,
+            "start_row": self.start_row,
+            "end_row": self.end_row,
+            "applies_to_standard_entry_ids": list(self.applies_to_standard_entry_ids),
+        }
+
+    @classmethod
+    def from_mapping(cls, value: Mapping[str, Any]) -> "CorpusScopedAnnotation":
+        return cls(
+            annotation_id=str(value.get("annotation_id", "") or ""),
+            type=str(value.get("type", "") or ""),
+            text=str(value.get("text", "") or ""),
+            source_cell=str(value.get("source_cell", "") or ""),
+            merged_range=value.get("merged_range"),
+            start_row=value.get("start_row"),
+            end_row=value.get("end_row"),
+            applies_to_standard_entry_ids=tuple(
+                str(item) for item in value.get("applies_to_standard_entry_ids", ())
+            ),
+        )
+
+
+@dataclass(frozen=True)
+class StandardEntryView:
+    """One standard entry projected onto a corpus category (full facts).
+
+    The Phase-1 canonical standard is LOSSESS: a training category_id may be
+    backed by several standard entries (e.g. finance 5× 基本信息 under five
+    三级). This view keeps EVERY entry (id, real path, its own description,
+    grading reference, hierarchy definitions) — never a first-only collapse.
+    None of this is exposed to the Stage 2 prompt this phase.
+    """
+
+    standard_entry_id: str
+    name: str = ""
+    path: tuple[str, ...] = ()
+    description: str = ""
+    raw_level: str = ""
+    standard_data_level: str | None = None
+    raw_fields: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
+
+    def to_mapping(self) -> dict[str, Any]:
+        mapping: dict[str, Any] = {
+            "standard_entry_id": self.standard_entry_id,
+            "name": self.name,
+            "path": list(self.path),
+            "description": self.description,
+            "raw_level": self.raw_level,
+            "standard_data_level": self.standard_data_level,
+        }
+        if self.raw_fields:
+            mapping["raw_fields"] = {
+                key: dict(item) for key, item in sorted(self.raw_fields.items())
+            }
+        return mapping
+
+    @classmethod
+    def from_mapping(cls, value: Mapping[str, Any]) -> "StandardEntryView":
+        raw_fields = value.get("raw_fields") or {}
+        return cls(
+            standard_entry_id=str(value.get("standard_entry_id", "") or ""),
+            name=str(value.get("name", "") or ""),
+            path=tuple(str(p) for p in value.get("path", ())),
+            description=str(value.get("description", "") or ""),
+            raw_level=str(value.get("raw_level", "") or ""),
+            standard_data_level=value.get("standard_data_level"),
+            raw_fields=(
+                {str(k): dict(v) for k, v in raw_fields.items()}
+                if isinstance(raw_fields, Mapping)
+                else {}
+            ),
+        )
+
+
+@dataclass(frozen=True)
 class CorpusCategory:
     """Canonical corpus category (one category may own several documents).
 
@@ -61,6 +158,12 @@ class CorpusCategory:
       descriptions;
     - missing description (pers_info corpus is incomplete),
     - an incomplete corpus overall (no global completeness invariant).
+
+    Phase-2 (from CanonicalStandard): the category may be backed by multiple
+    standard entries (``standard_entry_ids`` / ``standard_entries``) and carry
+    the scoped grading annotations that apply to it. These fields are the
+    Stage-2-knowledge fact layer and are NOT emitted into the Stage 2 prompt
+    this phase.
     """
 
     category_id: str
@@ -70,6 +173,9 @@ class CorpusCategory:
     path: tuple[str, ...] = ()
     code: str | None = None
     examples: tuple[str, ...] = ()
+    standard_entry_ids: tuple[str, ...] = ()
+    standard_entries: tuple[StandardEntryView, ...] = ()
+    scoped_annotations: tuple[CorpusScopedAnnotation, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.category_id.strip():

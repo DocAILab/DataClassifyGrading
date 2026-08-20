@@ -311,11 +311,13 @@ def test_cli_writes_fresh_out_dir_once_without_overwrite(tmp_path: Path) -> None
         infra = json.load(handle)
     assert infra["build_report"]["dataset"] == "infra"
     assert infra["build_report"]["registry_source"] == "shougang"
-    # sources are repo-relative, never machine-local absolute paths
+    # sources are repo-relative, never machine-local absolute paths;
+    # the immediate input is now the canonical standard file (raw origin one
+    # hop inside it)
     with (out_dir / "corpus" / "shougang.corpus.json").open(encoding="utf-8") as handle:
         shougang = json.load(handle)
     assert shougang["build_report"]["source"] == (
-        "data/knowledge/standards_map/guanji_dict.json"
+        "data/standards/shougang.standard.json"
     )
     # registry JSON is directly consumable by LeafRegistry.from_path
     registry = LeafRegistry.from_path(out_dir / "registry" / "shougang.registry.json")

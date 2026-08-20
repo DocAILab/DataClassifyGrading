@@ -2,6 +2,7 @@
 
 Usage:
     python -m script.canonical.cli [--data-dir data] [--out-dir cfg/task]
+                                   [--standard-dir data/standards]
                                    [--datasets finance infra pers_info shougang]
                                    [--overwrite]
 
@@ -9,15 +10,27 @@ Writes per dataset:
     <out-dir>/corpus/<dataset>.corpus.json     canonical corpus (CorpusCategory)
     <out-dir>/registry/<dataset>.registry.json LeafRegistry.from_path-compatible
 
-Sources:
-- shougang / infra: data/knowledge/standards_map/guanji_dict.json
-- finance:          data/knowledge/standards_map/financial_standards_dict.json
-- pers_info:        data/processed/<dataset>/all.json (dataset universe, no standard exists)
+Sources (Phase-2 chain):  raw standard
+                          → CanonicalStandard (Phase 1, data/standards)
+                          → LeafRegistry + Corpus
+- finance:  data/standards/finance.standard.json  (237 entries → 233 categories)
+- shougang: data/standards/shougang.standard.json  (234 entries; B3-6 reported,
+            not silently added/dropped)
+- infra:    shared shougang standard (registry_source=shougang)
+- pers_info: no standard → dataset-derived fallback (data/processed/all.json)
+
+The legacy standards_map digests (financial_standards_dict.json /
+guanji_dict.json) are NOT read by this formal build (audit-only).
+
+To keep Stage-1/Stage-2 prompt behavior byte-identical, registry/corpus order
+follows the FIRST SOURCE ROW of each category and registry path keeps the
+historical Stage-1 values; standard categories absent from the previous active
+registry are excluded and reported (shougang B3-6).
 
 All builds and coverage diagnostics are computed before anything is written;
-every output file is written exactly once. Artifact sources are
-repo-relative logical paths. The script never modifies data/ or src/ and
-never repairs labels.
+every output file is written exactly once. Artifact sources are repo-relative
+logical paths. The script never modifies data/ or src/ and never repairs
+labels, and never cascades standard_data_level/annotations into prompts.
 """
 
 from __future__ import annotations
@@ -34,10 +47,8 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from agent.task import BUILTIN_DATASET_CONFIGS  # noqa: E402
 from agent.task.canonical_corpus import (  # noqa: E402
     BuildReport,
-    build_finance_corpus,
-    build_infra_corpus,
+    build_from_standard,
     build_pers_info_corpus,
-    build_shougang_corpus,
     compute_dataset_id_coverage,
     corpus_to_mapping,
     registry_to_mapping,
@@ -45,6 +56,14 @@ from agent.task.canonical_corpus import (  # noqa: E402
 from agent.task.identity import code_leaf_map  # noqa: E402
 
 DEFAULT_DATASETS = ("shougang", "infra", "finance", "pers_info")
+
+# dataset -> canonical standard key under --standard-dir (None = no standard)
+STANDARD_DATASETS = {
+    "finance": "finance",
+    "shougang": "shougang",
+    "infra": "shougang",
+    "pers_info": None,
+}
 
 
 def _write_json(path: Path, data: Any) -> None:
@@ -68,21 +87,61 @@ def _load_records(data_dir: Path, dataset: str) -> list[dict[str, Any]]:
     return records
 
 
-def _builders() -> dict[str, Callable[[Path, Path, str], tuple[list, BuildReport]]]:
-    def pers(data_dir: Path, _standards: Path, dataset: str):
-        return build_pers_info_corpus(_load_records(data_dir, dataset), dataset)
+def _load_standard(path: Path):
+    from agent.standards.contracts import CanonicalStandard
+
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"canonical standard not found: {path} — build it first via "
+            "`python -m script.standard.cli` (restore/verify data/raw per "
+            "docs/design/phase1_canonical_standard.md, then regenerate)"
+        )
+    return CanonicalStandard.from_mapping(_load_json(path))
+
+
+def _previous_active_ids(dataset: str) -> set[str] | None:
+    """Active category ids of the CURRENT committed registry — the Stage-1
+    reference universe used to report the standard difference (shougang
+    B3-6). Read from the repo's cfg/task registry, not the target out-dir, so
+    behavior is identical whether building in place or into a scratch dir.
+    Returns None when the reference registry is absent."""
+    path = PROJECT_ROOT / "cfg" / "task" / "registry" / f"{dataset}.registry.json"
+    if not path.is_file():
+        return None
+    data = _load_json(path)
+    ids = {str(item.get("category_id", "")) for item in data.get("categories", [])}
+    return {identifier for identifier in ids if identifier}
+
+
+def _builders(
+    standard_dir: Path, data_dir: Path
+) -> dict[str, Callable[[str], tuple[list, BuildReport]]]:
+    def from_standard(dataset: str, standard_key: str, registry_source: str | None):
+        standard_file = standard_dir / f"{standard_key}.standard.json"
+        standard = _load_standard(standard_file)
+        previous_active = (
+            _previous_active_ids(standard_key)
+            if standard_key != "pers_info"
+            else None
+        )
+        categories, report = build_from_standard(
+            standard,
+            dataset=dataset,
+            previous_active_ids=previous_active,
+            registry_source=registry_source,
+        )
+        # corpus.json ``source`` points at the IMMEDIATE input (the canonical
+        # standard file); the raw workbook origin is one hop inside that file.
+        report.source = _repo_relative(standard_file)
+        return categories, report
 
     return {
-        "shougang": lambda data_dir, standards, dataset: build_shougang_corpus(
-            standards / "guanji_dict.json", dataset
+        "finance": lambda dataset: from_standard(dataset, "finance", None),
+        "shougang": lambda dataset: from_standard(dataset, "shougang", None),
+        "infra": lambda dataset: from_standard(dataset, "shougang", "shougang"),
+        "pers_info": lambda dataset: build_pers_info_corpus(
+            _load_records(data_dir, dataset), dataset
         ),
-        "infra": lambda data_dir, standards, dataset: build_infra_corpus(
-            standards / "guanji_dict.json", dataset
-        ),
-        "finance": lambda data_dir, standards, dataset: build_finance_corpus(
-            standards / "financial_standards_dict.json", dataset
-        ),
-        "pers_info": pers,
     }
 
 
@@ -115,6 +174,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--data-dir", type=Path, default=PROJECT_ROOT / "data")
     parser.add_argument("--out-dir", type=Path, default=PROJECT_ROOT / "cfg" / "task")
     parser.add_argument(
+        "--standard-dir", type=Path, default=PROJECT_ROOT / "data" / "standards"
+    )
+    parser.add_argument(
         "--datasets",
         nargs="+",
         default=list(DEFAULT_DATASETS),
@@ -125,13 +187,12 @@ def main(argv: list[str] | None = None) -> int:
 
     data_dir: Path = args.data_dir
     out_dir: Path = args.out_dir
-    standards = data_dir / "knowledge" / "standards_map"
-    builders = _builders()
+    builders = _builders(args.standard_dir, data_dir)
 
     # 1. build everything and compute coverage (no writes yet)
     pending: list[tuple[Path, Any]] = []
     for dataset in args.datasets:
-        categories, report = builders[dataset](data_dir, standards, dataset)
+        categories, report = builders[dataset](dataset)
         _annotate_coverage(dataset, categories, report, data_dir)
         pending.append(
             (
@@ -161,13 +222,15 @@ def main(argv: list[str] | None = None) -> int:
     for path, data in pending:
         _write_json(path, data)
 
-    print(
-        "wrote:",
-        ", ".join(
-            _display_path(path) for path, _ in pending
-        ),
-    )
+    print("wrote:", ", ".join(_display_path(path) for path, _ in pending))
     return 0
+
+
+def _repo_relative(path: Path) -> str:
+    try:
+        return str(path.relative_to(PROJECT_ROOT)).replace("\\", "/")
+    except ValueError:
+        return str(path)
 
 
 def _display_path(path: Path) -> str:

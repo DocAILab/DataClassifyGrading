@@ -38,9 +38,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
-from agent.task.contracts import CorpusCategory
+from agent.task.contracts import CorpusCategory, CorpusScopedAnnotation, StandardEntryView
 from agent.task.dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
-from agent.task.identity import leaf_registry_from_corpus, qualified_category_id
+from agent.task.identity import compact, leaf_registry_from_corpus, qualified_category_id
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _TRAILING_CODE_RE = re.compile(
@@ -62,13 +62,23 @@ class ParseIssue:
 
 @dataclass
 class BuildReport:
-    """Per-dataset conversion report (skips, aggregations, coverage gaps)."""
+    """Per-dataset conversion report (skips, aggregations, coverage gaps).
+
+    Phase-2 fields: ``standard_entries_out`` (registry/corpus derived from the
+    234/237 canonical standard entries before projection), ``excluded_categories``
+    (standard categories NOT activated because they were absent from the
+    previous active registry — e.g. shougang B3-6 — reported, not silently
+    added or dropped).
+    """
 
     dataset: str
     source: str | None
     id_strategy: str
     entries_read: int = 0
     categories_out: int = 0
+    standard_entries_out: int = 0
+    excluded_categories: list[str] = field(default_factory=list)
+    standard_name: str = ""
     issues: list[ParseIssue] = field(default_factory=list)
     aggregated: dict[str, int] = field(default_factory=dict)
     registry_source: str | None = None
@@ -81,6 +91,9 @@ class BuildReport:
             "id_strategy": self.id_strategy,
             "entries_read": self.entries_read,
             "categories_out": self.categories_out,
+            "standard_entries_out": self.standard_entries_out,
+            "excluded_categories": list(self.excluded_categories),
+            "standard_name": self.standard_name,
             "aggregated": dict(self.aggregated),
             "issues": [issue.to_mapping() for issue in self.issues],
         }
@@ -305,6 +318,16 @@ def corpus_category_to_mapping(category: CorpusCategory) -> dict[str, Any]:
         mapping["descriptions"] = list(category.descriptions)
     if category.examples:
         mapping["examples"] = list(category.examples)
+    if category.standard_entry_ids:
+        mapping["standard_entry_ids"] = list(category.standard_entry_ids)
+    if category.standard_entries:
+        mapping["standard_entries"] = [
+            entry.to_mapping() for entry in category.standard_entries
+        ]
+    if category.scoped_annotations:
+        mapping["scoped_annotations"] = [
+            annotation.to_mapping() for annotation in category.scoped_annotations
+        ]
     return mapping
 
 
@@ -501,6 +524,158 @@ def compute_dataset_id_coverage(
     }
 
 
+# ---------------------------------------------------------------------------
+# Phase-2: derive registry/corpus from the canonical standard (lossless)
+# ---------------------------------------------------------------------------
+
+
+def _standard_registry_path(dataset: str, category_id: str) -> tuple[str, ...]:
+    """Stage-1 registry path (kept byte-identical to the pre-Phase-2 values so
+    Stage 1 prompt/choice behavior does not change):
+    - finance: L1/L2/leaf (the training identity parts, no invented empty slot)
+    - shougang/infra: empty (historical Stage-1 view; real path lives in the
+      corpus ``standard_entries[].path``)
+    """
+    if dataset in ("shougang", "infra"):
+        return ()
+    if dataset == "finance":
+        parts = category_id.split(":", 1)[-1].split(".")
+        return tuple(part for part in parts if part)
+    return ()
+
+
+def build_from_standard(
+    standard,
+    *,
+    dataset: str = "finance",
+    previous_active_ids: set[str] | None = None,
+    registry_source: str | None = None,
+) -> tuple[list[CorpusCategory], BuildReport]:
+    """Derive the LeafRegistry/Corpus universe from a Phase-1 CanonicalStandard.
+
+    - ONE category per training alias (category_id), preserving Stage-1 fields
+      (category_id/name/path/code + primary description) EXACTLY as the
+      historical registry/corpus, ordered by first source row so Stage 1/2
+      choice ids and prompts stay byte-identical.
+    - LOSSESS per-entry facts are kept on the CorpusCategory (standard_entry_ids
+      / standard_entries / scoped_annotations) — multiple standard entries under
+      one category (e.g. finance 5× 基本信息) are never collapsed to "first".
+    - ``previous_active_ids``: standard categories absent from the previous
+      active registry (shougang B3-6) are EXCLUDED from this phase's active
+      universe and REPORTED (excluded_categories) — never silently added/dropped.
+    Returns (categories, report); nothing is written and no labels are touched.
+    """
+    from agent.standards.contracts import CanonicalStandard
+
+    if not isinstance(standard, CanonicalStandard):
+        raise TypeError("build_from_standard requires a CanonicalStandard")
+    report = BuildReport(
+        dataset=dataset,
+        source=standard.standard_source.file or None,
+        id_strategy=standard.id_strategy,
+        entries_read=len(standard.entries),
+        standard_name=standard.standard_name,
+        registry_source=registry_source,
+    )
+    annotations_by_entry: dict[str, list[CorpusScopedAnnotation]] = {}
+    for entry in standard.entries:
+        annotations_by_entry[entry.standard_entry_id] = []
+    for annotation in standard.scoped_annotations:
+        for entry_id in annotation.applies_to_standard_entry_ids:
+            annotations_by_entry.setdefault(entry_id, []).append(
+                CorpusScopedAnnotation(
+                    annotation_id=annotation.annotation_id,
+                    type=annotation.type,
+                    text=annotation.text,
+                    source_cell=annotation.source_cell,
+                    merged_range=annotation.merged_range,
+                    start_row=annotation.start_row,
+                    end_row=annotation.end_row,
+                    applies_to_standard_entry_ids=annotation.applies_to_standard_entry_ids,
+                )
+            )
+
+    # deterministic Excel-row order (the canonical standard itself sorts by
+    # standard_entry_id, so re-sort by source row to mirror the historical
+    # registry/corpus order)
+    ordered = sorted(
+        standard.entries, key=lambda e: (e.source.row if e.source.row is not None else 0, e.standard_entry_id)
+    )
+    aggregated: dict[str, list] = {}
+    for entry in ordered:
+        aggregated.setdefault(entry.category_id, []).append(entry)
+    report.standard_entries_out = len(ordered)
+
+    active_ids = list(aggregated)
+    if previous_active_ids is not None:
+        active_ids = [category_id for category_id in aggregated if category_id in previous_active_ids]
+        excluded = [
+            category_id
+            for category_id in aggregated
+            if category_id not in previous_active_ids
+        ]
+        report.excluded_categories = sorted(excluded)
+        for category_id in sorted(excluded):
+            report.issues.append(
+                ParseIssue(
+                    "category_excluded",
+                    f"standard category {category_id!r} absent from the previous "
+                    "active registry (e.g. shougang B3-6); not added this phase "
+                    "to keep the Stage-1 universe unchanged — reported, not "
+                    "silently added or dropped",
+                )
+            )
+
+    categories: list[CorpusCategory] = []
+    for category_id in active_ids:
+        entry_list = aggregated[category_id]
+        first = entry_list[0]
+        annotations = sorted(
+            {
+                annotation
+                for entry in entry_list
+                for annotation in annotations_by_entry.get(entry.standard_entry_id, [])
+            },
+            key=lambda a: a.annotation_id,
+        )
+        categories.append(
+            CorpusCategory(
+                category_id=category_id,
+                # Stage-1/Stage-2-facing name: whitespace-compact, matching the
+                # historical registry/corpus (the raw standard leaf may contain
+                # a stray space, e.g. "个人基本概况 信息"); the source-faithful
+                # per-entry name is kept in ``standard_entries[].name``.
+                name=compact(first.name),
+                # Stage-2-facing description keeps the SOURCE text (the
+                # canonical standard is the fact source). One documented legacy
+                # divergence: the old dict silently dropped a stray space in
+                # the source cell of 经营管理/运营管理/档案资料管理信息
+                # (whitespace-only, reported in the build; Stage-1 never uses
+                # description).
+                description=first.description,
+                descriptions=tuple(entry.description for entry in entry_list[1:]),
+                path=_standard_registry_path(dataset, category_id),
+                code=first.code,
+                standard_entry_ids=tuple(entry.standard_entry_id for entry in entry_list),
+                standard_entries=tuple(
+                    StandardEntryView(
+                        standard_entry_id=entry.standard_entry_id,
+                        name=entry.name,
+                        path=entry.path,
+                        description=entry.description,
+                        raw_level=entry.raw_level,
+                        standard_data_level=entry.standard_data_level,
+                        raw_fields=dict(entry.raw_fields),
+                    )
+                    for entry in entry_list
+                ),
+                scoped_annotations=tuple(annotations),
+            )
+        )
+    report.categories_out = len(categories)
+    return categories, report
+
+
 __all__ = [
     "ParseIssue",
     "BuildReport",
@@ -515,5 +690,6 @@ __all__ = [
     "build_infra_corpus",
     "build_finance_corpus",
     "build_pers_info_corpus",
+    "build_from_standard",
     "compute_dataset_id_coverage",
 ]
