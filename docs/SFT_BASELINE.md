@@ -1,5 +1,10 @@
 # VeRL SFT baseline
 
+SFT-specific implementation and entry points live in the lowercase
+`src/method/sft` package. Algorithm-independent prompt contracts remain in
+`src/agent/task`, and shared evaluation facts remain in `src/agent/evaluation`.
+Repository-wide environment setup stays under `script/verl/common`.
+
 This is the first, deliberately small VeRL SFT base. Install the pinned GPU
 requirements from `requirements/verl.txt` (VeRL `0.8.0`; its declared
 `pyarrow>=19.0.0` constraint is preserved). The repository does not vendor VeRL.
@@ -33,22 +38,24 @@ Each labeled input record produces two HF-style message examples in each split:
 the tokenizer at runtime and are **not** written to parquet.
 
 ```bash
-python -m script.verl.sft.export \
+python -m method.sft.script.export \
   --input-dir data/processed/pers_info \
   --output-dir data/sft/pers_info \
   --registry path/to/formal_leaf_registry.json \
   --task-config cfg/task/task.example.json \
-  --metadata-fields field_name field_description
+  --metadata-fields field_name \
+  --splits train val
 ```
 
-`--metadata-fields` is required. No metadata field (including `table_name`) is
-implicitly exposed. The registry is an ordered JSON object with a `categories`
+`--metadata-fields field_name` is the official level-4 experiment contract. No
+other record metadata is exposed. The registry is an ordered JSON object with a `categories`
 array; each entry has a unique `category_id` and optional `description`, and at
 least five categories are required. Every labeled source record must have a
 stable, non-empty `id` so stage pairs and split isolation can be verified.
 
-The output contains `train.parquet`, `val.parquet`, `test.parquet`, and
-`export_report.json`. The parquet `messages` column is directly suitable for
+The output contains `train.parquet`, `val.parquet`, and `export_report.json`.
+The exporter rejects the test split before resolving or opening it, and reports
+`real_test_split_read=false`. The parquet `messages` column is directly suitable for
 HF/VeRL SFT ingestion; auxiliary columns retain stage, source ID, ground truth,
 and candidates for deterministic validation.
 
@@ -64,40 +71,42 @@ answer belongs to those five candidates.
 ## Validation
 
 ```bash
-python -m script.verl.sft.validate \
+python -m method.sft.script.validate \
   --dataset-dir data/sft/pers_info \
   --registry path/to/formal_leaf_registry.json \
   --task-config cfg/task/task.example.json \
-  --metadata-fields field_name field_description
+  --metadata-fields field_name \
+  --splits train val
 ```
 
 The validator prints a structured report and exits non-zero when any split or
 row is invalid. It also requires exactly one Stage 1/Stage 2 pair per stable
-`source_id` and rejects `source_id` overlap across train/validation/test. Use
+`source_id` and rejects `source_id` overlap across train/validation. Use
 `--report path.json` to save that report.
 
 Validate prompt length with the actual model chat template before training:
 
 ```bash
-python -m script.verl.sft.check_token_budget \
+python -m method.sft.script.check_token_budget \
   --dataset-dir data/sft/pers_info \
   --model /path/to/Qwen2.5-7B-Instruct \
   --max-length 2048 \
+  --splits train val \
   --report outputs/token-budget.json
 ```
 
 This check is mandatory after replacing the fixture registry with the formal
-category set because Stage 1 includes every allowed leaf-category ID. Its
+category set because Stage 1 includes every allowed leaf-category description. Its
 `--max-length` must equal the `data.max_length` passed to VeRL.
 
 ## GPU launch
 
-`script/verl/sft/run.sh` is an intentionally thin, single-node wrapper. It uses
+`src/method/sft/script/run.sh` is an intentionally thin, single-node wrapper. It uses
 `python -m torch.distributed.run` (the `torchrun` module), reads `NUM_GPUS`, and
 forwards the remaining Hydra overrides to VeRL:
 
 ```bash
-NUM_GPUS=1 script/verl/sft/run.sh \
+NUM_GPUS=1 src/method/sft/script/run.sh \
   data.train_files=data/sft/pers_info/train.parquet \
   data.val_files=data/sft/pers_info/val.parquet \
   data.messages_key=messages \
@@ -118,7 +127,7 @@ For the checked-in two-row fixture, use the fully specified smoke launcher:
 export SFT_BASE=/path/on/persistent-disk
 # Use a reachable mirror where huggingface.co is unavailable:
 # export HF_ENDPOINT=https://hf-mirror.com
-bash script/verl/sft/smoke.sh
+bash src/method/sft/script/smoke.sh
 ```
 
 The smoke launcher downloads Qwen2.5-0.5B-Instruct and creates its fixture
@@ -181,7 +190,7 @@ run the VeRL path explicitly:
 
 ```bash
 ATTENTION_IMPL=flash_attention_2 STEPS=1 EPOCHS=1 \
-  bash script/verl/sft/smoke.sh
+  bash src/method/sft/script/smoke.sh
 ```
 
 Keep SDPA as the default until both checks pass.

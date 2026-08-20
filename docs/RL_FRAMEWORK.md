@@ -58,9 +58,9 @@ into algorithm-specific rewards rather than reimplement parsing.
 
 ### Training adapters
 
-`agent.training.sft` owns messages-Parquet export, validation, the temporary
+`method.sft` owns messages-Parquet export, validation, the temporary
 fixture candidate policy, and tokenizer-specific budget inspection.
-`script/verl/sft/` contains the corresponding CLI and launcher adapters.
+`method.sft.script` contains the corresponding CLI and launcher adapters.
 `script/verl/common/` contains environment and optional accelerator setup shared
 by future VeRL algorithms.
 
