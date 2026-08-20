@@ -1,0 +1,149 @@
+{
+  "legacy_information_loss": {
+    "finance": {
+      "legacy_dict_entries": 237,
+      "legacy_dict_path_compression": {
+        "entries_at_legacy_depth": 6,
+        "entries_with_path_deeper_than_legacy_L1_L2_leaf": 231,
+        "note": "legacy financial_standards_dict stored L1-L2-leaf identity strings; the real standard has 三级子类 provenance nodes that the legacy digest dropped (canonical standard keeps every entry, standard_entry_id includes the real 三级)"
+      },
+      "legacy_unparseable_level_values": [
+        "3 4级",
+        "l级"
+      ],
+      "standard_vs_registry_ids": {
+        "missing_from_registry": 0,
+        "registry_ids": 233,
+        "standard_training_categories": 233
+      }
+    },
+    "shougang": {
+      "legacy_dict_losses": {
+        "catalog_entries": 234,
+        "legacy_dict_entries": 234,
+        "note": "guanji_dict kept only 'name（code）' + description: real hierarchy path and the 分级 column were dropped (registry path was [] and no class field existed)",
+        "with_grading_restored": 234,
+        "with_real_path_restored": 234
+      },
+      "standard_vs_registry_codes": {
+        "note": "B3-6 中厚板作业计划 exists in the raw catalog but was dropped by guanji_dict/registry",
+        "registry_codes": 233,
+        "registry_only": [],
+        "standard_codes": 234,
+        "standard_only": [
+          "B3-6"
+        ]
+      }
+    }
+  },
+  "pers_info": {
+    "alignment_headline": null,
+    "note": "no confirmed classification/grading standard; the 18-category registry remains dataset-derived and is NOT presented as a canonical standard; no standard_data_level is fabricated",
+    "standard_source": null,
+    "status": "missing_or_unknown"
+  },
+  "phase": "phase1-canonical-standard",
+  "standards": {
+    "finance": {
+      "alignment_headline": {
+        "matched": 529,
+        "mismatched": 2,
+        "resolved": 531,
+        "resolved_match_rate": 0.9962,
+        "samples_total": 568,
+        "standard_missing": 0
+      },
+      "build": {
+        "dataset": "finance",
+        "entries_read": 237,
+        "id_strategy": "path",
+        "issues": [
+          {
+            "detail": "row 150 category '市场营销信息（公开）': raw level 'l' kept as-is, standard_data_level=null (not guessed)",
+            "kind": "level_unparseable"
+          },
+          {
+            "detail": "row 168 category '客户及监管相关音影像信息': raw level '3 4' kept as-is, standard_data_level=null (not guessed)",
+            "kind": "level_unparseable"
+          }
+        ],
+        "level_distribution": {
+          "''": 2,
+          "L1": 11,
+          "L2": 157,
+          "L3": 61,
+          "L4": 6
+        },
+        "source_file": "data/raw/金融行业数据安全分类分级标准指南.xlsx",
+        "source_sheet": "Table 1",
+        "standard_entries_out": 237,
+        "standard_name": "金融行业数据安全分类分级标准指南",
+        "training_categories": 233
+      },
+      "standard_entries": 237,
+      "standard_source": "finance",
+      "status": "built",
+      "training_categories": 233
+    },
+    "infra": {
+      "alignment_headline": {
+        "matched": 64,
+        "mismatched": 0,
+        "resolved": 64,
+        "resolved_match_rate": 1.0,
+        "samples_total": 64,
+        "standard_missing": 0
+      },
+      "build": {
+        "dataset": "shougang",
+        "entries_read": 234,
+        "id_strategy": "code",
+        "issues": [],
+        "level_distribution": {
+          "L1": 16,
+          "L2": 170,
+          "L3": 48
+        },
+        "source_file": "data/raw/关基-数据分类分级目录.xlsx",
+        "source_sheet": "数据分类分级",
+        "standard_entries_out": 234,
+        "standard_name": "首钢京唐数据分类分级目录（关基）",
+        "training_categories": 234
+      },
+      "standard_entries": 234,
+      "standard_source": "shougang",
+      "status": "built",
+      "training_categories": 234
+    },
+    "shougang": {
+      "alignment_headline": {
+        "matched": 18393,
+        "mismatched": 0,
+        "resolved": 18393,
+        "resolved_match_rate": 1.0,
+        "samples_total": 19415,
+        "standard_missing": 0
+      },
+      "build": {
+        "dataset": "shougang",
+        "entries_read": 234,
+        "id_strategy": "code",
+        "issues": [],
+        "level_distribution": {
+          "L1": 16,
+          "L2": 170,
+          "L3": 48
+        },
+        "source_file": "data/raw/关基-数据分类分级目录.xlsx",
+        "source_sheet": "数据分类分级",
+        "standard_entries_out": 234,
+        "standard_name": "首钢京唐数据分类分级目录（关基）",
+        "training_categories": 234
+      },
+      "standard_entries": 234,
+      "standard_source": "shougang",
+      "status": "built",
+      "training_categories": 234
+    }
+  }
+}
