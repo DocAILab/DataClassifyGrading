@@ -282,3 +282,56 @@ def test_field_name_only_export_reports_input_and_external_corpus_contract(tmp_p
     serialized = json.dumps(rows, ensure_ascii=False)
     assert "contact address" not in serialized
     assert "secret_table" not in serialized
+
+
+def test_export_random_shuffled_policy_records_candidate_audit(tmp_path):
+    registry_path, config_path = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+
+    report = export_sft_dataset(
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        splits=("train",),
+        candidate_policy="random-shuffled",
+        candidate_seed=42,
+    )
+    rows = pq.read_table(out / "train.parquet").to_pylist()
+
+    assert report["candidate_policy"] == "random-shuffled"
+    assert report["candidate_seed"] == 42
+    assert report["candidate_policy_version"] == "random_shuffled_v1"
+    assert report["real_test_split_read"] is False
+    assert report["candidate_duplicate_rows"] == 0
+    assert report["candidate_oov_rows"] == 0
+    assert sum(report["golden_position_histogram"].values()) == 1
+    assert rows[0]["candidates"] == rows[1]["candidates"]
+    assert all(row["candidate_policy"] == "random-shuffled" for row in rows)
+    assert all(row["candidate_seed"] == 42 for row in rows)
+    assert all(row["golden_position"] == row["candidates"].index("C") for row in rows)
+
+
+def test_export_cli_selects_random_shuffled_policy(tmp_path):
+    registry_path, config_path = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+
+    return_code = export_cli(
+        [
+            "--input-dir", str(tmp_path / "input"),
+            "--output-dir", str(out),
+            "--registry", str(registry_path),
+            "--task-config", str(config_path),
+            "--metadata-fields", "field_name",
+            "--splits", "train",
+            "--candidate-policy", "random-shuffled",
+            "--candidate-seed", "42",
+        ]
+    )
+
+    assert return_code == 0
+    report = json.loads((out / "export_report.json").read_text(encoding="utf-8"))
+    assert report["candidate_policy"] == "random-shuffled"
+    assert report["candidate_seed"] == 42
+    assert report["requested_splits"] == ["train"]
+    assert report["real_test_split_read"] is False
