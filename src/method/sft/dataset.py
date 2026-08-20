@@ -109,6 +109,9 @@ def _row(
     registry: LeafRegistry,
     config: TaskConfig,
     stage: str,
+    *,
+    candidate_policy: str,
+    candidate_seed: int,
 ) -> dict[str, Any]:
     metadata = item.get("metadata")
     if not isinstance(metadata, Mapping):
@@ -123,7 +126,21 @@ def _row(
     source_id = str(item.get("id", "")).strip()
     if not source_id:
         raise ValueError(f"item {index} in {source} has no stable id")
-    candidates = build_candidates(ground_truth, registry)
+    if candidate_policy == "fixed-registry":
+        candidates = build_candidates(ground_truth, registry)
+        candidate_policy_version = "fixed_registry_v1"
+    elif candidate_policy == "random-shuffled":
+        candidates = build_random_shuffled_candidates(
+            ground_truth,
+            registry,
+            source_id=source_id,
+            seed=candidate_seed,
+        )
+        candidate_policy_version = CANDIDATE_POLICY_VERSION
+    else:
+        raise ValueError(
+            "candidate_policy must be fixed-registry or random-shuffled"
+        )
     if stage == "stage1":
         prompt = build_stage1_prompt(visible_metadata, registry, config)
         answer = stage1_answer(candidates)
@@ -141,6 +158,10 @@ def _row(
         "metadata": visible_metadata,
         "ground_truth": ground_truth,
         "candidates": candidates,
+        "candidate_policy": candidate_policy,
+        "candidate_policy_version": candidate_policy_version,
+        "candidate_seed": candidate_seed,
+        "golden_position": candidates.index(ground_truth),
     }
 
 
@@ -160,14 +181,31 @@ def export_sft_dataset(
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
     splits: tuple[str, ...] | list[str] = PRODUCTION_SPLITS,
+    *,
+    candidate_policy: str = "fixed-registry",
+    candidate_seed: int = 42,
 ) -> dict[str, Any]:
     """Export each labeled JSON record as one stage1 and one stage2 SFT row."""
     leaf_registry = _registry(registry)
     config = _config(task_config)
+    if candidate_policy not in {"fixed-registry", "random-shuffled"}:
+        raise ValueError(
+            "candidate_policy must be fixed-registry or random-shuffled"
+        )
     input_root, output_root = Path(input_dir), Path(output_dir)
+    candidate_policy_version = (
+        CANDIDATE_POLICY_VERSION
+        if candidate_policy == "random-shuffled"
+        else "fixed_registry_v1"
+    )
     report: dict[str, Any] = {
         "format": "verl_sft_messages_parquet",
-        "candidate_policy": "ground_truth_then_registry_order_first_four_non_ground_truth",
+        "candidate_policy": candidate_policy,
+        "candidate_policy_version": candidate_policy_version,
+        "candidate_seed": candidate_seed,
+        "golden_position_histogram": {str(index): 0 for index in range(5)},
+        "candidate_duplicate_rows": 0,
+        "candidate_oov_rows": 0,
         "metadata_fields": list(config.metadata_fields),
         "supervision_target": "classification.level_4",
         "external_corpus": "leaf_registry_descriptions",
@@ -187,9 +225,26 @@ def export_sft_dataset(
                 skipped += 1
                 continue
             rows.extend(
-                _row(item, source, index, leaf_registry, config, stage)
+                _row(
+                    item,
+                    source,
+                    index,
+                    leaf_registry,
+                    config,
+                    stage,
+                    candidate_policy=candidate_policy,
+                    candidate_seed=candidate_seed,
+                )
                 for stage in ("stage1", "stage2")
             )
+            candidates = rows[-1]["candidates"]
+            report["golden_position_histogram"][
+                str(candidates.index(ground_truth))
+            ] += 1
+            if len(candidates) != len(set(candidates)):
+                report["candidate_duplicate_rows"] += 1
+            if any(candidate not in leaf_registry.ids for candidate in candidates):
+                report["candidate_oov_rows"] += 1
         if not rows:
             raise ValueError(f"no labeled records available in {source}")
         destination = output_root / f"{split}.parquet"
