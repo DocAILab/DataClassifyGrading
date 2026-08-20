@@ -25,6 +25,13 @@
           "description": "指科研检验设备预约过程中产生的信息，包括设备预约信息，审核表，取还设备记录等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 3
+          },
+          "content": "设备预约信息，审核表，取走设备记录，归还设备记录，历史预约记录",
+          "code": "A1-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 6,
@@ -84,6 +91,13 @@
           "description": "指科研检验进程展示，包括委托统计及明细图像数据、进程统计图像数据等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 4
+          },
+          "content": "原料化验室委托统计及明细图像数据，原料检查站委托统计及明细图像数据，轧钢进程统计图像数据，轧材进程统计图像数据，实验室集中统计图像数据",
+          "code": "A1-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 6,
@@ -143,6 +157,13 @@
           "description": "指非常规委托检测过程中产生的信息，包括委托信息，取样信息，检验报告等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 5
+          },
+          "content": "原料非常规委托检测信息，冶炼分析中心非常规委托检测信息，冶炼实验室非常规委托检测信息，轧钢分析中心非常规委托检测信息，轧材实验室非常规委托检测信息（委托信息，取样信息，制样信息，试样交接信息，检验报告，历史委托记录，委托单加工量统计报表）",
+          "code": "A1-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 6,
@@ -202,6 +223,13 @@
           "description": "指使用科研设备前考试过程中产生的信息，包括考试记录等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 6
+          },
+          "content": "考试记录",
+          "code": "A1-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 6,
@@ -261,6 +289,13 @@
           "description": "指薄板合同产线设计过程中产生的信息，包括专业化分工信息、过渡料需求信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 7
+          },
+          "content": "冷轧轧机专业化分工信息，连退专业化分工信息，酸轧专业化分工信息，罩退专业化分工信息，热镀锌专业化分工信息，电镀锡专业化分工信息，彩涂专业化分工信息，冷轧轧机过渡料需求信息，连退过渡料需求信息，酸轧过渡料需求信息，罩退过渡料需求信息，热镀锌过渡料需求信息，电镀锡过渡料需求信息，彩涂过渡料需求信息",
+          "code": "B1-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -320,6 +355,13 @@
           "description": "指厚板组板合同进行产线设计过程中产生的信息，包括板连铸出钢材组板信息、二次设计命令信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 8
+          },
+          "content": "厚板组板合同信息，厚板连铸出钢材组板信息，二次设计命令信息，组板设计静态表，合同履历信息",
+          "code": "B1-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -378,6 +420,13 @@
           "description": "指将合同接收成功的、具有共同属性的、订货量较小的合同，按归并原则归并成大合同即归并合同来组织生产。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 9
+          },
+          "content": "全程归并合同信息，分段归并合同信息",
+          "code": "B1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -437,6 +486,13 @@
           "description": "指以完成合同为主要目标，进行生产制造过程的物流平衡，及对各种生产过程中的异常情况，及时调整生产内容和节奏。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 10
+          },
+          "content": "物流平衡计划（制造物流平衡表，能力平衡图像数据），产销协同分析与预警信息（资源平衡表，生产进程异常信息，合同进程异常信息，瓶颈机组能力平衡信息，合同结构异常信息，生产故障信息，品种结构变化信息），系统静态表（业务规则静态表，基础数据静态表），统计分析报表（资源计划执行分析信息）",
+          "code": "B1-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -496,6 +552,13 @@
           "description": "指以合同交货期及各工序加工周期为基准，依据客户需求、工序能力、生产加工途径和库存能力等信息人工规划各工序排产日期。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 11
+          },
+          "content": "薄板合同计划，厚板合同计划",
+          "code": "B1-3-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -555,6 +618,13 @@
           "description": "指完成合同所需的用料申请计划。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 12
+          },
+          "content": "薄板连铸材料申请计划，厚板连铸材料申请计划",
+          "code": "B1-3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -614,6 +684,13 @@
           "description": "指对在制板坯、成品板坯进行单个或成批转用、充当与脱合同。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 13
+          },
+          "content": "在制板坯转用与充当信息，成品板坯转用与充当信息",
+          "code": "B1-4-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -673,6 +750,13 @@
           "description": "指对在制热卷、成品热卷进行单个或成批转用、充当与脱合同。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 14
+          },
+          "content": "在制热卷转用与充当信息，成品热卷(板)转用与充当",
+          "code": "B1-4-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -732,6 +816,13 @@
           "description": "指对在制冷卷、成品冷卷进行单个或成批转用、充当与脱合同。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 15
+          },
+          "content": "在制冷卷转用与充当信息，成品冷卷（板）转用与充当信息",
+          "code": "B1-4-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -791,6 +882,13 @@
           "description": "指对厚板成品进行单个或成批转用、充当与脱合同。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 16
+          },
+          "content": "厚板成品转用与充当信息",
+          "code": "B1-4-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -849,6 +947,13 @@
           "description": "指实时跟踪合同下发、计划编制、合同配料、生产执行、产品发货中与合同相关的业务操作，全面掌握从合同下发到成品发货每个生产管理环节的合同进度。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 17
+          },
+          "content": "薄板合同跟踪信息，厚板合同跟踪信息",
+          "code": "B1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -908,6 +1013,13 @@
           "description": "指对各产线的物料进行管理，包括物料生产路径信息，物料事件履历等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 18
+          },
+          "content": "物料历史信息，物料事件履历信息，物料生产路径履历信息",
+          "code": "B2-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -967,6 +1079,13 @@
           "description": "指外购、互供、来料加工、委外加工的物料信息管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 19
+          },
+          "content": "外购物料信息，互供物料信息，来料加工物料信息",
+          "code": "B2-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1026,6 +1145,13 @@
           "description": "指根据生产要求，对炼铁过程中使用的物料进行配比和投料的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 20
+          },
+          "content": "炼焦配煤计划，混匀配料计划，烧结配料计划，球团配料计划，配料实绩",
+          "code": "B2-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1085,6 +1211,13 @@
           "description": "指根据生产要求，对炼钢过程中使用的物料进行配比和投料的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 21
+          },
+          "content": "铁水分配信息",
+          "code": "B2-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1144,6 +1277,13 @@
           "description": "指生产各环节对物料的需求信息。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 22
+          },
+          "content": "废钢配料需求计划，炼钢要料计划，进料需求信息",
+          "code": "B2-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1203,6 +1343,13 @@
           "description": "指在生产过程中实际消耗的物料数量。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 23
+          },
+          "content": "消耗原料信息，消耗燃料信息，消耗辅料信息，消耗铁水信息，消耗合金信息，消耗废钢信息，消耗钢卷信息，消耗钢板信息，漆料消耗信息，物料消耗差异信息",
+          "code": "B2-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1262,6 +1409,13 @@
           "description": "指对生产过程中不同产品或工序的物料消耗进行分摊和归属，确保成本分配的准确性。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 24
+          },
+          "content": "物料消耗分摊板坯信息，物料消耗分摊钢卷信息，物料消耗分摊钢板信息，物料消耗差异数据分摊信息",
+          "code": "B2-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1321,6 +1475,13 @@
           "description": "指将物料消耗数据记录入账，确保物料使用和财务核算的一致性。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 25
+          },
+          "content": "物料消耗量汇总信息，物料消耗差异量汇总信息",
+          "code": "B2-2-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1380,6 +1541,13 @@
           "description": "指对生产计划中的各项目进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 26
+          },
+          "content": "烧结计划表信息，球团计划表信息，炼焦计划表信息，高炉计划表信息，合理库存控制表",
+          "code": "B3-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1439,6 +1607,13 @@
           "description": "指生产产量的目标和任务。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 27
+          },
+          "content": "下月产量计划",
+          "code": "B3-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1498,6 +1673,13 @@
           "description": "指对生产过程中所需的原材料和燃料进行供需预测。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 28
+          },
+          "content": "燃煤平衡预测方案，炼铁原燃料平衡预测方案，烧结原燃料平衡预测方案，球团原燃料平衡预测方案，矿选原料平衡预测方案",
+          "code": "B3-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1557,6 +1739,13 @@
           "description": "指对原材料和燃料的供需进行规划。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 29
+          },
+          "content": "燃煤平衡计划，炼铁原燃料平衡计划，烧结原燃料平衡计划，球团原燃料平衡计划，矿选平衡计划",
+          "code": "B3-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1616,6 +1805,13 @@
           "description": "指根据生产需求制定物料和资源需求计划。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 30
+          },
+          "content": "燃煤需求计划，炼铁原辅料需求计划",
+          "code": "B3-1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1675,6 +1871,13 @@
           "description": "指根据生产需求和工艺要求制定炼钢的生产计划。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 31
+          },
+          "content": "浇次计划，炉次计划，板坯计划，日分班生产作业计划，板坯离线切割计划，炼钢生产调度信息",
+          "code": "B3-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1734,6 +1937,13 @@
           "description": "指根据生产需求和工艺要求制定连铸连轧的生产计划。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 32
+          },
+          "content": "正常轧制作业计划，备用计划，轧制计划调整信息，轧制作业计划状态信息，连铸预计划（连铸制造命令，板坯命令），MCCR平整计划",
+          "code": "B3-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1792,6 +2002,13 @@
           "description": "指对热轧过程中的各项作业进行计划和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 33
+          },
+          "content": "热轧热装轧制作业计划，热轧冷装轧制作业计划，热轧直装轧制作业计划，热轧平整作业计划",
+          "code": "B3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1850,6 +2067,13 @@
           "description": "指对冷轧过程中的各项作业进行计划和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 34
+          },
+          "content": "酸洗作业计划，轧机作业计划，酸轧作业计划，连退作业计划，罩退作业计划，脱脂作业计划，热镀锌作业计划，电镀锡作业计划，平整作业计划，重卷作业计划，横切作业计划 （含落料），彩涂作业计划，纵切作业计划",
+          "code": "B3-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1908,6 +2132,13 @@
           "description": "指对撕分过程中的各项作业进行计划和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 35
+          },
+          "content": "复合卷撕分计划，复合卷抛光计划，横切计划",
+          "code": "B3-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -1967,6 +2198,13 @@
           "description": "指生产过程中涉及的关键指令或任务。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 36
+          },
+          "content": "命令板坯信息，命令大板信息，命令参数信息，命令小板信息，命令热处理参数信息",
+          "code": "B3-6-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2026,6 +2264,13 @@
           "description": "指对生产过程中的工艺操作进行指令下达和管理，确保生产工艺的规范执行。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 37
+          },
+          "content": "加热炉任务单，轧制任务单，在线剪切任务单，加热炉PDI信息，轧机PDI信息，剪切线PDI信息",
+          "code": "B3-6-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2085,6 +2330,13 @@
           "description": "指对彩涂生产过程中使用的漆料需求进行预测。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 39
+          },
+          "content": "彩涂卷漆料预测信息，漆料用量预测信息，指定漆厂信息，漆料消耗分析",
+          "code": "B3-7-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2144,6 +2396,13 @@
           "description": "指在生产正式开始前对排产计划进行预先安排和调整。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 40
+          },
+          "content": "预排产计划",
+          "code": "B3-7-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2203,6 +2462,13 @@
           "description": "指炼铁前期作业的实际生产情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 41
+          },
+          "content": "焦炭产出实绩，烧结矿产出实绩，球团矿产出实绩，铁水产出实绩，副产品产出实绩，炼铁设备日产能（烧结日产能信息，球团日产能信息，炼焦日产能信息，高炉日产能信息）",
+          "code": "B4-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2262,6 +2528,13 @@
           "description": "指炼钢过程中的实际生产情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 42
+          },
+          "content": "铁水倒罐实绩，铁水脱硫实绩，转炉炼钢实绩，钢包准备实绩，下渣检测实绩，炉衬检测实绩，CAS精炼实绩，RH精炼实绩，LF精炼实绩，AS精炼实绩，VD精炼实绩，板坯连铸实绩，轧机生产实绩，钢坯切割实绩、钢坯精整实绩，冷固球团实绩，套筒窑实绩，气烧窑实绩",
+          "code": "B4-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2321,6 +2594,13 @@
           "description": "指连铸连轧工艺中的实际生产情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 43
+          },
+          "content": "连铸炉次实绩，中间下线板坯切割实绩，隧道炉加热实绩，钢卷轧制实绩，MCCR平整实绩",
+          "code": "B4-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2380,6 +2660,13 @@
           "description": "指热轧工艺中的实际生产情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 44
+          },
+          "content": "加热炉生产实绩，轧机生产实绩，平整生产实绩，生产异常实绩（板坯拒收、中间坯切割、热卷回退）",
+          "code": "B4-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2439,6 +2726,13 @@
           "description": "指冷轧工艺中的实际生产情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 45
+          },
+          "content": "酸轧生产实绩，连退生产实绩，热镀锌生产实绩，重卷生产实绩，脱脂生产实绩，平整生产实绩，罩退生产实绩，电镀锡生产实绩，横切生产实绩，酸洗生产实绩，彩涂生产实绩，轧机生产实绩，纵切生产实绩",
+          "code": "B4-1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2498,6 +2792,13 @@
           "description": "指撕分线工艺的实际生产情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 46
+          },
+          "content": "撕分线生产实绩，横切生产实绩",
+          "code": "B4-1-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2557,6 +2858,13 @@
           "description": "指中厚板生产线的实际产出情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 47
+          },
+          "content": "轧制实绩，剪切线实绩，热处理实绩，小工序实绩（抛丸实绩，钢板修磨实绩，冷矫实绩，温矫实绩，压平实绩，缓冷实绩），火切实绩，板坯复合信息，加热炉实绩",
+          "code": "B4-1-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2615,6 +2923,13 @@
           "description": "指对生产过程中实际产出的产品重量进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 48
+          },
+          "content": "实重信息",
+          "code": "B4-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2674,6 +2989,13 @@
           "description": "指使用机械设备对板坯生产中残留的杂质或附着物进行自动清理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 49
+          },
+          "content": "机清处理计划，机清历史记录",
+          "code": "B4-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2733,6 +3055,13 @@
           "description": "指对炼铁前期工序中的原材料、回收物料等进出仓库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 50
+          },
+          "content": "料场入库信息，固废回收入库信息，固废加工入库信息，料场出库信息，铁前物料转储（物料转储单，转储明细，转储实绩），铁前废钢配料转储（废钢配料转储单，转储明细），固废回收转储（转储单，转储明细，回收物料转储实绩）",
+          "code": "B5-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2792,6 +3121,13 @@
           "description": "指对炼钢工序中的物料进出仓库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 51
+          },
+          "content": "原料入库信息，板坯入库信息，板坯出库信息，板坯转储信息（转储计划，转储明细），MCCR钢卷入库信息，MCCR钢卷出库信息，MCCR钢卷转储信息（转储计划，转储明细）",
+          "code": "B5-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2851,6 +3187,13 @@
           "description": "指对热轧工序中的物料进出仓库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 52
+          },
+          "content": "热轧物料入库信息，热轧物料出库信息，热轧物料转储信息（转储计划，转储出库明细）",
+          "code": "B5-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2910,6 +3253,13 @@
           "description": "指对冷轧工序中的物料进出仓库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 53
+          },
+          "content": "冷轧物料入库信息，冷轧物料出库信息，冷轧物料转储信息（转储计划，转储出库明细）",
+          "code": "B5-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -2969,6 +3319,13 @@
           "description": "指对撕分线工序中的物料进出仓库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 54
+          },
+          "content": "撕分线物料入库信息，撕分线物料出库信息，撕分线物料转储信息（转储计划，转储出库明细）",
+          "code": "B5-1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3028,6 +3385,13 @@
           "description": "指对中厚板产品及相关物料进出仓库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 55
+          },
+          "content": "物料入库信息（外购坯入库信息，中间库入库信息，剪切下线板材入库信息，成品库入库信息），物料出库信息，中厚板物料转储信息（转储计划，转储出库明细）",
+          "code": "B5-1-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3087,6 +3451,13 @@
           "description": "指对各作业部的所有物料、产品的出入库进行综合管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 56
+          },
+          "content": "入库信息（采购收货入库信息，料场入库信息，汽运转储入库信息，原燃料皮带入库信息，厂内皮带入库信息，固废回收入库信息，固废加工入库信息，自产物料入库信息，材料入库信息），出库信息（皮带出库信息，作业部出库信息，材料出库信息），转储信息（料场转库信息，作业部转库，材料转库信息）",
+          "code": "B5-1-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3146,6 +3517,13 @@
           "description": "指对彩涂生产所需的漆料的出入库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 57
+          },
+          "content": "漆料入库信息（采购入库信息，退库入库信息，转库入库信息），漆料出库信息（生产领用出库信息，转库出库信息）",
+          "code": "B5-1-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3205,6 +3583,13 @@
           "description": "指对检验用品出入库进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 58
+          },
+          "content": "标准物质入库信息，标准物质出库信息，药品、物料及耗材入库信息，药品、物料及耗材出库信息",
+          "code": "B5-1-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3264,6 +3649,13 @@
           "description": "指对物料堆放场地管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 59
+          },
+          "content": "供应预报信息，物料直拨信息，倒运实绩，料场倒运记录，筛分实绩，料场筛分记录，混匀实绩，混匀记录，混匀比例信息，混匀堆积作业计划，喷吹煤实绩，喷煤比例信息，喷煤比例图像数据，海关监管散货物料信息，海关监管货物放行信息，料堆结存数据，料堆差异调整信息，库存信息，料场库存实物差异信息，料场库存账面差异信息，物料库存走势图像数据，物料库存分布图像数据，料条图像数据，料堆图像数据，料场图像数据",
+          "code": "B5-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3323,6 +3715,13 @@
           "description": "指对炼钢工序中使用的物料在仓库内的存储、堆放和调度进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 60
+          },
+          "content": "板坯库内信息（库存信息，实物库存差异信息，账面库存差异信息，物料移动历史信息，上料计划，手动投料信息，手动卸料信息，板坯跟踪图像数据，库存图像数据，库内发运车辆跟踪图像数据，倒垛图像数），MCCR钢卷库内信息（库存信息，实物库存差异信息，账面库存差异信息，物料移动历史信息，上料计划，手动投料信息，手动卸料信息，标签打印数量信息，钢卷作业委托处理信息，钢卷跟踪图像数据，库存图像数据，库内发运车辆跟踪图像数据，倒垛图像数，上料计划调整信息），方坯库内信息（库存信息，实物库存差异信息，账面库存差异信息，库存操作历史信息，24点库存信息），原料库内信息（24点库存信息，每日库存信息，实物库存差异信息，账面库存差异信息）",
+          "code": "B5-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3382,6 +3781,13 @@
           "description": "指对热轧工序中的物料在仓库内的存储、堆放和调度进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 61
+          },
+          "content": "物料倒跺信息，库存信息，实物库存差异信息，账面库存差异信息，物料移动历史信息，上料计划，手动投料信息，手动卸料信息，标签打印数量信息，业务委托处理信息，盘库图像数据，物料跟踪图像数据，库存图像数据",
+          "code": "B5-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3441,6 +3847,13 @@
           "description": "指对冷轧工序中的物料在仓库内的存储、堆放和调度进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 62
+          },
+          "content": "库存信息，倒跺信息，物料移动历史信息，上料计划，手动投料信息，手动卸料信息，自动投料信息，物料包装信息（包装实绩、包装确认信息），标签打印数量信息，库区图像数据，步进梁跟踪图像数据，1580转储传输链跟踪图",
+          "code": "B5-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3500,6 +3913,13 @@
           "description": "指对撕分线工序中的物料在仓库内的存储、堆放和调度进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 63
+          },
+          "content": "物料倒跺信息，标签打印信息",
+          "code": "B5-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3559,6 +3979,13 @@
           "description": "指对中厚板产品及相关物料在仓库内的存储、堆放和调度进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 64
+          },
+          "content": "物料倒跺信息，实时库存信息（现货库库存），0点库存信息，库存历史信息",
+          "code": "B5-2-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3618,6 +4045,13 @@
           "description": "指对作业部各类物料、产品在仓库内的存储和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 65
+          },
+          "content": "期初库存信息（物料期初库存，库存地期初库存，库位期初库存），库存差异调整信息（料场库存实物差异信息，料场库存账面差异信息，作业部实物库存差异信息，作业部账面库存差异信息，材料库存差异信息），盘库信息（盘点实绩，结存数据），",
+          "code": "B5-2-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3677,6 +4111,13 @@
           "description": "指对彩涂生产所使用的漆料在仓库内的存储、堆放和调度进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 66
+          },
+          "content": "漆料库存信息，漆料垛位信息，漆料移动历史信息，漆料历史信息，废漆处理信息，库区码放图像数据，漆料退货信息，漆料退库信息",
+          "code": "B5-2-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3736,6 +4177,13 @@
           "description": "指对检验用品在仓库内的存储进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 67
+          },
+          "content": "检验用品库存信息",
+          "code": "B5-2-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3795,6 +4243,13 @@
           "description": "指对天车设备的运行和操作进行管理，确保物料和产品在仓库内的安全搬运。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 68
+          },
+          "content": "指令信息，天车定位信息，入库传输链跟踪信息，吊前垛位信息，目标垛位信息，库位信息，作业状态信息，天车跟踪图像数据",
+          "code": "B5-2-10",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3854,6 +4309,13 @@
           "description": "指对厂内物流的标准流程、操作规范和运输基准进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 69
+          },
+          "content": "运输货名信息，仓库基本信息，铁路股道信息，铁路车辆信息，厂内自备车信息，外协车队费用指标信息，汽车运输装卸点信息，汽运车辆信息，汽运托运号信息，汽车驾驶员信息，码头泊位信息，船舶基本信息，成品装船作业基准信息，收付费项目信息，受益成本中心信息",
+          "code": "B6-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3913,6 +4375,13 @@
           "description": "指通过铁路进行物料运输的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 70
+          },
+          "content": "铁路进厂日计划，铁路进厂卸车计划，铁路出厂装车计划（路车分布信息、车辆空重信息、车况信息、装车申请），铁路装车日计划，车辆到达预报信息，装卸车实绩，发车信息，厂内停留信息，调车计划（调车指令），铁路成品库信息，路车实绩，铁路运输设备实绩，装卸实绩",
+          "code": "B6-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -3972,6 +4441,13 @@
           "description": "指对铁水从炼铁到炼钢的输送进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 71
+          },
+          "content": "铁水分配计划，调车计划（调车指令），股道现车信息，铁水运输设备实绩，铁水运输实绩",
+          "code": "B6-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4031,6 +4507,13 @@
           "description": "指通过汽车进行物料运输的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 72
+          },
+          "content": "作业综合实绩（车辆消耗实绩、作业实绩、过磅实绩、装车实绩）",
+          "code": "B6-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4090,6 +4573,13 @@
           "description": "指对码头物资装卸、船只调度等进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 73
+          },
+          "content": "船舶预报信息，船舶确报信息，水运进厂计划，水运出厂计划，社会货水运出厂计划，码头昼夜计划，码头工班计划，船舶实绩（靠泊、开工、完工、离泊），靠泊泊位信息，船舶消耗实绩（加水、加电），码头库场信息，水运出厂可发资源池信息，船舶配货信息，码头要货信息，船舶装卸实绩",
+          "code": "B6-1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4149,6 +4639,13 @@
           "description": "指对物流相关的基础数据（如仓库信息、装卸点信息等）进行系统化管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 74
+          },
+          "content": "账户信息，角色信息，司机信息，车辆信息，物料信息，仓库信息，装卸点信息，用车单位信息，车队信息，车载终端信息，排班信息，充电桩信息，汽车运输装卸点信息，汽运车辆信息，汽运托运号信息",
+          "code": "B6-1-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4208,6 +4705,13 @@
           "description": "指对运输单据进行管理，包括运单分配等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 75
+          },
+          "content": "运单信息（提送货点信息、物料信息、车辆信息）,分配运单信息（派车信息）",
+          "code": "B6-1-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4267,6 +4771,13 @@
           "description": "指对运单的实时追踪和监控，获取货物在运输过程中的位置和状态信息。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 76
+          },
+          "content": "运输异常信息（运输超时报警信息、车辆偏航报警信息、天车设备异常信息），车辆过磅信息",
+          "code": "B6-1-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4326,6 +4837,13 @@
           "description": "指对物流流程中涉及的排队情况进行管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 77
+          },
+          "content": "车辆排队信息，车辆排队历史信息",
+          "code": "B6-1-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4385,6 +4903,13 @@
           "description": "指对与物流相关的重要信息、公告进行发布和管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 78
+          },
+          "content": "公告信息",
+          "code": "B6-1-10",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4444,6 +4969,13 @@
           "description": "指对物流数据进行统计和分析。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 79
+          },
+          "content": "运输实绩统计分析信息（准时签到率、排队时长、装卸车时长、在途时长、装载率、运输异常信息）",
+          "code": "B6-1-11",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4503,6 +5035,13 @@
           "description": "指对车辆的工作情况进行汇总和管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 80
+          },
+          "content": "车辆工作情况汇总信息（每日拉运总量，每日车辆拉运总车数）",
+          "code": "B6-1-12",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4562,6 +5101,13 @@
           "description": "指对司机的工作情况、驾驶记录等进行汇总和管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 81
+          },
+          "content": "司机情况汇总信息（每日出车数量，每日工作时长，行为监控达标信息）",
+          "code": "B6-1-13",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4620,6 +5166,13 @@
           "description": "指成品从工厂到客户的运输、配送管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 82
+          },
+          "content": "准发库存表，发运信息，运输价格询比价表",
+          "code": "B6-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 82,
@@ -4679,6 +5232,13 @@
           "description": "指对产品规范码及其所代表产品的具体描述(品名、标准、牌号等)。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 83
+          },
+          "content": "产品极限规格信息，产品用途信息，产品规范基本信息，产品规范标准信息，用户与用途对照关系信息",
+          "code": "C1-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -4738,6 +5298,13 @@
           "description": "指根据产品质量设计的工艺管理内容，设计冶金规范体系架构，覆盖范围包括产品加工路径、各工序工艺控制目标、检化验要求等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 84
+          },
+          "content": "冶金规范设计信息（工序设计信息，产线设计信息），钢级工艺设计信息，静态表信息（炼钢工艺卡静态表，钢级规格类静态表，公差放行类静态表，动态质量设计静态表，转用充当类静态表，试验放行类静态表，质量及包装要求静态表，机组作业类静态表，后台校核类静态表，工序类静态表）",
+          "code": "C1-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -4797,6 +5364,13 @@
           "description": "指产品的质量设计要求，包括检化验要求、质保书要求等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 85
+          },
+          "content": "加工制程控制信息，各工序工艺控制目标信息，检化验要求信息，质保书要求信息，合同处理履历信息，合同处理结果信息，制程调整信息，动态质量设计信息",
+          "code": "C1-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -4856,6 +5430,13 @@
           "description": "指对炼钢区域连铸各个机组产出的实物板坯信息进行跟踪、质量在线判定与处置等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 86
+          },
+          "content": "板坯质量在线判定信息，板坯异常信息，板坯在线处置信息，板坯低倍硫印信息，炼钢大型夹杂物信息",
+          "code": "C1-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -4915,6 +5496,13 @@
           "description": "指对热轧区域轧制、精整、罩退、横切及热切各个机组产出的实物钢卷信息进行跟踪、质量在线判定与处置等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 87
+          },
+          "content": "热轧板卷在线处置信息，热轧板卷表面缺陷分布信息，热轧板卷工艺曲线信息",
+          "code": "C1-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -4974,6 +5562,13 @@
           "description": "指对冷轧区域酸轧、退火、热镀锌、彩涂、镀锡、罩退平整、重卷、横切、落料等各个机组产出的实物钢卷信息进行跟踪、质量在线判定与处置等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 88
+          },
+          "content": "冷卷在线处置信息，冷卷表面缺陷分布信息，冷卷工艺曲线信息",
+          "code": "C1-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5033,6 +5628,13 @@
           "description": "指对酸洗区域及拉矫各个机组产出的实物钢卷信息进行跟踪、质量判定处置等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 89
+          },
+          "content": "酸洗材料在线处置信息，酸洗材料表面缺陷分布信息，酸洗工艺曲线信息",
+          "code": "C1-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5092,6 +5694,13 @@
           "description": "指对中厚板区域轧制、精整、预处理、热处理等各个机组产出的实物钢卷信息进行跟踪、质量在线判定与处置等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 90
+          },
+          "content": "中厚板在线处置信息，中厚板表面缺陷分布信息，中厚板工艺曲线信息，中厚板探伤图谱信息",
+          "code": "C1-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5151,6 +5760,13 @@
           "description": "指对产品的性能判定，性能不合时，及时通知责任者进行改判并作相应的处置。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 91
+          },
+          "content": "成分及性能判定信息，性能不合处置信息",
+          "code": "C1-2-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5210,6 +5826,13 @@
           "description": "指对物料的性能判定结果、表面判定结果进行综合判定。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 92
+          },
+          "content": "性能、表面综合判定信息",
+          "code": "C1-2-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5269,6 +5892,13 @@
           "description": "指对材料（包括原料，在制品，成品）进行封锁和释放处理。对封锁的材料，根据不同的封锁原因进行处置，包括产品返工、改判等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 93
+          },
+          "content": "材料（原料，在制品，成品）处置信息，返修指令信息",
+          "code": "C1-2-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5328,6 +5958,13 @@
           "description": "指对钢板进行形合、材合及材质判定。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 94
+          },
+          "content": "厚板材质判定信息（熔炼成分判定、机械性能判定、超声波探伤检查、合同件数检查）",
+          "code": "C1-2-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5387,6 +6024,13 @@
           "description": "对质量异议合同进行相关处置。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 95
+          },
+          "content": "质量异议合同材料处置信息",
+          "code": "C1-2-10",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5446,6 +6090,13 @@
           "description": "指根据钢卷在各生产工序中的表面缺陷分布情况，分析缺陷在生产过程中的实际衍变过程。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 96
+          },
+          "content": "跨工序表面缺陷，单工序表面缺陷，单工序表面缺陷分布特征",
+          "code": "C1-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5505,6 +6156,13 @@
           "description": "指通过SPC分析，结合表面缺陷、工艺过程参数、产品检化验数据等，进行供货质量分析、质量特性分析等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 97
+          },
+          "content": "单机组过程分析数据，单卷全流程分析数据",
+          "code": "C1-3-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5564,6 +6222,13 @@
           "description": "指质量知识库，将各部门各过程中的质量业务经验和知识收集起来，分别设计质量异议知识库、质量问题知识库（含工艺攻关文档）、专家建议知识库、操作要点知识库、质量分析研究知识库等一系列相关知识库。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 98
+          },
+          "content": "质量异议，工艺攻关，专家建议，操作要点",
+          "code": "C1-3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5623,6 +6288,13 @@
           "description": "指对质量异议进行分析，整改。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 99
+          },
+          "content": "质量异议/抱怨清单，分析整改报告",
+          "code": "C1-3-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5682,6 +6354,13 @@
           "description": "指对钢卷表面缺陷情况的统计。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 100
+          },
+          "content": "表面缺陷分布统计，表面缺陷趋势统计，热轧宽度均一性评价统计，磨损统计，产品质量评级报表，炼钢遗传缺陷分析数据",
+          "code": "C1-3-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5741,6 +6420,13 @@
           "description": "指对产品性能的分析。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 101
+          },
+          "content": "性能风险预警，性能风险管控，性能整体合格率",
+          "code": "C1-3-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5800,6 +6486,13 @@
           "description": "指成品的检化验及统计信息，包括委托信息、取样计划、检化验结果、样品统计信息、及时率统计信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 102
+          },
+          "content": "检化验委托信息，取样计划，取送样信息，试样加工排程信息，制样信息，试样交接信息，试验排程信息，检化验结果信息，检验流程图像数据，原始记录（原始记录（试验结果），原始记录文件，金相试验图片），交接班人员信息，及时率统计信息，样品统计信息，月报，检化验设备信息，精度管理信息",
+          "code": "C1-4-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5859,6 +6552,13 @@
           "description": "指炼铁、炼钢工序的成分信息，包括贴水成分，铁渣成分，炼钢合金成分等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 103
+          },
+          "content": "炼铁铁水成分，铁渣成分，炼钢铁水成分，脱硫成分，炼钢合金成分，炼钢原辅料成分，炼钢终渣成分，副枪样成分，LF精炼成分，RH精炼成分，AS精炼成分，CAS精炼成分，VD精炼成分，LF精炼渣成分，RH精炼渣成分，AS精炼渣成分，CAS精炼渣成分，板坯熔炼成分，板坯渣成分，精炼自制渣成分，炼钢渣料成分，硅钢精炼成分，硅钢连铸成分，硅钢连铸CN成分，成分综合信息",
+          "code": "C1-4-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5918,6 +6618,13 @@
           "description": "指原燃料的检化验及统计信息，包括委托信息、取样计划、检化验结果、原燃料检验时间统计报表、样品统计信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 104
+          },
+          "content": "检化验委托信息（采购收货质检委托信息），取样计划，取送样信息，试样加工排程信息，制样信息，试样交接信息，试验排程信息，检化验结果信息，期间报表，调度日报，原燃料检验时间统计报表，交接班人员信息，气体元素分析时间报表，铁水不达标统计台账，铁水不达标统计月报，及时率统计信息，样品统计信息，月报",
+          "code": "C1-4-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -5977,6 +6684,13 @@
           "description": "指对认证进行管理，包括认证书基本信息、申请认证计划、认证内审结果信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 105
+          },
+          "content": "认证书基本信息，认证有效期信息，申请认证计划，认证申请结果基本信息，内审计划，认证内审结果信息，纠正措施及执行结果信息，认证基础信息管理",
+          "code": "C1-4-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6036,6 +6750,13 @@
           "description": "指检化验的质量监控信息，包括年度质量监控计划，质量监控有效性评价信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 106
+          },
+          "content": "年度质量监控计划，年度质量监控记录，质量监控有效性评价信息",
+          "code": "C1-4-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6095,6 +6816,13 @@
           "description": "指实验室的能力验证相关信息，包括能力验证活动计划、年度实验室间对比信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 107
+          },
+          "content": "年度实验室间比对和能力验证活动计划，能力验证活动记录，年度实验室间对比信息",
+          "code": "C1-4-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6153,6 +6881,13 @@
           "description": "指产品质保书相关数据。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 108
+          },
+          "content": "质保书信息，质保书履历信息",
+          "code": "C1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6212,6 +6947,13 @@
           "description": "指记录和管理设备的基础信息，包括设备位码信息、设备基本资料、维修技术标准等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 109
+          },
+          "content": "设备2/4/6/9/12位码信息，设备编码维护人岗位信息，设备基本资料，通用维修技术标准信息，设备类别规范信息，专用维修技术标准",
+          "code": "C2-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6271,6 +7013,13 @@
           "description": "指根据设备的重要性对设备进行分级管理，包括级别判定规则信息、分层分类判定信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 110
+          },
+          "content": "基础信息（一级判定规则信息，二级判定规则信息，RPN门槛值规则信息），分层分类判定信息（设备一级判定信息，设备二级SOD判定信息，设备严重度S信息，设备频度O信息，设备测控度D信息），风险分析与控制信息（设备九码二级分级信息，设备六码二级分级信息）",
+          "code": "C2-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6330,6 +7079,13 @@
           "description": "指固定资产的基本信息。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 111
+          },
+          "content": "固定资产台账信息，固定资产台账历史备份信息，固定资产抛帐信息",
+          "code": "C2-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6389,6 +7145,13 @@
           "description": "指扩展设备物料的详细属性，便于更精确的管理和调配。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 112
+          },
+          "content": "设备12位码与物料代码对照信息，物料代码信息，仓库管理员与库区对照信息，点检员、库区、保管方式对照信息，岗位号与成本中心对照信息",
+          "code": "C2-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6448,6 +7211,13 @@
           "description": "指记录和维护计量设备的基础信息。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 113
+          },
+          "content": "计量检校人员的资质信息，检校方法信息，检校单位信息，设备维护人员信息，计量体系标准记录信息，计量体系运行记录信息，岗位与设备类别对照，高度测量计量信息",
+          "code": "C2-1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6507,6 +7277,13 @@
           "description": "指对企业内所有计量设备进行统一管理，跟踪设备状态。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 114
+          },
+          "content": "计量设备总库信息（在线设备总库信息，离线设备总库信息，临时设备信息），设备与项目关联信息",
+          "code": "C2-1-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6566,6 +7343,13 @@
           "description": "指管理计量设备的合格证书和相关资质证明，确保设备符合行业和法规要求。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 115
+          },
+          "content": "内检证书信息，电子印章和电子签名对应信息",
+          "code": "C2-1-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6625,6 +7409,13 @@
           "description": "指对特种设备（如压力容器、起重机械等）进行登记和注册。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 116
+          },
+          "content": "压力容器注册申请信息，压力管道注册申请信息，电梯注册申请信息，起重机械申请信息，厂内车辆注册申请信息，锅炉注册申请信息",
+          "code": "C2-1-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6684,6 +7475,13 @@
           "description": "指对企业内所有特种设备的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 117
+          },
+          "content": "电梯总库信息，起重机总库信息，压力容器总库信息，厂内车辆总库信息，锅炉总库信息，安全阀总库信息，压力管道总库信息，气瓶总库信息",
+          "code": "C2-1-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6743,6 +7541,13 @@
           "description": "指管理轧辊设备的基本信息。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 118
+          },
+          "content": "轧辊到货信息，轧辊异常信息，轧辊检测任务信息，检测结果信息，轧辊对信息，磨削任务，磨削实绩，磨削历史信息，轧辊生产实绩信息，轧辊历史信息，轧辊异常处理信息，在机轧辊信息，备辊信息，轧辊报废信息",
+          "code": "C2-1-10",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6802,6 +7607,13 @@
           "description": "指对轧辊轴承的信息管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 119
+          },
+          "content": "轴承包信息",
+          "code": "C2-1-11",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6861,6 +7673,13 @@
           "description": "指设备定期点检的标准和规范。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 120
+          },
+          "content": "点检标准信息，点检主信息，点检项次信息，点检标准与检修标准关联表",
+          "code": "C2-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6920,6 +7739,13 @@
           "description": "指设备的点检计划，确保设备点检工作按计划执行，预防设备故障。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 121
+          },
+          "content": "工作日设定表，点检计划表（计量设备点检计划），点检计划项次表",
+          "code": "C2-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -6979,6 +7805,13 @@
           "description": "指记录设备点检的实际情况和结果。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 122
+          },
+          "content": "点检实绩（计量设备点检实绩），工作清单",
+          "code": "C2-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7038,6 +7871,13 @@
           "description": "指记录设备的异常情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 123
+          },
+          "content": "异常联络单信息",
+          "code": "C2-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7097,6 +7937,13 @@
           "description": "指制定设备检修的规范和标准，确保检修过程中的操作规范、质量达标。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 124
+          },
+          "content": "检修标准信息（鱼雷罐检修标准信息、车辆检修标准信息），安全牌信息，安全牌挂牌信息，安全技术交底信息，安全技术交底及对策措施信息，检修记录卡信息，技术方案附件信息，工时定额信息，项目定额信息，四位码与成本中心对照信息，检修标准履历信息，维修作业标准信息，检修模型信息，检修主体供应商人力资源信息，检修施工班组信息",
+          "code": "C2-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7156,6 +8003,13 @@
           "description": "指制定定期或不定期的检修计划，确保设备在最佳状态下运行。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 125
+          },
+          "content": "定年修计划，检修计划信息，检修委托单，安全交底及对策信息，故障台账信息，委托单派工信息，检修动态信息，报支委托单信息",
+          "code": "C2-2-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7215,6 +8069,13 @@
           "description": "指记录设备检修的实际执行情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 126
+          },
+          "content": "检修质量异议信息，检修项目完工实绩，检修安全信息（安全生产日管控信息）",
+          "code": "C2-2-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7274,6 +8135,13 @@
           "description": "指记录设备的检修历史，包括检修的详细信息、检修履历实绩统计信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 127
+          },
+          "content": "检修详细履历，检修履历实绩统计信息，检修记录卡，检修计划/实绩履历信息，检修兑现率信息",
+          "code": "C2-2-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7333,6 +8201,13 @@
           "description": "指对闲置和废弃的固定资产进行登记和处理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 128
+          },
+          "content": "固定资产闲废申请信息，固定资产备件留用信息，备件处理申请信息，装机件留用申请信息，闲废备件留用信息",
+          "code": "C2-2-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7392,6 +8267,13 @@
           "description": "指根据固定资产的使用年限和折旧方法，记录折旧情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 129
+          },
+          "content": "固定资产折旧明细信息",
+          "code": "C2-2-10",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7451,6 +8333,13 @@
           "description": "指对废弃或报废的固定资产进行回收、再利用或处置。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 130
+          },
+          "content": "固定资产回收处置信息",
+          "code": "C2-2-11",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7510,6 +8399,13 @@
           "description": "指对设备操作位置附近的物料、备件、工具等进行管理，确保操作过程的便利性和高效性。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 131
+          },
+          "content": "入库信息，出库信息，出库履历信息，库存信息，库存台账信息，备件移出信息，待移入备件信息，备件调出信息，待调入备件信息，物料报废申请信息，循环品信息，循环品履历信息",
+          "code": "C2-2-12",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7569,6 +8465,13 @@
           "description": "指记录和管理设备备件的修复过程。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 132
+          },
+          "content": "备件修复申请信息，备件修复内容标准信息，部门备修费用预算控制信息，备修单，备修单要求完工日期修改申请信息，甲供件交接清单，销库存记录，甲供件信息，备修送货申请信息，备件修复到货信息，备件修复质量异议单信息",
+          "code": "C2-2-13",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7628,6 +8531,13 @@
           "description": "指制定和管理计量设备的检修、维护和校准计划，确保设备保持精确度。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 133
+          },
+          "content": "检校计划（在线检校计划，离线检校计划），委托计划",
+          "code": "C2-2-14",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7687,6 +8597,13 @@
           "description": "指记录计量设备的校准和检修实际执行情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 134
+          },
+          "content": "计量设备检校信息（周检率、覆盖率），检校进度信息，实绩信息",
+          "code": "C2-2-15",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7746,6 +8663,13 @@
           "description": "指管理计量设备的生命周期信息，包括修理、封存、注销等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 135
+          },
+          "content": "修理履历信息，封存履历信息，注销履历信息，计划实施统计信息，周期履历信息，实绩履历信息",
+          "code": "C2-2-16",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7805,6 +8729,13 @@
           "description": "指制定特种设备的检修、维护和年检计划，确保设备在规定的时间内进行必要的检查和维护，保证其安全运行。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 136
+          },
+          "content": "实施计划，延期检验申请信息，延期检验审核信息",
+          "code": "C2-2-17",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7864,6 +8795,13 @@
           "description": "指对作业线各个设备的状态进行管理，包括作业线设备开停机信息，设备状态信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 137
+          },
+          "content": "作业线资料及目标值维护信息（作业线资料主信息，作业线管理目标值信息，作业线年度信息，作业线年度对照信息，作业线与岗位号对照信息），作业线停机信息（短信推送信息），作业线开停机信息，作业线实时状态信息",
+          "code": "C2-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7923,6 +8861,13 @@
           "description": "指记录设备故障的详细信息，包括作业线故障信息、计量设备故障信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 138
+          },
+          "content": "作业线设备故障信息，故障处理手顺书信息，计量设备异常与故障信息，故障台账信息",
+          "code": "C2-3-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -7982,6 +8927,13 @@
           "description": "指对大型关键设备的状态进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 139
+          },
+          "content": "大型关键设备信息，关键设备与点检项目对应信息，大型关键设备状态信息",
+          "code": "C2-3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8041,6 +8993,13 @@
           "description": "指对企业的固定资产验收进行管理，确保资产符合标准。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 140
+          },
+          "content": "竣工验收通知信息，固定资产验收信息",
+          "code": "C2-3-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8100,6 +9059,13 @@
           "description": "指对固定资产的异动情况进行管理，包括异动申请信息、异动计划等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 141
+          },
+          "content": "异动申请信息，异动计划信息，异动历史信息",
+          "code": "C2-3-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8159,6 +9125,13 @@
           "description": "指记录和管理计量设备的状态变更。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 142
+          },
+          "content": "状态变更申请信息（修理状态变更申请信息，封存状态变更申请，解封申请信息，注销申请信息，不可接收申请信息）",
+          "code": "C2-3-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8218,6 +9191,13 @@
           "description": "指记录和管理特种设备的状态变化。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 143
+          },
+          "content": "状态变更申请信息",
+          "code": "C2-3-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8277,6 +9257,13 @@
           "description": "指根据企业的生产需要，制定能源使用和供应的计划，确保能源资源的合理调配和使用。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 144
+          },
+          "content": "电力供需计划，煤气供需计划，天然气供需计划，氧氮氩供需计划，蒸汽供需计划，压缩空气供需计划，用水供需计划，能源计划单耗信息，能源生产计划报表",
+          "code": "C3-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8336,6 +9323,13 @@
           "description": "指管理与水质相关的标准和规范。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 145
+          },
+          "content": "水质管理标准信息",
+          "code": "C3-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8395,6 +9389,13 @@
           "description": "指对企业能源的供给和消耗进行平衡管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 146
+          },
+          "content": "能源平衡报表，水平衡监测信息（水耗信息，补水量信息，用水量信息，水位信息，水平衡信息，盐平衡信息）",
+          "code": "C3-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8454,6 +9455,13 @@
           "description": "指对放射性物质进行管理，确保符合国家安全标准，避免辐射危害。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 147
+          },
+          "content": "放射源台账",
+          "code": "C3-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8513,6 +9521,13 @@
           "description": "指对煤气排水器进行监控和维护，确保煤气排水系统的正常运行。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 148
+          },
+          "content": "设备运行监控信息，告警信息",
+          "code": "C3-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8572,6 +9587,13 @@
           "description": "指管理整个工厂范围内的水质图像数据。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 149
+          },
+          "content": "关键工序/监测点水质参数，水质统计信息",
+          "code": "C3-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8631,6 +9653,13 @@
           "description": "指实时监控水质参数。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 150
+          },
+          "content": "监测计划，监测信息，水质质量信息",
+          "code": "C3-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8690,6 +9719,13 @@
           "description": "指监控水资源的运行情况，包括水流量等参数。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 151
+          },
+          "content": "冷却水流量信息",
+          "code": "C3-2-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8749,6 +9785,13 @@
           "description": "指对水质在不同使用场景下的表现进行监测。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 152
+          },
+          "content": "结垢信息，腐蚀信息，微生物、污垢热阻检测分析信息",
+          "code": "C3-2-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8808,6 +9851,13 @@
           "description": "指水处理过程中所使用的化学药剂的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 153
+          },
+          "content": "每日药剂消耗信息，药剂桶液位信息，药剂库存信息",
+          "code": "C3-2-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8867,6 +9917,13 @@
           "description": "指记录实际的能源消耗和供应情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 154
+          },
+          "content": "能源介质发生量，能源介质使用量（炼钢能源介质统计记录，机清介质消耗信息），能源介质放散量，电力实绩报表，煤气实绩报表，水实绩报表，氧气实绩报表，压缩空气实绩报表，蒸汽实绩报表，能源介质采购实绩报表，能源介质销售实绩报表，能源介质消耗分摊信息（分摊钢卷信息、分摊钢板信息），供水、用水图像数据",
+          "code": "C3-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8926,6 +9983,13 @@
           "description": "指能源生产过程中各个关键计量点的数据。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 155
+          },
+          "content": "准点数据，计量点数据",
+          "code": "C3-3-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -8985,6 +10049,13 @@
           "description": "指统计各个生产工序的能源消耗情况。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 156
+          },
+          "content": "能耗统计信息（高炉、烧结）",
+          "code": "C3-3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9044,6 +10115,13 @@
           "description": "指记录能源调度过程中的操作日志，包括电力调度日志、动力调度日志、水道调度日志等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 157
+          },
+          "content": "总值班长调度日志，电力调度日志，动力调度日志，水道调度日志",
+          "code": "C3-4-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9103,6 +10181,13 @@
           "description": "指企业对每日能源使用和生产情况的统计和汇总。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 158
+          },
+          "content": "能源调度日报",
+          "code": "C3-4-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9162,6 +10247,13 @@
           "description": "提供能源系统运行所需的技术支持、维护和优化，确保能源系统的高效运作。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 159
+          },
+          "content": "停复役单，运行方式变更单",
+          "code": "C3-4-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9221,6 +10313,13 @@
           "description": "指企业各部门提出的能源使用申请，确保能源资源的合理分配。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 160
+          },
+          "content": "用能申请信息",
+          "code": "C3-4-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9279,6 +10378,13 @@
           "description": "指对环境中的各种要素进行系统的监测、数据采集和分析。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 161
+          },
+          "content": "脱硫脱硝出口烟气流量信息，环保数据曲线",
+          "code": "C4-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9338,6 +10444,13 @@
           "description": "指对能源计量设备采集数据的规则进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 162
+          },
+          "content": "计量设备详细信息，数据采集规则信息",
+          "code": "C5-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9397,6 +10510,13 @@
           "description": "指通过各种技术手段采集能源计量设备记录的能耗数据。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 163
+          },
+          "content": "PI数据库日累计计量信息，能源计量数据，日维护数据，月维护数据，日计量表，计量报表，能源计量一次性准确率",
+          "code": "C5-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9456,6 +10576,13 @@
           "description": "指通过可视化界面（组态软件）对能源计量数据进行监控和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 164
+          },
+          "content": "PI实时数据库数据（PI能源实时曲线），PI实时数据库历史数据（PI能源历史曲线）",
+          "code": "C5-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9515,6 +10642,13 @@
           "description": "指衡器计量相关的申请流程管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 165
+          },
+          "content": "计量申请单（盘倒计量申请单、废钢配料转储计量申请单、固废回收计量申请单、方坯计量申请单、铁路运输计量委托信息、铁水计量申请信息、汽车运输计量申请信息），计量申请单统计信息",
+          "code": "C5-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9574,6 +10708,13 @@
           "description": "指对衡器产生的称重数据进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 166
+          },
+          "content": "称重信息（铁路运输计量实绩、铁水计量实绩、汽车运输计量实绩、汽运转港进厂计量实绩，出港磅单信息），衡器计量一次成功率，实时仪表重量信息",
+          "code": "C5-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9633,6 +10774,13 @@
           "description": "指通过监控系统实时查看衡器的运行状态和称重过程。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 167
+          },
+          "content": "汽车衡计量监控信息，800T轨道衡在线监控信息，150T轨道衡在线监控信息，汽车衡在线监控信息",
+          "code": "C5-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9692,6 +10840,13 @@
           "description": "指通过可视化或流程图的方式展示衡器从称重到数据记录的全过程。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 168
+          },
+          "content": "汽车衡称重业务流程信息，800T轨道衡称重业务流程信息，150吨轨道衡称重业务流程信息",
+          "code": "C5-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9751,6 +10906,13 @@
           "description": "指当衡器设备出现故障、超载或其他异常情况时，发出报警。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 169
+          },
+          "content": "衡器报警信息（衡器设备异常信息，称重异常信息），通讯报警信息，磅房门禁报警信息，皮重差异统计及报警信息（次数统计信息，皮重差异统计信息，明细信息），衡器UPS报警信息",
+          "code": "C5-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9810,6 +10972,13 @@
           "description": "指为员工或外来人员办理出入卡的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 170
+          },
+          "content": "正式员工开卡信息，长期员工开卡信息，长期人员异常信息，短期人员开卡信息，短期卡延期申请信息，延期信息，访客随车预约信息",
+          "code": "C6-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9869,6 +11038,13 @@
           "description": "指对人员权限进行设定和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 171
+          },
+          "content": "二级门禁白名单信息，授权信息，黑名单人员信息",
+          "code": "C6-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9928,6 +11104,13 @@
           "description": "指对乘坐通勤车进出厂人员进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 172
+          },
+          "content": "通勤车进出厂人员信息",
+          "code": "C6-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -9987,6 +11170,13 @@
           "description": "指对厂区人员进行统计，包括各区域人员统计信息、人员进出信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 173
+          },
+          "content": "厂区人员统计信息，各区域人员统计信息，人员基本信息，人员进出信息",
+          "code": "C6-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10046,6 +11236,13 @@
           "description": "指对进出厂区或指定区域的车辆进行管理，包括车辆黑名单信息、违法违规车辆信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 174
+          },
+          "content": "车辆信息（期卡、固定卡车辆信息），车辆黑名单信息，违法违规车辆信息",
+          "code": "C6-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10105,6 +11302,13 @@
           "description": "指对临时进入厂区的外部车辆进行登记、审批。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 175
+          },
+          "content": "临时车辆预约信息，临时车辆开卡记录",
+          "code": "C6-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10164,6 +11368,13 @@
           "description": "指对车辆进出权限进行审核和批准。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 176
+          },
+          "content": "开卡审核信息，延期审核信息，车辆年审信息",
+          "code": "C6-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10223,6 +11434,13 @@
           "description": "指对车辆或人员携带物品出厂的许可和记录管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 177
+          },
+          "content": "出厂物品信息，出门票信息",
+          "code": "C6-2-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10282,6 +11500,13 @@
           "description": "指对产品或车辆出厂过程的管理，包括产成品出厂核验、空罐车初尝核验等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 178
+          },
+          "content": "产成品出厂核验信息，核验记录统计信息，空罐车出厂核验信息",
+          "code": "C6-2-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10341,6 +11566,13 @@
           "description": "指对出入卡办理、发放、使用和注销等进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 179
+          },
+          "content": "人证合一效验开卡信息，开卡指令信息，车卡信息（发卡、挂失、解挂、补卡、退卡、注销）",
+          "code": "C6-2-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10400,6 +11632,13 @@
           "description": "指对进出厂区的车辆历史记录进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 180
+          },
+          "content": "车辆履历记录",
+          "code": "C6-2-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10459,6 +11698,13 @@
           "description": "指对厂区或特定区域的道路进行实时监控，确保车辆及人员活动的安全和秩序。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 181
+          },
+          "content": "主干道路信息，高清视频摄像头信息，厂区车辆实时跟踪图像数据，监控设备运行状态信息，统计信息",
+          "code": "C6-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10518,6 +11764,13 @@
           "description": "指通过制度明确企业内不同岗位的安全责任，包括安全责任状、安全指标信息等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 182
+          },
+          "content": "安全责任状信息（安全生产责任状、安全消防责任状），安全指标信息",
+          "code": "C7-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10577,6 +11830,13 @@
           "description": "指企业安全生产委员会的管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 183
+          },
+          "content": "安全组织机构信息，安委会机构信息，安全管理人员信息",
+          "code": "C7-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10636,6 +11896,13 @@
           "description": "指对定期或临时召开的安全生产会议进行组织和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 184
+          },
+          "content": "安全生产大会信息，安委会信息，安全专业会信息",
+          "code": "C7-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10695,6 +11962,13 @@
           "description": "指对员工进行安全知识和技能的培训。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 185
+          },
+          "content": "年度教育培训计划，年度教育培训记录，教育档案信息",
+          "code": "C7-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10754,6 +12028,13 @@
           "description": "指对企业内可能引发重大事故的危险源进行管理，包括监控、报警等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 186
+          },
+          "content": "重大危险源信息（监测、报警）",
+          "code": "C7-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10813,6 +12094,13 @@
           "description": "指对危险化学品进行安全管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 187
+          },
+          "content": "危险化学品信息，危险化学品证件信息",
+          "code": "C7-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10872,6 +12160,13 @@
           "description": "指对从事高风险特种作业的人员进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 188
+          },
+          "content": "特种作业人员信息，特种设备作业人员信息",
+          "code": "C7-2-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10931,6 +12226,13 @@
           "description": "指定期或临时对生产现场的安全情况进行检查。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 189
+          },
+          "content": "安全生产评价信息，检查计划，日常安全检查信息，安全专项检查信息",
+          "code": "C7-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -10990,6 +12292,13 @@
           "description": "指对涉及高危作业的流程进行安全管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 190
+          },
+          "content": "动火作业信息，高处作业信息，吊装作业信息，有限空间作业信息，断/占路作业信息，临时用电信息，大件运输作业信息",
+          "code": "C7-3-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11049,6 +12358,13 @@
           "description": "指对建设或施工项目的安全工作进行监督和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 191
+          },
+          "content": "在施工程技改项目信息",
+          "code": "C7-3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11108,6 +12424,13 @@
           "description": "指对气体的使用、储存和防护措施进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 192
+          },
+          "content": "空气呼吸器信息，气瓶充填预约信息，气瓶充装记录，固定式报警器信息，气体防护器材台账信息",
+          "code": "C7-3-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11167,6 +12490,13 @@
           "description": "指对涉及明火作业的人员安全进行管控，包括人员培训等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 193
+          },
+          "content": "电气焊动火作业（报名信息，人员信息，培训考试信息，题库信息，记分信息）",
+          "code": "C7-3-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11226,6 +12556,13 @@
           "description": "指对从事有职业病风险作业的员工进行定期体检。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 194
+          },
+          "content": "体检人员名单，体检费用信息，禁忌人员信息，体检日程信息",
+          "code": "C7-4-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11285,6 +12622,13 @@
           "description": "指对员工的职业健康情况和体检记录进行档案管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 195
+          },
+          "content": "体检报告，体检异常人员信息，体检档案文件，工伤纸质文件",
+          "code": "C7-4-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11344,6 +12688,13 @@
           "description": "指对工作场所中可能导致职业病的因素进行识别、评估和控制。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 196
+          },
+          "content": "检测报告（定期、年度、高毒物品）",
+          "code": "C7-4-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11403,6 +12754,13 @@
           "description": "指对劳动防护用品的发放套餐信息进行管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 197
+          },
+          "content": "劳保套餐信息",
+          "code": "C7-5-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11462,6 +12820,13 @@
           "description": "指对劳动防护用品的领取、发放和库存管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 198
+          },
+          "content": "需求计划信息，作业部收货信息，作业区收货信息，劳保领用信息，领用历史信息，劳保库存信息，劳保库实时信息，劳保退库信息",
+          "code": "C7-5-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11521,6 +12886,13 @@
           "description": "指对经营过程中产生的费用进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 199
+          },
+          "content": "检修年度预算（预算申报信息、年度预算信息），备修月执行预算（分月计划预算信息，月执行预算信息，月执行预算申报信息），费用实绩（预算实绩信息，年度分月实绩信息，维修实绩）",
+          "code": "C8-1-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11580,6 +12952,13 @@
           "description": "指对企业的收支账款进行核对、结算。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 200
+          },
+          "content": "原燃料报支信息，原燃料预付款信息，报支信息（运输），报销信息（出差报销、认证费报销、发票），结算信息（工程结算信息，工程项目明细，运费结算信息，销售结算信息，设备合同结算信息）",
+          "code": "C8-1-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11639,6 +13018,13 @@
           "description": "指对企业资金进行投资决策和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 201
+          },
+          "content": "股权投资信息(新设立项、可研、变动、终止产生的可研报告，可研信息表)，产权投资信息，固定资产信息(预算、结算、审计、转固等项目全流程信息)，无形资产信息",
+          "code": "C8-1-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11698,6 +13084,13 @@
           "description": "指对企业财务数据进行汇总，编制各类财务报表。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 202
+          },
+          "content": "财务报表（资产负债表，利润表，现金流量表，销售收入报表）",
+          "code": "C8-1-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11757,6 +13150,13 @@
           "description": "指对企业的财务活动进行审计监督。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 203
+          },
+          "content": "合资公司年度及专项审计报告",
+          "code": "C8-1-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11816,6 +13216,13 @@
           "description": "指对企业税务事务进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 204
+          },
+          "content": "应上交税费款项情况表，税务合规函",
+          "code": "C8-1-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11875,6 +13282,13 @@
           "description": "指对企业未来的财务活动进行预测和规划。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 205
+          },
+          "content": "经营计划及预算安排，经营目标责任书及绩效考核办法，生产经营统计数据（重点统计指标表）",
+          "code": "C8-1-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11934,6 +13348,13 @@
           "description": "指企业为达成销售目标而制定的各类计划与实施策略。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 206
+          },
+          "content": "销售价格政策信息，经营数据的规划及分析相关资料（客户、价格）",
+          "code": "C8-2-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -11993,6 +13414,13 @@
           "description": "指企业在销售过程中，对客户资源的维护、跟踪、优化和开发。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 207
+          },
+          "content": "客户信息",
+          "code": "C8-2-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12052,6 +13480,13 @@
           "description": "指具体执行采购计划的过程管理，包括采购订单信息、询价信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 208
+          },
+          "content": "采购订单信息（订单状态信息、送货信息、原燃料火车接车信息、采购货物接船信息），询价信息（询价基础表、询价单）",
+          "code": "C8-3-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12111,6 +13546,13 @@
           "description": "指对采购物品的接收和验收进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 209
+          },
+          "content": "船运报检信息（海关报检单状态信息），收货信息（收货单、收货实绩），船运盘倒信息，扣杂扣包装信息（单车扣杂扣包装信息、批量扣杂扣包装信息），废钢拆分打料信息",
+          "code": "C8-3-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12170,6 +13612,13 @@
           "description": "指对不合格或不符合要求的采购物品进行退货处理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 210
+          },
+          "content": "退货单，退货明细",
+          "code": "C8-3-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12229,6 +13678,13 @@
           "description": "指对企业生产或运营过程中的成本进行核算。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 211
+          },
+          "content": "费用明细，成本核算信息",
+          "code": "C8-4-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12288,6 +13744,13 @@
           "description": "指对具体工程项目进行全面管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 212
+          },
+          "content": "请示报告单（确定中标单位请示、确定成交单位请示）",
+          "code": "C8-5-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12347,6 +13810,13 @@
           "description": "指对企业涉及的物流运输合同进行管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 213
+          },
+          "content": "合同信息（运输合同信息）",
+          "code": "C8-6-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12406,6 +13876,13 @@
           "description": "指对设备采购或维护相关合同的管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 214
+          },
+          "content": "项目管理（项目信息、项目申请信息、项目变更履历信息），合同信息（合同信息、合同预算信息、结算基准价格信息、协议价信息），供应商管理（供应商授权信息），付款申请管理（资金计划、供应商应付余额汇总信息、供应商预分配表、付款申请信息）",
+          "code": "C8-6-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12465,6 +13942,13 @@
           "description": "指对工程项目中涉及的各类合同进行管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 215
+          },
+          "content": "合同信息，签约合同记录表",
+          "code": "C8-6-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12524,6 +14008,13 @@
           "description": "指对企业物资采购过程中签订的合同进行管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 216
+          },
+          "content": "合同信息",
+          "code": "C8-6-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12583,6 +14074,13 @@
           "description": "指对企业销售活动中签订的合同进行管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 217
+          },
+          "content": "合同信息",
+          "code": "C8-6-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12642,6 +14140,13 @@
           "description": "指对公司内部规章制度文件的制定、更新、发布和存档进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 218
+          },
+          "content": "管理手册，公司级规章制度，部门级规章制度，测量设备内校规范，应急预案，记录信息，关键控制活动信息，外来文件，管理改善建议信息",
+          "code": "C8-7-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12701,6 +14206,13 @@
           "description": "指对与生产技术相关的文件进行管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 219
+          },
+          "content": "外部标准，产品工艺规程，技术规程，DFMEA，PFMEA，控制计划，技术标准，岗位规程，试生产方案，技术通知单，工艺变更申请表，工艺变更单，质量抱怨报告",
+          "code": "C8-7-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12760,6 +14272,13 @@
           "description": "指对公司战略规划相关文件的管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 220
+          },
+          "content": "合资公司三会议案及决议文件",
+          "code": "C8-7-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12819,6 +14338,13 @@
           "description": "指对各类文件进行统计。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 221
+          },
+          "content": "文件统计信息",
+          "code": "C8-7-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12878,6 +14404,13 @@
           "description": "指对业务流程中的关键问题和困难点进行识别。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 222
+          },
+          "content": "重点难点问题清单",
+          "code": "C8-7-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12937,6 +14470,13 @@
           "description": "指对员工提出改进建议和方案的管理，包括改善亮点、改善提案等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 223
+          },
+          "content": "改善亮点信息，改善提案信息，改善课题信息",
+          "code": "C8-7-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -12996,6 +14536,13 @@
           "description": "指对员工在改善活动中获得的积分进行管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 224
+          },
+          "content": "员工积分信息，部门排名信息",
+          "code": "C8-7-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13055,6 +14602,13 @@
           "description": "指对改进方案和成果进行评分和评估。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 225
+          },
+          "content": "员工评分信息，部门评分信息",
+          "code": "C8-7-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13114,6 +14668,13 @@
           "description": "指对在改善活动中取得的突出成果进行记录。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 226
+          },
+          "content": "优秀改善成果信息",
+          "code": "C8-7-9",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13173,6 +14734,13 @@
           "description": "指企业日常运营中的信息流转，如通知、内部沟通等。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 227
+          },
+          "content": "办公站内信、公文分发信息",
+          "code": "C8-7-10",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13232,6 +14800,13 @@
           "description": "指对员工的信息进行管理，包括入职信息等。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 228
+          },
+          "content": "员工入职信息，人员信息",
+          "code": "C8-8-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13291,6 +14866,13 @@
           "description": "指为员工提供技能提升和知识更新的培训管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 229
+          },
+          "content": "培训人员信息，培训题库，考试成绩信息",
+          "code": "C8-8-2",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13350,6 +14932,13 @@
           "description": "指对员工工资、奖金、福利等薪酬体系的制定和管理。",
           "raw_level": "2",
           "standard_data_level": "L2",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 230
+          },
+          "content": "劳动统计信息，薪酬信息",
+          "code": "C8-8-3",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13409,6 +14998,13 @@
           "description": "指对办公用品的信息进行管理，包括办公用房、办公家具、办公设备等。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 231
+          },
+          "content": "办公用房信息（楼，房间，卡位），办公家具信息（维修、报废），办公设备信息（维修）",
+          "code": "C8-8-4",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13468,6 +15064,13 @@
           "description": "指对办公用品的领取、发放和库存管理。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 232
+          },
+          "content": "办公用品需求计划，办公室收货信息，提报申请信息，办公文具领用信息，办公用品库存信息，办公用品实时库存信息",
+          "code": "C8-8-5",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13527,6 +15130,13 @@
           "description": "指为办公用品使用设定合理的消耗指标。",
           "raw_level": "1",
           "standard_data_level": "L1",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 233
+          },
+          "content": "办公用品耗材费用信息",
+          "code": "C8-8-6",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13586,6 +15196,13 @@
           "description": "指对公司管理人员的选拔、任命、考核管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 234
+          },
+          "content": "干部任免审批表（干部简历），干部调整表，干部年终评价表",
+          "code": "C8-8-7",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13645,6 +15262,13 @@
           "description": "指对企业中劳动组织的管理。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 235
+          },
+          "content": "尚未公布的干部录用计划文件，改革过会信息",
+          "code": "C8-8-8",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13704,6 +15328,13 @@
           "description": "指对企业运维、财务、采购、销售等数据进行分析形成的报表。",
           "raw_level": "3",
           "standard_data_level": "L3",
+          "source": {
+            "file": "data/raw/关基-数据分类分级目录.xlsx",
+            "sheet": "数据分类分级",
+            "row": 236
+          },
+          "content": "运维分析信息，现货结算趋势分析信息，财务分析信息，采购分析信息，销售分析信息，销售物流分析信息，质量分析信息，生产分析信息，生产管制信息，公司统计",
+          "code": "C8-9-1",
           "raw_fields": {
             "level_1_definition": {
               "end_row": 236,
@@ -13757,7 +15388,7 @@
     "issues": [
       {
         "kind": "category_excluded",
-        "detail": "standard category 'B3-6' absent from the previous active registry (e.g. shougang B3-6); not added this phase to keep the Stage-1 universe unchanged — reported, not silently added or dropped"
+        "detail": "standard category 'B3-6' excluded by the explicit projection policy (DatasetConfig.projection_excluded_category_ids, e.g. shougang B3-6); not added to the active universe this phase — reported, not silently added or dropped"
       }
     ],
     "registry_source": "shougang",

@@ -111,6 +111,9 @@ class StandardEntryView:
     description: str = ""
     raw_level: str = ""
     standard_data_level: str | None = None
+    content: str = ""
+    code: str | None = None
+    source: Mapping[str, Any] = field(default_factory=dict)
     raw_fields: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
 
     def to_mapping(self) -> dict[str, Any]:
@@ -121,7 +124,12 @@ class StandardEntryView:
             "description": self.description,
             "raw_level": self.raw_level,
             "standard_data_level": self.standard_data_level,
+            "source": dict(self.source),
         }
+        if self.content:
+            mapping["content"] = self.content
+        if self.code is not None:
+            mapping["code"] = self.code
         if self.raw_fields:
             mapping["raw_fields"] = {
                 key: dict(item) for key, item in sorted(self.raw_fields.items())
@@ -131,6 +139,7 @@ class StandardEntryView:
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "StandardEntryView":
         raw_fields = value.get("raw_fields") or {}
+        source = value.get("source") or {}
         return cls(
             standard_entry_id=str(value.get("standard_entry_id", "") or ""),
             name=str(value.get("name", "") or ""),
@@ -138,6 +147,13 @@ class StandardEntryView:
             description=str(value.get("description", "") or ""),
             raw_level=str(value.get("raw_level", "") or ""),
             standard_data_level=value.get("standard_data_level"),
+            content=str(value.get("content", "") or ""),
+            code=value.get("code"),
+            source=(
+                {str(k): v for k, v in source.items()}
+                if isinstance(source, Mapping)
+                else {}
+            ),
             raw_fields=(
                 {str(k): dict(v) for k, v in raw_fields.items()}
                 if isinstance(raw_fields, Mapping)

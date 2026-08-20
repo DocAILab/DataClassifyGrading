@@ -53,6 +53,13 @@ class DatasetConfig:
         "——" placeholder); records with such a leaf resolve to no target.
       registry_source: optional name of another dataset whose LeafRegistry
         this dataset reuses (infra -> shougang); None builds its own.
+      projection_excluded_category_ids: explicit Phase-2 projection policy:
+        standard categories that must NOT enter the active registry/corpus
+        universe (e.g. shougang B3-6, absent from the legacy Stage-1
+        universe). Exclusions are applied by the formal builder and reported;
+        never silently added or dropped. This is the ONLY formal-build input
+        about universe membership — the legacy registry is not read at build
+        time (audit/parity only).
     """
 
     dataset: str
@@ -62,6 +69,7 @@ class DatasetConfig:
     identity_fields: tuple[str, ...] = ()
     placeholder_labels: tuple[str, ...] = ()
     registry_source: str | None = None
+    projection_excluded_category_ids: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.dataset.strip():
@@ -94,6 +102,10 @@ class DatasetConfig:
                 )
         if self.registry_source == self.dataset:
             raise ValueError("registry_source must not point at the dataset itself")
+        if any(not item.strip() for item in self.projection_excluded_category_ids):
+            raise ValueError("projection_excluded_category_ids must be non-empty strings")
+        if len(set(self.projection_excluded_category_ids)) != len(self.projection_excluded_category_ids):
+            raise ValueError("projection_excluded_category_ids must be unique")
 
     def to_mapping(self) -> dict[str, Any]:
         mapping: dict[str, Any] = {
@@ -107,6 +119,10 @@ class DatasetConfig:
             mapping["identity_fields"] = list(self.identity_fields)
         if self.registry_source is not None:
             mapping["registry_source"] = self.registry_source
+        if self.projection_excluded_category_ids:
+            mapping["projection_excluded_category_ids"] = list(
+                self.projection_excluded_category_ids
+            )
         return mapping
 
     @classmethod
@@ -132,6 +148,13 @@ class DatasetConfig:
             isinstance(field, str) for field in raw_identity
         ):
             raise ValueError("dataset config identity_fields must be a list of strings")
+        raw_excluded = value.get("projection_excluded_category_ids", ())
+        if not isinstance(raw_excluded, (list, tuple)) or not all(
+            isinstance(item, str) for item in raw_excluded
+        ):
+            raise ValueError(
+                "dataset config projection_excluded_category_ids must be a list of strings"
+            )
         return cls(
             dataset=raw_dataset.strip(),
             leaf_level=str(value.get("leaf_level", "level_4")).strip(),
@@ -140,6 +163,9 @@ class DatasetConfig:
             identity_fields=tuple(field.strip() for field in raw_identity),
             placeholder_labels=tuple(label.strip() for label in raw_placeholders),
             registry_source=None if raw_source is None else raw_source.strip(),
+            projection_excluded_category_ids=tuple(
+                item.strip() for item in raw_excluded
+            ),
         )
 
     @classmethod
@@ -155,6 +181,10 @@ BUILTIN_DATASET_CONFIGS: dict[str, DatasetConfig] = {
         dataset="shougang",
         id_strategy="code",
         placeholder_labels=("——",),
+        # Phase-2 explicit projection policy: B3-6 中厚板作业计划 exists in the
+        # canonical standard but not in the legacy Stage-1 universe; exclude it
+        # from the active registry/corpus and report (never silently add/drop).
+        projection_excluded_category_ids=("B3-6",),
     ),
     "infra": DatasetConfig(
         dataset="infra",

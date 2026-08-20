@@ -24,8 +24,10 @@ guanji_dict.json) are NOT read by this formal build (audit-only).
 
 To keep Stage-1/Stage-2 prompt behavior byte-identical, registry/corpus order
 follows the FIRST SOURCE ROW of each category and registry path keeps the
-historical Stage-1 values; standard categories absent from the previous active
-registry are excluded and reported (shougang B3-6).
+historical Stage-1 values; universe membership comes from the EXPLICIT
+projection policy (DatasetConfig.projection_excluded_category_ids — shougang
+excludes B3-6; infra inherits), and excluded categories are reported. The
+legacy registry/standards_map are never read by this build (audit/parity only).
 
 All builds and coverage diagnostics are computed before anything is written;
 every output file is written exactly once. Artifact sources are repo-relative
@@ -99,35 +101,18 @@ def _load_standard(path: Path):
     return CanonicalStandard.from_mapping(_load_json(path))
 
 
-def _previous_active_ids(dataset: str) -> set[str] | None:
-    """Active category ids of the CURRENT committed registry — the Stage-1
-    reference universe used to report the standard difference (shougang
-    B3-6). Read from the repo's cfg/task registry, not the target out-dir, so
-    behavior is identical whether building in place or into a scratch dir.
-    Returns None when the reference registry is absent."""
-    path = PROJECT_ROOT / "cfg" / "task" / "registry" / f"{dataset}.registry.json"
-    if not path.is_file():
-        return None
-    data = _load_json(path)
-    ids = {str(item.get("category_id", "")) for item in data.get("categories", [])}
-    return {identifier for identifier in ids if identifier}
-
-
 def _builders(
     standard_dir: Path, data_dir: Path
 ) -> dict[str, Callable[[str], tuple[list, BuildReport]]]:
     def from_standard(dataset: str, standard_key: str, registry_source: str | None):
         standard_file = standard_dir / f"{standard_key}.standard.json"
         standard = _load_standard(standard_file)
-        previous_active = (
-            _previous_active_ids(standard_key)
-            if standard_key != "pers_info"
-            else None
-        )
+        # Projection policy comes from DatasetConfig
+        # (projection_excluded_category_ids; infra inherits shougang's). The
+        # legacy registry is NOT read at build time — audit/parity only.
         categories, report = build_from_standard(
             standard,
             dataset=dataset,
-            previous_active_ids=previous_active,
             registry_source=registry_source,
         )
         # corpus.json ``source`` points at the IMMEDIATE input (the canonical

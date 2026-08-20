@@ -544,11 +544,24 @@ def _standard_registry_path(dataset: str, category_id: str) -> tuple[str, ...]:
     return ()
 
 
+def _projection_exclusion(dataset: str) -> tuple[str, ...]:
+    """Explicit projection policy from the dataset config.
+
+    The ONLY formal-build input about universe membership: standard categories
+    that must not enter the active registry/corpus (shougang B3-6). Datasets
+    that reuse another registry (infra -> shougang) inherit that dataset's
+    policy. The legacy registry is never read at build time (audit/parity only).
+    """
+    config = BUILTIN_DATASET_CONFIGS[dataset]
+    policy_dataset = config.registry_source or dataset
+    return BUILTIN_DATASET_CONFIGS[policy_dataset].projection_excluded_category_ids
+
+
 def build_from_standard(
     standard,
     *,
     dataset: str = "finance",
-    previous_active_ids: set[str] | None = None,
+    excluded_category_ids: set[str] | tuple[str, ...] | None = None,
     registry_source: str | None = None,
 ) -> tuple[list[CorpusCategory], BuildReport]:
     """Derive the LeafRegistry/Corpus universe from a Phase-1 CanonicalStandard.
@@ -560,9 +573,11 @@ def build_from_standard(
     - LOSSESS per-entry facts are kept on the CorpusCategory (standard_entry_ids
       / standard_entries / scoped_annotations) — multiple standard entries under
       one category (e.g. finance 5× 基本信息) are never collapsed to "first".
-    - ``previous_active_ids``: standard categories absent from the previous
-      active registry (shougang B3-6) are EXCLUDED from this phase's active
-      universe and REPORTED (excluded_categories) — never silently added/dropped.
+    - ``excluded_category_ids``: the EXPLICIT projection policy (defaults to
+      the dataset config's ``projection_excluded_category_ids``; infra inherits
+      shougang's). Excluded standard categories (shougang B3-6) are removed
+      from the active universe and REPORTED (excluded_categories +
+      category_excluded issues) — never silently added or dropped.
     Returns (categories, report); nothing is written and no labels are touched.
     """
     from agent.standards.contracts import CanonicalStandard
@@ -606,25 +621,30 @@ def build_from_standard(
         aggregated.setdefault(entry.category_id, []).append(entry)
     report.standard_entries_out = len(ordered)
 
-    active_ids = list(aggregated)
-    if previous_active_ids is not None:
-        active_ids = [category_id for category_id in aggregated if category_id in previous_active_ids]
-        excluded = [
-            category_id
-            for category_id in aggregated
-            if category_id not in previous_active_ids
-        ]
-        report.excluded_categories = sorted(excluded)
-        for category_id in sorted(excluded):
-            report.issues.append(
-                ParseIssue(
-                    "category_excluded",
-                    f"standard category {category_id!r} absent from the previous "
-                    "active registry (e.g. shougang B3-6); not added this phase "
-                    "to keep the Stage-1 universe unchanged — reported, not "
-                    "silently added or dropped",
-                )
+    if excluded_category_ids is None:
+        excluded_category_ids = _projection_exclusion(dataset)
+    excluded_set = set(excluded_category_ids)
+    active_ids = [
+        category_id
+        for category_id in aggregated
+        if category_id not in excluded_set
+    ]
+    excluded = [
+        category_id
+        for category_id in aggregated
+        if category_id in excluded_set
+    ]
+    report.excluded_categories = sorted(excluded)
+    for category_id in sorted(excluded):
+        report.issues.append(
+            ParseIssue(
+                "category_excluded",
+                f"standard category {category_id!r} excluded by the explicit "
+                "projection policy (DatasetConfig.projection_excluded_category_ids, "
+                "e.g. shougang B3-6); not added to the active universe this "
+                "phase — reported, not silently added or dropped",
             )
+        )
 
     categories: list[CorpusCategory] = []
     for category_id in active_ids:
@@ -665,6 +685,13 @@ def build_from_standard(
                         description=entry.description,
                         raw_level=entry.raw_level,
                         standard_data_level=entry.standard_data_level,
+                        content=entry.content,
+                        code=entry.code,
+                        source={
+                            "file": entry.source.file,
+                            "sheet": entry.source.sheet,
+                            "row": entry.source.row,
+                        },
                         raw_fields=dict(entry.raw_fields),
                     )
                     for entry in entry_list

@@ -286,15 +286,59 @@ def json_load(path: Path) -> dict:
         return json.load(handle)
 
 
+def _write_standard_fixture(std_dir: Path) -> Path:
+    """A tiny shougang-style canonical standard (incl. B3-6 so the explicit
+    projection policy can be exercised) — hermetic, no data/standards needed."""
+    std_dir.mkdir(parents=True, exist_ok=True)
+    entries = []
+    for code, name, row in (
+        ("A1-1-1", "科研设备预约管理", 3),
+        ("B1-2", "合同归并", 9),
+        ("B3-6", "中厚板作业计划", 35),
+        ("C1-5", "质保书管理", 108),
+        ("C2-1-1", "设备基本资料", 120),
+        ("C3-2-5", "水质监测管理", 130),
+    ):
+        entries.append(
+            {
+                "standard_entry_id": code,
+                "category_id": code,
+                "name": name,
+                "path": ["生产数据域", "生产合同（订单）", name],
+                "description": f"{name}的定义",
+                "code": code,
+                "standard_data_level": "L2",
+                "raw_level": "2",
+                "source": {"file": "f.xlsx", "sheet": "s", "row": row},
+            }
+        )
+    standard = {
+        "dataset": "shougang",
+        "id_strategy": "code",
+        "standard_name": "fixture",
+        "standard_source": {"file": "f.xlsx", "sheet": "s"},
+        "entries": entries,
+        "scoped_annotations": [],
+    }
+    path = std_dir / "shougang.standard.json"
+    path.write_text(json.dumps(standard, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
 def test_cli_writes_fresh_out_dir_once_without_overwrite(tmp_path: Path) -> None:
-    """CLI integration: a fresh out-dir must succeed on the first run without
-    --overwrite, write every file exactly once, and refuse a second run."""
+    """CLI integration against a HERMETIC canonical-standard fixture (fresh
+    clone / CI has no data/standards): first run succeeds without --overwrite,
+    writes every file exactly once, refuses a second run; the explicit
+    projection policy excludes B3-6 and reports it."""
     from script.canonical import cli as canonical_cli
 
+    std_dir = tmp_path / "standards"
+    _write_standard_fixture(std_dir)
     out_dir = tmp_path / "out"
     status = canonical_cli.main(
         [
             "--datasets", "shougang", "infra",
+            "--standard-dir", str(std_dir),
             "--out-dir", str(out_dir),
         ]
     )
@@ -311,20 +355,29 @@ def test_cli_writes_fresh_out_dir_once_without_overwrite(tmp_path: Path) -> None
         infra = json.load(handle)
     assert infra["build_report"]["dataset"] == "infra"
     assert infra["build_report"]["registry_source"] == "shougang"
-    # sources are repo-relative, never machine-local absolute paths;
-    # the immediate input is now the canonical standard file (raw origin one
-    # hop inside it)
+    assert infra["build_report"]["excluded_categories"] == ["B3-6"]
+    # B3-6 excluded by the EXPLICIT projection policy and reported — never
+    # silently added to the active universe
     with (out_dir / "corpus" / "shougang.corpus.json").open(encoding="utf-8") as handle:
         shougang = json.load(handle)
-    assert shougang["build_report"]["source"] == (
-        "data/standards/shougang.standard.json"
+    assert shougang["build_report"]["source"] == str(std_dir / "shougang.standard.json")
+    assert shougang["build_report"]["standard_entries_out"] == 6
+    assert shougang["build_report"]["categories_out"] == 5
+    assert shougang["build_report"]["excluded_categories"] == ["B3-6"]
+    assert any(
+        issue["kind"] == "category_excluded"
+        for issue in shougang["build_report"]["issues"]
     )
     # registry JSON is directly consumable by LeafRegistry.from_path
     registry = LeafRegistry.from_path(out_dir / "registry" / "shougang.registry.json")
-    assert len(registry.ids) == 233
+    assert len(registry.ids) == 5
+    assert "B3-6" not in set(registry.ids)
     # second run without --overwrite must fail before writing anything
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
-        canonical_cli.main(["--datasets", "shougang", "--out-dir", str(out_dir)])
+        canonical_cli.main(
+            ["--datasets", "shougang", "--standard-dir", str(std_dir),
+             "--out-dir", str(out_dir)]
+        )
 
 
 @pytest.fixture(autouse=True)

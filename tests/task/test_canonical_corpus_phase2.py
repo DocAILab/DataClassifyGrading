@@ -79,8 +79,7 @@ def test_finance_projection_keeps_all_entries_lossless():
         entries=tuple(FIVE),
     )
     categories, report = build_from_standard(
-        standard, dataset="finance",
-        previous_active_ids={"finance:业务.合约协议.基本信息"},
+        standard, dataset="finance", excluded_category_ids=set(),
     )
     assert report.categories_out == 1
     assert report.standard_entries_out == 5
@@ -105,8 +104,7 @@ def test_corpus_round_trip_preserves_standard_entries():
         entries=tuple(FIVE),
     )
     categories, _ = build_from_standard(
-        standard, dataset="finance",
-        previous_active_ids={"finance:业务.合约协议.基本信息"},
+        standard, dataset="finance", excluded_category_ids=set(),
     )
     payload = corpus_to_mapping(
         "finance", "data/standards/finance.standard.json", "path",
@@ -132,7 +130,7 @@ def _write_tmp(payload: dict) -> Path:
     return path
 
 
-def test_shougang_standard_minus_previous_active_reported():
+def test_shougang_explicit_projection_policy_excludes_b36():
     standard = CanonicalStandard(
         dataset="shougang", id_strategy="code", standard_source=SourceRef(),
         entries=(
@@ -142,7 +140,7 @@ def test_shougang_standard_minus_previous_active_reported():
     )
     categories, report = build_from_standard(
         standard, dataset="shougang",
-        previous_active_ids={"A1-1-1"},  # B3-6 absent from the old registry
+        excluded_category_ids={"B3-6"},  # explicit projection policy
     )
     assert [c.category_id for c in categories] == ["A1-1-1"]
     assert report.excluded_categories == ["B3-6"]
@@ -151,7 +149,31 @@ def test_shougang_standard_minus_previous_active_reported():
     assert all(c.category_id != "B3-6" for c in categories)
 
 
-def test_no_previous_active_keeps_all_categories():
+def test_projection_policy_default_from_dataset_config():
+    # the formal builder applies DatasetConfig.projection_excluded_category_ids
+    # when no explicit exclusion is passed (infra inherits shougang's policy)
+    standard = CanonicalStandard(
+        dataset="shougang", id_strategy="code", standard_source=SourceRef(),
+        entries=(
+            _entry("A1-1-1", "A1-1-1", "设备预约", 3, "a", "L2", code="A1-1-1"),
+            _entry("B3-6", "B3-6", "中厚板作业计划", 35, "b", "L2", code="B3-6"),
+        ),
+    )
+    for dataset in ("shougang", "infra"):
+        categories, report = build_from_standard(standard, dataset=dataset)
+        assert [c.category_id for c in categories] == ["A1-1-1"]
+        assert report.excluded_categories == ["B3-6"]
+    # finance policy has no exclusions
+    finance = CanonicalStandard(
+        dataset="finance", id_strategy="path", standard_source=SourceRef(),
+        entries=tuple(FIVE),
+    )
+    categories, report = build_from_standard(finance, dataset="finance")
+    assert report.excluded_categories == []
+    assert len(categories) == 1
+
+
+def test_no_exclusion_keeps_all_categories():
     standard = CanonicalStandard(
         dataset="shougang", id_strategy="code", standard_source=SourceRef(),
         entries=(
@@ -160,7 +182,7 @@ def test_no_previous_active_keeps_all_categories():
         ),
     )
     categories, report = build_from_standard(
-        standard, dataset="shougang", previous_active_ids=None
+        standard, dataset="shougang", excluded_category_ids=set()
     )
     assert len(categories) == 2
     assert report.excluded_categories == []
@@ -173,7 +195,7 @@ def test_infra_reuses_shougang_standard():
     )
     categories, report = build_from_standard(
         standard, dataset="infra", registry_source="shougang",
-        previous_active_ids={"A"},
+        excluded_category_ids=set(),
     )
     assert report.registry_source == "shougang"
     assert categories[0].path == ()  # shougang Stage-1 registry path stays empty
@@ -195,11 +217,11 @@ def test_build_deterministic_regardless_of_entry_arrival_order():
     entries = list(FIVE) + [_entry("f:x.y.z", "f:x.y.z", "z", 5, "z", "L3", path=("x", "y", "z"))]
     a, _ = build_from_standard(
         CanonicalStandard("finance", "path", SourceRef(), entries=tuple(entries)),
-        dataset="finance", previous_active_ids=None,
+        dataset="finance", excluded_category_ids=set(),
     )
     b, _ = build_from_standard(
         CanonicalStandard("finance", "path", SourceRef(), entries=tuple(reversed(entries))),
-        dataset="finance", previous_active_ids=None,
+        dataset="finance", excluded_category_ids=set(),
     )
     assert [c.category_id for c in a] == [c.category_id for c in b]
     assert [c.standard_entry_ids for c in a] == [c.standard_entry_ids for c in b]
@@ -224,13 +246,7 @@ def test_real_registry_identical_to_committed(dataset, key):
     standard = CanonicalStandard.from_mapping(
         json.load(open(STANDARDS / f"{key}.standard.json", encoding="utf-8"))
     )
-    committed_ids = {
-        str(c.get("category_id"))
-        for c in json.load(open(REG / f"{dataset}.registry.json", encoding="utf-8"))["categories"]
-    }
-    categories, _ = build_from_standard(
-        standard, dataset=dataset, previous_active_ids=committed_ids
-    )
+    categories, _ = build_from_standard(standard, dataset=dataset)
     built = registry_to_mapping(categories)
     committed = json.load(open(REG / f"{dataset}.registry.json", encoding="utf-8"))
     # Stage-1 prompt surface must be byte-identical: id set, order, name, path,
@@ -257,13 +273,7 @@ def test_real_finance_corpus_preserves_five_entries_and_annotations():
     standard = CanonicalStandard.from_mapping(
         json.load(open(STANDARDS / "finance.standard.json", encoding="utf-8"))
     )
-    committed_ids = {
-        str(c.get("category_id"))
-        for c in json.load(open(REG / "finance.registry.json", encoding="utf-8"))["categories"]
-    }
-    categories, _ = build_from_standard(
-        standard, dataset="finance", previous_active_ids=committed_ids
-    )
+    categories, _ = build_from_standard(standard, dataset="finance")
     bucket = next(c for c in categories if c.category_id == "finance:业务.合约协议.基本信息")
     assert len(bucket.standard_entries) == 5
     # scoped annotations attached to the 金融监管和服务 40-leaf group
@@ -278,13 +288,75 @@ def test_real_shougang_b36_excluded_and_reported():
     standard = CanonicalStandard.from_mapping(
         json.load(open(STANDARDS / "shougang.standard.json", encoding="utf-8"))
     )
-    committed_ids = {
-        str(c.get("category_id"))
-        for c in json.load(open(REG / "shougang.registry.json", encoding="utf-8"))["categories"]
-    }
-    categories, report = build_from_standard(
-        standard, dataset="shougang", previous_active_ids=committed_ids
-    )
+    categories, report = build_from_standard(standard, dataset="shougang")
     assert len(categories) == 233
     assert report.standard_entries_out == 234
     assert report.excluded_categories == ["B3-6"]
+
+
+def _shougang_entry():
+    return StandardCategory(
+        standard_entry_id="A1-1-1",
+        category_id="A1-1-1",
+        name="科研设备预约管理",
+        path=("研发数据域", "产品研发", "科研检验", "科研设备预约管理"),
+        description="指科研检验设备预约过程中产生的信息",   # 四级定义
+        code="A1-1-1",
+        standard_data_level="L2",
+        raw_level="2",
+        content="设备预约信息、审核表",                      # 数据资源说明
+        raw_fields={
+            "level_1_definition": {"value": "研发域定义", "source_cell": "C3"},
+            "resource": {"value": "科研实验室", "source_cell": "L3", "merged_range": None},
+        },
+        source=SourceRef(file="data/raw/关基-数据分类分级目录.xlsx", sheet="数据分类分级", row=3),
+    )
+
+
+def test_standard_entry_view_round_trip_keeps_content_code_source():
+    from agent.task.contracts import StandardEntryView
+
+    standard = CanonicalStandard(
+        dataset="shougang", id_strategy="code", standard_source=SourceRef(),
+        entries=(_shougang_entry(),),
+    )
+    categories, _ = build_from_standard(
+        standard, dataset="shougang", excluded_category_ids=set()
+    )
+    view = categories[0].standard_entries[0]
+    assert view.content == "设备预约信息、审核表"
+    assert view.code == "A1-1-1"
+    assert view.source == {"file": "data/raw/关基-数据分类分级目录.xlsx",
+                           "sheet": "数据分类分级", "row": 3}
+    # corpus JSON -> load_corpus_categories() full round-trip, no field loss
+    payload = corpus_to_mapping(
+        "shougang", "x.standard.json", "code", categories,
+        BuildReport(dataset="shougang", source="x", id_strategy="code"),
+    )
+    rebuilt = load_corpus_categories(_write_tmp(payload))
+    view2 = rebuilt[0].standard_entries[0]
+    assert view2.content == view.content
+    assert view2.code == view.code
+    assert view2.source == view.source
+    assert view2.raw_fields == view.raw_fields
+    assert view2.standard_data_level == view.standard_data_level
+    assert view2.path == view.path
+
+
+def test_shougang_description_content_resource_kept_separately():
+    # description=四级定义, content=数据资源说明, resource(数据来源) stays in
+    # raw_fields — the three must never be confused or lost.
+    standard = CanonicalStandard(
+        dataset="shougang", id_strategy="code", standard_source=SourceRef(),
+        entries=(_shougang_entry(),),
+    )
+    categories, _ = build_from_standard(
+        standard, dataset="shougang", excluded_category_ids=set()
+    )
+    category = categories[0]
+    view = category.standard_entries[0]
+    assert category.description == "指科研检验设备预约过程中产生的信息"  # 四级定义
+    assert view.description == "指科研检验设备预约过程中产生的信息"
+    assert view.content == "设备预约信息、审核表"                          # 数据资源说明
+    assert view.raw_fields["resource"]["value"] == "科研实验室"            # 数据来源
+    assert "resource" not in (view.description or "") and view.description != view.content
