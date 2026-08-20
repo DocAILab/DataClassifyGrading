@@ -8,6 +8,7 @@ docs/design/data_level_design.md (Phase 0).
 from .contracts import (
     LEVELS,
     CanonicalStandard,
+    ScopedAnnotation,
     SourceRef,
     StandardCategory,
     StandardCategoryBuilder,
@@ -17,6 +18,8 @@ from .contracts import (
     strip_code,
 )
 from .sources import (
+    CellInfo,
+    MergedCellResolver,
     RawEntry,
     ReaderResult,
     read_finance_standard_guide,
@@ -37,6 +40,7 @@ from .align import (
 __all__ = [
     "LEVELS",
     "CanonicalStandard",
+    "ScopedAnnotation",
     "SourceRef",
     "StandardCategory",
     "StandardCategoryBuilder",
@@ -44,6 +48,8 @@ __all__ = [
     "compact",
     "normalize_standard_level",
     "strip_code",
+    "CellInfo",
+    "MergedCellResolver",
     "RawEntry",
     "ReaderResult",
     "read_finance_standard_guide",

@@ -29,12 +29,15 @@ sample `data_level`。
   "standard_data_level": "L1|L2|L3|L4|null",
   "raw_level": "2 | l | 3 4",
   "content": "…数据资源说明…",
-  "source": {"file": "…", "sheet": "…", "row": …}
+  "source": {"file": "…", "sheet": "…", "row": …},
+  "raw_fields": {   // 继承自合并组的事实，带 provenance
+    "level_2_definition": {"value": "…", "source_cell": "D93", "merged_range": "D93:D132", "start_row": 93, "end_row": 132, "inherited": true}
+  }
 }
 ```
 
 顶层：`dataset / id_strategy / standard_name / standard_source{file,sheet} /
-fingerprint / entries[] / training_projection`。
+fingerprint / entries[] / training_projection / scoped_annotations[]`。
 
 - **`standard_entry_id`** = 原始标准中的**真实身份**（finance 含真实三级子类
   `finance:{L1}.{L2}.{L3}.{L4}`；shougang = guanji code）。唯一。
@@ -42,11 +45,29 @@ fingerprint / entries[] / training_projection`。
   `DatasetConfig.identity_fields` 一致）。**不唯一**：多个标准 entry 可投影到同一
   训练类别。
 - **`training_projection`** = 派生视图 `{category_id: [standard_entry_id…]}`，
-  把 237 个 finance entry 投影到 233 个训练类别（237→233 是显式投影，**不是**
-  事实层丢信息）。
-- `fingerprint` = entries（不含 source 行号）+ projection 内容的 sha256；
-  **与输入顺序无关**（每个 entry 原样保留、按 `standard_entry_id` 排序，
-  不再依赖"首见顺序"）。
+  把 237 个 finance entry 投影到 233 个训练类别。
+- **`raw_fields`** = entry 从合并组**继承**的层级事实（finance 二级/三级定义；
+  shougang 一级/二级/三级定义 + 数据来源 resource），每项带 `source_cell` /
+  `merged_range` provenance——是网格事实，不是 leaf 私有标签。
+- **`scoped_annotations`** = 网格作用域注解（finance 备注 J、部门意见 K，当前 K 为空）：
+  `{annotation_id, type, text, source_cell, merged_range, start_row, end_row,
+  applies_to_standard_entry_ids}`。合并格是一条源值作用于一个行范围，**绝不复制成
+  单个 leaf 的私有备注**。
+- `fingerprint` = entries（不含 source 行号）+ projection + annotations 的
+  sha256；**与输入顺序无关**（按 entry id / annotation id 排序）。
+
+### 1.1 列语义：hierarchy / leaf / scoped（merged-aware）
+
+| 源 | hierarchy-level（组级合并） | leaf-level（逐行） | scoped annotation |
+| --- | --- | --- | --- |
+| finance | B 一级子类 / C 二级子类 / D 二级定义 / E 三级子类 / F 三级定义 | G 四级子类 / H 内容 / I 安全级别 | J 备注（J55 单行 / J93:J132 40 行 / J168:J169 2 行）、K 部门意见(空) |
+| shougang | B..G 一级分类+定义 / 二级分类+定义 / 三级分类+定义 | H 四级分类 / I 四级定义 / J 数据资源说明 / K 分级 / L 数据来源 | 无备注列 |
+
+- **merged 处理只作用于两个 standard source**（finance 指南、shougang 目录）：
+  `MergedCellResolver` 对任意 cell 返回 value + anchor_cell + merged_range +
+  start/end row + inherited，reader 不再用手工 carry-forward。
+- **三个 sample source（部分金融数据 / 带分级分类… / 关基设施…用于测试）无业务级
+  合并**（`merged_ranges_total=0`；finance 样本仅标题 A1:A2 一条），样本层 zero 改动。
 
 ## 2. 各数据集 standard source 状态
 
@@ -110,15 +131,18 @@ dataset-derived 行为，但**不伪装成 canonical standard**——不生成
 
 ```
 tests/standards/
-  test_contracts.py     round-trip / normalize / fingerprint / projection
-  test_build_finance.py 无损 237、三级叶保持、level 异常、同类别多 entry determinism、reader issues
-  test_build_shougang.py code/path/level、三级叶、no_code、reader issues、确定性
-  test_align.py         对齐桶、多 entry 类别、不修改样本、unresolved evidence、路由
-  test_checksum.py      checksum manifest 校验（缺失/不符）
-  test_real_xlsx.py     真实 Excel + canonical 集成断言（raw 缺失时 skip）
+  test_merged_resolver.py   MergedCellResolver anchor/inherited/range（tmp workbook）
+  test_contracts.py         round-trip（含 raw_fields / scoped_annotations）/ normalize / fingerprint
+  test_build_finance.py     D/F 层级定义继承、J55/J93:J132/J168:J169 作用域、level 异常、确定性
+  test_build_shougang.py    C/E/G 定义 + resource 保留、三级叶、no_code、确定性
+  test_align.py             对齐桶、多 entry 类别、不修改样本、unresolved evidence、路由
+  test_checksum.py          checksum manifest 校验（缺失/不符）
+  test_real_xlsx.py         真实 Excel + canonical 集成断言（raw 缺失时 skip）
+    —— 含：3 个 sample source 无业务级 merged cells；J55=1/J93:J132=40/J168:J169=2
 ```
 
-结果：`pytest tests/standards` → **37 passed**；全仓见 PR。
+结果：`pytest tests/standards` → **56 passed**；全仓 **298 passed, 2 skipped**
+（skip=本地无 verl，既有）。
 
 产物可重生成：`python -m script.standard.cli`（拒绝无 `--overwrite` 覆盖；
 先行全部构建/对齐、后写盘；重复构建字节级一致）。

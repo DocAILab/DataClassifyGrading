@@ -3,8 +3,8 @@
     "finance": {
       "legacy_dict_entries": 237,
       "legacy_dict_path_compression": {
-        "entries_at_legacy_depth": 1,
-        "entries_with_path_deeper_than_legacy_L1_L2_leaf": 236,
+        "entries_at_legacy_depth": 6,
+        "entries_with_path_deeper_than_legacy_L1_L2_leaf": 231,
         "note": "legacy financial_standards_dict stored L1-L2-leaf identity strings; the real standard has 三级子类 provenance nodes that the legacy digest dropped (canonical standard keeps every entry, standard_entry_id includes the real 三级)"
       },
       "legacy_unparseable_level_values": [

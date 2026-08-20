@@ -159,3 +159,66 @@ def test_build_deterministic_on_real_inputs(built):
     )
     assert len(f2.entries) == 237
     assert len(s2.entries) == 234
+
+
+@pytest.mark.parametrize(
+    "annotation_id,expected_range,expected_applies",
+    [
+        ("finance-remark-55-55", None, 1),
+        ("finance-remark-93-132", "J93:J132", 40),
+        ("finance-remark-168-169", "J168:J169", 2),
+    ],
+)
+def test_finance_remark_scope_reproduced(built, annotation_id, expected_range, expected_applies):
+    finance, _, _, _ = built
+    by_id = {a.annotation_id: a for a in finance.scoped_annotations}
+    assert annotation_id in by_id
+    annotation = by_id[annotation_id]
+    assert annotation.merged_range == expected_range
+    assert len(annotation.applies_to_standard_entry_ids) == expected_applies
+    assert all(e.standard_entry_id in annotation.applies_to_standard_entry_ids
+               for e in finance.entries
+               if annotation.start_row <= e.source.row <= annotation.end_row)
+
+
+def test_finance_row93_inherited_definitions_with_provenance(built):
+    finance, _, _, _ = built
+    entry = finance.by_entry_id()["finance:业务.金融监管和服务.反洗钱业务信息.分类考核评级信息"]
+    l2 = entry.raw_fields["level_2_definition"]
+    l3 = entry.raw_fields["level_3_definition"]
+    assert l2["source_cell"] == "D93" and l2["merged_range"] == "D93:D132"
+    assert l3["source_cell"] == "F93"
+    # remark is a scoped annotation, NOT a leaf raw field
+    assert "remark" not in entry.raw_fields
+
+
+def test_shougang_inherited_definitions_and_resource_preserved(built):
+    _, _, shougang, _ = built
+    for code in ("A1-1-1", "B1-2"):
+        entry = shougang.by_entry_id()[code]
+        for key in ("level_1_definition", "level_2_definition", "level_3_definition", "resource"):
+            assert key in entry.raw_fields, (code, key)
+        assert entry.raw_fields["resource"]["value"]
+        assert entry.raw_fields["level_1_definition"]["source_cell"].startswith("C")
+
+
+@pytest.mark.parametrize(
+    "xlsx,mins",
+    [
+        (RAW / "部分金融数据.xlsx", 1),          # one title merge (A1:A2) only
+        (RAW / "带分级分类的个人基础信息样本190条.xlsx", 0),
+        (RAW / "关基设施数据分类分级-不包含训练-用于测试(1).xlsx", 0),
+    ],
+)
+def test_sample_sources_have_no_business_merged_cells(xlsx, mins):
+    openpyxl = pytest.importorskip("openpyxl")
+    if not xlsx.is_file():
+        pytest.skip("raw sample workbook not present")
+    workbook = openpyxl.load_workbook(xlsx)
+    try:
+        ws = workbook[workbook.sheetnames[0]]
+        # sample sources must not use group-level merges; the finance sample's
+        # single A1:A2 is a title, not a business column
+        assert len(ws.merged_cells.ranges) <= mins
+    finally:
+        workbook.close()

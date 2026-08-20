@@ -98,6 +98,53 @@ class SourceRef:
 
 
 @dataclass(frozen=True)
+class ScopedAnnotation:
+    """A GRID-scoped annotation from the source standard (e.g. finance 备注).
+
+    A merged cell is a SINGLE source value that applies to a RANGE of rows
+    (and therefore to several standard entries). It must never be copied into
+    one leaf as if it were that leaf's private remark — the original merged
+    scope is preserved here.
+    """
+
+    annotation_id: str
+    type: str  # e.g. "remark" / "department_opinion"
+    text: str
+    source_cell: str
+    merged_range: str | None
+    start_row: int
+    end_row: int
+    applies_to_standard_entry_ids: tuple[str, ...] = ()
+
+    def to_mapping(self) -> dict[str, Any]:
+        return {
+            "annotation_id": self.annotation_id,
+            "type": self.type,
+            "text": self.text,
+            "source_cell": self.source_cell,
+            "merged_range": self.merged_range,
+            "start_row": self.start_row,
+            "end_row": self.end_row,
+            "applies_to_standard_entry_ids": list(self.applies_to_standard_entry_ids),
+        }
+
+    @classmethod
+    def from_mapping(cls, value: Mapping[str, Any]) -> "ScopedAnnotation":
+        return cls(
+            annotation_id=str(value.get("annotation_id", "") or ""),
+            type=str(value.get("type", "") or ""),
+            text=str(value.get("text", "") or ""),
+            source_cell=str(value.get("source_cell", "") or ""),
+            merged_range=value.get("merged_range"),
+            start_row=int(value.get("start_row", 0) or 0),
+            end_row=int(value.get("end_row", 0) or 0),
+            applies_to_standard_entry_ids=tuple(
+                str(item) for item in value.get("applies_to_standard_entry_ids", ())
+            ),
+        )
+
+
+@dataclass(frozen=True)
 class StandardCategory:
     """One entry of the LOSSESS canonical standard (one raw standard row).
 
@@ -108,6 +155,10 @@ class StandardCategory:
       ``DatasetConfig.identity_fields``; shougang = same code). NOT unique —
       several distinct standard entries may project onto one training
       category (Phase 2 decision; Phase 1 keeps every entry).
+    - raw_fields: source-specific EXTRA fields (hierarchy definitions,
+      resource) with per-value provenance (source_cell / merged_range). These
+      are grid facts that a leaf inherits from its merged group; they are NOT
+      leaf-private labels. Scoped annotations (remarks) live at standard level.
     """
 
     standard_entry_id: str
@@ -120,6 +171,7 @@ class StandardCategory:
     raw_level: str = ""
     content: str = ""
     source: SourceRef = field(default_factory=SourceRef)
+    raw_fields: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
 
     def to_mapping(self) -> dict[str, Any]:
         mapping: dict[str, Any] = {
@@ -135,11 +187,17 @@ class StandardCategory:
         }
         if self.content:
             mapping["content"] = self.content
+        if self.raw_fields:
+            mapping["raw_fields"] = {
+                key: dict(item)
+                for key, item in sorted(self.raw_fields.items())
+            }
         return mapping
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "StandardCategory":
         source = value.get("source") or {}
+        raw_fields = value.get("raw_fields") or {}
         return cls(
             standard_entry_id=str(value.get("standard_entry_id", "") or ""),
             category_id=str(value.get("category_id", "") or ""),
@@ -152,6 +210,11 @@ class StandardCategory:
             content=str(value.get("content", "") or ""),
             source=SourceRef.from_mapping(
                 source if isinstance(source, Mapping) else {}
+            ),
+            raw_fields=(
+                {str(k): dict(v) for k, v in raw_fields.items()}
+                if isinstance(raw_fields, Mapping)
+                else {}
             ),
         )
 
@@ -170,6 +233,7 @@ class CanonicalStandard:
     standard_source: SourceRef
     standard_name: str = ""
     entries: tuple[StandardCategory, ...] = ()
+    scoped_annotations: tuple[ScopedAnnotation, ...] = ()
 
     @property
     def categories(self) -> tuple[StandardCategory, ...]:
@@ -210,6 +274,12 @@ class CanonicalStandard:
             "fingerprint": self.fingerprint(),
             "entries": [entry.to_mapping() for entry in self.entries],
             "training_projection": self.training_projection(),
+            "scoped_annotations": [
+                annotation.to_mapping()
+                for annotation in sorted(
+                    self.scoped_annotations, key=lambda a: a.annotation_id
+                )
+            ],
         }
 
     @classmethod
@@ -221,6 +291,12 @@ class CanonicalStandard:
             if isinstance(item, Mapping)
         )
         source = value.get("standard_source") or {}
+        raw_annotations = value.get("scoped_annotations", ())
+        annotations = tuple(
+            ScopedAnnotation.from_mapping(item)
+            for item in raw_annotations
+            if isinstance(item, Mapping)
+        )
         return cls(
             dataset=str(value.get("dataset", "") or ""),
             id_strategy=str(value.get("id_strategy", "") or ""),
@@ -229,6 +305,7 @@ class CanonicalStandard:
                 source if isinstance(source, Mapping) else {}
             ),
             entries=entries,
+            scoped_annotations=annotations,
         )
 
     def fingerprint(self) -> str:
@@ -240,6 +317,12 @@ class CanonicalStandard:
                 for entry in sorted(self.entries, key=lambda e: e.standard_entry_id)
             ],
             "training_projection": self.training_projection(),
+            "scoped_annotations": [
+                annotation.to_mapping()
+                for annotation in sorted(
+                    self.scoped_annotations, key=lambda a: a.annotation_id
+                )
+            ],
         }
         digest = hashlib.sha256()
         digest.update(
@@ -265,6 +348,7 @@ class StandardCategoryBuilder:
     code: str | None = None
     raw_level: str = ""
     content: str = ""
+    raw_fields: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
     source_file: str = ""
     source_sheet: str = ""
     source_row: int | None = None
@@ -281,6 +365,7 @@ class StandardCategoryBuilder:
             standard_data_level=level,
             raw_level=clean(self.raw_level),
             content=self.content,
+            raw_fields=dict(self.raw_fields),
             source=SourceRef(
                 file=self.source_file, sheet=self.source_sheet, row=self.source_row
             ),

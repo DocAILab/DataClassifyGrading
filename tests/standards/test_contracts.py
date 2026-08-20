@@ -87,9 +87,49 @@ def test_round_trip_preserves_level_and_source():
         raw_level="3",
         content="资源说明",
         source=SourceRef(file="x.xlsx", sheet="数据分类分级", row=7),
+        raw_fields={
+            "level_3_definition": {
+                "value": "科研检验定义", "source_cell": "G7", "merged_range": None,
+            }
+        },
     )
     rebuilt = StandardCategory.from_mapping(copy.deepcopy(entry.to_mapping()))
     assert rebuilt == entry
+
+
+def test_round_trip_preserves_scoped_annotations():
+    from agent.standards.contracts import ScopedAnnotation
+
+    annotation = ScopedAnnotation(
+        annotation_id="finance-remark-93-132",
+        type="remark",
+        text="鉴于其特殊性",
+        source_cell="J93",
+        merged_range="J93:J132",
+        start_row=93,
+        end_row=132,
+        applies_to_standard_entry_ids=("a", "b"),
+    )
+    standard = CanonicalStandard(
+        dataset="finance", id_strategy="path", standard_source=SourceRef(),
+        entries=(_category("a", "L2"), _category("b", "L3")),
+        scoped_annotations=(annotation,),
+    )
+    mapping = standard.to_mapping()
+    rebuilt = CanonicalStandard.from_mapping(copy.deepcopy(mapping))
+    assert rebuilt.scoped_annotations == (annotation,)
+    assert rebuilt.fingerprint() == standard.fingerprint()
+
+
+def test_fingerprint_includes_raw_fields_and_annotations():
+    a = _category("A", "L1")
+    b = StandardCategory(
+        standard_entry_id="A", category_id="A", name="A", path=("A",),
+        raw_fields={"level_2_definition": {"value": "x", "source_cell": "D2"}},
+    )
+    sa = CanonicalStandard("s", "code", standard_source=SourceRef(), entries=(a,))
+    sb = CanonicalStandard("s", "code", standard_source=SourceRef(), entries=(b,))
+    assert sa.fingerprint() != sb.fingerprint()  # raw_fields are content, not source
 
 
 def test_fingerprint_independent_of_source_rows():

@@ -92,3 +92,50 @@ def test_reader_issues_merged_into_build_report():
     )
     issues = report.to_mapping()["issues"]
     assert any(i["kind"] == "reader_issue" and "row 7" in i["detail"] for i in issues)
+
+
+def test_shougang_hierarchy_definitions_and_resource_preserved():
+    prov = {
+        "level_1_definition": {"source_cell": "C3", "merged_range": "C3:C6"},
+        "level_2_definition": {"source_cell": "E3", "merged_range": "E3:E4"},
+        "level_3_definition": {"source_cell": "G3", "merged_range": "G3:G3"},
+        "resource": {"source_cell": "L3", "merged_range": None, "start_row": None, "end_row": None, "inherited": False},
+    }
+    entries = [
+        _entry(
+            level_1="研发数据域（A）", level_2="产品研发（A1）", level_3="科研检验（A1-1）",
+            leaf="科研设备预约管理（A1-1-1）", raw_level="2", row=3,
+            level_1_definition="研发域定义", level_2_definition="产品研发定义",
+            level_3_definition="科研检验定义", resource="科研实验室",
+            provenance=prov,
+        )
+    ]
+    standard, _ = build_shougang_standard(entries, source_file="c", source_sheet="数据分类分级")
+    entry = standard.entries[0]
+    assert entry.raw_fields["level_1_definition"]["source_cell"] == "C3"
+    assert entry.raw_fields["level_2_definition"]["merged_range"] == "E3:E4"
+    assert entry.raw_fields["level_3_definition"]["value"] == "科研检验定义"
+    assert entry.raw_fields["resource"] == {
+        "value": "科研实验室", "source_cell": "L3", "merged_range": None,
+        "start_row": None, "end_row": None, "inherited": False,
+    }
+
+
+def test_shougang_level_three_leaf_keeps_inherited_definitions_and_resource():
+    entries = [
+        _entry(
+            level_1="生产数据域（B）", level_2="生产合同（订单）（B1）",
+            level_3="合同归并（B1-2）", leaf="——", raw_level="3", row=9,
+            level_1_definition="生产域定义", level_2_definition="合同域定义",
+            level_3_definition="合同归并定义", resource="制造管理系统",
+            provenance={
+                "level_1_definition": {"source_cell": "C7", "merged_range": "C7:C82"},
+                "resource": {"source_cell": "L9", "merged_range": None},
+            },
+        )
+    ]
+    standard, _ = build_shougang_standard(entries, source_file="c", source_sheet="数据分类分级")
+    entry = standard.by_entry_id()["B1-2"]
+    assert entry.raw_fields["level_1_definition"]["value"] == "生产域定义"
+    assert entry.raw_fields["resource"]["value"] == "制造管理系统"
+    assert entry.raw_fields["level_3_definition"]["value"] == "合同归并定义"

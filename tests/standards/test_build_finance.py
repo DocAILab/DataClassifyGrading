@@ -137,3 +137,61 @@ def test_reader_issues_merged_into_build_report():
     )
     issues = report.to_mapping()["issues"]
     assert any(i["kind"] == "reader_issue" and "row 999" in i["detail"] for i in issues)
+
+
+def _entry_with_hierarchy(levels, leaf, row, **extra):
+    e = _entry(level_1="业务", level_2="金融监管和服务", level_3="反洗钱业务信息",
+               leaf=leaf, raw_level="3", row=row)
+    e.update(extra)
+    return e
+
+
+def test_finance_hierarchy_definitions_kept_in_raw_fields_with_provenance():
+    prov = {
+        "level_2_definition": {"source_cell": "D93", "merged_range": "D93:D132", "start_row": 93, "end_row": 132, "inherited": True},
+        "level_3_definition": {"source_cell": "F93", "merged_range": "F93:F99", "start_row": 93, "end_row": 99, "inherited": True},
+    }
+    entries = [
+        _entry_with_hierarchy(
+            ["业务", "金融监管和服务", "反洗钱业务信息"], "分类考核评级信息", 93,
+            level_2_definition="金融监管和服务域定义",
+            level_3_definition="反洗钱业务定义",
+            provenance=prov,
+        )
+    ]
+    standard, _ = build_finance_standard(entries, source_file="f", source_sheet="Table 1")
+    entry = standard.entries[0]
+    assert entry.raw_fields["level_2_definition"] == {
+        "value": "金融监管和服务域定义", "source_cell": "D93",
+        "merged_range": "D93:D132", "start_row": 93, "end_row": 132, "inherited": True,
+    }
+    assert entry.raw_fields["level_3_definition"]["source_cell"] == "F93"
+    # remark is NOT a leaf-private raw field (it is a scoped annotation)
+    assert "remark" not in entry.raw_fields
+
+
+def test_finance_scoped_annotations_group_by_merged_range():
+    # three sightings: two share the J93:J132 merged range, one is a single cell
+    prov_merged = {"remark": {"source_cell": "J93", "merged_range": "J93:J132", "start_row": 93, "end_row": 132}}
+    prov_single = {"remark": {"source_cell": "J55", "merged_range": None, "start_row": 55, "end_row": 55}}
+    entries = [
+        _entry_with_hierarchy(["业务", "金融监管和服务", "反洗钱业务信息"], "分类考核评级信息", 93, remark="宜从高设置", provenance=prov_merged),
+        _entry_with_hierarchy(["业务", "金融监管和服务", "反洗钱业务信息"], "行政监管信息", 100, remark="宜从高设置", provenance=prov_merged),
+        _entry(level_1="客户", level_2="个人", level_3="个人身份鉴别信息", leaf="特有账户信息", remark="宜从高设置", provenance=prov_single, row=55),
+    ]
+    standard, _ = build_finance_standard(entries, source_file="f", source_sheet="Table 1")
+    assert len(standard.scoped_annotations) == 2
+    by_id = {a.annotation_id: a for a in standard.scoped_annotations}
+    merged = by_id["finance-remark-93-132"]
+    assert merged.merged_range == "J93:J132"
+    assert merged.start_row == 93 and merged.end_row == 132
+    assert len(merged.applies_to_standard_entry_ids) == 2
+    single = by_id["finance-remark-55-55"]
+    assert single.merged_range is None
+    assert len(single.applies_to_standard_entry_ids) == 1
+
+
+def test_finance_empty_department_opinion_produces_no_annotation():
+    entries = [_entry(level_1="客户", level_2="个人", level_3="个人身份鉴别信息", leaf="特有账户信息", row=55)]
+    standard, _ = build_finance_standard(entries, source_file="f", source_sheet="Table 1")
+    assert standard.scoped_annotations == ()
