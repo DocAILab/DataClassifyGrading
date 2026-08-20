@@ -3,9 +3,9 @@
     "finance": {
       "legacy_dict_entries": 237,
       "legacy_dict_path_compression": {
-        "categories_at_legacy_depth": 1,
-        "categories_with_path_deeper_than_legacy_L1_L2_leaf": 232,
-        "note": "legacy financial_standards_dict stored L1-L2-leaf identity strings; the real standard has 三级子类 provenance nodes that the legacy digest dropped"
+        "entries_at_legacy_depth": 1,
+        "entries_with_path_deeper_than_legacy_L1_L2_leaf": 236,
+        "note": "legacy financial_standards_dict stored L1-L2-leaf identity strings; the real standard has 三级子类 provenance nodes that the legacy digest dropped (canonical standard keeps every entry, standard_entry_id includes the real 三级)"
       },
       "legacy_unparseable_level_values": [
         "3 4级",
@@ -14,12 +14,12 @@
       "standard_vs_registry_ids": {
         "missing_from_registry": 0,
         "registry_ids": 233,
-        "standard_ids": 233
+        "standard_training_categories": 233
       }
     },
     "shougang": {
       "legacy_dict_losses": {
-        "catalog_categories": 234,
+        "catalog_entries": 234,
         "legacy_dict_entries": 234,
         "note": "guanji_dict kept only 'name（code）' + description: real hierarchy path and the 分级 column were dropped (registry path was [] and no class field existed)",
         "with_grading_restored": 234,
@@ -54,11 +54,6 @@
         "standard_missing": 0
       },
       "build": {
-        "aggregated": {
-          "instances": 4,
-          "kinds": 1
-        },
-        "categories_out": 237,
         "dataset": "finance",
         "entries_read": 237,
         "id_strategy": "path",
@@ -75,17 +70,20 @@
         "level_distribution": {
           "''": 2,
           "L1": 11,
-          "L2": 153,
+          "L2": 157,
           "L3": 61,
           "L4": 6
         },
         "source_file": "data/raw/金融行业数据安全分类分级标准指南.xlsx",
         "source_sheet": "Table 1",
-        "standard_name": "金融行业数据安全分类分级标准指南"
+        "standard_entries_out": 237,
+        "standard_name": "金融行业数据安全分类分级标准指南",
+        "training_categories": 233
       },
-      "categories": 233,
+      "standard_entries": 237,
       "standard_source": "finance",
-      "status": "built"
+      "status": "built",
+      "training_categories": 233
     },
     "infra": {
       "alignment_headline": {
@@ -97,11 +95,6 @@
         "standard_missing": 0
       },
       "build": {
-        "aggregated": {
-          "instances": 0,
-          "kinds": 0
-        },
-        "categories_out": 234,
         "dataset": "shougang",
         "entries_read": 234,
         "id_strategy": "code",
@@ -113,11 +106,14 @@
         },
         "source_file": "data/raw/关基-数据分类分级目录.xlsx",
         "source_sheet": "数据分类分级",
-        "standard_name": "首钢京唐数据分类分级目录（关基）"
+        "standard_entries_out": 234,
+        "standard_name": "首钢京唐数据分类分级目录（关基）",
+        "training_categories": 234
       },
-      "categories": 234,
+      "standard_entries": 234,
       "standard_source": "shougang",
-      "status": "built"
+      "status": "built",
+      "training_categories": 234
     },
     "shougang": {
       "alignment_headline": {
@@ -129,11 +125,6 @@
         "standard_missing": 0
       },
       "build": {
-        "aggregated": {
-          "instances": 0,
-          "kinds": 0
-        },
-        "categories_out": 234,
         "dataset": "shougang",
         "entries_read": 234,
         "id_strategy": "code",
@@ -145,11 +136,14 @@
         },
         "source_file": "data/raw/关基-数据分类分级目录.xlsx",
         "source_sheet": "数据分类分级",
-        "standard_name": "首钢京唐数据分类分级目录（关基）"
+        "standard_entries_out": 234,
+        "standard_name": "首钢京唐数据分类分级目录（关基）",
+        "training_categories": 234
       },
-      "categories": 234,
+      "standard_entries": 234,
       "standard_source": "shougang",
-      "status": "built"
+      "status": "built",
+      "training_categories": 234
     }
   }
 }

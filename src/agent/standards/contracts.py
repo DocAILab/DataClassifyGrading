@@ -99,8 +99,18 @@ class SourceRef:
 
 @dataclass(frozen=True)
 class StandardCategory:
-    """One category of a canonical standard (the standard's own facts)."""
+    """One entry of the LOSSESS canonical standard (one raw standard row).
 
+    - standard_entry_id: the TRUE identity of this entry in the raw standard
+      (finance includes the real 三级子类: ``finance:{L1}.{L2}.{L3}.{L4}``;
+      shougang = guanji code). Unique within one standard.
+    - category_id: the legacy training/registry alias (finance L1-L2-leaf =
+      ``DatasetConfig.identity_fields``; shougang = same code). NOT unique —
+      several distinct standard entries may project onto one training
+      category (Phase 2 decision; Phase 1 keeps every entry).
+    """
+
+    standard_entry_id: str
     category_id: str
     name: str
     path: tuple[str, ...] = ()
@@ -110,10 +120,10 @@ class StandardCategory:
     raw_level: str = ""
     content: str = ""
     source: SourceRef = field(default_factory=SourceRef)
-    descriptions: tuple[str, ...] = ()
 
     def to_mapping(self) -> dict[str, Any]:
         mapping: dict[str, Any] = {
+            "standard_entry_id": self.standard_entry_id,
             "category_id": self.category_id,
             "name": self.name,
             "path": list(self.path),
@@ -125,14 +135,13 @@ class StandardCategory:
         }
         if self.content:
             mapping["content"] = self.content
-        if self.descriptions:
-            mapping["descriptions"] = list(self.descriptions)
         return mapping
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "StandardCategory":
         source = value.get("source") or {}
         return cls(
+            standard_entry_id=str(value.get("standard_entry_id", "") or ""),
             category_id=str(value.get("category_id", "") or ""),
             name=str(value.get("name", "") or ""),
             path=tuple(str(p) for p in value.get("path", ())),
@@ -144,22 +153,53 @@ class StandardCategory:
             source=SourceRef.from_mapping(
                 source if isinstance(source, Mapping) else {}
             ),
-            descriptions=tuple(str(d) for d in value.get("descriptions", ())),
         )
 
 
 @dataclass(frozen=True)
 class CanonicalStandard:
-    """The canonical standard for one dataset."""
+    """The LOSSESS canonical standard for one dataset.
+
+    Contains one entry per real standard row (no aggregation); the
+    ``training_projection`` (category_id -> entry ids) is a derived downstream
+    alias view, never a fact-layer collapse.
+    """
 
     dataset: str
     id_strategy: str
     standard_source: SourceRef
     standard_name: str = ""
-    categories: tuple[StandardCategory, ...] = ()
+    entries: tuple[StandardCategory, ...] = ()
 
-    def by_id(self) -> dict[str, StandardCategory]:
-        return {category.category_id: category for category in self.categories}
+    @property
+    def categories(self) -> tuple[StandardCategory, ...]:
+        """Backward-compatible alias: the lossless entries."""
+        return self.entries
+
+    def by_entry_id(self) -> dict[str, StandardCategory]:
+        return {entry.standard_entry_id: entry for entry in self.entries}
+
+    def entries_by_category_id(self) -> dict[str, list[StandardCategory]]:
+        grouped: dict[str, list[StandardCategory]] = {}
+        for entry in self.entries:
+            grouped.setdefault(entry.category_id, []).append(entry)
+        for values in grouped.values():
+            values.sort(key=lambda e: e.standard_entry_id)
+        return grouped
+
+    def training_projection(self) -> dict[str, list[str]]:
+        grouped: dict[str, list[str]] = {}
+        for entry in self.entries:
+            grouped.setdefault(entry.category_id, []).append(entry.standard_entry_id)
+        return {
+            key: sorted(values)
+            for key, values in sorted(grouped.items())
+        }
+
+    def trainable_category_count(self) -> int:
+        """Number of distinct training/registry categories (the 237-entries-of-
+        finance project onto 233 category_ids; this is that projection size)."""
+        return len(self.training_projection())
 
     def to_mapping(self) -> dict[str, Any]:
         return {
@@ -168,15 +208,16 @@ class CanonicalStandard:
             "standard_name": self.standard_name,
             "standard_source": self.standard_source.to_mapping(),
             "fingerprint": self.fingerprint(),
-            "categories": [category.to_mapping() for category in self.categories],
+            "entries": [entry.to_mapping() for entry in self.entries],
+            "training_projection": self.training_projection(),
         }
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "CanonicalStandard":
-        raw_categories = value.get("categories", ())
-        categories = tuple(
+        raw_entries = value.get("entries", ())
+        entries = tuple(
             StandardCategory.from_mapping(item)
-            for item in raw_categories
+            for item in raw_entries
             if isinstance(item, Mapping)
         )
         source = value.get("standard_source") or {}
@@ -187,23 +228,25 @@ class CanonicalStandard:
             standard_source=SourceRef.from_mapping(
                 source if isinstance(source, Mapping) else {}
             ),
-            categories=categories,
+            entries=entries,
         )
 
     def fingerprint(self) -> str:
         payload = {
             "dataset": self.dataset,
             "id_strategy": self.id_strategy,
-            "categories": [
-                {k: v for k, v in category.to_mapping().items() if k != "source"}
-                for category in sorted(self.categories, key=lambda c: c.category_id)
+            "entries": [
+                {k: v for k, v in entry.to_mapping().items() if k != "source"}
+                for entry in sorted(self.entries, key=lambda e: e.standard_entry_id)
             ],
+            "training_projection": self.training_projection(),
         }
         digest = hashlib.sha256()
         digest.update(
             json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
         )
         return digest.hexdigest()
+
 
 
 @dataclass(frozen=True)
@@ -214,6 +257,7 @@ class StandardCategoryBuilder:
     plain dicts (no Excel, no IO).
     """
 
+    standard_entry_id: str
     category_id: str
     name: str
     path: tuple[str, ...]
@@ -228,6 +272,7 @@ class StandardCategoryBuilder:
     def build(self) -> StandardCategory:
         level, _ = normalize_standard_level(self.raw_level)  # level kept, raw kept
         return StandardCategory(
+            standard_entry_id=self.standard_entry_id,
             category_id=self.category_id,
             name=self.name,
             path=self.path,

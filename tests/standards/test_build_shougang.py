@@ -22,14 +22,15 @@ def test_shougang_code_name_path_level():
     standard, report = build_shougang_standard(
         entries, source_file="data/raw/c.xlsx", source_sheet="数据分类分级"
     )
-    category = standard.categories[0]
-    assert category.category_id == "A1-1-1"
-    assert category.code == "A1-1-1"
-    assert category.name == "科研设备预约管理"
-    assert category.path == ("研发数据域", "产品研发", "科研检验", "科研设备预约管理")
-    assert category.description == "指设备预约"
-    assert category.content == "设备预约信息"
-    assert category.standard_data_level == "L2"
+    entry = standard.entries[0]
+    assert entry.standard_entry_id == "A1-1-1"
+    assert entry.category_id == "A1-1-1"
+    assert entry.code == "A1-1-1"
+    assert entry.name == "科研设备预约管理"
+    assert entry.path == ("研发数据域", "产品研发", "科研检验", "科研设备预约管理")
+    assert entry.description == "指设备预约"
+    assert entry.content == "设备预约信息"
+    assert entry.standard_data_level == "L2"
     assert report.issues == []
 
 
@@ -49,7 +50,7 @@ def test_shougang_leaf_at_level_three_no_invented_fourth_level():
     standard, report = build_shougang_standard(
         entries, source_file="c", source_sheet="数据分类分级"
     )
-    by_id = standard.by_id()
+    by_id = standard.by_entry_id()
     merged = by_id["B1-2"]
     assert merged.name == "合同归并"
     # real hierarchy depth is 3; the "——" marker does NOT become a 4th level
@@ -66,7 +67,7 @@ def test_shougang_no_code_real_leaf_reported_and_skipped():
     standard, report = build_shougang_standard(
         entries, source_file="c", source_sheet="数据分类分级"
     )
-    assert len(standard.categories) == 0
+    assert len(standard.entries) == 0
     assert any(issue.kind == "no_code" for issue in report.issues)
 
 
@@ -80,4 +81,14 @@ def test_shougang_build_deterministic_under_input_shuffle():
     a, _ = build_shougang_standard(list(entries), source_file="c", source_sheet="数据分类分级")
     b, _ = build_shougang_standard(list(reversed(entries)), source_file="c", source_sheet="数据分类分级")
     assert a.fingerprint() == b.fingerprint()
-    assert [c.category_id for c in a.categories] == [c.category_id for c in b.categories]
+    assert [e.standard_entry_id for e in a.entries] == [e.standard_entry_id for e in b.entries]
+
+
+def test_reader_issues_merged_into_build_report():
+    entries = [_entry(level_1="研发数据域（A）", level_2="产品研发（A1）", level_3="科研检验（A1-1）", leaf="科研设备预约管理（A1-1-1）", raw_level="2", row=7)]
+    _, report = build_shougang_standard(
+        entries, source_file="c", source_sheet="数据分类分级",
+        reader_issues=["shougang row 7: too few columns"],
+    )
+    issues = report.to_mapping()["issues"]
+    assert any(i["kind"] == "reader_issue" and "row 7" in i["detail"] for i in issues)

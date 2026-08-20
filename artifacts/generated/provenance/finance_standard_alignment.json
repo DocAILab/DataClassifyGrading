@@ -11,9 +11,15 @@
         "交易通用信息",
         "交易基本信息"
       ],
-      "source_row": 133,
-      "standard_level": "L2",
-      "standard_raw_level": "2"
+      "source_rows": [
+        133
+      ],
+      "standard_entry_ids": [
+        "finance:业务.交易信息.交易通用信息.交易基本信息"
+      ],
+      "standard_levels": [
+        "L2"
+      ]
     },
     {
       "category_id": "finance:业务.账户信息.基本信息",
@@ -25,9 +31,15 @@
         "账户信息",
         "基本信息"
       ],
-      "source_row": 51,
-      "standard_level": "L2",
-      "standard_raw_level": "2"
+      "source_rows": [
+        51
+      ],
+      "standard_entry_ids": [
+        "finance:业务.账户信息.单位标签信息.基本信息"
+      ],
+      "standard_levels": [
+        "L2"
+      ]
     }
   ],
   "resolved_match_rate": 0.9962,
@@ -256,13 +268,207 @@
     "finance:经营管理.风险管理信息.黑名单信息"
   ],
   "standard": "finance",
-  "standard_categories": 233,
-  "standard_categories_observed": 20,
-  "standard_categories_unobserved": 213,
+  "standard_entries": 237,
   "standard_level_unavailable_samples": [],
   "standard_missing_samples": [],
+  "training_categories": 233,
+  "training_categories_observed": 20,
+  "training_categories_unobserved": 213,
   "unresolved_by_status": {
     "missing_leaf": 34,
     "path_mismatch": 3
-  }
+  },
+  "unresolved_evidence": [
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "交易清金额信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位基本情况",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "单位联系人信息",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "基本信息（公开",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [],
+      "leaf_name": "基本信息（公开",
+      "status": "missing_leaf"
+    },
+    {
+      "candidate_standard_categories": [
+        "finance:业务.交易信息.交易清结算信息"
+      ],
+      "leaf_name": "交易清结算信息",
+      "status": "path_mismatch"
+    },
+    {
+      "candidate_standard_categories": [
+        "finance:经营管理.运营管理.网络服务信息"
+      ],
+      "leaf_name": "网络服务信息",
+      "status": "path_mismatch"
+    },
+    {
+      "candidate_standard_categories": [
+        "finance:经营管理.运营管理.网络服务信息"
+      ],
+      "leaf_name": "网络服务信息",
+      "status": "path_mismatch"
+    }
+  ]
 }

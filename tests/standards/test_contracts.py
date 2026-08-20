@@ -16,13 +16,12 @@ from agent.standards.contracts import (
 )
 
 
-def _category(category_id: str, name: str, level: str | None = None, row: int = 1) -> StandardCategory:
+def _category(entry_id: str, level: str | None = None, row: int = 1, **kw) -> StandardCategory:
     return StandardCategory(
-        category_id=category_id,
-        name=name,
-        path=(name,),
-        description="",
-        code=None,
+        standard_entry_id=entry_id,
+        category_id=kw.get("category_id", entry_id),
+        name=kw.get("name", entry_id),
+        path=kw.get("path", (entry_id,)),
         standard_data_level=level,
         raw_level=level or "",
         source=SourceRef(file="f.xlsx", sheet="s", row=row),
@@ -63,12 +62,13 @@ def test_standard_round_trip_stable():
         id_strategy="path",
         standard_name="指南",
         standard_source=SourceRef(file="data/raw/f.xlsx", sheet="Table 1", row=None),
-        categories=(_category("finance:a.b.c", "c", "L3"), _category("finance:x", "x", "L1")),
+        entries=(
+            _category("finance:业务.交易信息.交易通用信息.交易基本信息", "L2"),
+            _category("finance:业务.账户信息..基本信息", "L1"),
+        ),
     )
     mapping = standard.to_mapping()
-    mapping["categories"] = sorted(
-        mapping["categories"], key=lambda c: c["category_id"], reverse=True
-    )  # scramble order
+    mapping["entries"] = list(reversed(mapping["entries"]))  # scramble order
     rebuilt = CanonicalStandard.from_mapping(mapping)
     assert rebuilt.dataset == standard.dataset
     assert rebuilt.id_strategy == standard.id_strategy
@@ -76,7 +76,8 @@ def test_standard_round_trip_stable():
 
 
 def test_round_trip_preserves_level_and_source():
-    category = StandardCategory(
+    entry = StandardCategory(
+        standard_entry_id="A1-1-1",
         category_id="A1-1-1",
         name="科研设备预约管理",
         path=("研发数据域", "产品研发", "科研检验", "科研设备预约管理"),
@@ -87,13 +88,33 @@ def test_round_trip_preserves_level_and_source():
         content="资源说明",
         source=SourceRef(file="x.xlsx", sheet="数据分类分级", row=7),
     )
-    rebuilt = StandardCategory.from_mapping(copy.deepcopy(category.to_mapping()))
-    assert rebuilt == category
+    rebuilt = StandardCategory.from_mapping(copy.deepcopy(entry.to_mapping()))
+    assert rebuilt == entry
 
 
 def test_fingerprint_independent_of_source_rows():
-    a = _category("A", "a", "L1", row=1)
-    b = _category("A", "a", "L1", row=99)  # same content, different source row
-    sa = CanonicalStandard("s", "code", standard_source=SourceRef(), categories=(a,))
-    sb = CanonicalStandard("s", "code", standard_source=SourceRef(), categories=(b,))
+    a = _category("A", "L1", row=1)
+    b = _category("A", "L1", row=99)  # same content, different source row
+    sa = CanonicalStandard("s", "code", standard_source=SourceRef(), entries=(a,))
+    sb = CanonicalStandard("s", "code", standard_source=SourceRef(), entries=(b,))
     assert sa.fingerprint() == sb.fingerprint()
+
+
+def test_training_projection_groups_entries_by_category_id():
+    standard = CanonicalStandard(
+        dataset="finance",
+        id_strategy="path",
+        standard_source=SourceRef(),
+        entries=(
+            _category("finance:业务.合约协议.合同通用信息.基本信息", "L2", category_id="finance:业务.合约协议.基本信息"),
+            _category("finance:业务.合约协议.贷款业务信息.基本信息", "L2", category_id="finance:业务.合约协议.基本信息"),
+            _category("finance:业务.交易信息.交易通用信息.交易基本信息", "L2", category_id="finance:业务.交易信息.交易基本信息"),
+        ),
+    )
+    projection = standard.training_projection()
+    assert standard.trainable_category_count() == 2
+    assert projection["finance:业务.合约协议.基本信息"] == [
+        "finance:业务.合约协议.合同通用信息.基本信息",
+        "finance:业务.合约协议.贷款业务信息.基本信息",
+    ]
+    assert len(standard.entries_by_category_id()["finance:业务.合约协议.基本信息"]) == 2

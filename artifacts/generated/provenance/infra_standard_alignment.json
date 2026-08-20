@@ -243,10 +243,12 @@
     "C8-9-1"
   ],
   "standard": "shougang",
-  "standard_categories": 234,
-  "standard_categories_observed": 4,
-  "standard_categories_unobserved": 230,
+  "standard_entries": 234,
   "standard_level_unavailable_samples": [],
   "standard_missing_samples": [],
-  "unresolved_by_status": {}
+  "training_categories": 234,
+  "training_categories_observed": 4,
+  "training_categories_unobserved": 230,
+  "unresolved_by_status": {},
+  "unresolved_evidence": []
 }

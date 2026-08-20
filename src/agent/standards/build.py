@@ -1,20 +1,26 @@
 """Canonical standard builders (Phase 1).
 
-Turn raw standard rows (from ``sources``) into a lossless, auditable
+Turn raw standard rows (from ``sources``) into a LOSSESS, auditable
 ``CanonicalStandard``:
-- category_id continues the existing stable identity strategy: finance uses
-  the path-qualified L1/L2-leaf identity (level_3 excluded, matching
-  DatasetConfig.identity_fields), shougang uses the guanji code.
+- ONE entry per real standard row — there is NO aggregation in the fact layer.
+  ``standard_entry_id`` is the true source identity; ``category_id`` is the
+  legacy training/registry alias (a projection, possibly shared by several
+  entries). The 237 finance rows therefore stay 237 entries; the 237→233
+  ``training_projection`` is exposed as a DERIVED view for Phase 2.
+- category_id continues the existing stable identity strategy (finance L1-L2-leaf
+  via DatasetConfig.identity_fields; shougang guanji code).
 - path stores the TRUE source-hierarchy depth (empty 三级子类 omitted — no
   invented padding).
 - grading columns are normalized to L1..L4 with ``normalize_standard_level``;
   unparseable values are reported and kept raw, never fixed or guessed.
-- placeholder / malformed rows (shougang "——", NaN, missing code) are
-  skipped and reported in the build report — never silently repaired.
+- placeholder / malformed rows (shougang "——", NaN, missing code) are skipped
+  and reported in the build report — never silently repaired. Reader-level
+  issues are merged into the same report.
 
-Builds are deterministic for identical input (sorted categories / issues);
-the CLI writes every artifact only after all datasets build and align
-successfully (fail-fast) and refuses to overwrite without --overwrite.
+Deterministic for identical input regardless of the order entries arrive in
+(every entry is preserved and sorted by standard_entry_id; nothing depends on
+"first seen"). The CLI writes every artifact only after all datasets build and
+align successfully (fail-fast) and refuses to overwrite without --overwrite.
 """
 
 from __future__ import annotations
@@ -32,7 +38,6 @@ from agent.standards.contracts import (
     StandardCategory,
     StandardCategoryBuilder,
     clean,
-    compact,
     normalize_standard_level,
     strip_code,
 )
@@ -60,8 +65,8 @@ class StandardBuildReport:
     source_file: str
     source_sheet: str
     entries_read: int = 0
-    categories_out: int = 0
-    aggregated: dict[str, int] = field(default_factory=dict)
+    standard_entries_out: int = 0
+    training_categories: int = 0
     level_distribution: dict[str, int] = field(default_factory=dict)
     issues: list[BuildIssue] = field(default_factory=list)
 
@@ -73,25 +78,14 @@ class StandardBuildReport:
             "source_file": self.source_file,
             "source_sheet": self.source_sheet,
             "entries_read": self.entries_read,
-            "categories_out": self.categories_out,
-            "aggregated": dict(self.aggregated),
+            "standard_entries_out": self.standard_entries_out,
+            "training_categories": self.training_categories,
             "level_distribution": dict(self.level_distribution),
             "issues": sorted(
                 (issue.to_mapping() for issue in self.issues),
                 key=lambda i: (i["kind"], i["detail"]),
             ),
         }
-
-
-def _finalize_report_levels(report: StandardBuildReport, categories: Sequence[StandardCategory]) -> None:
-    """Level distribution over the FINAL aggregated categories (not raw rows).
-
-    Unparseable / missing levels are counted under an empty key.
-    """
-    counter: Counter[str] = Counter()
-    for category in categories:
-        counter[category.standard_data_level or "''"] += 1
-    report.level_distribution = dict(sorted(counter.items()))
 
 
 def _add_issue(report: StandardBuildReport, kind: str, detail: str) -> None:
@@ -112,61 +106,24 @@ def _dedupe_path(parts: Sequence[str]) -> tuple[str, ...]:
     return tuple(result)
 
 
-def _aggregate(
-    categories: Iterable[StandardCategory],
+def _finalize_report(
     report: StandardBuildReport,
-) -> list[StandardCategory]:
-    """Merge rows that share a category_id (lossless: extras go to
-    ``descriptions``). Reports level conflicts within one id, never fixes."""
-    counts: Counter[str] = Counter()
-    by_id: dict[str, StandardCategory] = {}
-    collisions: list[tuple[str, str, str, str]] = []  # id, extra_level, row, primary_level
-    for category in categories:
-        counts[category.category_id] += 1
-        existing = by_id.get(category.category_id)
-        if existing is None:
-            by_id[category.category_id] = category
-            continue
-        if (
-            category.standard_data_level
-            and existing.standard_data_level
-            and category.standard_data_level != existing.standard_data_level
-        ):
-            collisions.append(
-                (
-                    category.category_id,
-                    category.standard_data_level,
-                    str(category.source.row),
-                    existing.standard_data_level,
-                )
-            )
-        by_id[category.category_id] = StandardCategory(
-            category_id=existing.category_id,
-            name=existing.name,
-            path=existing.path,
-            description=existing.description,
-            code=existing.code,
-            standard_data_level=existing.standard_data_level,
-            raw_level=existing.raw_level,
-            content=existing.content,
-            source=existing.source,
-            descriptions=existing.descriptions
-            + ((category.description,) if category.description else ()),
-        )
-    repeated = {id_: n for id_, n in counts.items() if n > 1}
-    report.aggregated = {
-        "kinds": len(repeated),
-        "instances": sum(n - 1 for n in repeated.values()),
-    }
-    for category_id, extra, row, primary in sorted(collisions):
-        _add_issue(
-            report,
-            "level_conflict_within_category",
-            f"category {category_id!r}: row {row} level {extra!r} differs from "
-            f"primary {primary!r} (kept primary, not fixed)",
-        )
-    # deterministic, even when the input order varies
-    return sorted(by_id.values(), key=lambda c: c.category_id)
+    entries: Sequence[StandardCategory],
+    reader_issues: Sequence[str],
+) -> None:
+    """Level distribution + projection counts + merged reader issues.
+
+    Deterministic: issues are sorted before persistence (see to_mapping).
+    """
+    level_counter: Counter[str] = Counter()
+    for entry in entries:
+        level_counter[entry.standard_data_level or "''"] += 1
+    report.level_distribution = dict(sorted(level_counter.items()))
+    report.training_categories = len(
+        {entry.category_id for entry in entries}
+    )
+    for detail in reader_issues:
+        report.issues.append(BuildIssue(kind="reader_issue", detail=str(detail)))
 
 
 def build_finance_standard(
@@ -176,8 +133,16 @@ def build_finance_standard(
     source_sheet: str,
     dataset: str = "finance",
     standard_name: str = "金融行业数据安全分类分级标准指南",
+    reader_issues: Sequence[str] = (),
 ) -> tuple[CanonicalStandard, StandardBuildReport]:
-    """Build the finance canonical standard from raw guide entries."""
+    """Build the finance canonical standard from raw guide entries.
+
+    One entry per raw row. ``standard_entry_id`` = L1.L2.L3.leaf (the TRUE
+    source identity, level_3 included); ``category_id`` = L1.L2.leaf (the
+    training alias, matching DatasetConfig.identity_fields). Several entries
+    may share a category_id (e.g. 业务/合约协议/基本信息 under five 三级):
+    they stay separate entries, exposed via ``training_projection``.
+    """
     report = StandardBuildReport(
         dataset=dataset,
         id_strategy="path",
@@ -186,7 +151,7 @@ def build_finance_standard(
         source_sheet=source_sheet,
         entries_read=len(entries),
     )
-    categories: list[StandardCategory] = []
+    built: list[StandardCategory] = []
     for entry in entries:
         level_1 = clean(entry.level_1 if hasattr(entry, "level_1") else entry.get("level_1"))
         level_2 = clean(entry.level_2 if hasattr(entry, "level_2") else entry.get("level_2"))
@@ -199,8 +164,11 @@ def build_finance_standard(
         if not leaf:
             _add_issue(report, "empty_leaf_skipped", f"row {row}: empty leaf")
             continue
-        # identity: dataset identity_fields = (level_1, level_2, level_4); a
-        # present 三级子类 stays provenance-only (no invented level_3 slot)
+        # TRUE identity keeps the real 三级子类 (empty slots stay empty parts)
+        standard_entry_id = qualified_category_id(
+            dataset, (level_1, level_2, level_3, leaf)
+        )
+        # training alias: DatasetConfig.identity_fields = (level_1, level_2, level_4)
         category_id = qualified_category_id(dataset, (level_1, level_2, leaf))
         path = _dedupe_path((level_1, level_2, level_3, leaf))
         level, raw_clean = normalize_standard_level(raw_level)
@@ -211,8 +179,9 @@ def build_finance_standard(
                 f"row {row} category {leaf!r}: raw level {raw_clean!r} kept as-is, "
                 f"standard_data_level=null (not guessed)",
             )
-        categories.append(
+        built.append(
             StandardCategoryBuilder(
+                standard_entry_id=standard_entry_id,
                 category_id=category_id,
                 name=leaf,
                 path=path,
@@ -224,15 +193,22 @@ def build_finance_standard(
                 source_row=row,
             ).build()
         )
-    report.categories_out = len(categories)
-    final = _aggregate(categories, report)
-    _finalize_report_levels(report, final)
+    # lossless fact layer: every entry preserved; determinism by entry-id order
+    built.sort(key=lambda c: c.standard_entry_id)
+    duplicate_ids = {e.standard_entry_id for e in built}
+    if len(duplicate_ids) != len(built):
+        raise ValueError(
+            "finance standard_entry_id must be unique; got "
+            f"{len(built) - len(duplicate_ids)} duplicate(s)"
+        )
+    report.standard_entries_out = len(built)
+    _finalize_report(report, built, reader_issues)
     return CanonicalStandard(
         dataset=dataset,
         id_strategy="path",
         standard_source=SourceRef(file=source_file, sheet=source_sheet),
         standard_name=standard_name,
-        categories=tuple(final),
+        entries=tuple(built),
     ), report
 
 
@@ -243,8 +219,14 @@ def build_shougang_standard(
     source_sheet: str,
     dataset: str = "shougang",
     standard_name: str = "首钢京唐数据分类分级目录（关基）",
+    reader_issues: Sequence[str] = (),
 ) -> tuple[CanonicalStandard, StandardBuildReport]:
-    """Build the shougang canonical standard from the raw guanji catalog."""
+    """Build the shougang canonical standard from the raw guanji catalog.
+
+    standard_entry_id == category_id == guanji code (opaque identity). A
+    \"——\"/empty leaf cell means the leaf lives one level up (三级 carries the
+    real code/name); those are real categories resolved and kept, never lost.
+    """
     report = StandardBuildReport(
         dataset=dataset,
         id_strategy="code",
@@ -253,7 +235,7 @@ def build_shougang_standard(
         source_sheet=source_sheet,
         entries_read=len(entries),
     )
-    categories: list[StandardCategory] = []
+    built: list[StandardCategory] = []
     for entry in entries:
         level_1 = clean(entry.level_1 if hasattr(entry, "level_1") else entry.get("level_1"))
         level_2 = clean(entry.level_2 if hasattr(entry, "level_2") else entry.get("level_2"))
@@ -264,9 +246,7 @@ def build_shougang_standard(
         raw_level = str(entry.raw_level if hasattr(entry, "raw_level") else entry.get("raw_level", "")).strip()
         row = entry.row if hasattr(entry, "row") else entry.get("row")
 
-        # a "——"/empty leaf cell means the catalog's leaf lives one level up:
-        # fall back to the 三级 cell (the real reader already resolves this, but
-        # accept dict fixtures and enforce the invariant here too)
+        # a "——"/empty leaf cell means the leaf lives one level up (三级)
         if not raw_leaf or raw_leaf.lower() in _PLACEHOLDER_NAMES or raw_leaf in _PLACEHOLDER_NAMES:
             raw_leaf = clean(entry.level_3 if hasattr(entry, "level_3") else entry.get("level_3"))
             if not raw_leaf or raw_leaf in _PLACEHOLDER_NAMES:
@@ -297,8 +277,9 @@ def build_shougang_standard(
                 f"row {row} category {name!r}: raw level {raw_clean!r} kept as-is, "
                 f"standard_data_level=null (not guessed)",
             )
-        categories.append(
+        built.append(
             StandardCategoryBuilder(
+                standard_entry_id=code,
                 category_id=code,
                 name=name,
                 path=path,
@@ -311,15 +292,21 @@ def build_shougang_standard(
                 source_row=row,
             ).build()
         )
-    report.categories_out = len(categories)
-    final = _aggregate(categories, report)
-    _finalize_report_levels(report, final)
+    built.sort(key=lambda c: c.standard_entry_id)
+    duplicate_ids = {e.standard_entry_id for e in built}
+    if len(duplicate_ids) != len(built):
+        raise ValueError(
+            "shougang standard_entry_id (code) must be unique; got "
+            f"{len(built) - len(duplicate_ids)} duplicate(s)"
+        )
+    report.standard_entries_out = len(built)
+    _finalize_report(report, built, reader_issues)
     return CanonicalStandard(
         dataset=dataset,
         id_strategy="code",
         standard_source=SourceRef(file=source_file, sheet=source_sheet),
         standard_name=standard_name,
-        categories=tuple(final),
+        entries=tuple(built),
     ), report
 
 
