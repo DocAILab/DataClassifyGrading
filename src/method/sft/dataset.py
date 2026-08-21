@@ -182,7 +182,7 @@ def export_sft_dataset(
     task_config: TaskConfig | str | Path,
     splits: tuple[str, ...] | list[str] = PRODUCTION_SPLITS,
     *,
-    candidate_policy: str = "fixed-registry",
+    candidate_policy: str = "random-shuffled",
     candidate_seed: int = 42,
 ) -> dict[str, Any]:
     """Export each labeled JSON record as one stage1 and one stage2 SFT row."""
@@ -355,9 +355,27 @@ def _validate_row(
             errors.append("system/user prompt does not match registry and task contract")
 
     if isinstance(ground_truth, str) and ground_truth in registry.ids:
-        expected = build_candidates(ground_truth, registry)
+        candidate_policy = row.get("candidate_policy", "fixed-registry")
+        if candidate_policy == "fixed-registry":
+            expected = build_candidates(ground_truth, registry)
+        elif candidate_policy == "random-shuffled":
+            candidate_seed = row.get("candidate_seed")
+            if not isinstance(candidate_seed, int) or isinstance(candidate_seed, bool):
+                errors.append("random-shuffled candidates require an integer seed")
+                return errors
+            if not isinstance(source_id, str) or not source_id.strip():
+                return errors
+            expected = build_random_shuffled_candidates(
+                ground_truth,
+                registry,
+                source_id=source_id,
+                seed=candidate_seed,
+            )
+        else:
+            errors.append("candidate_policy must be fixed-registry or random-shuffled")
+            return errors
         if candidates != expected:
-            errors.append("candidates do not follow deterministic registry order")
+            errors.append("candidates do not match their declared deterministic policy")
     return errors
 
 

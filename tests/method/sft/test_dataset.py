@@ -312,6 +312,44 @@ def test_export_random_shuffled_policy_records_candidate_audit(tmp_path):
     assert all(row["golden_position"] == row["candidates"].index("C") for row in rows)
 
 
+def test_export_defaults_to_random_shuffled_candidates(tmp_path):
+    registry_path, config_path = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+
+    report = export_sft_dataset(
+        tmp_path / "input",
+        out,
+        registry_path,
+        config_path,
+        splits=("train",),
+    )
+
+    assert report["candidate_policy"] == "random-shuffled"
+    assert report["candidate_seed"] == 42
+    assert report["candidate_policy_version"] == "random_shuffled_v1"
+
+
+def test_export_cli_defaults_to_random_shuffled_candidates(tmp_path):
+    registry_path, config_path = _write_inputs(tmp_path / "input")
+    out = tmp_path / "out"
+
+    return_code = export_cli(
+        [
+            "--input-dir", str(tmp_path / "input"),
+            "--output-dir", str(out),
+            "--registry", str(registry_path),
+            "--task-config", str(config_path),
+            "--metadata-fields", "field_name",
+            "--splits", "train",
+        ]
+    )
+
+    assert return_code == 0
+    report = json.loads((out / "export_report.json").read_text(encoding="utf-8"))
+    assert report["candidate_policy"] == "random-shuffled"
+    assert report["candidate_seed"] == 42
+
+
 def test_export_cli_selects_random_shuffled_policy(tmp_path):
     registry_path, config_path = _write_inputs(tmp_path / "input")
     out = tmp_path / "out"

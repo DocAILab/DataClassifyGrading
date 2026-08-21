@@ -41,7 +41,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--candidate-policy",
         choices=("fixed-registry", "random-shuffled"),
-        default="fixed-registry",
+        default="random-shuffled",
     )
     parser.add_argument("--candidate-seed", type=int, default=42)
     return parser.parse_args(argv)
