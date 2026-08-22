@@ -1,4 +1,4 @@
-"""Convert tabular metadata into the normalized TransClass JSON format."""
+"""Convert tabular metadata into the normalized classification JSON format."""
 
 from __future__ import annotations
 

@@ -1,0 +1,10 @@
+{
+  "categories": [
+    {"category_id": "demo:alpha", "name": "Alpha", "description": "Synthetic explanation for alpha.", "examples": ["fabricated-alpha-example"]},
+    {"category_id": "demo:bravo", "name": "Bravo", "description": "Synthetic explanation for bravo.", "examples": ["fabricated-bravo-example"]},
+    {"category_id": "demo:charlie", "name": "Charlie", "description": "Synthetic explanation for charlie.", "examples": ["fabricated-charlie-example"]},
+    {"category_id": "demo:delta", "name": "Delta", "description": "Synthetic explanation for delta.", "examples": ["fabricated-delta-example"]},
+    {"category_id": "demo:echo", "name": "Echo", "description": "Synthetic explanation for echo.", "examples": ["fabricated-echo-example"]},
+    {"category_id": "demo:foxtrot", "name": "Foxtrot", "description": "Synthetic explanation for foxtrot.", "examples": ["fabricated-foxtrot-example"]}
+  ]
+}

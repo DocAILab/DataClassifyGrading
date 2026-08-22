@@ -1,16 +1,39 @@
-# ---- 项目纪律（数据集/产物不入库） ----
-/data/*
-!/data/knowledge/
-/data/knowledge/*
-!/data/knowledge/standards_map/
+# ---- Repository data policy ----
+# Only data/README.md and data/knowledge/**/*.json may be tracked under data/.
+/data/**
 !/data/README.md
-/tmp/
+!/data/knowledge/
+!/data/knowledge/**/
+!/data/knowledge/**/*.json
+
+# Production task assets and generated results are always runtime-local.
+/cfg/task/corpus/
+/cfg/task/registry/
+/artifacts/
 /.artifacts/
+/local-assets/
+/runtime-assets/
+/tmp/
 /outputs/
 /checkpoints/
 /models/
 /wandb/
 /ray_results/
+
+# Dataset/export formats are forbidden anywhere in the repository.
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.feather
+*.jsonl
+*.zip
+*.pdf
+*.doc
+*.docx
 
 # ---- Python ----
 __pycache__/
@@ -42,6 +65,3 @@ Desktop.ini
 .env.*
 *.pem
 *.key
-
-# 一次性生成脚本（含本机路径，不入库）
-/data/knowledge/standards_map/generate_standards_map.py

@@ -1,0 +1,10 @@
+{
+  "categories": [
+    {"category_id": "demo:alpha", "name": "Alpha", "description": "Synthetic fixture category alpha.", "path": ["Synthetic", "Alpha"]},
+    {"category_id": "demo:bravo", "name": "Bravo", "description": "Synthetic fixture category bravo.", "path": ["Synthetic", "Bravo"]},
+    {"category_id": "demo:charlie", "name": "Charlie", "description": "Synthetic fixture category charlie.", "path": ["Synthetic", "Charlie"]},
+    {"category_id": "demo:delta", "name": "Delta", "description": "Synthetic fixture category delta.", "path": ["Synthetic", "Delta"]},
+    {"category_id": "demo:echo", "name": "Echo", "description": "Synthetic fixture category echo.", "path": ["Synthetic", "Echo"]},
+    {"category_id": "demo:foxtrot", "name": "Foxtrot", "description": "Synthetic fixture category foxtrot.", "path": ["Synthetic", "Foxtrot"]}
+  ]
+}

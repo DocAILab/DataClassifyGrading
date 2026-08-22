@@ -7,7 +7,8 @@ from .contracts import (
     SampleTarget,
     TaskConfig,
 )
-from .dataset_config import BUILTIN_DATASET_CONFIGS, DatasetConfig
+from .assets import ClassificationAssets, load_corpus_categories
+from .dataset_config import DatasetConfig, load_dataset_configs
 from .identity import code_leaf_map, compact, leaf_registry_from_corpus, qualified_category_id
 from .parser import (
     ChoiceParseResult,
@@ -50,8 +51,10 @@ __all__ = [
     "CorpusCategory",
     "SampleTarget",
     "TaskConfig",
+    "ClassificationAssets",
+    "load_corpus_categories",
     "DatasetConfig",
-    "BUILTIN_DATASET_CONFIGS",
+    "load_dataset_configs",
     "TargetResolver",
     "ClassificationTargetResolver",
     "ResolutionStatus",

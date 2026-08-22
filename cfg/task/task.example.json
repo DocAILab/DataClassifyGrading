@@ -1,0 +1,4 @@
+{
+  "task_name": "synthetic_leaf_classification",
+  "metadata_fields": ["title", "summary"]
+}

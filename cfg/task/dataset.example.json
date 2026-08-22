@@ -1,0 +1,8 @@
+{
+  "dataset": "demo",
+  "leaf_level": "category",
+  "id_strategy": "path",
+  "path_fields": ["group", "category"],
+  "identity_fields": ["group", "category"],
+  "placeholder_labels": []
+}

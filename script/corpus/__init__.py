@@ -1,4 +1,4 @@
-"""Corpus construction utilities for TransClass retrieval workflows."""
+"""Corpus construction utilities for local classification assets."""
 
 from .builder import build_corpus
 

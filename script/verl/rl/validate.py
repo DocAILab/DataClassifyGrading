@@ -13,7 +13,7 @@ from pathlib import Path
 import sys
 
 from agent.task import LeafRegistry, TaskConfig
-from agent.task.canonical_dataset import load_corpus_categories
+from agent.task.assets import load_corpus_categories
 from agent.training.rl import validate_rl_dataset
 
 

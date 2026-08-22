@@ -1,4 +1,4 @@
-"""Reusable data preprocessing utilities for TransClass."""
+"""Reusable data preprocessing utilities."""
 
 from .processor import preprocess
 from .split import split_dataset

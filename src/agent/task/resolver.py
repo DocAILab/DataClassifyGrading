@@ -7,7 +7,7 @@ auto-fixes labels and never uses semantic matching.
 Resolution outcomes are explicit (ResolutionStatus / ResolutionResult):
 - INVALID_RECORD: no classification, non-object classification, or empty leaf;
 - UNLABELED: label_status == "unlabeled" (no target, even when a leaf exists);
-- PLACEHOLDER: the leaf is a placeholder label (e.g. shougang "——");
+- PLACEHOLDER: the leaf is one of the configured placeholder labels;
 - CODE_UNRESOLVED: code strategy and the corpus carries no code for the leaf
   (no silent fallback to another ID scheme);
 - RESOLVED: a SampleTarget was generated. Registry membership is NOT checked
@@ -89,7 +89,7 @@ class TargetResolver(Protocol):
 
 @dataclass
 class ClassificationTargetResolver:
-    """Deterministic resolver for the normalized TransClass record format.
+    """Deterministic resolver for normalized classification records.
 
     id_strategy "code": category_id = code_leaf_map[leaf_name]; a leaf
     without a code is unresolved (no target, reported, never silently
@@ -97,8 +97,8 @@ class ClassificationTargetResolver:
     id_strategy "path": category_id = qualified_category_id(dataset,
     identity_fields values in canonical order); human-readable and
     path-qualified, so the same leaf name under different parents never
-    collides. For finance, identity_fields excludes level_3 (the standard is
-    L1-L2-leaf), so level_3 stays provenance only.
+    collides. ``identity_fields`` may exclude provenance-only levels when a
+    local configuration defines a smaller canonical identity.
     """
 
     config: DatasetConfig
