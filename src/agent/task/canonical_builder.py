@@ -46,7 +46,7 @@ from typing import Any, Mapping, Sequence
 from agent.hashing import sha256_file
 from agent.task.contracts import CorpusCategory, LeafRegistry, SampleTarget
 from agent.task.dataset_config import DatasetConfig
-from agent.task.identity import code_leaf_map
+from agent.task.identity import code_leaf_map, validate_record_id
 from agent.task.resolver import (
     ClassificationTargetResolver,
     ResolutionResult,
@@ -301,8 +301,18 @@ def prepare_canonical_dataset(
     code_unresolved_by_leaf: Counter[str] = Counter()
     unresolved: list[dict[str, Any]] = []
     output_records: list[dict[str, Any]] = []
+    seen_record_ids: set[str] = set()
 
-    for record in records:
+    for index, record in enumerate(records):
+        if isinstance(record, Mapping):
+            # Processed IDs are part of the canonical identity contract. Do
+            # not preserve a stale id merely because resolution succeeds.
+            record_id = validate_record_id(dataset, record, index=index)
+            if record_id in seen_record_ids:
+                raise ValueError(
+                    f"duplicate stable record id at index {index}: {record_id}"
+                )
+            seen_record_ids.add(record_id)
         result = resolve_record(record, resolver, registry, registry_names, excluded)
         status_counts[result.status.value] += 1
         canonical = _enrich_record(record, dataset, config, result)

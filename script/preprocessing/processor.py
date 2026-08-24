@@ -6,11 +6,12 @@ import json
 import os
 import re
 import tempfile
-import uuid
 import warnings
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Mapping, Sequence
+
+from agent.task.identity import stable_record_id
 
 
 STANDARD_FIELDS = (
@@ -148,25 +149,65 @@ def clean_label(value: Any) -> tuple[str, str]:
     return text, detect_trailing_code(text)
 
 
+def validate_rewrite_rules(
+    rules: Sequence[Mapping[str, str]] | None,
+    *,
+    fields: Sequence[str] = CLASSIFICATION_FIELDS,
+) -> None:
+    """Validate rewrite rule shape and classification-field scope.
+
+    A rewrite is intentionally tied to one classification column. Accepting
+    an omitted/unknown field would make a historical text correction apply to
+    every level carrying the same text, which silently changes the hierarchy.
+    """
+    if rules is None:
+        return
+    if isinstance(rules, (str, bytes)):
+        raise ValueError("rewrite rules must be an array of objects")
+    allowed = set(fields)
+    for index, rule in enumerate(rules):
+        if not isinstance(rule, Mapping):
+            raise ValueError(f"rewrite rule at index {index} must be an object")
+        raw_field = rule.get("field")
+        field = raw_field.strip() if isinstance(raw_field, str) else ""
+        if field not in allowed:
+            raise ValueError(
+                f"rewrite rule field {raw_field!r} is unknown; expected one of "
+                f"{tuple(fields)!r}"
+            )
+
+
 def apply_rewrite_rules(
     value: str,
     rules: Sequence[Mapping[str, str]] | None,
+    field: str | None = None,
 ) -> tuple[str, str | None]:
-    """Apply explicit label-rewrite rules (exact match on the whole value).
+    """Apply one exact-match rewrite only to its declared field.
 
     Returns ``(value, rule_description)``; ``rule_description`` is None when
     no rule fired. Rules make historical hand-edits (e.g. whitespace fixes
     such as '经营 管理' -> '经营管理') reproducible and auditable instead of
-    editing data files in place.
+    editing data files in place. A non-empty rule set requires ``field`` so a
+    caller cannot accidentally apply a level-specific rule to another level.
     """
     if not rules:
         return value, None
+    validate_rewrite_rules(rules)
+    normalized_field = field.strip() if isinstance(field, str) else ""
+    if not normalized_field:
+        raise ValueError("field is required when applying rewrite rules")
+    if normalized_field not in CLASSIFICATION_FIELDS:
+        raise ValueError(f"rewrite field {field!r} is unknown")
     for rule in rules:
+        rule_field = str(rule["field"]).strip()
+        if rule_field != normalized_field:
+            continue
         match_value = str(rule.get("match", ""))
         replacement = rule.get("replace")
-        field = str(rule.get("field", ""))
         if value == match_value and replacement is not None:
-            description = ": ".join(part for part in (field, match_value) if part)
+            description = ": ".join(
+                part for part in (rule_field, match_value) if part
+            )
             return str(replacement), f"{description} -> {replacement}"
     return value, None
 
@@ -283,6 +324,7 @@ def preprocess(
         raise ValueError("dataset must be a non-empty name")
     if missing_field_policy not in {"error", "skip"}:
         raise ValueError("missing_field_policy must be 'error' or 'skip'")
+    validate_rewrite_rules(rewrite_rules)
 
     source = _validated_file(input_file, "Input file")
     frame = convert_schema(read_data(source), load_mapping(mapping_file))
@@ -318,7 +360,9 @@ def preprocess(
         originals: list[str] = []
         for raw in frame[column]:
             original, _ = clean_label(raw)
-            value, note = apply_rewrite_rules(original, rewrite_rules)
+            value, note = apply_rewrite_rules(
+                original, rewrite_rules, field=column
+            )
             code = detect_trailing_code(value)
             if strip_trailing_codes and code:
                 # legacy behavior: remove the suffix from the stored label;
@@ -351,10 +395,17 @@ def preprocess(
     result: list[dict[str, Any]] = []
     records_out = frame.to_dict(orient="records")
     for row in records_out:
-        identity = "\x1f".join(
-            [str(dataset).strip(), *(row[field] for field in IDENTITY_FIELDS)]
-        )
-        record_id = str(uuid.uuid5(uuid.NAMESPACE_URL, identity))
+        metadata = {
+            "database_name": row["database_name"],
+            "database_description": row["database_description"],
+            "table_name": row["table_name"],
+            "table_description": row["table_description"],
+            "field_name": row["field_name"],
+            "field_description": row["field_description"],
+            "field_type": row["field_type"],
+            "value": "",
+        }
+        record_id = stable_record_id(str(dataset).strip(), metadata)
         notes = [
             {
                 "field": column,
@@ -378,16 +429,7 @@ def preprocess(
                 if any(row[field] for field in CLASSIFICATION_FIELDS)
                 else "unlabeled"
             ),
-            "metadata": {
-                "database_name": row["database_name"],
-                "database_description": row["database_description"],
-                "table_name": row["table_name"],
-                "table_description": row["table_description"],
-                "field_name": row["field_name"],
-                "field_description": row["field_description"],
-                "field_type": row["field_type"],
-                "value": "",
-            },
+            "metadata": metadata,
             "classification": {field: row[field] for field in CLASSIFICATION_FIELDS},
             "data_level": row["data_level"],
         }

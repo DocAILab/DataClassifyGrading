@@ -1,4 +1,8 @@
-# Shared VeRL stack. Install PyTorch cu128 first; see docs/SFT_BASELINE.md.
+# Authorized server stack: RTX PRO 6000 96GB, CUDA 12.8, Python 3.12,
+# one visible GPU. Install PyTorch cu128 first (see script/verl/common/create_env.sh).
+# VeRL 0.8 vLLM compatibility is runtime-locked: supply an exact frozen
+# vLLM version through the approved lock and --vllm-version. We intentionally
+# do not invent an unverified pin; formal RLOO fails closed when it is absent.
 -c verl-cu128.constraints.txt
 verl==0.8.0
 pyarrow==25.0.1

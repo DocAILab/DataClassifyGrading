@@ -225,6 +225,39 @@ def test_legacy_split_dir_unknown_id_fails_fast(tmp_path) -> None:
         )
 
 
+def test_legacy_join_rejects_ghost_before_grading_filter(tmp_path) -> None:
+    """A stale split id must fail even when grading would skip its level."""
+    from agent.task import GradingConfig
+
+    records = _balanced_records()
+    canonical = _seed_canonical(tmp_path, records)
+    split_dir = tmp_path / "ghost-splits"
+    split_dir.mkdir()
+    by_split = {
+        "train": [r for r in records if r["id"].startswith("tr-")],
+        "val": [r for r in records if r["id"].startswith("va-")],
+        "test": [r for r in records if r["id"].startswith("te-")],
+    }
+    # No data_level field: old ordering incorrectly skipped this row before
+    # checking that its id was present in canonical all.json.
+    by_split["train"] = [
+        *by_split["train"],
+        {"id": "ghost-id", "resolution_status": "resolved"},
+    ]
+    for name, rows in by_split.items():
+        (split_dir / f"{name}.json").write_text(json.dumps(rows), encoding="utf-8")
+    with pytest.raises(ValueError, match="absent from the.*canonical"):
+        export_sft_dataset(
+            canonical,
+            split_dir,
+            tmp_path / "sft-ghost",
+            LeafRegistry.from_path(REGISTRY),
+            TaskConfig.from_mapping({"metadata_fields": TASK_FIELDS}),
+            corpus=_corpus_mapping(),
+            grading=GradingConfig(levels=("L1", "L2")),
+        )
+
+
 def test_export_is_deterministic_across_runs(tmp_path) -> None:
     digests = []
     for index in range(2):

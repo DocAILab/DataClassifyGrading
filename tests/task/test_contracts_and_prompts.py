@@ -3,6 +3,8 @@ import json
 import pytest
 
 from agent.task import (
+    GradedTaskContext,
+    GradingConfig,
     LeafRegistry,
     PromptChoiceRegistry,
     TaskConfig,
@@ -39,7 +41,11 @@ def test_prompts_use_choice_protocol_without_canonical_ids() -> None:
     assert '"answer"' in stage2.system
     assert "demo:" not in stage1.user
     assert '"category_id"' not in stage1.user + stage2.user
-    assert "fixture alpha" not in stage1.user
+    assert "fixture alpha" in stage1.user
+    catalog = json.loads(
+        stage1.user.split("catalog:\n", 1)[1].split("\nField metadata:", 1)[0]
+    )
+    assert catalog[0] == ["1", "Alpha", "fixture alpha"]
     assert "hidden" not in stage1.user
     bundle = json.loads(stage2.user.split("Candidate bundle:\n", 1)[1].split("\nField metadata:", 1)[0])
     assert [entry["id"] for entry in bundle] == ["1", "2", "3", "4", "5"]
@@ -77,3 +83,30 @@ def test_contracts_reject_invalid_shapes() -> None:
         LeafRegistry.from_mapping(["a", "b", "c", "d"])
     with pytest.raises(ValueError, match="must be strings"):
         TaskConfig.from_mapping({"metadata_fields": [1]})
+
+
+def test_grading_config_is_strict_and_rejects_unknown_fields() -> None:
+    config = GradingConfig.from_mapping(
+        {"levels": ["L1", "L2"], "descriptions": ["low", "high"]}
+    )
+    assert config.levels == ("L1", "L2")
+    with pytest.raises(ValueError, match="levels.*strings"):
+        GradingConfig.from_mapping({"levels": ["L1", 2]})
+    with pytest.raises(ValueError, match="descriptions.*strings"):
+        GradingConfig.from_mapping(
+            {"levels": ["L1"], "descriptions": ["ok", 3]}
+        )
+    with pytest.raises(ValueError, match="unknown"):
+        GradingConfig.from_mapping({"levels": ["L1"], "unexpected": True})
+
+
+def test_graded_context_requires_both_heads_or_neither() -> None:
+    grading = GradingConfig(levels=("L1", "L2"))
+    assert GradedTaskContext().enabled is False
+    assert GradedTaskContext(grading, "L1").enabled is True
+    with pytest.raises(ValueError, match="together"):
+        GradedTaskContext(grading=grading)
+    with pytest.raises(ValueError, match="together"):
+        GradedTaskContext(expected_level="L1")
+    with pytest.raises(ValueError, match="levels"):
+        GradedTaskContext(grading, "L3")

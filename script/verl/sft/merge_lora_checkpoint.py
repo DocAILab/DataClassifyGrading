@@ -1,93 +1,203 @@
-"""Merge a verl LoRA FSDP checkpoint into a standalone HF model directory.
+"""Merge a verified single-rank VeRL LoRA checkpoint into a standalone HF model.
 
-verl saves LoRA checkpoints in peft-compatible state-dict layout
-(``base_model.model....lora_A.default.weight`` + ``lora_train_meta.json``).
-This script rebuilds a PeftModel on the base weights, loads the checkpoint
-state dict, merges LoRA into the base and saves a plain HF directory that any
-evaluator / downstream RL init can load normally (no verl dependency).
-
-Verification: reports how many checkpoint keys were consumed; a LoRA merge
-with the frozen base weights must consume 100% of keys (base + lora).
-
-Usage:
-  python -m script.verl.sft.merge_lora_checkpoint \
-    --checkpoint <verl global_step dir> \
-    --base-model <HF base dir> \
-    --output <merged HF dir>
+The output is published atomically only after a fresh Transformers load of
+both model and tokenizer succeeds.  The current implementation deliberately
+supports only the server-validated ``world_size=1, rank=0`` checkpoint layout;
+other layouts fail closed instead of guessing how shards should be merged.
 """
 
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import re
-from pathlib import Path
+import shutil
 import sys
-
-import torch
+import tempfile
+from pathlib import Path
+from typing import Any, Mapping, Sequence
 
 LORA_A = re.compile(r"(.*)\.lora_A\.default\.weight$")
+_MODEL_FILE = re.compile(r"model_world_size_(\d+)_rank_(\d+)\.pt$")
+
+
+def discover_single_rank_checkpoint(checkpoint: str | Path) -> tuple[Path, Mapping[str, Any]]:
+    """Return the sole rank-0 model file and required LoRA metadata."""
+    root = Path(checkpoint)
+    if not root.is_dir():
+        raise NotADirectoryError(f"checkpoint directory not found: {root}")
+    model_files = sorted(
+        path for path in root.iterdir() if path.is_file() and _MODEL_FILE.fullmatch(path.name)
+    )
+    if len(model_files) != 1:
+        raise ValueError(
+            "checkpoint must contain exactly one model_world_size_*_rank_*.pt file"
+        )
+    match = _MODEL_FILE.fullmatch(model_files[0].name)
+    assert match is not None
+    world_size, rank = int(match.group(1)), int(match.group(2))
+    if world_size != 1 or rank != 0:
+        raise ValueError(
+            f"only the verified world_size=1 rank=0 layout is supported, got "
+            f"world_size={world_size} rank={rank}"
+        )
+    meta_file = root / "lora_train_meta.json"
+    if not meta_file.is_file():
+        raise FileNotFoundError(f"lora_train_meta.json not found: {meta_file}")
+    try:
+        meta = json.loads(meta_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"invalid lora_train_meta.json: {exc}") from exc
+    if not isinstance(meta, Mapping):
+        raise ValueError("lora_train_meta.json must be a JSON object")
+    return model_files[0], meta
+
+
+def lora_spec(keys: Sequence[str], meta: Mapping[str, Any]) -> tuple[list[str], int, int]:
+    """Validate checkpoint metadata and return target modules/rank/alpha."""
+    targets = sorted(
+        {
+            match.group(1).rsplit(".", 1)[-1]
+            for key in keys
+            for match in [LORA_A.match(key)]
+            if match
+        }
+    )
+    if not targets:
+        raise ValueError("no LoRA keys found in checkpoint")
+    rank = meta.get("r")
+    alpha = meta.get("lora_alpha")
+    if (
+        isinstance(rank, bool)
+        or not isinstance(rank, int)
+        or rank <= 0
+        or isinstance(alpha, bool)
+        or not isinstance(alpha, int)
+        or alpha <= 0
+    ):
+        raise ValueError("LoRA r and lora_alpha must be positive integers")
+    return targets, rank, alpha
+
+
+def require_new_output_dir(output: str | Path) -> Path:
+    """Return *output* only when no file or directory already occupies it."""
+    path = Path(output)
+    if path.exists():
+        raise FileExistsError(f"merge output must not already exist: {path}")
+    return path
+
+
+def _parse_args(argv: list[str] | None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--checkpoint", required=True,
+                        help="VeRL single-rank global_step checkpoint directory")
+    parser.add_argument("--base-model", required=True,
+                        help="Exact HF base model directory used by SFT")
+    parser.add_argument("--output", required=True,
+                        help="New merged HF output directory")
+    return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", required=True, help="verl checkpoint dir (has model_world_size_1_rank_0.pt)")
-    parser.add_argument("--base-model", required=True, help="HF base model dir (same as trained)")
-    parser.add_argument("--output", required=True, help="merged HF output dir")
-    args = parser.parse_args(argv)
-
-    ckpt_dir = Path(args.checkpoint)
-    model_file = ckpt_dir / "model_world_size_1_rank_0.pt"
-    meta_file = ckpt_dir / "lora_train_meta.json"
-    if not model_file.is_file():
-        print(f"error: {model_file} not found", file=sys.stderr)
+    args = _parse_args(argv)
+    try:
+        output = require_new_output_dir(args.output)
+        model_file, meta = discover_single_rank_checkpoint(args.checkpoint)
+    except (FileNotFoundError, NotADirectoryError, ValueError, FileExistsError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    sd = torch.load(model_file, map_location="cpu", weights_only=False)
-    keys = list(sd.keys())
-    targets = sorted(
-        {m.group(1).rsplit(".", 1)[-1] for k in keys for m in [LORA_A.match(k)] if m}
-    )
-    if not targets:
-        print("error: no LoRA keys found in checkpoint", file=sys.stderr)
-        return 2
-
-    meta = {}
-    if meta_file.is_file():
-        meta = json.loads(meta_file.read_text(encoding="utf-8"))
-    rank = meta.get("r", 8)
-    alpha = meta.get("lora_alpha", rank)
-
+    import torch
     from peft import LoraConfig, PeftModel
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    print(f"[merge] targets: {targets}")
-    print(f"[merge] r={rank} alpha={alpha} keys={len(keys)}")
-    base = AutoModelForCausalLM.from_pretrained(args.base_model, torch_dtype=torch.bfloat16)
-    config = LoraConfig(
-        r=rank,
-        lora_alpha=alpha,
-        target_modules=targets,
-        task_type="CAUSAL_LM",
-    )
-    peft = PeftModel(base, config)
-    missing, unexpected = peft.load_state_dict(sd, strict=False)
-    unexpected = [k for k in unexpected if not k.startswith("base_model.model.model")]
-    if unexpected:
-        print(f"warning: {len(unexpected)} unexpected keys (ignored): {unexpected[:5]}")
-    used = len(keys) - len(unexpected)
-    ratio = used / len(keys)
-    print(f"[merge] consumed {used}/{len(keys)} checkpoint keys ({ratio:.1%})")
-    if ratio < 0.99:
-        print("error: checkpoint keys consumed < 99%; aborting", file=sys.stderr)
+    state_dict = torch.load(model_file, map_location="cpu", weights_only=False)
+    if not isinstance(state_dict, Mapping):
+        print("error: checkpoint state must be a mapping", file=sys.stderr)
+        return 2
+    try:
+        targets, rank, alpha = lora_spec(list(state_dict), meta)
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+
+    base_path = Path(args.base_model)
+    if not base_path.is_dir():
+        print(f"error: base model directory not found: {base_path}", file=sys.stderr)
+        return 2
+    output.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.merge-", dir=output.parent))
+    try:
+        print(f"[merge] targets={targets} r={rank} alpha={alpha} keys={len(state_dict)}")
+        base = AutoModelForCausalLM.from_pretrained(
+            base_path, torch_dtype=torch.bfloat16, local_files_only=True
+        )
+        config = LoraConfig(
+            r=rank,
+            lora_alpha=alpha,
+            target_modules=targets,
+            task_type="CAUSAL_LM",
+        )
+        peft = PeftModel(base, config)
+        _, unexpected = peft.load_state_dict(state_dict, strict=False)
+        unexpected = list(unexpected)
+        used = len(state_dict) - len(unexpected)
+        ratio = used / len(state_dict)
+        if unexpected:
+            print(
+                f"warning: {len(unexpected)} unexpected checkpoint keys: "
+                f"{unexpected[:5]}"
+            )
+        print(f"[merge] consumed {used}/{len(state_dict)} checkpoint keys ({ratio:.1%})")
+        if ratio < 0.99:
+            raise ValueError("checkpoint keys consumed < 99%; aborting")
+
+        merged = peft.merge_and_unload()
+        merged.save_pretrained(staging)
+        tokenizer = AutoTokenizer.from_pretrained(base_path, local_files_only=True)
+        tokenizer.save_pretrained(staging)
+        (staging / "merge_report.json").write_text(
+            json.dumps(
+                {
+                    "checkpoint": Path(args.checkpoint).as_posix(),
+                    "base_model": base_path.as_posix(),
+                    "world_size": 1,
+                    "rank": rank,
+                    "lora_alpha": alpha,
+                    "target_modules": targets,
+                    "checkpoint_keys": len(state_dict),
+                    "consumed_keys": used,
+                },
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            ) + "\n",
+            encoding="utf-8",
+        )
+
+        # Release memory before the independent load verification.  This is
+        # especially important on the single-GPU server.
+        del peft, merged, base
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        verified_model = AutoModelForCausalLM.from_pretrained(
+            staging, torch_dtype=torch.bfloat16, local_files_only=True
+        )
+        verified_tokenizer = AutoTokenizer.from_pretrained(staging, local_files_only=True)
+        del verified_model, verified_tokenizer
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+        staging.replace(output)
+    except BaseException as exc:
+        shutil.rmtree(staging, ignore_errors=True)
+        print(f"error: merge verification failed: {exc}", file=sys.stderr)
         return 1
-    merged = peft.merge_and_unload()
-    out = Path(args.output)
-    out.mkdir(parents=True, exist_ok=True)
-    merged.save_pretrained(out)
-    tokenizer = AutoTokenizer.from_pretrained(args.base_model)
-    tokenizer.save_pretrained(out)
-    print(f"[merge] saved merged model -> {out}")
+
+    print(f"[merge] verified merged HF model -> {output}")
     return 0
 
 

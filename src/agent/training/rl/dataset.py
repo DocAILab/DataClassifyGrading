@@ -25,9 +25,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
-from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
+from agent.hashing import sha256_file
+from agent.task.contracts import CorpusCategory, GradingConfig, LeafRegistry, TaskConfig
 from agent.task.prompts import build_stage1_prompt, build_stage2_prompt
 from agent.training.common import (
     canonical_target,
@@ -73,12 +74,16 @@ def load_json_records(path: str | Path) -> list[dict[str, Any]]:
 
 def export_rl_dataset(
     canonical_file: str | Path,
-    split_dir: str | Path,
+    split_dir: str | Path | None,
     output_dir: str | Path,
     dataset: str,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
     corpus: Mapping[str, CorpusCategory],
+    *,
+    grading: GradingConfig | None = None,
+    allow_label_gaps: Sequence[str] = (),
+    allow_any_label_gap: bool = False,
 ) -> dict[str, Any]:
     """Export canonical records to VeRL RL parquet (one file per split).
 
@@ -91,11 +96,11 @@ def export_rl_dataset(
         raise ValueError("dataset name must be a non-empty string")
     leaf_registry = _registry(registry)
     config = _config(task_config)
-    canonical_path, split_root, output_root = (
-        Path(canonical_file),
-        Path(split_dir),
-        Path(output_dir),
-    )
+    canonical_path = Path(canonical_file)
+    split_root = None if split_dir is None else Path(split_dir)
+    output_root = Path(output_dir)
+    if split_root is not None and not split_root.is_dir():
+        raise FileNotFoundError(f"split directory not found: {split_root}")
     if not canonical_path.is_file():
         raise FileNotFoundError(f"canonical dataset not found: {canonical_path}")
     canonical_records = load_json_records(canonical_path)
@@ -116,6 +121,16 @@ def export_rl_dataset(
                 raise ValueError(
                     f"resolved canonical record without id: {canonical_path}"
                 )
+            if split_root is None:
+                assigned_split = str(item.get("split", "") or "").strip()
+                if not assigned_split:
+                    raise ValueError(
+                        f"canonical record {item_id!r} is resolved without a split assignment"
+                    )
+                if assigned_split not in RL_SPLITS:
+                    raise ValueError(
+                        f"canonical record {item_id!r} carries unknown split {assigned_split!r}"
+                    )
         elif not item_id:
             # stage-3B contract allows id-less audit records for non-resolved
             # outcomes; they never enter training and are ignored by the
@@ -137,6 +152,7 @@ def export_rl_dataset(
             "permuted deterministically by stable source_id (not position-fixed, "
             "not the production retrieval policy)"
         ),
+        "split_source": "embedded_v2" if split_root is None else "split_dir_join",
         "dataset": dataset,
         "metadata_fields": list(config.metadata_fields),
         "task_name": config.task_name,
@@ -144,14 +160,33 @@ def export_rl_dataset(
         "corpus_size": len(corpus_map),
         "canonical_resolved": canonical_resolved,
         "idless_non_resolved_records": idless_non_resolved,
+        "grading": (
+            {
+                "enabled": True,
+                "levels": list(grading.levels),
+                "gt_field": grading.gt_field,
+            }
+            if grading is not None
+            else {"enabled": False}
+        ),
         "splits": {},
     }
     trainable_ids: set[str] = set()
+    split_ground_truths: dict[str, set[str]] = {split: set() for split in RL_SPLITS}
+    split_levels: dict[str, set[str]] = {split: set() for split in RL_SPLITS}
     for split in RL_SPLITS:
-        source = split_root / f"{split}.json"
-        split_records = load_json_records(source)
+        if split_root is None:
+            split_records = [
+                item for item in canonical_records
+                if str(item.get("split", "") or "").strip() == split
+            ]
+            source = canonical_path
+        else:
+            source = split_root / f"{split}.json"
+            split_records = load_json_records(source)
         rows: list[dict[str, Any]] = []
         skipped_unresolved = 0
+        skipped_no_grading_label = 0
         for index, item in enumerate(split_records):
             item_id = str(item.get("id", "") or "").strip()
             if not item_id:
@@ -162,11 +197,29 @@ def export_rl_dataset(
                     f"split item id {item_id!r} ({source}) is absent from the "
                     f"canonical dataset {canonical_path}"
                 )
+            if split_root is not None:
+                canonical_item = canonical_item
             status = str(canonical_item.get("resolution_status", "") or "").strip()
             if status != "resolved":
                 skipped_unresolved += 1
                 continue
+            if grading is not None:
+                raw_level = canonical_item.get(grading.gt_field, "")
+                level = "" if raw_level is None else str(raw_level).strip()
+                if not level:
+                    skipped_no_grading_label += 1
+                    continue
+                if level not in grading.levels:
+                    raise ValueError(
+                        f"record {item_id!r} has grading label {level!r} outside "
+                        f"configured levels {list(grading.levels)}"
+                    )
+            ground_truth = canonical_target(canonical_item, index, source, leaf_registry)
+            assert ground_truth is not None
             trainable_ids.add(item_id)
+            split_ground_truths[split].add(ground_truth)
+            if grading is not None:
+                split_levels[split].add(level)
             stage1, stage2 = build_rl_samples(
                 canonical_item,
                 index,
@@ -175,6 +228,7 @@ def export_rl_dataset(
                 registry=leaf_registry,
                 config=config,
                 corpus=corpus_map,
+                grading=grading,
             )
             rows.extend(build_rl_row(sample, config) for sample in (stage1, stage2))
         if not rows:
@@ -185,8 +239,44 @@ def export_rl_dataset(
             "split_records": len(split_records),
             "exported_rows": len(rows),
             "skipped_not_resolved": skipped_unresolved,
+            "skipped_no_grading_label": skipped_no_grading_label,
             "output_file": str(destination),
+            "parquet_sha256": sha256_file(destination),
         }
+    blocking_gaps: list[dict[str, str]] = []
+    waived_gaps: list[dict[str, str]] = []
+    blocking_levels: list[dict[str, str]] = []
+    waived_levels: list[dict[str, str]] = []
+    allowed_gaps = {str(label) for label in allow_label_gaps}
+    for later_split in ("val", "test"):
+        for label in sorted(split_ground_truths[later_split] - split_ground_truths["train"]):
+            entry = {"label": label, "split": later_split}
+            if allow_any_label_gap or label in allowed_gaps:
+                waived_gaps.append(entry)
+            else:
+                blocking_gaps.append(entry)
+        if grading is not None:
+            for level in sorted(split_levels[later_split] - split_levels["train"]):
+                entry = {"label": level, "split": later_split}
+                if allow_any_label_gap or level in allowed_gaps:
+                    waived_levels.append(entry)
+                else:
+                    blocking_levels.append(entry)
+    gate_status = "failed" if (blocking_gaps or blocking_levels) else (
+        "waived" if (waived_gaps or waived_levels) else "passed"
+    )
+    report["label_gap_gate"] = {
+        "status": gate_status,
+        "blocking": blocking_gaps,
+        "waived": waived_gaps,
+        "blocking_levels": blocking_levels,
+        "waived_levels": waived_levels,
+    }
+    if blocking_gaps or blocking_levels:
+        raise ValueError(
+            "label-gap gate failed; labels absent from train but present in val/test: "
+            f"{blocking_gaps + blocking_levels}. Waive via allow_label_gaps/allow_any_label_gap."
+        )
     resolved_outside_split_ids = sorted(
         record_id
         for record_id in canonical_by_id
@@ -211,6 +301,7 @@ def _validate_row(
     registry: LeafRegistry,
     config: TaskConfig,
     corpus: Mapping[str, CorpusCategory],
+    grading: GradingConfig | None = None,
 ) -> list[str]:
     """Validate one RL parquet row against the VeRL v0.8.0 contract."""
     errors: list[str] = []
@@ -280,6 +371,7 @@ def _validate_row(
     source_id: str | None = None
     candidates: list[str] | None = None
     metadata: dict[str, Any] | None = None
+    ground_truth_level: str | None = None
     if not isinstance(extra_info, Mapping):
         errors.append("extra_info must be a dict")
     else:
@@ -300,6 +392,19 @@ def _validate_row(
             errors.append("extra_info.metadata must exactly match task config metadata_fields")
         else:
             metadata = dict(raw_metadata)
+        raw_level = extra_info.get("ground_truth_level")
+        if raw_level is not None:
+            if not isinstance(raw_level, str) or not raw_level.strip():
+                errors.append("extra_info.ground_truth_level must be non-empty when provided")
+            else:
+                ground_truth_level = raw_level.strip()
+                if grading is not None and ground_truth_level not in grading.levels:
+                    errors.append(
+                        f"extra_info.ground_truth_level {ground_truth_level!r} is not in "
+                        f"configured levels {list(grading.levels)}"
+                    )
+        if grading is not None and not ground_truth_level:
+            errors.append("grading enabled but extra_info.ground_truth_level is missing")
         raw_candidates = extra_info.get("candidates")
         if raw_stage == "stage1":
             if raw_candidates is not None:
@@ -316,7 +421,10 @@ def _validate_row(
                 errors.append("stage2 extra_info.candidates contain an ID absent from registry")
             else:
                 candidates = raw_candidates
-        unknown_keys = set(extra_info) - {"dataset", "stage", "source_id", "metadata", "candidates"}
+        unknown_keys = set(extra_info) - {
+            "dataset", "stage", "source_id", "metadata", "candidates",
+            "ground_truth_level",
+        }
         if unknown_keys:
             errors.append(f"extra_info contains unexpected keys: {sorted(unknown_keys)}")
     if data_source and stage and data_source != f"{dataset}/{stage}":
@@ -328,7 +436,12 @@ def _validate_row(
             expected_prompt = build_stage1_prompt(metadata, registry, config)
         elif stage == "stage2" and candidates is not None:
             expected_prompt = build_stage2_prompt(
-                metadata, candidates, registry, config, corpus=corpus or None
+                metadata,
+                candidates,
+                registry,
+                config,
+                corpus=corpus or None,
+                grading=grading,
             )
         if expected_prompt is not None and contents[:2] != [
             expected_prompt.system,
@@ -350,12 +463,33 @@ def _validate_row(
                     not isinstance(catalog, list)
                     or len(catalog) != len(registry.categories)
                     or any(
-                        not (isinstance(entry, list) and len(entry) == 2)
+                        not (isinstance(entry, list) and len(entry) == 3)
                         for entry in catalog
                     )
                 ):
                     errors.append("stage1 prompt must render the full leaf registry catalog")
     return errors
+
+
+def validate_rl_row(
+    row: Mapping[str, Any],
+    *,
+    dataset: str,
+    registry: LeafRegistry,
+    task_config: TaskConfig,
+    corpus: Mapping[str, CorpusCategory],
+    grading: GradingConfig | None = None,
+) -> list[str]:
+    """Validate one five-field row through the public RL contract seam."""
+
+    return _validate_row(
+        row,
+        dataset=dataset,
+        registry=registry,
+        config=task_config,
+        corpus=corpus,
+        grading=grading,
+    )
 
 
 def _validate_stage_pairs(rows: list[Mapping[str, Any]]) -> list[str]:
@@ -392,6 +526,14 @@ def _validate_stage_pairs(rows: list[Mapping[str, Any]]) -> list[str]:
         }
         if len(ground_truths) != 1:
             errors.append(f"source_id {source_id!r} must share one ground_truth across stages")
+        levels = {
+            row.get("extra_info", {}).get("ground_truth_level")
+            if isinstance(row.get("extra_info"), Mapping)
+            else None
+            for row in by_stage["stage1"] + by_stage["stage2"]
+        }
+        if len(levels) != 1:
+            errors.append(f"source_id {source_id!r} must share one ground_truth_level across stages")
     return errors
 
 
@@ -401,6 +543,8 @@ def validate_rl_dataset(
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
     corpus: Mapping[str, CorpusCategory],
+    *,
+    grading: GradingConfig | None = None,
 ) -> dict[str, Any]:
     """Return a structured validation report; malformed rows are reported,
     not silently accepted."""
@@ -417,6 +561,15 @@ def validate_rl_dataset(
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
         "corpus_size": len(corpus_map),
+        "grading": (
+            {
+                "enabled": True,
+                "levels": list(grading.levels),
+                "gt_field": grading.gt_field,
+            }
+            if grading is not None
+            else {"enabled": False}
+        ),
         "splits": {},
         "cross_split_errors": [],
     }
@@ -444,6 +597,7 @@ def validate_rl_dataset(
                         registry=leaf_registry,
                         config=config,
                         corpus=corpus_map,
+                        grading=grading,
                     ):
                         details["errors"].append(f"row {index}: {error}")
                 details["errors"].extend(_validate_stage_pairs(rows))
@@ -479,5 +633,6 @@ __all__ = [
     "RL_SPLITS",
     "VERL_RL_COLUMNS",
     "export_rl_dataset",
+    "validate_rl_row",
     "validate_rl_dataset",
 ]

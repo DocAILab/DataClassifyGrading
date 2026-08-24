@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
+from agent.task.contracts import CorpusCategory, GradingConfig, LeafRegistry, TaskConfig
 from agent.task.prompts import build_stage1_prompt, build_stage2_prompt
 from agent.training.common import build_candidates, canonical_target
 
@@ -80,6 +80,9 @@ class RlSample:
     candidates: tuple[str, ...] | None
     metadata: Mapping[str, str]
     reward: RewardMeta
+    # Optional joint grading target.  Kept in task/sample data (not algorithm
+    # state) so Stage 1 and Stage 2 rows share one immutable level label.
+    ground_truth_level: str | None = None
 
     def __post_init__(self) -> None:
         if self.stage not in {"stage1", "stage2"}:
@@ -97,6 +100,8 @@ class RlSample:
                 raise ValueError("stage2 sample candidates must be exactly 5 unique category_ids")
         elif self.candidates is not None:
             raise ValueError("stage1 sample must not carry a candidate bundle")
+        if self.ground_truth_level is not None and not self.ground_truth_level.strip():
+            raise ValueError("ground_truth_level must be non-empty when provided")
 
 
 def visible_metadata(metadata: Mapping[str, Any], config: TaskConfig) -> dict[str, str]:
@@ -118,6 +123,7 @@ def build_rl_samples(
     registry: LeafRegistry,
     config: TaskConfig,
     corpus: Mapping[str, CorpusCategory],
+    grading: GradingConfig | None = None,
 ) -> tuple[RlSample, RlSample]:
     """Build the stage1 + stage2 RL samples for one canonical record.
 
@@ -135,9 +141,28 @@ def build_rl_samples(
         raise ValueError(f"item {index} in {source} has no stable id")
     metadata = visible_metadata(item.get("metadata", {}), config)
     candidates = tuple(build_candidates(ground_truth, registry, source_id=source_id))
+    ground_truth_level: str | None = None
+    if grading is not None:
+        raw_level = item.get(grading.gt_field, "")
+        ground_truth_level = "" if raw_level is None else str(raw_level).strip()
+        if not ground_truth_level:
+            raise ValueError(
+                f"item {index} in {source} has no grading label under "
+                f"{grading.gt_field!r}"
+            )
+        if ground_truth_level not in grading.levels:
+            raise ValueError(
+                f"item {index} in {source} has grading label {ground_truth_level!r} "
+                f"outside configured levels {list(grading.levels)}"
+            )
     stage1_prompt = build_stage1_prompt(metadata, registry, config)
     stage2_prompt = build_stage2_prompt(
-        metadata, candidates, registry, config, corpus=corpus or None
+        metadata,
+        candidates,
+        registry,
+        config,
+        corpus=corpus or None,
+        grading=grading,
     )
     stage1 = RlSample(
         stage="stage1",
@@ -151,6 +176,7 @@ def build_rl_samples(
         candidates=None,
         metadata=metadata,
         reward=RewardMeta(dataset=dataset, stage="stage1"),
+        ground_truth_level=ground_truth_level,
     )
     stage2 = RlSample(
         stage="stage2",
@@ -164,6 +190,7 @@ def build_rl_samples(
         candidates=candidates,
         metadata=metadata,
         reward=RewardMeta(dataset=dataset, stage="stage2"),
+        ground_truth_level=ground_truth_level,
     )
     return stage1, stage2
 
@@ -182,6 +209,7 @@ def build_rl_row(sample: RlSample, task_config: TaskConfig) -> dict[str, Any]:
         "stage": sample.stage,
         "source_id": sample.source_id,
         "metadata": dict(sample.metadata),
+        "ground_truth_level": sample.ground_truth_level,
     }
     if sample.stage == "stage2":
         extra_info["candidates"] = list(sample.candidates)

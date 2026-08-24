@@ -1,0 +1,101 @@
+[
+  {
+    "schema_version": 2,
+    "id": "train-alpha",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "alpha_field"},
+    "classification": {"group": "Synthetic", "category": "Alpha"},
+    "data_level": "L1",
+    "target": {"leaf_level": "category", "leaf_name": "Alpha", "category_id": "demo:alpha", "category_path": ["Synthetic", "Alpha"]},
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-alpha",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "alpha_field"},
+    "classification": {"group": "Synthetic", "category": "Alpha"},
+    "data_level": "L1",
+    "target": {"leaf_level": "category", "leaf_name": "Alpha", "category_id": "demo:alpha", "category_path": ["Synthetic", "Alpha"]},
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-alpha",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "alpha_field"},
+    "classification": {"group": "Synthetic", "category": "Alpha"},
+    "data_level": "L1",
+    "target": {"leaf_level": "category", "leaf_name": "Alpha", "category_id": "demo:alpha", "category_path": ["Synthetic", "Alpha"]},
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-bravo",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "bravo_field"},
+    "classification": {"group": "Synthetic", "category": "Bravo"},
+    "data_level": "L2",
+    "target": {"leaf_level": "category", "leaf_name": "Bravo", "category_id": "demo:bravo", "category_path": ["Synthetic", "Bravo"]},
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-bravo",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "bravo_field"},
+    "classification": {"group": "Synthetic", "category": "Bravo"},
+    "data_level": "L2",
+    "target": {"leaf_level": "category", "leaf_name": "Bravo", "category_id": "demo:bravo", "category_path": ["Synthetic", "Bravo"]},
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-bravo",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "bravo_field"},
+    "classification": {"group": "Synthetic", "category": "Bravo"},
+    "data_level": "L2",
+    "target": {"leaf_level": "category", "leaf_name": "Bravo", "category_id": "demo:bravo", "category_path": ["Synthetic", "Bravo"]},
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-charlie",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "charlie_field"},
+    "classification": {"group": "Synthetic", "category": "Charlie"},
+    "data_level": "L3",
+    "target": {"leaf_level": "category", "leaf_name": "Charlie", "category_id": "demo:charlie", "category_path": ["Synthetic", "Charlie"]},
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-charlie",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "charlie_field"},
+    "classification": {"group": "Synthetic", "category": "Charlie"},
+    "data_level": "L3",
+    "target": {"leaf_level": "category", "leaf_name": "Charlie", "category_id": "demo:charlie", "category_path": ["Synthetic", "Charlie"]},
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-charlie",
+    "resolution_status": "resolved",
+    "metadata": {"field_name": "charlie_field"},
+    "classification": {"group": "Synthetic", "category": "Charlie"},
+    "data_level": "L3",
+    "target": {"leaf_level": "category", "leaf_name": "Charlie", "category_id": "demo:charlie", "category_path": ["Synthetic", "Charlie"]},
+    "split": "test",
+    "split_exclusion_reason": null
+  }
+]

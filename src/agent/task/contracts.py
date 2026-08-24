@@ -57,16 +57,32 @@ class GradingConfig:
     gt_field: str = "data_level"
 
     def __post_init__(self) -> None:
-        if not self.levels or any(not level.strip() for level in self.levels):
+        if not isinstance(self.levels, tuple):
+            raise ValueError("grading levels must be a tuple of strings")
+        if not self.levels or any(
+            not isinstance(level, str) or not level.strip() for level in self.levels
+        ):
             raise ValueError("grading levels must be non-empty strings")
-        if len(set(self.levels)) != len(self.levels):
+        levels = tuple(level.strip() for level in self.levels)
+        if len(set(levels)) != len(levels):
             raise ValueError("grading levels must be unique")
-        if self.descriptions and len(self.descriptions) != len(self.levels):
+        object.__setattr__(self, "levels", levels)
+        if not isinstance(self.descriptions, tuple):
+            raise ValueError("grading descriptions must be a tuple of strings")
+        if any(
+            not isinstance(description, str) or not description.strip()
+            for description in self.descriptions
+        ):
+            raise ValueError("grading descriptions must be non-empty strings")
+        descriptions = tuple(description.strip() for description in self.descriptions)
+        if descriptions and len(descriptions) != len(levels):
             raise ValueError(
                 "grading descriptions must parallel levels (or be omitted)"
             )
-        if not self.gt_field.strip():
-            raise ValueError("grading gt_field must be a non-empty field name")
+        object.__setattr__(self, "descriptions", descriptions)
+        if not isinstance(self.gt_field, str) or not self.gt_field.strip():
+            raise ValueError("grading gt_field must be a non-empty string field name")
+        object.__setattr__(self, "gt_field", self.gt_field.strip())
 
     def rubric(self) -> tuple[tuple[str, str], ...]:
         """(code, description) pairs; description empty when not provided."""
@@ -77,18 +93,32 @@ class GradingConfig:
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "GradingConfig":
+        if not isinstance(value, Mapping):
+            raise ValueError("grading config must be a JSON object")
+        allowed = {"levels", "descriptions", "gt_field"}
+        unknown = set(value) - allowed
+        if unknown:
+            raise ValueError(
+                "grading config contains unknown fields: "
+                + ", ".join(sorted(str(field) for field in unknown))
+            )
         raw_levels = value.get("levels")
         if (
             not isinstance(raw_levels, Sequence)
             or isinstance(raw_levels, (str, bytes))
             or not raw_levels
+            or not all(isinstance(level, str) for level in raw_levels)
         ):
-            raise ValueError("grading config requires a non-empty levels array")
-        levels = tuple(str(level).strip() for level in raw_levels)
+            raise ValueError("grading levels must be a non-empty array of strings")
+        levels = tuple(level.strip() for level in raw_levels)
         raw_descriptions = value.get("descriptions", ())
-        descriptions = () if raw_descriptions is None else tuple(
-            str(part) for part in raw_descriptions
-        )
+        if raw_descriptions is None:
+            raise ValueError("grading descriptions must be an array of strings")
+        if not isinstance(raw_descriptions, Sequence) or isinstance(
+            raw_descriptions, (str, bytes)
+        ) or not all(isinstance(part, str) for part in raw_descriptions):
+            raise ValueError("grading descriptions must be an array of strings")
+        descriptions = tuple(part.strip() for part in raw_descriptions)
         gt_field = value.get("gt_field", cls.gt_field)
         if not isinstance(gt_field, str):
             raise ValueError("grading gt_field must be a string")
@@ -96,11 +126,53 @@ class GradingConfig:
 
     @classmethod
     def from_path(cls, path: str | Path) -> "GradingConfig":
+        def reject_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+            result: dict[str, Any] = {}
+            for key, item in pairs:
+                if key in result:
+                    raise ValueError(
+                        f"grading config contains duplicate key {key!r}"
+                    )
+                result[key] = item
+            return result
+
         with Path(path).open(encoding="utf-8") as handle:
-            value = json.load(handle)
+            value = json.load(handle, object_pairs_hook=reject_duplicates)
         if not isinstance(value, Mapping):
             raise ValueError("grading config must be a JSON object")
         return cls.from_mapping(value)
+
+
+@dataclass(frozen=True)
+class GradedTaskContext:
+    """The joint Stage 2 grading contract for one ground-truth sample.
+
+    ``grading`` describes the output head and ``expected_level`` supplies the
+    sample label. They are intentionally inseparable: passing only one would
+    silently turn a joint category+level evaluation into classification-only
+    scoring (or leave a level with no rubric).
+    """
+
+    grading: GradingConfig | None = None
+    expected_level: str | None = None
+
+    def __post_init__(self) -> None:
+        if (self.grading is None) != (self.expected_level is None):
+            raise ValueError(
+                "grading and expected_level must be provided together"
+            )
+        if self.grading is None:
+            return
+        if not isinstance(self.grading, GradingConfig):
+            raise ValueError("grading must be a GradingConfig")
+        if not isinstance(self.expected_level, str) or not self.expected_level.strip():
+            raise ValueError("expected_level must be a non-empty string")
+        if self.expected_level not in self.grading.levels:
+            raise ValueError("expected_level must belong to grading.levels")
+
+    @property
+    def enabled(self) -> bool:
+        return self.grading is not None
 
 
 @dataclass(frozen=True)

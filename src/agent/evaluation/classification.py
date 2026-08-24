@@ -21,7 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from agent.task import GradingConfig, LeafRegistry
+from agent.task import GradedTaskContext, GradingConfig, LeafRegistry
 from agent.task.parser import (
     Stage2Output,
     check_stage1_choices,
@@ -156,9 +156,9 @@ def evaluate_stage2_choices(
     given, ``correct`` requires BOTH the category and the level to match,
     and ``level_correct`` reports the level comparison separately.
     """
-    if grading is not None and expected_level is not None:
-        if expected_level not in grading.levels:
-            raise ValueError("expected_level must belong to grading.levels")
+    graded = GradedTaskContext(grading, expected_level)
+    grading = graded.grading
+    expected_level = graded.expected_level
     if ground_truth not in registry.ids:
         raise ValueError("ground_truth must belong to the leaf registry")
     if isinstance(candidates, (str, bytes)) or (
@@ -188,9 +188,7 @@ def evaluate_stage2_choices(
         and expected_level is not None
         and result.level == expected_level
     )
-    correct = category_correct and (
-        grading is None or expected_level is None or level_correct
-    )
+    correct = category_correct and (not graded.enabled or level_correct)
     return Stage2Evaluation(
         result.decoded,
         True,

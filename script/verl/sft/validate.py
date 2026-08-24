@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import sys
 
-from agent.task import LeafRegistry, TaskConfig
+from agent.task import GradingConfig, LeafRegistry, TaskConfig
 from agent.task.assets import load_corpus_categories
 from agent.training.sft import validate_sft_dataset
 
@@ -23,6 +23,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--metadata-fields", nargs="+", required=True)
     parser.add_argument("--task-config")
+    parser.add_argument(
+        "--grading-config",
+        default=None,
+        help="Optional grading JSON; validates joint Stage 2 answer+level rows",
+    )
     parser.add_argument("--report", help="Optional path for the structured validation report")
     return parser.parse_args(argv)
 
@@ -37,6 +42,11 @@ def main(argv: list[str] | None = None) -> int:
             if not isinstance(config_data, dict):
                 raise ValueError("task config must be a JSON object")
         config_data["metadata_fields"] = args.metadata_fields
+        grading = (
+            GradingConfig.from_path(args.grading_config)
+            if args.grading_config
+            else None
+        )
         corpus = (
             {
                 category.category_id: category
@@ -50,6 +60,7 @@ def main(argv: list[str] | None = None) -> int:
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
             corpus=corpus,
+            grading=grading,
         )
         if args.report:
             Path(args.report).parent.mkdir(parents=True, exist_ok=True)

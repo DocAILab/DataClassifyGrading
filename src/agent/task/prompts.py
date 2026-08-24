@@ -3,9 +3,10 @@
 Prompt-facing identity is the choice protocol, never the canonical
 category_id:
 - Stage 1 receives the FULL LeafRegistry as candidate universe, rendered as
-  compact [choice_id, display_name] pairs only (descriptions/examples are
-  deliberately kept out of Stage 1). The model answers with global choice
-  ids ("1".."N" following registry order).
+  compact [choice_id, display_name, standard_summary] entries. The summary is
+  the registry description; full corpus descriptions/examples remain in
+  Stage 2. The model answers with global choice ids ("1".."N" following
+  registry order).
 - Stage 2 resolves candidates by canonical category_id against the
   canonical corpus (description/descriptions/examples) and renders each
   candidate with a LOCAL bundle id ("1".."5"); the model answers with the
@@ -54,8 +55,17 @@ def build_stage1_prompt(
         "The value must contain exactly five unique choice ids from the catalog. "
         "Do not output Markdown, commentary, canonical category ids, or any other keys."
     )
+    # Stage 1 must see the classification standard, not only opaque label
+    # names. Registry descriptions are the compact standard summaries; full
+    # corpus descriptions/examples remain in the five-candidate Stage 2
+    # bundle. Canonical ids stay hidden behind choice ids.
     catalog = [
-        [choice.choice_id, choice.display_name] for choice in choices.choices
+        [
+            choice.choice_id,
+            choice.display_name,
+            registry.get(choice.category_id).description,
+        ]
+        for choice in choices.choices
     ]
     user = (
         "Retrieve five candidate leaf categories from this catalog:\n"

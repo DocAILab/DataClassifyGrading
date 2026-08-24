@@ -18,7 +18,7 @@ import json
 
 import pytest
 
-from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
+from agent.task.contracts import CorpusCategory, GradedTaskContext, GradingConfig, LeafRegistry, TaskConfig
 from script.verl.sft.evaluate_true_e2e import aggregate_true_e2e, run_one
 
 # ---- synthetic registry/corpus: 8 categories -> choice ids "1".."8" ----
@@ -193,6 +193,81 @@ def test_stage2_candidates_exactly_equal_predicted_top5(ctx):
     assert bundle[0]["description"] == "description-reg:3"
     assert "extra-reg:3" in bundle[0]["descriptions"]
     assert "example-reg:3" in bundle[0]["examples"]
+
+
+def test_joint_true_e2e_requires_both_leaf_and_level(ctx):
+    row = source_row(gt="reg:3")
+    row["ground_truth_level"] = "L3"
+    grading = GradingConfig(levels=("L1", "L2", "L3"))
+    good = make_generate(
+        stage1_out=json.dumps({"candidates": ["3", "1", "2", "4", "5"]}),
+        stage2_out=json.dumps({"answer": "1", "level": "L3"}),
+    )
+    out = run_one(row, seed=1, generate=good, grading=grading, **ctx)
+    assert out.stage2_correct and out.leaf_correct and out.level_correct
+    assert out.predicted_level == "L3"
+    metrics = aggregate_true_e2e([out])
+    assert metrics["strict_joint_em"] == 1.0
+    assert metrics["composite_macro_f1"] == 1.0
+    assert metrics["leaf_macro_f1"] == 1.0
+    assert metrics["data_level_macro_f1"] == 1.0
+
+    wrong_level = make_generate(
+        stage1_out=json.dumps({"candidates": ["3", "1", "2", "4", "5"]}),
+        stage2_out=json.dumps({"answer": "1", "level": "L2"}),
+    )
+    out_wrong = run_one(row, seed=1, generate=wrong_level, grading=grading, **ctx)
+    assert out_wrong.leaf_correct and not out_wrong.level_correct
+    assert not out_wrong.stage2_correct
+    assert aggregate_true_e2e([out_wrong])["strict_joint_em"] == 0.0
+
+
+def test_composite_macro_f1_scores_leaf_level_pairs_not_head_average(ctx):
+    grading = GradingConfig(levels=("L1", "L2"))
+    first = source_row(gt="reg:3", source_id="pair-a")
+    first["ground_truth_level"] = "L1"
+    second = source_row(gt="reg:4", source_id="pair-b")
+    second["ground_truth_level"] = "L2"
+    outcomes = [
+        run_one(
+            first,
+            seed=1,
+            generate=make_generate(
+                '{"candidates":["3","1","2","4","5"]}',
+                '{"answer":"1","level":"L2"}',
+            ),
+            grading=grading,
+            **ctx,
+        ),
+        run_one(
+            second,
+            seed=1,
+            generate=make_generate(
+                '{"candidates":["4","1","2","3","5"]}',
+                '{"answer":"1","level":"L1"}',
+            ),
+            grading=grading,
+            **ctx,
+        ),
+    ]
+    metrics = aggregate_true_e2e(outcomes)
+    assert metrics["leaf_macro_f1"] == 1.0
+    assert metrics["data_level_macro_f1"] == 0.0
+    # Neither predicted (leaf, level) pair equals a true composite class.
+    assert metrics["composite_macro_f1"] == 0.0
+
+
+def test_joint_true_e2e_rejects_missing_ground_truth_level(ctx):
+    row = source_row(gt="reg:3")
+    grading = GradingConfig(levels=("L1", "L2", "L3"))
+    with pytest.raises(ValueError, match="ground_truth_level"):
+        run_one(
+            row,
+            seed=1,
+            generate=make_generate('{"candidates":["3","1","2","4","5"]}', '{"answer":"1","level":"L1"}'),
+            grading=grading,
+            **ctx,
+        )
 
 
 def test_aggregate_separates_conditional_and_true_e2e(ctx):

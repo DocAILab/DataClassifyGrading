@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import sys
 
-from agent.task import LeafRegistry, TaskConfig
+from agent.task import GradingConfig, LeafRegistry, TaskConfig
 from agent.task.assets import load_corpus_categories
 from agent.training.rl import validate_rl_dataset
 
@@ -32,6 +32,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         nargs="+",
         required=True,
         help="Metadata keys visible to both stages (must match export)",
+    )
+    parser.add_argument(
+        "--grading-config",
+        help="Optional grading JSON (levels/descriptions/gt_field)",
     )
     parser.add_argument(
         "--task-config",
@@ -54,12 +58,14 @@ def main(argv: list[str] | None = None) -> int:
             category.category_id: category
             for category in load_corpus_categories(args.corpus)
         }
+        grading = GradingConfig.from_path(args.grading_config) if args.grading_config else None
         report = validate_rl_dataset(
             args.dataset_dir,
             args.dataset,
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
             corpus=corpus,
+            grading=grading,
         )
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         print(f"validate_rl_dataset: {exc}", file=sys.stderr)

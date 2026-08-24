@@ -59,6 +59,149 @@ def _group_value(record: dict[str, Any], group_key: str) -> str:
     return "" if value is None else str(value).strip()
 
 
+def _joint_labels(record: dict[str, Any]) -> tuple[str | None, str | None]:
+    target = record.get("target")
+    category = target.get("category_id") if isinstance(target, dict) else None
+    level = record.get("data_level")
+    return (
+        category.strip() if isinstance(category, str) and category.strip() else None,
+        level.strip() if isinstance(level, str) and level.strip() else None,
+    )
+
+
+def _train_coverage_gaps(
+    splits: tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
+) -> tuple[list[str], list[str]]:
+    train_categories: set[str] = set()
+    train_levels: set[str] = set()
+    later_categories: set[str] = set()
+    later_levels: set[str] = set()
+    for split_index, split in enumerate(splits):
+        for record in split:
+            category, level = _joint_labels(record)
+            if split_index == 0:
+                if category:
+                    train_categories.add(category)
+                if level:
+                    train_levels.add(level)
+            else:
+                if category:
+                    later_categories.add(category)
+                if level:
+                    later_levels.add(level)
+    return (
+        sorted(later_categories - train_categories),
+        sorted(later_levels - train_levels),
+    )
+
+
+def ensure_train_coverage(
+    splits: tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
+) -> tuple[
+    tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]],
+    dict[str, Any],
+]:
+    """Deterministically swap records so train covers every leaf and level.
+
+    Counts remain unchanged. A donor may leave train only when both of its
+    labels still have another train occurrence; otherwise the requested
+    no-gap policy is impossible at the configured split sizes and fails.
+    """
+
+    result = [list(split) for split in splits]
+    swaps: list[dict[str, str]] = []
+
+    def counts() -> tuple[Counter[str], Counter[str]]:
+        categories: Counter[str] = Counter()
+        levels: Counter[str] = Counter()
+        for record in result[0]:
+            category, level = _joint_labels(record)
+            if category:
+                categories[category] += 1
+            if level:
+                levels[level] += 1
+        return categories, levels
+
+    def gaps() -> tuple[list[str], list[str]]:
+        train_categories, train_levels = counts()
+        later_categories: set[str] = set()
+        later_levels: set[str] = set()
+        for split in result[1:]:
+            for record in split:
+                category, level = _joint_labels(record)
+                if category:
+                    later_categories.add(category)
+                if level:
+                    later_levels.add(level)
+        return (
+            sorted(later_categories - set(train_categories)),
+            sorted(later_levels - set(train_levels)),
+        )
+
+    for _ in range(sum(len(split) for split in result) + 1):
+        category_gaps, level_gaps = gaps()
+        if not category_gaps and not level_gaps:
+            break
+        kind = "category" if category_gaps else "level"
+        missing = (category_gaps or level_gaps)[0]
+        source_index = None
+        incoming = None
+        for later_index in (1, 2):
+            candidates = sorted(result[later_index], key=lambda row: str(row.get("id", "")))
+            for record in candidates:
+                category, level = _joint_labels(record)
+                if (category if kind == "category" else level) == missing:
+                    source_index, incoming = later_index, record
+                    break
+            if incoming is not None:
+                break
+        if source_index is None or incoming is None:
+            raise ValueError(f"cannot locate record for missing train {kind} label")
+        category_counts, level_counts = counts()
+        outgoing = None
+        for record in sorted(result[0], key=lambda row: str(row.get("id", ""))):
+            category, level = _joint_labels(record)
+            if category and category_counts[category] <= 1:
+                continue
+            if level and level_counts[level] <= 1:
+                continue
+            outgoing = record
+            break
+        if outgoing is None:
+            raise ValueError(
+                "cannot repair train category/data_level gaps without creating another gap"
+            )
+        result[0].remove(outgoing)
+        result[source_index].remove(incoming)
+        result[0].append(incoming)
+        result[source_index].append(outgoing)
+        swaps.append(
+            {
+                "split": SPLIT_NAMES[source_index],
+                "incoming_id": str(incoming.get("id", "")),
+                "outgoing_id": str(outgoing.get("id", "")),
+                "reason": f"missing_{kind}",
+            }
+        )
+    category_gaps, level_gaps = gaps()
+    if category_gaps or level_gaps:
+        raise ValueError(
+            f"train coverage repair incomplete: categories={category_gaps}, levels={level_gaps}"
+        )
+    for split in result:
+        split.sort(key=lambda row: str(row.get("id", "")))
+    return (
+        (result[0], result[1], result[2]),
+        {
+            "policy": "train covers every category_id and data_level",
+            "swaps": len(swaps),
+            "details": swaps,
+            "remaining_category_gaps": category_gaps,
+            "remaining_level_gaps": level_gaps,
+        },
+    )
+
+
 def prepare_split(
     dataset: str,
     *,
@@ -67,6 +210,7 @@ def prepare_split(
     group_key: str | None = None,
     ratios: tuple[float, float, float] = (0.8, 0.1, 0.1),
     seed: int = 42,
+    require_train_coverage: bool = False,
 ) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, list[dict[str, Any]]]]:
     """Compute splits for one canonical dataset. Pure computation.
 
@@ -108,8 +252,23 @@ def prepare_split(
         pool.append(record)
 
     pool = canonical_record_order(pool)
+    coverage_report: dict[str, Any] | None = None
     if split_type == "random":
-        splits = stratified_split(pool, ratios, seed)
+        raw_splits = stratified_split(pool, ratios, seed)
+        if require_train_coverage:
+            splits, coverage_report = ensure_train_coverage(raw_splits)
+            coverage_report["enforced"] = True
+        else:
+            splits = raw_splits
+            category_gaps, level_gaps = _train_coverage_gaps(raw_splits)
+            coverage_report = {
+                "policy": "train coverage recorded but not enforced",
+                "enforced": False,
+                "swaps": 0,
+                "details": [],
+                "remaining_category_gaps": category_gaps,
+                "remaining_level_gaps": level_gaps,
+            }
     else:
         splits = group_split(pool, group_key, ratios, seed)
 
@@ -139,11 +298,21 @@ def prepare_split(
                 "test": ratios[2],
             },
             "order_rule": "id-ascending",
-            "algorithm_version": SPLIT_ALGORITHM_VERSION,
+            "algorithm_version": (
+                SPLIT_ALGORITHM_VERSION
+                if split_type == "group"
+                else (
+                    f"{SPLIT_ALGORITHM_VERSION}+train-coverage-v1"
+                    if require_train_coverage
+                    else SPLIT_ALGORITHM_VERSION
+                )
+            ),
         }
     )
     if split_type == "group":
         report["group_key"] = group_key
+    else:
+        report["train_coverage_gate"] = coverage_report
     return report, records, views
 
 
@@ -198,6 +367,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--val-ratio", type=float, default=0.1)
     parser.add_argument("--test-ratio", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--require-train-coverage",
+        action="store_true",
+        help="Fail unless train covers every category_id and data_level",
+    )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args(argv)
 
@@ -216,6 +390,7 @@ def main(argv: list[str] | None = None) -> int:
             group_key=args.group_key,
             ratios=ratios,
             seed=args.seed,
+            require_train_coverage=args.require_train_coverage,
         )
         write_split(
             dataset,

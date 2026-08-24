@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from script.canonical.split import main, prepare_split, write_split
+from script.canonical.split import ensure_train_coverage, main, prepare_split, write_split
 
 
 def _canonical_record(record_id: str, status: str, table: str = "T1") -> dict:
@@ -83,6 +83,50 @@ def test_unresolved_records_never_enter_splits(tmp_path) -> None:
     assigned = [row for row in records if row["split"]]
     assert len(assigned) == sum(report["sizes"].values())
     assert all(row["split_exclusion_reason"] is None for row in assigned)
+
+
+def test_random_split_repairs_category_and_level_gaps_without_changing_sizes() -> None:
+    train = _resolved_records(8)
+    val = [_canonical_record("val-common", "resolved")]
+    rare = _canonical_record("test-rare", "resolved")
+    rare["target"]["category_id"] = "demo:rare"
+    rare["target"]["leaf_name"] = "Rare"
+    rare["data_level"] = "L1"
+    for record in train + val:
+        record["data_level"] = "L2"
+    repaired, report = ensure_train_coverage((train, val, [rare]))
+    assert [len(split) for split in repaired] == [8, 1, 1]
+    assert {row["target"]["category_id"] for row in repaired[0]} >= {
+        "demo:A.B.D1", "demo:rare"
+    }
+    assert {row["data_level"] for row in repaired[0]} == {"L1", "L2"}
+    assert report["swaps"] == 1
+    assert report["remaining_category_gaps"] == []
+    assert report["remaining_level_gaps"] == []
+
+
+def test_train_coverage_is_explicit_formal_gate_not_unconditional(tmp_path) -> None:
+    records = []
+    for index in range(3):
+        record = _canonical_record(f"rare-{index}", "resolved")
+        record["target"]["category_id"] = f"demo:rare-{index}"
+        record["data_level"] = f"L{index + 1}"
+        records.append(record)
+    canonical = _seed_canonical(tmp_path, records)
+    report, _, _ = prepare_split(
+        "demo",
+        canonical_dir=canonical,
+        ratios=(1 / 3, 1 / 3, 1 / 3),
+    )
+    assert report["train_coverage_gate"]["enforced"] is False
+    assert report["train_coverage_gate"]["remaining_category_gaps"]
+    with pytest.raises(ValueError, match="cannot repair|coverage repair"):
+        prepare_split(
+            "demo",
+            canonical_dir=canonical,
+            ratios=(1 / 3, 1 / 3, 1 / 3),
+            require_train_coverage=True,
+        )
 
 
 def test_group_key_empty_is_excluded_with_reason(tmp_path) -> None:

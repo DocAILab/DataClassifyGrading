@@ -75,6 +75,20 @@ def test_sample_id_independent_of_input_filename(tmp_path) -> None:
     assert [row["id"] for row in third] != [row["id"] for row in first]
 
 
+def test_sample_id_independent_of_source_row_order(tmp_path) -> None:
+    first_source = _write_csv(tmp_path, "first.csv")
+    reversed_source = tmp_path / "reversed.csv"
+    reversed_source.write_text(
+        "\n".join([CSV_HEADER, *reversed(CSV_ROWS)]) + "\n", encoding="utf-8"
+    )
+
+    first = _run(tmp_path, first_source, tmp_path / "first.json")
+    second = _run(tmp_path, reversed_source, tmp_path / "reversed.json")
+    first_ids = {row["metadata"]["field_name"]: row["id"] for row in first}
+    second_ids = {row["metadata"]["field_name"]: row["id"] for row in second}
+    assert first_ids == second_ids
+
+
 def test_trailing_code_detected_and_kept_by_default(tmp_path) -> None:
     records = _run(tmp_path, _write_csv(tmp_path), tmp_path / "out.json")
     by_field = {row["metadata"]["field_name"]: row for row in records}
@@ -114,6 +128,37 @@ def test_rewrite_rules_are_auditable(tmp_path) -> None:
     untouched = by_field["F1"]
     assert "rewritten_from" not in untouched
     assert apply_rewrite_rules("x", None) == ("x", None)
+
+
+def test_rewrite_rule_is_scoped_to_its_classification_field(tmp_path) -> None:
+    source = tmp_path / "same-label.csv"
+    source.write_text(
+        "\n".join([
+            CSV_HEADER,
+            "DB,T1,F1,Shared,Shared,C,D1,L1",
+        ]) + "\n",
+        encoding="utf-8",
+    )
+    records = _run(
+        tmp_path,
+        source,
+        tmp_path / "scoped.json",
+        rewrite_rules=[{"field": "level_1", "match": "Shared", "replace": "Only L1"}],
+    )
+    classification = records[0]["classification"]
+    assert classification["level_1"] == "Only L1"
+    assert classification["level_2"] == "Shared"
+    assert records[0]["rewritten_from"] == {"level_1": "Shared"}
+
+
+def test_unknown_rewrite_rule_field_fails(tmp_path) -> None:
+    with pytest.raises(ValueError, match="rewrite.*field"):
+        _run(
+            tmp_path,
+            _write_csv(tmp_path),
+            tmp_path / "unknown-field.json",
+            rewrite_rules=[{"field": "metadata", "match": "A", "replace": "B"}],
+        )
 
 
 def test_preprocess_is_byte_identical_on_rerun(tmp_path) -> None:

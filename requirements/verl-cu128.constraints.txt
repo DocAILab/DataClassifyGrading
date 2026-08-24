@@ -1,4 +1,8 @@
-# Critical versions verified on Ubuntu 22.04 / Python 3.12 / CUDA 12.8 / NVIDIA Blackwell GPU.
+# Authorized baseline: RTX PRO 6000 96GB, one visible GPU, Python 3.12,
+# CUDA 12.8 on the VeRL server. These constraints are not a substitute for
+# the host gate or the exact vLLM release lock.
+# vLLM is deliberately not guessed here: the VeRL 0.8 lock must provide an
+# exact compatible version, and RLOO rejects a missing frozen value.
 torch==2.8.0
 verl==0.8.0
 accelerate==1.14.0

@@ -1,10 +1,12 @@
 """Evaluation adapters: model outputs speak choice ids, evaluation stays canonical."""
 
+import pytest
+
 from agent.evaluation import (
     evaluate_stage1_choices,
     evaluate_stage2_choices,
 )
-from agent.task import LeafRegistry, PromptChoiceRegistry
+from agent.task import GradedTaskContext, GradingConfig, LeafRegistry, PromptChoiceRegistry
 
 
 def _registry() -> LeafRegistry:
@@ -151,3 +153,25 @@ def test_stage2_choices_reject_non_json() -> None:
     assert evaluation.format_valid is False
     assert evaluation.contract_valid is False
     assert evaluation.prediction is None
+
+
+def test_stage2_grading_and_expected_level_are_one_context() -> None:
+    grading = GradingConfig(levels=("L1", "L2"))
+    with pytest.raises(ValueError, match="together"):
+        evaluate_stage2_choices(
+            '{"answer":"1","level":"L1"}',
+            ground_truth="C",
+            candidates=CANDIDATES,
+            registry=_registry(),
+            grading=grading,
+        )
+    with pytest.raises(ValueError, match="together"):
+        evaluate_stage2_choices(
+            '{"answer":"1"}',
+            ground_truth="C",
+            candidates=CANDIDATES,
+            registry=_registry(),
+            expected_level="L1",
+        )
+    context = GradedTaskContext(grading, "L1")
+    assert context.enabled

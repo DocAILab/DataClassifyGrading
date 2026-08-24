@@ -37,6 +37,7 @@ jobs:
           bash -n script/verl/common/install_flash_attn.sh
           bash -n script/verl/sft/run.sh
           bash -n script/verl/sft/smoke.sh
+          bash -n cfg/sft/reference.env.example
       - name: Compile Python sources
         run: python -m compileall -q src script tests
 

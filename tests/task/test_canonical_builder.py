@@ -33,6 +33,7 @@ from agent.task.canonical_builder import (
 )
 from agent.task.contracts import CorpusCategory
 from agent.task.dataset_config import REGISTRY_DERIVATIONS
+from agent.task.identity import stable_record_id
 from agent.task.resolver import ClassificationTargetResolver
 
 
@@ -64,18 +65,20 @@ def _record(
     *,
     label_status: str = "labeled",
     table: str = "T1",
+    dataset: str = "demo_four",
 ) -> dict:
+    metadata = {
+        "database_name": "DB",
+        "table_name": table,
+        "field_name": f"F_{record_id}",
+        "field_description": "",
+        "field_type": "STRING",
+    }
     return {
-        "id": record_id,
+        "id": stable_record_id(dataset, metadata),
         "key": record_id,
         "label_status": label_status,
-        "metadata": {
-            "database_name": "DB",
-            "table_name": table,
-            "field_name": f"F_{record_id}",
-            "field_description": "",
-            "field_type": "STRING",
-        },
+        "metadata": metadata,
         "classification": {
             "level_1": levels.get("level_1", ""),
             "level_2": levels.get("level_2", ""),
@@ -97,6 +100,38 @@ FOURLEVEL = dict(
 # ---------------------------------------------------------------------------
 # resolution outcomes
 # ---------------------------------------------------------------------------
+
+
+def test_canonical_rejects_stale_record_id(path_registry) -> None:
+    config = DatasetConfig(**FOURLEVEL)
+    record = _record("stale", {"level_1": "A", "level_2": "B", "level_3": "C", "level_4": "D1"})
+    record["id"] = "stale-id"
+    with pytest.raises(ValueError, match="stale.*id"):
+        prepare_canonical_dataset(
+            "demo_four",
+            processed_file=_write_records([record]),
+            output_file="out/all.json",
+            config=config,
+            registry=path_registry,
+        )
+
+
+def test_canonical_rejects_duplicate_stable_record_ids(path_registry) -> None:
+    config = DatasetConfig(**FOURLEVEL)
+    record = _record(
+        "dup",
+        {"level_1": "A", "level_2": "B", "level_3": "C", "level_4": "D1"},
+    )
+    duplicate = json.loads(json.dumps(record))
+    duplicate["key"] = "another-row-view"
+    with pytest.raises(ValueError, match="duplicate stable record id"):
+        prepare_canonical_dataset(
+            "demo_four",
+            processed_file=_write_records([record, duplicate]),
+            output_file="out/all.json",
+            config=config,
+            registry=path_registry,
+        )
 
 
 def test_resolved_full_path_and_v2_enrichment(path_registry) -> None:
@@ -224,7 +259,9 @@ def test_malformed_label_stays_missing_leaf_with_raw_text(path_registry) -> None
 
 def test_unlabeled_beats_leaf_presence() -> None:
     config = DatasetConfig(dataset="demo_single", leaf_level="level_4", path_fields=("level_4",))
-    record = _record("u1", {"level_4": "S1"}, label_status="unlabeled")
+    record = _record(
+        "u1", {"level_4": "S1"}, label_status="unlabeled", dataset="demo_single"
+    )
     result, out = prepare_canonical_dataset(
         "demo_single",
         processed_file=_write_records([record]),
@@ -281,9 +318,9 @@ def _code_assets():
 def test_code_strategy_resolves_via_corpus_map() -> None:
     corpus, registry, config = _code_assets()
     records = [
-        _record("c1", {"level_4": "K1"}),
-        _record("c2", {"level_4": "--"}),
-        _record("c3", {"level_4": "UNKNOWN"}),
+        _record("c1", {"level_4": "K1"}, dataset="demo_coded"),
+        _record("c2", {"level_4": "--"}, dataset="demo_coded"),
+        _record("c3", {"level_4": "UNKNOWN"}, dataset="demo_coded"),
     ]
     result, out = prepare_canonical_dataset(
         "demo_coded",
@@ -294,10 +331,10 @@ def test_code_strategy_resolves_via_corpus_map() -> None:
         corpus_categories=corpus,
     )
     assert result.status_counts == {"code_unresolved": 1, "placeholder": 1, "resolved": 1}
-    by_id = {row["id"]: row for row in out}
-    assert by_id["c1"]["target"]["category_id"] == "C-1"
-    assert by_id["c3"]["resolution"]["category_id"] is None
-    assert "UNKNOWN" in by_id["c3"]["resolution"]["reason"]
+    by_key = {row["key"]: row for row in out}
+    assert by_key["c1"]["target"]["category_id"] == "C-1"
+    assert by_key["c3"]["resolution"]["category_id"] is None
+    assert "UNKNOWN" in by_key["c3"]["resolution"]["reason"]
     assert result.unresolved_details["code_unresolved"]["by_leaf"] == {"UNKNOWN": 1}
 
 
@@ -306,7 +343,9 @@ def test_code_strategy_requires_corpus() -> None:
     with pytest.raises(ValueError, match="requires corpus"):
         prepare_canonical_dataset(
             "demo_coded",
-            processed_file=_write_records([_record("c1", {"level_4": "K1"})]),
+            processed_file=_write_records(
+                [_record("c1", {"level_4": "K1"}, dataset="demo_coded")]
+            ),
             output_file="out/all.json",
             config=config,
             registry=LeafRegistry.from_mapping(

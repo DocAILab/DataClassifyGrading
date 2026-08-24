@@ -102,7 +102,13 @@ def _row(
     choices = PromptChoiceRegistry.from_registry(registry)
     gt_level: str | None = None
     if grading is not None:
-        gt_level = str(item.get(grading.gt_field, "") or "").strip()
+        raw_level = item.get(grading.gt_field)
+        if not isinstance(raw_level, str):
+            raise ValueError(
+                f"item {index} in {source} has a non-string grading label under "
+                f"{grading.gt_field!r}"
+            )
+        gt_level = raw_level.strip()
         if not gt_level:
             raise ValueError(
                 f"item {index} in {source} has no grading label under "
@@ -287,16 +293,10 @@ def export_sft_dataset(
             item_id = str(item.get("id", "") or "").strip()
             if not item_id:
                 raise ValueError(f"split item {index} in {source} has no id")
-            if grading is not None and not str(
-                item.get(grading.gt_field, "") or ""
-            ).strip():
-                # joint head requires a level label; a resolved record without
-                # one cannot produce a consistent stage1+stage2 pair
-                skipped_no_grading_label += 1
-                continue
             if split_dir is not None:
-                # legacy join: fail fast when the split copy diverges from the
-                # canonical dataset (unknown id, stale split dir)
+                # Join the split copy against canonical IDs BEFORE any optional
+                # grading-label filtering. Otherwise a stale/ghost split row
+                # without a level could be silently skipped and never fail.
                 canonical_item = canonical_by_id.get(item_id)
                 if canonical_item is None:
                     raise ValueError(
@@ -304,6 +304,20 @@ def export_sft_dataset(
                         f"canonical dataset {canonical_path}"
                     )
                 item = canonical_item
+            if grading is not None:
+                raw_level = item.get(grading.gt_field)
+                if raw_level is None or (
+                    isinstance(raw_level, str) and not raw_level.strip()
+                ):
+                    # joint head requires a level label; a resolved record
+                    # without one cannot produce a consistent stage1+stage2 pair
+                    skipped_no_grading_label += 1
+                    continue
+                if not isinstance(raw_level, str):
+                    raise ValueError(
+                        f"item {index} in {source} has non-string grading label "
+                        f"under {grading.gt_field!r}"
+                    )
             ground_truth = _canonical_target(item, index, source, leaf_registry)
             if ground_truth is None:
                 skipped_unresolved += 1
@@ -465,6 +479,18 @@ def _validate_row(
     ground_truth_is_valid = (
         isinstance(ground_truth, str) and ground_truth in registry.ids
     )
+    row_level_valid = True
+    if grading is not None:
+        row_level = row.get("ground_truth_level")
+        if not isinstance(row_level, str) or not row_level.strip():
+            errors.append("grading enabled but ground_truth_level missing")
+            row_level_valid = False
+        elif row_level.strip() not in grading.levels:
+            errors.append(
+                "ground_truth_level must be one of "
+                f"{list(grading.levels)}"
+            )
+            row_level_valid = False
     if stage == "stage1" and ground_truth_is_valid:
         evaluation = evaluate_stage1_choices(
             assistant,
@@ -477,31 +503,40 @@ def _validate_row(
             errors.append("stage1 answer must exactly match the five candidates")
     elif stage == "stage2" and candidates_belong_to_registry and ground_truth_is_valid:
         gt_level = row.get("ground_truth_level")
-        level_mismatch = [
-            e
-            for e in (
-                ["stage2 grading enabled but ground_truth_level missing"]
-                if grading is not None
-                and (not isinstance(gt_level, str) or not gt_level.strip())
-                else []
-            )
-        ]
-        errors.extend(level_mismatch)
-        usable_level = gt_level if isinstance(gt_level, str) and gt_level.strip() else None
-        evaluation = evaluate_stage2_choices(
-            assistant,
-            ground_truth=ground_truth,
-            candidates=tuple(candidates),
-            registry=registry,
-            grading=grading,
-            expected_level=usable_level if grading is not None else None,
-        )
-        errors.extend(f"stage2 evaluation: {error}" for error in evaluation.errors)
-        if evaluation.contract_valid and not evaluation.correct:
-            if grading is not None and not evaluation.level_correct:
-                errors.append("stage2 level must equal ground_truth_level")
+        usable_level: str | None = None
+        grading_level_valid = True
+        if grading is not None:
+            if not row_level_valid:
+                grading_level_valid = False
+            elif not isinstance(gt_level, str) or not gt_level.strip():
+                # Keep this stage-specific message for callers debugging a
+                # malformed row, while the shared row-level check above also
+                # catches Stage 1 rows.
+                errors.append("stage2 grading enabled but ground_truth_level missing")
+                grading_level_valid = False
+            elif gt_level.strip() not in grading.levels:
+                errors.append(
+                    "stage2 ground_truth_level must be one of "
+                    f"{list(grading.levels)}"
+                )
+                grading_level_valid = False
             else:
-                errors.append("stage2 answer must equal ground_truth")
+                usable_level = gt_level.strip()
+        if grading is None or grading_level_valid:
+            evaluation = evaluate_stage2_choices(
+                assistant,
+                ground_truth=ground_truth,
+                candidates=tuple(candidates),
+                registry=registry,
+                grading=grading,
+                expected_level=usable_level if grading is not None else None,
+            )
+            errors.extend(f"stage2 evaluation: {error}" for error in evaluation.errors)
+            if evaluation.contract_valid and not evaluation.correct:
+                if grading is not None and not evaluation.level_correct:
+                    errors.append("stage2 level must equal ground_truth_level")
+                else:
+                    errors.append("stage2 answer must equal ground_truth")
     elif stage not in {"stage1", "stage2"}:
         errors.append("stage must be stage1 or stage2")
 
@@ -598,6 +633,15 @@ def validate_sft_dataset(
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
         "corpus_size": len(corpus_map),
+        "grading": (
+            {
+                "enabled": True,
+                "levels": list(grading.levels),
+                "gt_field": grading.gt_field,
+            }
+            if grading is not None
+            else {"enabled": False}
+        ),
         "splits": {},
         "cross_split_errors": [],
     }

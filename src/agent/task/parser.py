@@ -82,10 +82,27 @@ class Stage2Output:
     level: str | None = None  # joint grading head; None when grading disabled
 
 
+class _DuplicateJSONKey(ValueError):
+    """Internal marker raised by the strict JSON object-pairs hook."""
+
+
+def _object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise _DuplicateJSONKey(key)
+        value[key] = item
+    return value
+
+
 def _object(text: str) -> dict[str, Any]:
     try:
-        value = json.loads(text)
-    except (json.JSONDecodeError, TypeError) as exc:
+        value = json.loads(text, object_pairs_hook=_object_pairs)
+    except _DuplicateJSONKey as exc:
+        raise PredictionFormatError(
+            "prediction JSON object must not contain duplicate keys"
+        ) from exc
+    except (json.JSONDecodeError, TypeError, ValueError) as exc:
         raise PredictionFormatError("prediction must be a JSON object") from exc
     if not isinstance(value, dict):
         raise PredictionFormatError("prediction must be a JSON object")
@@ -271,7 +288,7 @@ class ChoiceParseResult:
             output: Stage1Output | Stage2Output | None = (
                 Stage1Output(self.decoded)
                 if isinstance(self.decoded, tuple)
-                else Stage2Output(self.decoded)
+                else Stage2Output(self.decoded, self.level)
             )
         else:
             output = self.output
