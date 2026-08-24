@@ -2,6 +2,7 @@
 
 from .contracts import (
     CorpusCategory,
+    GradingConfig,
     LeafCategory,
     LeafRegistry,
     SampleTarget,
@@ -61,6 +62,7 @@ __all__ = [
     "LeafCategory",
     "LeafRegistry",
     "CorpusCategory",
+    "GradingConfig",
     "SampleTarget",
     "TaskConfig",
     "ClassificationAssets",

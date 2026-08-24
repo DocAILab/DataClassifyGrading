@@ -23,7 +23,7 @@ from dataclasses import dataclass
 import json
 from typing import Mapping, Sequence
 
-from .contracts import CorpusCategory, LeafRegistry, TaskConfig
+from .contracts import CorpusCategory, GradingConfig, LeafRegistry, TaskConfig
 from .prompt_choices import PromptChoiceRegistry, encode_stage2_answer
 
 
@@ -73,6 +73,7 @@ def build_stage2_prompt(
     config: TaskConfig,
     corpus: Mapping[str, CorpusCategory] | None = None,
     choices: PromptChoiceRegistry | None = None,
+    grading: GradingConfig | None = None,
 ) -> Prompt:
     if len(candidates) != 5 or len(set(candidates)) != 5:
         raise ValueError("stage2 requires exactly 5 unique candidates")
@@ -107,16 +108,37 @@ def build_stage2_prompt(
                     "description": category.description,
                 }
             )
-    system = (
-        "You are a leaf-category reranker. Return exactly one JSON object with key "
-        '"answer". '
-        'Its value must be one of the five candidate ids "1" through "5". '
-        "Do not output Markdown, commentary, or any other keys."
-    )
+    if grading is None:
+        system = (
+            "You are a leaf-category reranker. Return exactly one JSON object with key "
+            '"answer". '
+            'Its value must be one of the five candidate ids "1" through "5". '
+            "Do not output Markdown, commentary, or any other keys."
+        )
+        rubric_block = ""
+    else:
+        system = (
+            "You are a leaf-category reranker. Return exactly one JSON object with "
+            'keys "answer" and "level". '
+            '"answer" must be one of the five candidate ids "1" through "5". '
+            '"level" must be exactly one of the listed sensitivity level codes. '
+            "Do not output Markdown, commentary, or any other keys."
+        )
+        rubric_block = (
+            "Sensitivity levels:\n"
+            + json.dumps(
+                [[code, text] for code, text in grading.rubric()],
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            + "\n"
+        )
     user = (
         "Candidate bundle:\n"
         + json.dumps(bundle, ensure_ascii=False, separators=(",", ":"))
-        + "\nField metadata:\n"
+        + "\n"
+        + rubric_block
+        + "Field metadata:\n"
         + _metadata_text(metadata, config)
     )
     return Prompt(system, user)
@@ -134,12 +156,20 @@ def stage1_answer(
     )
 
 
-def stage2_answer(category_id: str, candidates: Sequence[str]) -> str:
-    """Assistant answer for Stage 2: canonical answer -> local bundle id."""
+def stage2_answer(
+    category_id: str,
+    candidates: Sequence[str],
+    *,
+    level: str | None = None,
+) -> str:
+    """Assistant answer for Stage 2: canonical answer -> local bundle id.
+
+    With ``level`` set (joint grading head) the JSON carries both keys;
+    otherwise the strict single-key shape is emitted.
+    """
     if category_id not in candidates:
         raise ValueError("stage2 answer must be one of the candidates")
-    return json.dumps(
-        {"answer": encode_stage2_answer(category_id, candidates)},
-        ensure_ascii=False,
-        separators=(",", ":"),
-    )
+    payload: dict[str, str] = {"answer": encode_stage2_answer(category_id, candidates)}
+    if level is not None:
+        payload["level"] = level
+    return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))

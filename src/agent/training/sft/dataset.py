@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from agent.hashing import sha256_file
+from agent.task.contracts import GradingConfig
 
 from agent.evaluation import evaluate_stage1_choices, evaluate_stage2_choices
 from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
@@ -82,6 +83,7 @@ def _row(
     config: TaskConfig,
     stage: str,
     corpus: Mapping[str, CorpusCategory],
+    grading: GradingConfig | None = None,
 ) -> dict[str, Any]:
     metadata = item.get("metadata")
     if not isinstance(metadata, Mapping):
@@ -98,6 +100,19 @@ def _row(
         raise ValueError(f"item {index} in {source} has no stable id")
     candidates = build_candidates(ground_truth, registry, source_id=source_id)
     choices = PromptChoiceRegistry.from_registry(registry)
+    gt_level: str | None = None
+    if grading is not None:
+        gt_level = str(item.get(grading.gt_field, "") or "").strip()
+        if not gt_level:
+            raise ValueError(
+                f"item {index} in {source} has no grading label under "
+                f"{grading.gt_field!r}; such records must be excluded upstream"
+            )
+        if gt_level not in grading.levels:
+            raise ValueError(
+                f"item {index} in {source} has grading label {gt_level!r} outside "
+                f"the configured levels {list(grading.levels)}"
+            )
     if stage == "stage1":
         prompt = build_stage1_prompt(visible_metadata, registry, config, choices=choices)
         answer = stage1_answer(candidates, choices=choices)
@@ -109,8 +124,9 @@ def _row(
             config,
             corpus=corpus or None,
             choices=choices,
+            grading=grading,
         )
-        answer = stage2_answer(ground_truth, candidates)
+        answer = stage2_answer(ground_truth, candidates, level=gt_level)
     return {
         "messages": [
             {"role": "system", "content": prompt.system},
@@ -122,6 +138,7 @@ def _row(
         "metadata": visible_metadata,
         "ground_truth": ground_truth,
         "candidates": candidates,
+        "ground_truth_level": gt_level,
     }
 
 
@@ -143,6 +160,7 @@ def export_sft_dataset(
     task_config: TaskConfig | str | Path,
     corpus: Mapping[str, CorpusCategory],
     *,
+    grading: GradingConfig | None = None,
     allow_label_gaps: Sequence[str] = (),
     allow_any_label_gap: bool = False,
 ) -> dict[str, Any]:
@@ -239,8 +257,10 @@ def export_sft_dataset(
     }
     trainable_ids: set[str] = set()
     split_ground_truths: dict[str, set[str]] = {name: set() for name in SPLITS}
+    split_levels: dict[str, set[str]] = {name: set() for name in SPLITS}
     all_rows: dict[str, list[dict[str, Any]]] = {}
     all_view_sizes: dict[str, int] = {}
+    skipped_no_grading_label_counts: dict[str, int] = dict.fromkeys(SPLITS, 0)
     for split in SPLITS:
         if split_dir is None:
             # schema v2 embedded splits (script.canonical.split write-back)
@@ -262,10 +282,18 @@ def export_sft_dataset(
         all_view_sizes[split] = len(view)
         rows: list[dict[str, Any]] = []
         skipped_unresolved = 0
+        skipped_no_grading_label = 0
         for index, item in enumerate(view):
             item_id = str(item.get("id", "") or "").strip()
             if not item_id:
                 raise ValueError(f"split item {index} in {source} has no id")
+            if grading is not None and not str(
+                item.get(grading.gt_field, "") or ""
+            ).strip():
+                # joint head requires a level label; a resolved record without
+                # one cannot produce a consistent stage1+stage2 pair
+                skipped_no_grading_label += 1
+                continue
             if split_dir is not None:
                 # legacy join: fail fast when the split copy diverges from the
                 # canonical dataset (unknown id, stale split dir)
@@ -282,13 +310,27 @@ def export_sft_dataset(
                 continue
             trainable_ids.add(item_id)
             split_ground_truths[split].add(ground_truth)
+            if grading is not None:
+                split_levels[split].add(
+                    str(item.get(grading.gt_field, "") or "").strip()
+                )
             rows.extend(
-                _row(item, source, index, leaf_registry, config, stage, corpus_map)
+                _row(
+                    item,
+                    source,
+                    index,
+                    leaf_registry,
+                    config,
+                    stage,
+                    corpus_map,
+                    grading=grading,
+                )
                 for stage in ("stage1", "stage2")
             )
         if not rows:
             raise ValueError(f"no resolved records available in {source}")
         all_rows[split] = rows
+        skipped_no_grading_label_counts[split] = skipped_no_grading_label
 
     # label-gap export gate: val/test labels missing from train distort the
     # reference baseline; fail fast unless explicitly waived.
@@ -301,19 +343,41 @@ def export_sft_dataset(
                 waived_gaps.append(entry)
             else:
                 blocking_gaps.append(entry)
+    blocking_levels: list[dict[str, str]] = []
+    waived_levels: list[dict[str, str]] = []
+    if grading is not None:
+        for later_split in ("val", "test"):
+            for code in sorted(split_levels[later_split] - split_levels["train"]):
+                entry = {"label": code, "split": later_split}
+                if allow_any_label_gap or code in allow_label_gaps:
+                    waived_levels.append(entry)
+                else:
+                    blocking_levels.append(entry)
+    gate_status = "failed" if (blocking_gaps or blocking_levels) else (
+        "waived" if (waived_gaps or waived_levels) else "passed"
+    )
     report["label_gap_gate"] = {
-        "status": (
-            "failed" if blocking_gaps else ("waived" if waived_gaps else "passed")
-        ),
+        "status": gate_status,
         "blocking": blocking_gaps,
         "waived": waived_gaps,
+        "blocking_levels": blocking_levels,
+        "waived_levels": waived_levels,
     }
-    if blocking_gaps:
+    if blocking_gaps or blocking_levels:
         raise ValueError(
             "label-gap gate failed; labels absent from train but present in "
-            f"val/test: {blocking_gaps}. Waive via allow_label_gaps/"
-            "allow_any_label_gap after review."
+            f"val/test: {blocking_gaps + blocking_levels}. Waive via "
+            "allow_label_gaps/allow_any_label_gap after review."
         )
+    report["grading"] = (
+        {
+            "enabled": True,
+            "levels": list(grading.levels),
+            "gt_field": grading.gt_field,
+        }
+        if grading is not None
+        else {"enabled": False}
+    )
 
     output_root.mkdir(parents=True, exist_ok=True)
     for split in SPLITS:
@@ -323,7 +387,11 @@ def export_sft_dataset(
             "split_records": all_view_sizes[split],
             "exported_records": len(all_rows[split]),
             "skipped_not_resolved": all_view_sizes[split]
-            - len({row["source_id"] for row in all_rows[split]}),
+            - len({row["source_id"] for row in all_rows[split]})
+            - skipped_no_grading_label_counts[split],
+            "skipped_no_grading_label": (
+                skipped_no_grading_label_counts[split] if grading is not None else 0
+            ),
             "output_file": str(destination),
             "parquet_sha256": sha256_file(destination),
         }
@@ -349,6 +417,7 @@ def _validate_row(
     registry: LeafRegistry,
     config: TaskConfig,
     corpus: Mapping[str, CorpusCategory],
+    grading: GradingConfig | None = None,
 ) -> list[str]:
     errors: list[str] = []
     choices = PromptChoiceRegistry.from_registry(registry)
@@ -407,15 +476,32 @@ def _validate_row(
         if evaluation.prediction is None or list(evaluation.prediction) != candidates:
             errors.append("stage1 answer must exactly match the five candidates")
     elif stage == "stage2" and candidates_belong_to_registry and ground_truth_is_valid:
+        gt_level = row.get("ground_truth_level")
+        level_mismatch = [
+            e
+            for e in (
+                ["stage2 grading enabled but ground_truth_level missing"]
+                if grading is not None
+                and (not isinstance(gt_level, str) or not gt_level.strip())
+                else []
+            )
+        ]
+        errors.extend(level_mismatch)
+        usable_level = gt_level if isinstance(gt_level, str) and gt_level.strip() else None
         evaluation = evaluate_stage2_choices(
             assistant,
             ground_truth=ground_truth,
             candidates=tuple(candidates),
             registry=registry,
+            grading=grading,
+            expected_level=usable_level if grading is not None else None,
         )
         errors.extend(f"stage2 evaluation: {error}" for error in evaluation.errors)
         if evaluation.contract_valid and not evaluation.correct:
-            errors.append("stage2 answer must equal ground_truth")
+            if grading is not None and not evaluation.level_correct:
+                errors.append("stage2 level must equal ground_truth_level")
+            else:
+                errors.append("stage2 answer must equal ground_truth")
     elif stage not in {"stage1", "stage2"}:
         errors.append("stage must be stage1 or stage2")
 
@@ -441,6 +527,7 @@ def _validate_row(
                 config,
                 corpus=corpus or None,
                 choices=choices,
+                grading=grading,
             )
         if expected_prompt is not None and contents[:2] != [
             expected_prompt.system,
@@ -492,6 +579,7 @@ def validate_sft_dataset(
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
     corpus: Mapping[str, CorpusCategory],
+    grading: GradingConfig | None = None,
 ) -> dict[str, Any]:
     """Return a structured report; malformed rows are reported, not silently accepted.
 
@@ -531,7 +619,9 @@ def validate_sft_dataset(
                 if not rows:
                     details["errors"].append("parquet split must contain at least one row")
                 for index, row in enumerate(rows):
-                    for error in _validate_row(row, leaf_registry, config, corpus_map):
+                    for error in _validate_row(
+                        row, leaf_registry, config, corpus_map, grading=grading
+                    ):
                         details["errors"].append(f"row {index}: {error}")
                 details["errors"].extend(_validate_stage_pairs(rows))
             except Exception as exc:  # malformed parquet is a validation failure

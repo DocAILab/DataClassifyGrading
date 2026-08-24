@@ -41,6 +41,69 @@ class LeafCategory:
 
 
 @dataclass(frozen=True)
+class GradingConfig:
+    """Optional sensitivity-grading extension for the Stage 2 joint head.
+
+    When supplied, Stage 2 answers BOTH the classification bundle id AND a
+    sensitivity level drawn from ``levels`` (e.g. L1..L4). The ground truth
+    lives on each canonical record under ``gt_field`` (default
+    ``data_level``). Levels are literal codes, not choice ids: the set is
+    small, fixed and self-describing, so an extra indirection layer would
+    add no value.
+    """
+
+    levels: tuple[str, ...]
+    descriptions: tuple[str, ...] = ()
+    gt_field: str = "data_level"
+
+    def __post_init__(self) -> None:
+        if not self.levels or any(not level.strip() for level in self.levels):
+            raise ValueError("grading levels must be non-empty strings")
+        if len(set(self.levels)) != len(self.levels):
+            raise ValueError("grading levels must be unique")
+        if self.descriptions and len(self.descriptions) != len(self.levels):
+            raise ValueError(
+                "grading descriptions must parallel levels (or be omitted)"
+            )
+        if not self.gt_field.strip():
+            raise ValueError("grading gt_field must be a non-empty field name")
+
+    def rubric(self) -> tuple[tuple[str, str], ...]:
+        """(code, description) pairs; description empty when not provided."""
+        return tuple(
+            (level, self.descriptions[index] if self.descriptions else "")
+            for index, level in enumerate(self.levels)
+        )
+
+    @classmethod
+    def from_mapping(cls, value: Mapping[str, Any]) -> "GradingConfig":
+        raw_levels = value.get("levels")
+        if (
+            not isinstance(raw_levels, Sequence)
+            or isinstance(raw_levels, (str, bytes))
+            or not raw_levels
+        ):
+            raise ValueError("grading config requires a non-empty levels array")
+        levels = tuple(str(level).strip() for level in raw_levels)
+        raw_descriptions = value.get("descriptions", ())
+        descriptions = () if raw_descriptions is None else tuple(
+            str(part) for part in raw_descriptions
+        )
+        gt_field = value.get("gt_field", cls.gt_field)
+        if not isinstance(gt_field, str):
+            raise ValueError("grading gt_field must be a string")
+        return cls(levels=levels, descriptions=descriptions, gt_field=gt_field.strip())
+
+    @classmethod
+    def from_path(cls, path: str | Path) -> "GradingConfig":
+        with Path(path).open(encoding="utf-8") as handle:
+            value = json.load(handle)
+        if not isinstance(value, Mapping):
+            raise ValueError("grading config must be a JSON object")
+        return cls.from_mapping(value)
+
+
+@dataclass(frozen=True)
 class CorpusCategory:
     """Canonical corpus category (one category may own several documents).
 

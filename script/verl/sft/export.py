@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import sys
 
-from agent.task import LeafRegistry, TaskConfig
+from agent.task import GradingConfig, LeafRegistry, TaskConfig
 from agent.task.assets import load_corpus_categories
 from agent.training.sft import export_sft_dataset
 
@@ -54,6 +54,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--grading-config",
+        default=None,
+        help=(
+            "Optional grading JSON (levels/descriptions/gt_field). When "
+            "supplied, Stage 2 answers BOTH the classification bundle id and "
+            "a sensitivity level; records lacking a level label are excluded"
+        ),
+    )
+    parser.add_argument(
         "--allow-label-gaps",
         nargs="*",
         default=[],
@@ -88,6 +97,7 @@ def main(argv: list[str] | None = None) -> int:
             if args.corpus
             else None
         )
+        grading = GradingConfig.from_path(args.grading_config) if args.grading_config else None
         report = export_sft_dataset(
             args.canonical,
             args.split_dir,
@@ -95,6 +105,7 @@ def main(argv: list[str] | None = None) -> int:
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
             corpus=corpus,
+            grading=grading,
             allow_label_gaps=tuple(args.allow_label_gaps),
             allow_any_label_gap=args.allow_any_label_gap,
         )

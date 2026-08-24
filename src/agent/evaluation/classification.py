@@ -21,7 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from agent.task import LeafRegistry
+from agent.task import GradingConfig, LeafRegistry
 from agent.task.parser import (
     Stage2Output,
     check_stage1_choices,
@@ -48,6 +48,8 @@ class Stage2Evaluation:
     contract_valid: bool
     correct: bool
     errors: tuple[str, ...]
+    predicted_level: str | None = None
+    level_correct: bool = False
 
 
 def evaluate_stage1(
@@ -137,6 +139,8 @@ def evaluate_stage2_choices(
     ground_truth: str,
     candidates: Sequence[str],
     registry: LeafRegistry,
+    grading: "GradingConfig | None" = None,
+    expected_level: str | None = None,
 ) -> Stage2Evaluation:
     """Evaluate a local-id Stage 2 output; decode BEFORE canonical logic.
 
@@ -146,7 +150,15 @@ def evaluate_stage2_choices(
     reward share one choice validation implementation. Anything but an
     exact local id yields an explicit invalid result with no name or fuzzy
     fallback.
+
+    With ``grading`` supplied (joint classification+grading head) the output
+    must additionally carry a valid ``level``; when ``expected_level`` is
+    given, ``correct`` requires BOTH the category and the level to match,
+    and ``level_correct`` reports the level comparison separately.
     """
+    if grading is not None and expected_level is not None:
+        if expected_level not in grading.levels:
+            raise ValueError("expected_level must belong to grading.levels")
     if ground_truth not in registry.ids:
         raise ValueError("ground_truth must belong to the leaf registry")
     if isinstance(candidates, (str, bytes)) or (
@@ -155,15 +167,36 @@ def evaluate_stage2_choices(
         or any(candidate not in registry.ids for candidate in candidates)
     ):
         raise ValueError("candidates must be 5 unique IDs from the leaf registry")
-    result = check_stage2_choices(solution, candidates=candidates)
+    result = check_stage2_choices(solution, candidates=candidates, grading=grading)
     if not result.format_valid:
         return Stage2Evaluation(None, False, False, False, result.errors)
     if not result.constraint_valid:
         assert isinstance(result.output, Stage2Output)
         return Stage2Evaluation(
-            result.output.answer, True, False, False, result.errors
+            result.output.answer,
+            True,
+            False,
+            False,
+            result.errors,
+            result.output.level,
+            False,
         )
     assert result.decoded is not None
+    category_correct = result.decoded == ground_truth
+    level_correct = (
+        grading is not None
+        and expected_level is not None
+        and result.level == expected_level
+    )
+    correct = category_correct and (
+        grading is None or expected_level is None or level_correct
+    )
     return Stage2Evaluation(
-        result.decoded, True, True, result.decoded == ground_truth, ()
+        result.decoded,
+        True,
+        True,
+        correct,
+        (),
+        result.level,
+        level_correct,
     )

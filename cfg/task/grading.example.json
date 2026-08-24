@@ -1,0 +1,10 @@
+{
+  "levels": ["L1", "L2", "L3", "L4"],
+  "descriptions": [
+    "Synthetic level 1: openly shareable fabricated data.",
+    "Synthetic level 2: internal-use fabricated data.",
+    "Synthetic level 3: sensitive fabricated data.",
+    "Synthetic level 4: highly sensitive fabricated data."
+  ],
+  "gt_field": "data_level"
+}

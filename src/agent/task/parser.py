@@ -27,7 +27,7 @@ from dataclasses import dataclass
 import json
 from typing import Any, Sequence
 
-from .contracts import LeafRegistry
+from .contracts import GradingConfig, LeafRegistry
 from .prompt_choices import PromptChoiceRegistry
 
 
@@ -79,6 +79,7 @@ class Stage1Output:
 @dataclass(frozen=True)
 class Stage2Output:
     answer: str
+    level: str | None = None  # joint grading head; None when grading disabled
 
 
 def _object(text: str) -> dict[str, Any]:
@@ -104,15 +105,33 @@ def parse_stage1_output(text: str) -> Stage1Output:
     return Stage1Output(tuple(candidates))
 
 
-def parse_stage2_output(text: str) -> Stage2Output:
-    """Parse the Stage 2 JSON shape without applying candidate constraints."""
+def parse_stage2_output(
+    text: str, *, allow_level: bool = False
+) -> Stage2Output:
+    """Parse the Stage 2 JSON shape without applying candidate constraints.
+
+    Default (``allow_level=False``) keeps the strict single-key contract:
+    exactly ``{"answer": ...}``. With ``allow_level=True`` the joint
+    classification+grading shape is accepted instead: exactly
+    ``{"answer": ..., "level": ...}`` — both keys required, so a missing or
+    extra key is a format error either way.
+    """
     value = _object(text)
-    if set(value) != {"answer"}:
-        raise PredictionFormatError("stage2 prediction must contain only answer")
+    required = {"answer", "level"} if allow_level else {"answer"}
+    if set(value) != required:
+        expected = " and ".join(sorted(required))
+        raise PredictionFormatError(
+            f"stage2 prediction must contain only {expected}"
+        )
     answer = value["answer"]
     if not isinstance(answer, str):
         raise PredictionFormatError("stage2 answer must be a string")
-    return Stage2Output(answer)
+    level = None
+    if allow_level:
+        level = value["level"]
+        if not isinstance(level, str) or not level.strip():
+            raise PredictionFormatError("stage2 level must be a non-empty string")
+    return Stage2Output(answer, level)
 
 
 def _check_candidates(
@@ -156,7 +175,12 @@ def check_stage1_output(
     return ParseResult(True, valid, output, errors)
 
 
-def check_stage2_output(text: str, *, candidates: Sequence[str]) -> ParseResult:
+def check_stage2_output(
+    text: str,
+    *,
+    candidates: Sequence[str],
+    grading: "GradingConfig | None" = None,
+) -> ParseResult:
     """Unified Stage 2 parser + contract validation; never raises on model output.
 
     Validates: JSON object, exact schema (only ``answer``), and answer
@@ -170,11 +194,14 @@ def check_stage2_output(text: str, *, candidates: Sequence[str]) -> ParseResult:
     if not all(isinstance(candidate, str) and candidate for candidate in candidate_ids):
         raise ValueError("stage2 candidates must be non-empty strings")
     try:
-        output = parse_stage2_output(text)
+        output = parse_stage2_output(text, allow_level=grading is not None)
     except PredictionFormatError as exc:
         return ParseResult(False, False, None, (str(exc),))
     valid = output.answer in candidate_ids
     errors = () if valid else ("stage2 answer must be one of the candidates",)
+    if grading is not None and valid and output.level not in grading.levels:
+        valid = False
+        errors = (f"stage2 level {output.level!r} must be one of {list(grading.levels)}",)
     return ParseResult(True, valid, output, errors)
 
 
@@ -208,6 +235,7 @@ class ChoiceParseResult:
     decoded: tuple[str, ...] | str | None = None
     output: "Stage1Output | Stage2Output | None" = None
     errors: tuple[str, ...] = ()
+    level: str | None = None  # joint grading head; validated when grading enabled
 
     @property
     def ok(self) -> bool:
@@ -294,13 +322,20 @@ def check_stage1_choices(
     )
 
 
-def check_stage2_choices(text: str, *, candidates: Sequence[str]) -> ChoiceParseResult:
+def check_stage2_choices(
+    text: str,
+    *,
+    candidates: Sequence[str],
+    grading: "GradingConfig | None" = None,
+) -> ChoiceParseResult:
     """Shared choice-aware Stage 2 parser + decode; never raises on model output.
 
-    Validates: JSON object, exact schema (only ``answer``), and answer
-    membership in the local ids 1..5; then decodes the local id to the
-    canonical category id of the candidate at that position. Candidates
-    originate from the dataset, so an invalid candidate list is a
+    Validates: JSON object, exact schema (``answer``; plus ``level`` when a
+    joint GradingConfig is supplied), and answer membership in the local ids
+    1..5; then decodes the local id to the canonical category id of the
+    candidate at that position. When ``grading`` is provided the parsed
+    level must belong to ``grading.levels`` (constraint failure otherwise).
+    Candidates originate from the dataset, so an invalid candidate list is a
     programming error and raises (mirrors check_stage2_output).
     """
     if isinstance(candidates, (str, bytes)) or len(candidates) != 5:
@@ -309,7 +344,7 @@ def check_stage2_choices(text: str, *, candidates: Sequence[str]) -> ChoiceParse
     if not all(isinstance(candidate, str) and candidate for candidate in candidate_ids):
         raise ValueError("stage2 candidates must be non-empty strings")
     try:
-        output = parse_stage2_output(text)
+        output = parse_stage2_output(text, allow_level=grading is not None)
     except PredictionFormatError as exc:
         return ChoiceParseResult(False, False, None, None, (str(exc),))
     if output.answer not in _STAGE2_LOCAL_IDS:
@@ -320,6 +355,23 @@ def check_stage2_choices(text: str, *, candidates: Sequence[str]) -> ChoiceParse
             output,
             (f"stage2 answer {output.answer!r} must be one of 1..5",),
         )
+    if grading is not None and output.level not in grading.levels:
+        return ChoiceParseResult(
+            True,
+            False,
+            None,
+            output,
+            (
+                f"stage2 level {output.level!r} must be one of "
+                f"{list(grading.levels)}",
+            ),
+            None,
+        )
     return ChoiceParseResult(
-        True, True, candidate_ids[int(output.answer) - 1], output, ()
+        True,
+        True,
+        candidate_ids[int(output.answer) - 1],
+        output,
+        (),
+        output.level,
     )

@@ -61,8 +61,17 @@ Key contracts:
   explicitly waived (`--allow-label-gaps`); waivers are recorded. Export
   reports carry per-split parquet SHA-256 as lineage anchors.
 - **Reference checkpoint**: one frozen recipe (`cfg/sft/reference.env.example`)
-  produces THE shared RL starting checkpoint. Checkpoints from before the
+  produces THE shared RL starting checkpoint; fingerprint it after training
+  with `script.verl.sft.record_checkpoint`. Checkpoints from before the
   canonical pipeline are not comparable and must be labelled `legacy/`.
+- **Joint grading head (optional)**: supplying a grading config JSON
+  (`levels` + rubric descriptions + `gt_field`, see
+  `cfg/task/grading.example.json`) makes Stage 2 answer BOTH the bundle id
+  and a sensitivity level: `{"answer":"1","level":"L3"}` with ground truth
+  from the record's level field (default `data_level`). Records without a
+  level label are excluded and counted; level gaps go through the same
+  export gate as category gaps; the RL reward grants full reward only on
+  category+level agreement.
 
 ## Repository versus runtime
 

@@ -38,7 +38,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from agent.task.contracts import LeafRegistry
+from agent.task.contracts import GradingConfig, LeafRegistry
 from agent.task.parser import (
     ChoiceParseResult,
     ParseResult,
@@ -266,6 +266,8 @@ def reward_stage2_choices(
     candidates: tuple[str, ...] | list[str],
     registry: LeafRegistry,
     config: RewardConfig | None = None,
+    grading: "GradingConfig | None" = None,
+    expected_level: str | None = None,
 ) -> RewardResult:
     """Stage 2 task reward over the choice protocol (local bundle id 1..5).
 
@@ -274,7 +276,15 @@ def reward_stage2_choices(
     the unchanged reward table applies. Never raises on model output;
     ``candidates`` must be 5 unique registry IDs (programming contract,
     mirrors reward_stage2).
+
+    Joint grading head: with ``grading`` supplied the output must carry a
+    valid ``level``; when ``expected_level`` is given, only an answer that
+    matches BOTH the category and the level earns ``FULL_REWARD`` — a
+    category-only match caps at ``stage2_partial`` with an explicit reason.
     """
+    if grading is not None and expected_level is not None:
+        if expected_level not in grading.levels:
+            raise ValueError("expected_level must belong to grading.levels")
     if ground_truth not in registry.ids:
         raise ValueError("ground_truth must belong to the leaf registry")
     if isinstance(candidates, (str, bytes)) or (
@@ -283,10 +293,33 @@ def reward_stage2_choices(
         or any(candidate not in registry.ids for candidate in candidates)
     ):
         raise ValueError("candidates must be 5 unique IDs from the leaf registry")
-    result = check_stage2_choices(solution, candidates=candidates)
-    return reward_for_choice_result(
+    result = check_stage2_choices(solution, candidates=candidates, grading=grading)
+    reward = reward_for_choice_result(
         "stage2", result, ground_truth=ground_truth, config=config
     )
+    if grading is None or expected_level is None:
+        return reward
+    config = config or RewardConfig()
+    if result.constraint_valid and result.decoded == ground_truth:
+        if result.level == expected_level:
+            return RewardResult(
+                FULL_REWARD,
+                "stage2 category and level both correct",
+                result.output,
+                True,
+                True,
+                True,
+            )
+        return RewardResult(
+            config.stage2_partial,
+            f"stage2 category correct but level {result.level!r} != "
+            f"{expected_level!r}",
+            result.output,
+            True,
+            True,
+            False,
+        )
+    return reward
 
 
 __all__ = [
