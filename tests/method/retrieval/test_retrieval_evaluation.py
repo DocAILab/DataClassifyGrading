@@ -42,6 +42,7 @@ def test_evaluator_reads_only_val_and_writes_consistent_reports(tmp_path):
     assert report["metadata_fields"] == ["field_name"]
     assert report["rows"] == 2
     assert report["bge_m3"]["recall_at_1"] == 1.0
+    assert report["runtime"]["gpu_peak_memory_bytes"] >= 0
     predictions = [json.loads(line) for line in (tmp_path / "out" / "bge_m3" / "predictions.jsonl").read_text(encoding="utf-8").splitlines()]
     assert len(predictions) == 2
     assert set(predictions[0]) >= {"source_id", "field_name", "top5", "scores", "gold_rank"}

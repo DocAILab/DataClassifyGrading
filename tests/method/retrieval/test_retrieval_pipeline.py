@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from method.retrieval.script.evaluate_stage1 import build_parser
+from method.retrieval.script.evaluate_stage1 import build_parser, model_identity
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -24,3 +24,12 @@ def test_pipeline_runs_real_smoke_before_full_and_never_names_test_split():
     assert "pytest" in launcher
     starter = STARTER.read_text(encoding="utf-8")
     assert "setsid" in starter and "nohup" in starter
+
+
+def test_model_identity_hashes_transformer_config_and_weights(tmp_path):
+    (tmp_path / "config.json").write_text("config", encoding="utf-8")
+    (tmp_path / "pytorch_model.bin").write_bytes(b"weights")
+    first = model_identity(tmp_path)
+    assert first.startswith("sha256:")
+    (tmp_path / "pytorch_model.bin").write_bytes(b"changed")
+    assert model_identity(tmp_path) != first

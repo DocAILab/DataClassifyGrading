@@ -109,6 +109,12 @@ def evaluate_stage1(
     limit: int | None = None,
 ) -> dict[str, Any]:
     started = time.monotonic()
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.reset_peak_memory_stats()
+    except ImportError:
+        torch = None
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     records = load_json_records(Path(input_dir) / "val.json")
@@ -179,6 +185,11 @@ def evaluate_stage1(
             "bge_encoding_and_scoring_seconds": encode_elapsed,
             "char_ngram_scoring_seconds": lexical_elapsed,
             "total_seconds": time.monotonic() - started,
+            "gpu_peak_memory_bytes": (
+                int(torch.cuda.max_memory_allocated())
+                if torch is not None and torch.cuda.is_available()
+                else 0
+            ),
         },
     }
     _write_json(output / "data_audit.json", data_audit)
