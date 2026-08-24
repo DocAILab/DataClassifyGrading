@@ -44,6 +44,7 @@ def test_pipeline_is_detached_recoverable_and_never_mentions_test_json():
     starter = (root / "src/method/dpo/script/start_stage2_hard_dpo.sh").read_text(encoding="utf-8")
 
     assert "test.json" not in runner
+    assert "-m 'not verl'" in runner
     assert "SMOKE_VERIFIED" in runner
     assert "comparison_to_sft.json" in runner
     assert "checkpoint-" in runner

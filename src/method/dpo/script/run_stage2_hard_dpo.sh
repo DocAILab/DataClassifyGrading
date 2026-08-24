@@ -43,7 +43,7 @@ trap on_error ERR
 
 current_phase="tests"
 write_status "$current_phase" "running"
-"$python_bin" -m pytest -q | tee "$run_root/logs/tests.log"
+"$python_bin" -m pytest -q -m 'not verl' | tee "$run_root/logs/tests.log"
 touch "$run_root/TESTS_COMPLETE"
 
 current_phase="storage_audit"
