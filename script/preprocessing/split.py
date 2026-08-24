@@ -281,6 +281,51 @@ def _build_report(splits: tuple[list[dict[str, Any]], ...]) -> dict[str, Any]:
     return report
 
 
+def stratified_split(
+    data: list[dict[str, Any]],
+    ratios: tuple[float, float, float],
+    seed: int,
+) -> tuple[list[dict[str, Any]], ...]:
+    """Public wrapper around the stratified random split core."""
+    return _split_random(data, ratios, seed)
+
+
+def group_split(
+    data: list[dict[str, Any]],
+    group_key: str,
+    ratios: tuple[float, float, float],
+    seed: int,
+) -> tuple[list[dict[str, Any]], ...]:
+    """Public wrapper around the group-aware split core.
+
+    Assumes every item carries a non-empty ``group_key``; callers filter
+    and report exclusions themselves (see the canonical splitter).
+    """
+    missing = _missing_group_indexes(data, group_key)
+    if missing:
+        raise ValueError(
+            f"group key '{group_key}' is missing or empty at item(s): "
+            f", ".join(map(str, missing[:5]))
+        )
+    return _split_group(data, group_key, ratios, seed)
+
+
+def canonical_record_order(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return records sorted by stable identity (id, then full content).
+
+    Sorting before splitting removes input-row-order sensitivity: the same
+    logical dataset always yields the same splits regardless of the row
+    order in the source file.
+    """
+    return sorted(
+        data,
+        key=lambda item: (
+            str(item.get("id", "") or ""),
+            json.dumps(item, ensure_ascii=False, sort_keys=True),
+        ),
+    )
+
+
 def split_dataset(
     input_file: str | Path,
     output_dir: str | Path,
@@ -308,6 +353,7 @@ def split_dataset(
     data = _load_json_list(input_file)
     input_size = len(data)
     skipped_group_indexes: list[int] = []
+    data = canonical_record_order(data)
     if split_type == "random":
         splits = _split_random(data, ratios, random_seed)
     elif split_type == "group":
@@ -353,6 +399,17 @@ def split_dataset(
     report = _build_report(splits)
     report["input_size"] = input_size
     report["included_size"] = len(data)
+    # reproducibility anchors: everything needed to re-run byte-identically
+    report["seed"] = random_seed
+    report["split_type"] = split_type
+    if split_type == "group":
+        report["group_key"] = group_key
+    report["ratios"] = {
+        "train": train_ratio,
+        "val": val_ratio,
+        "test": test_ratio,
+    }
+    report["order_rule"] = "id-ascending"
     report["skipped_records"] = {
         "count": len(skipped_group_indexes),
         "reasons": (

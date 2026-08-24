@@ -10,7 +10,7 @@ import uuid
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping, Sequence
 
 
 STANDARD_FIELDS = (
@@ -29,6 +29,12 @@ STANDARD_FIELDS = (
 )
 CLASSIFICATION_FIELDS = ("level_1", "level_2", "level_3", "level_4")
 IDENTITY_FIELDS = ("database_name", "table_name", "field_name")
+
+# Matches a trailing classification code such as （A3）, (A01), （A1-1-3）,
+# or 【A】 while preserving semantic parentheses.
+_TRAILING_CODE_RE = re.compile(
+    r"[\(\[（【]\s*([A-Za-z]+\d*(?:-\d+)*)\s*[\)\]）】]\s*$"
+)
 
 
 @lru_cache(maxsize=1)
@@ -110,15 +116,59 @@ def clean_text(value: Any) -> str:
     return re.sub(r"\s+", " ", str(value).strip())
 
 
+def detect_trailing_code(text: str) -> str:
+    """Return the trailing classification code of *text* ("" when absent).
+
+    Detection never mutates the value; callers decide via
+    ``strip_trailing_codes`` whether stripping is allowed.
+    """
+    match = _TRAILING_CODE_RE.search(text)
+    return match.group(1) if match else ""
+
+
 def normalize_label(value: Any) -> str:
+    """Whitespace-normalize a label and strip a trailing classification code.
+
+    Kept for callers that explicitly opt into stripping (legacy behavior);
+    the canonical preprocessing path uses :func:`clean_label` which records
+    detected codes instead of silently removing them.
+    """
     text = clean_text(value)
-    # Remove a trailing classification code such as （A3）, (A01),
-    # （A1-1-3）, or 【A】 while preserving semantic parentheses.
-    return re.sub(
-        r"\s*[\(\[（【]\s*[A-Za-z]+\d*(?:-\d+)*\s*[\)\]）】]\s*$",
-        "",
-        text,
-    ).strip()
+    return _TRAILING_CODE_RE.sub("", text).strip()
+
+
+def clean_label(value: Any) -> tuple[str, str]:
+    """Whitespace-normalize one label without altering its semantics.
+
+    Returns ``(label, trailing_code)`` where ``trailing_code`` is "" when the
+    label carries no bracket-style suffix. The label text itself is never
+    truncated here.
+    """
+    text = clean_text(value)
+    return text, detect_trailing_code(text)
+
+
+def apply_rewrite_rules(
+    value: str,
+    rules: Sequence[Mapping[str, str]] | None,
+) -> tuple[str, str | None]:
+    """Apply explicit label-rewrite rules (exact match on the whole value).
+
+    Returns ``(value, rule_description)``; ``rule_description`` is None when
+    no rule fired. Rules make historical hand-edits (e.g. whitespace fixes
+    such as '经营 管理' -> '经营管理') reproducible and auditable instead of
+    editing data files in place.
+    """
+    if not rules:
+        return value, None
+    for rule in rules:
+        match_value = str(rule.get("match", ""))
+        replacement = rule.get("replace")
+        field = str(rule.get("field", ""))
+        if value == match_value and replacement is not None:
+            description = ": ".join(part for part in (field, match_value) if part)
+            return str(replacement), f"{description} -> {replacement}"
+    return value, None
 
 
 def normalize_name(value: Any) -> str:
@@ -211,10 +261,24 @@ def preprocess(
     mapping_file: str | Path,
     output_file: str | Path,
     *,
+    dataset: str,
     overwrite: bool = False,
     missing_field_policy: str = "error",
+    strip_trailing_codes: bool = False,
+    rewrite_rules: Sequence[Mapping[str, str]] | None = None,
 ) -> list[dict[str, Any]]:
-    """Preprocess one CSV/XLSX file and write normalized JSON."""
+    """Preprocess one CSV/XLSX file and write normalized JSON.
+
+    ``dataset`` participates in the stable sample id (uuid5 over
+    dataset + database/table/field), so renaming the input file never
+    changes identities. Label semantics are preserved by default:
+    trailing bracket-style codes are detected and reported per record
+    (``label_notes``) but only stripped when ``strip_trailing_codes`` is
+    set. ``rewrite_rules`` applies explicit, auditable label fixes and
+    records them under ``rewritten_from``.
+    """
+    if not str(dataset).strip():
+        raise ValueError("dataset must be a non-empty name")
     if missing_field_policy not in {"error", "skip"}:
         raise ValueError("missing_field_policy must be 'error' or 'skip'")
 
@@ -242,8 +306,30 @@ def preprocess(
         if frame.empty:
             raise ValueError("No valid rows remain after skipping empty field_name values")
 
+    # Label pipeline per classification column. Helper columns (``__code__`` /
+    # ``__rule__`` / ``__orig__``) keep per-row audit data aligned through the
+    # later drop_duplicates and are removed before record construction.
     for column in CLASSIFICATION_FIELDS:
-        frame[column] = frame[column].map(normalize_label)
+        new_labels: list[str] = []
+        codes: list[str] = []
+        rule_notes: list[str] = []
+        originals: list[str] = []
+        for raw in frame[column]:
+            original, _ = clean_label(raw)
+            value, note = apply_rewrite_rules(original, rewrite_rules)
+            code = detect_trailing_code(value)
+            if strip_trailing_codes:
+                # legacy behavior: remove the suffix from the stored label
+                value = _TRAILING_CODE_RE.sub("", value).strip()
+                code = ""
+            new_labels.append(value)
+            codes.append(code)
+            rule_notes.append(note or "")
+            originals.append(original)
+        frame[column] = new_labels
+        frame[f"__code__{column}"] = codes
+        frame[f"__rule__{column}"] = rule_notes
+        frame[f"__orig__{column}"] = originals
     frame["field_type"] = frame["field_type"].map(normalize_type)
     frame["data_level"] = frame["data_level"].map(normalize_level)
 
@@ -261,12 +347,24 @@ def preprocess(
 
     frame = frame.drop_duplicates(subset=list(IDENTITY_FIELDS), keep="first")
     result: list[dict[str, Any]] = []
-    for row in frame.to_dict(orient="records"):
+    records_out = frame.to_dict(orient="records")
+    for row in records_out:
         identity = "\x1f".join(
-            [source.name.lower(), *(row[field] for field in IDENTITY_FIELDS)]
+            [str(dataset).strip(), *(row[field] for field in IDENTITY_FIELDS)]
         )
-        result.append({
-            "id": str(uuid.uuid5(uuid.NAMESPACE_URL, identity)),
+        record_id = str(uuid.uuid5(uuid.NAMESPACE_URL, identity))
+        notes = [
+            {"field": column, "kept_code": row[f"__code__{column}"]}
+            for column in CLASSIFICATION_FIELDS
+            if row[f"__code__{column}"]
+        ]
+        rewritten_from = {
+            column: row[f"__orig__{column}"]
+            for column in CLASSIFICATION_FIELDS
+            if row[f"__rule__{column}"]
+        }
+        entry: dict[str, Any] = {
+            "id": record_id,
             "key": normalize_name(row["field_name"]),
             "label_status": (
                 "labeled"
@@ -285,7 +383,12 @@ def preprocess(
             },
             "classification": {field: row[field] for field in CLASSIFICATION_FIELDS},
             "data_level": row["data_level"],
-        })
+        }
+        if notes:
+            entry["label_notes"] = notes
+        if rewritten_from:
+            entry["rewritten_from"] = rewritten_from
+        result.append(entry)
 
     _atomic_write_json(result, Path(output_file), overwrite)
     return result
