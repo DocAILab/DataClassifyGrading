@@ -402,8 +402,6 @@ def write_canonical_dataset(
         raise
 
 
-
-
 __all__ = [
     "SCHEMA_VERSION",
     "CanonicalBuildResult",
