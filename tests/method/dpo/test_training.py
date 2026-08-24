@@ -7,6 +7,7 @@ from method.dpo.training import (
     DPO_DEFAULTS,
     assert_separate_output,
     dpo_trainer_config_overrides,
+    ensure_transformers_trainer_compat,
     effective_save_steps,
     freeze_reference,
     normalize_trl_availability_flags,
@@ -42,6 +43,16 @@ def test_explicit_reference_is_allowed_with_policy_peft_adapter():
     assert overrides["force_use_ref_model"] is True
     assert overrides["save_steps"] == 1
     assert overrides["loss_type"] == "sigmoid"
+
+
+def test_transformers_5_model_gets_trl_warning_state_without_overwriting_existing():
+    model = torch.nn.Linear(2, 2)
+    ensure_transformers_trainer_compat(model)
+    assert model.warnings_issued == {}
+
+    model.warnings_issued["kept"] = True
+    ensure_transformers_trainer_compat(model)
+    assert model.warnings_issued == {"kept": True}
 
 
 def test_assert_separate_output_rejects_sft_directory_or_descendant(tmp_path):

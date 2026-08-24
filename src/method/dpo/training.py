@@ -32,6 +32,12 @@ def dpo_trainer_config_overrides(max_steps: int) -> dict[str, object]:
         "loss_type": "sigmoid",
     }
 
+
+def ensure_transformers_trainer_compat(model) -> None:
+    """Restore state expected by TRL 0.24 but removed in Transformers 5."""
+    if not hasattr(model, "warnings_issued"):
+        model.warnings_issued = {}
+
 REQUIRED_VERSIONS = {
     "trl": "0.24.0",
     "peft": "0.20.0",
@@ -169,6 +175,8 @@ def create_dpo_trainer(
     from peft import LoraConfig
     from trl import DPOConfig, DPOTrainer
 
+    ensure_transformers_trainer_compat(policy)
+    ensure_transformers_trainer_compat(reference)
     freeze_reference(reference)
     peft_config = LoraConfig(
         r=16,
