@@ -24,6 +24,14 @@ DPO_DEFAULTS = {
 def effective_save_steps(max_steps: int) -> int:
     return 1 if max_steps == 1 else int(DPO_DEFAULTS["save_steps"])
 
+
+def dpo_trainer_config_overrides(max_steps: int) -> dict[str, object]:
+    return {
+        "force_use_ref_model": True,
+        "save_steps": effective_save_steps(max_steps),
+        "loss_type": "sigmoid",
+    }
+
 REQUIRED_VERSIONS = {
     "trl": "0.24.0",
     "peft": "0.20.0",
@@ -179,7 +187,7 @@ def create_dpo_trainer(
         ],
     )
     kwargs = dict(DPO_DEFAULTS)
-    kwargs["save_steps"] = effective_save_steps(max_steps)
+    kwargs.update(dpo_trainer_config_overrides(max_steps))
     args = DPOConfig(
         output_dir=str(output_dir),
         **kwargs,
@@ -192,7 +200,6 @@ def create_dpo_trainer(
         report_to=[],
         eval_strategy="no",
         remove_unused_columns=False,
-        loss_type="sigmoid",
     )
     return DPOTrainer(
         model=policy,

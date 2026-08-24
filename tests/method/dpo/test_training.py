@@ -6,6 +6,7 @@ import torch
 from method.dpo.training import (
     DPO_DEFAULTS,
     assert_separate_output,
+    dpo_trainer_config_overrides,
     effective_save_steps,
     freeze_reference,
     normalize_trl_availability_flags,
@@ -33,6 +34,14 @@ def test_smoke_saves_checkpoint_after_its_only_step():
     assert effective_save_steps(1) == 1
     assert effective_save_steps(-1) == 100
     assert effective_save_steps(500) == 100
+
+
+def test_explicit_reference_is_allowed_with_policy_peft_adapter():
+    overrides = dpo_trainer_config_overrides(max_steps=1)
+
+    assert overrides["force_use_ref_model"] is True
+    assert overrides["save_steps"] == 1
+    assert overrides["loss_type"] == "sigmoid"
 
 
 def test_assert_separate_output_rejects_sft_directory_or_descendant(tmp_path):
