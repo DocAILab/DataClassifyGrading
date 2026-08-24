@@ -74,8 +74,8 @@ Create a focused package under `src/method/retrieval/`:
 - `corpus.py`: render and audit deterministic registry documents;
 - `ranking.py`: validate score matrices and perform stable top-k ranking;
 - `metrics.py`: compute micro and macro retrieval metrics and coverage;
-- `bge_m3.py`: lazily load the frozen encoder and produce normalized dense
-  vectors without making the optional GPU dependency necessary for unit tests;
+- `bge_m3.py`: lazily load the frozen encoder through the existing Transformers
+  runtime and produce the official normalized `[CLS]` dense representation;
 - `evaluation.py`: enforce val-only loading, resumable prediction writing, and
   report assembly;
 - `script/evaluate_stage1.py`: command-line entry point;

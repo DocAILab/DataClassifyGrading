@@ -6,7 +6,7 @@
 
 **Architecture:** Pure corpus, ranking, and metric modules remain dependency-light and testable with NumPy arrays. A lazy BGE-M3 adapter owns GPU encoding, while a val-only evaluator writes resumable per-row predictions and checksum-bearing reports. Both BGE-M3 and character n-gram scorers share the same stable ranking and metric implementation.
 
-**Tech Stack:** Python 3.11, NumPy, PyTorch, FlagEmbedding `BGEM3FlagModel`, pytest, JSON/JSONL, Bash, Git bundle, RTX PRO 6000.
+**Tech Stack:** Python 3.12, NumPy, PyTorch, Hugging Face Transformers `AutoModel`, pytest, JSON/JSONL, Bash, Git bundle, RTX PRO 6000.
 
 ## Global Constraints
 
@@ -196,16 +196,15 @@ Expected: import failure for the missing BGE module.
 ```python
 class BgeM3DenseEncoder:
     def __init__(self, model_path, *, device="cuda:0", batch_size=32, use_fp16=True):
-        self._model = BGEM3FlagModel(str(model_path), devices=device, pooling_method="cls", use_fp16=use_fp16)
+        self._tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=True)
+        self._model = AutoModel.from_pretrained(model_path, local_files_only=True).to(device).eval()
 
-    def encode_queries(self, texts):
-        return self._model.encode_queries(list(texts), return_dense=True, return_sparse=False, return_colbert_vecs=False)["dense_vecs"]
-
-    def encode_corpus(self, texts):
-        return self._model.encode_corpus(list(texts), return_dense=True, return_sparse=False, return_colbert_vecs=False)["dense_vecs"]
+    def _encode(self, texts):
+        hidden = self._model(**self._tokenizer(texts, padding=True, return_tensors="pt")).last_hidden_state[:, 0]
+        return torch.nn.functional.normalize(hidden, p=2, dim=-1)
 ```
 
-Import `FlagEmbedding` inside the constructor so pure unit tests remain usable without the optional package. Validate rank-2 shape, dimension agreement, finiteness, and unit L2 norms before matrix multiplication.
+Import Transformers inside the constructor so pure unit tests remain dependency-light. Validate rank-2 shape, dimension agreement, finiteness, and unit L2 norms before matrix multiplication.
 
 - [ ] **Step 4: Write failing lexical-control tests**
 

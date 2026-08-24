@@ -35,23 +35,42 @@ class BgeM3DenseEncoder:
         batch_size: int = 32,
         use_fp16: bool = True,
     ) -> None:
-        from FlagEmbedding import BGEM3FlagModel
+        import torch
+        from transformers import AutoModel, AutoTokenizer
 
         self.batch_size = batch_size
-        self._model = BGEM3FlagModel(
-            str(model_path), devices=device, pooling_method="cls", use_fp16=use_fp16
+        self.device = device
+        self._torch = torch
+        self._tokenizer = AutoTokenizer.from_pretrained(
+            str(model_path), local_files_only=True
         )
+        dtype = torch.float16 if use_fp16 and device.startswith("cuda") else torch.float32
+        self._model = AutoModel.from_pretrained(
+            str(model_path), local_files_only=True, torch_dtype=dtype
+        ).to(device).eval()
+
+    def _encode(self, texts: Sequence[str], *, name: str) -> np.ndarray:
+        vectors = []
+        for start in range(0, len(texts), self.batch_size):
+            chunk = list(texts[start:start + self.batch_size])
+            encoded = self._tokenizer(
+                chunk,
+                padding=True,
+                truncation=True,
+                max_length=8192,
+                return_tensors="pt",
+            )
+            encoded = {key: value.to(self.device) for key, value in encoded.items()}
+            with self._torch.inference_mode():
+                hidden = self._model(**encoded, return_dict=True).last_hidden_state[:, 0]
+                hidden = self._torch.nn.functional.normalize(hidden, p=2, dim=-1)
+            vectors.append(hidden.float().cpu().numpy())
+        if not vectors:
+            raise ValueError(f"{name} texts must not be empty")
+        return _validated_vectors(np.concatenate(vectors, axis=0), name=name)
 
     def encode_queries(self, texts: Sequence[str]) -> np.ndarray:
-        output = self._model.encode_queries(
-            list(texts), batch_size=self.batch_size,
-            return_dense=True, return_sparse=False, return_colbert_vecs=False,
-        )
-        return _validated_vectors(output["dense_vecs"], name="query")
+        return self._encode(texts, name="query")
 
     def encode_corpus(self, texts: Sequence[str]) -> np.ndarray:
-        output = self._model.encode_corpus(
-            list(texts), batch_size=self.batch_size,
-            return_dense=True, return_sparse=False, return_colbert_vecs=False,
-        )
-        return _validated_vectors(output["dense_vecs"], name="corpus")
+        return self._encode(texts, name="corpus")
