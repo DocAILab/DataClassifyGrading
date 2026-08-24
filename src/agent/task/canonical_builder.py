@@ -37,13 +37,13 @@ paths). Paths are echoed exactly as given by the caller.
 from __future__ import annotations
 
 import copy
-import hashlib
 import json
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from agent.hashing import sha256_file
 from agent.task.contracts import CorpusCategory, LeafRegistry, SampleTarget
 from agent.task.dataset_config import DatasetConfig
 from agent.task.identity import code_leaf_map
@@ -58,14 +58,6 @@ SCHEMA_VERSION = 2
 
 def _as_posix(path: str | Path) -> str:
     return Path(path).as_posix()
-
-
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def load_processed_records(path: str | Path) -> list[Any]:
@@ -369,7 +361,7 @@ def prepare_canonical_dataset(
         registry_derivation=config.registry_derivation,
         input_file=_as_posix(input_path),
         output_file=_as_posix(output_file),
-        input_sha256=_sha256(input_path),
+        input_sha256=sha256_file(input_path),
     )
     return result_summary, output_records
 
@@ -410,36 +402,11 @@ def write_canonical_dataset(
         raise
 
 
-def build_canonical_dataset(
-    dataset: str,
-    *,
-    processed_file: str | Path,
-    output_dir: str | Path,
-    config: DatasetConfig,
-    registry: LeafRegistry,
-    registry_file: str | Path,
-    corpus_categories: Sequence[CorpusCategory] | None = None,
-    overwrite: bool = False,
-) -> CanonicalBuildResult:
-    """Convenience wrapper: prepare + write for one dataset."""
-    output_root = Path(output_dir) / dataset
-    prepared, records = prepare_canonical_dataset(
-        dataset,
-        processed_file=Path(processed_file),
-        output_file=output_root / "all.json",
-        config=config,
-        registry=registry,
-        registry_file=registry_file,
-        corpus_categories=corpus_categories,
-    )
-    write_canonical_dataset(prepared, records, overwrite=overwrite)
-    return prepared
 
 
 __all__ = [
     "SCHEMA_VERSION",
     "CanonicalBuildResult",
-    "build_canonical_dataset",
     "load_corpus_categories_file",
     "load_processed_records",
     "prepare_canonical_dataset",

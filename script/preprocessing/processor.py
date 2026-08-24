@@ -271,11 +271,13 @@ def preprocess(
 
     ``dataset`` participates in the stable sample id (uuid5 over
     dataset + database/table/field), so renaming the input file never
-    changes identities. Label semantics are preserved by default:
-    trailing bracket-style codes are detected and reported per record
-    (``label_notes``) but only stripped when ``strip_trailing_codes`` is
-    set. ``rewrite_rules`` applies explicit, auditable label fixes and
-    records them under ``rewritten_from``.
+    changes identities. Trailing bracket-style codes are always detected
+    and reported per record: by default the label keeps its code
+    (``label_notes[].kept_code``); with ``strip_trailing_codes`` the code
+    is removed from the stored label but still recorded
+    (``label_notes[].stripped_code``), so the rewrite is never silent.
+    ``rewrite_rules`` applies explicit, auditable label fixes and records
+    them under ``rewritten_from``.
     """
     if not str(dataset).strip():
         raise ValueError("dataset must be a non-empty name")
@@ -318,10 +320,10 @@ def preprocess(
             original, _ = clean_label(raw)
             value, note = apply_rewrite_rules(original, rewrite_rules)
             code = detect_trailing_code(value)
-            if strip_trailing_codes:
-                # legacy behavior: remove the suffix from the stored label
+            if strip_trailing_codes and code:
+                # legacy behavior: remove the suffix from the stored label;
+                # the removed code is still recorded in label_notes below
                 value = _TRAILING_CODE_RE.sub("", value).strip()
-                code = ""
             new_labels.append(value)
             codes.append(code)
             rule_notes.append(note or "")
@@ -354,7 +356,12 @@ def preprocess(
         )
         record_id = str(uuid.uuid5(uuid.NAMESPACE_URL, identity))
         notes = [
-            {"field": column, "kept_code": row[f"__code__{column}"]}
+            {
+                "field": column,
+                ("stripped_code" if strip_trailing_codes else "kept_code"): row[
+                    f"__code__{column}"
+                ],
+            }
             for column in CLASSIFICATION_FIELDS
             if row[f"__code__{column}"]
         ]

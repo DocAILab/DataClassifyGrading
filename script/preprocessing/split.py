@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 
+SPLIT_ALGORITHM_VERSION = "1"  # bump when assignment logic changes
+
 LABEL_FIELDS = (
     "classification.level_1",
     "classification.level_2",
@@ -254,7 +256,7 @@ def _split_group(
     return tuple(splits)
 
 
-def _build_report(splits: tuple[list[dict[str, Any]], ...]) -> dict[str, Any]:
+def build_split_report(splits: tuple[list[dict[str, Any]], ...]) -> dict[str, Any]:
     names = ("train", "val", "test")
     report: dict[str, Any] = {
         "sizes": dict(zip(names, map(len, splits))),
@@ -396,7 +398,7 @@ def split_dataset(
             + ". Pass --overwrite to replace it."
         )
 
-    report = _build_report(splits)
+    report = build_split_report(splits)
     report["input_size"] = input_size
     report["included_size"] = len(data)
     # reproducibility anchors: everything needed to re-run byte-identically
@@ -410,6 +412,7 @@ def split_dataset(
         "test": test_ratio,
     }
     report["order_rule"] = "id-ascending"
+    report["algorithm_version"] = SPLIT_ALGORITHM_VERSION
     report["skipped_records"] = {
         "count": len(skipped_group_indexes),
         "reasons": (

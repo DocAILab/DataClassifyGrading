@@ -189,6 +189,42 @@ def test_legacy_split_dir_join_still_supported(tmp_path) -> None:
     assert report["label_gap_gate"]["status"] == "passed"
 
 
+def test_legacy_split_dir_unknown_id_fails_fast(tmp_path) -> None:
+    records = _balanced_records()
+    canonical = _seed_canonical(tmp_path, records)
+    split_dir = tmp_path / "stale-splits"
+    split_dir.mkdir()
+    by_split = {
+        "train": [r for r in records if r["id"].startswith("tr-")],
+        "val": [r for r in records if r["id"].startswith("va-")],
+        "test": [r for r in records if r["id"].startswith("te-")],
+    }
+    # simulate a stale/divergent split dir: one record renamed, one dropped,
+    # plus a ghost id absent from the canonical file
+    by_split["train"] = [
+        {**by_split["train"][0], "id": "renamed-away"},
+        *by_split["train"][1:-1],
+        _canonical_record("ghost-id", "demo:alpha", None),
+    ]
+    for name, rows in by_split.items():
+        stripped = [
+            {k: v for k, v in row.items() if k not in ("split", "split_exclusion_reason")}
+            for row in rows
+        ]
+        (split_dir / f"{name}.json").write_text(
+            json.dumps(stripped, ensure_ascii=False), encoding="utf-8"
+        )
+    with pytest.raises(ValueError, match="absent from the.*canonical"):
+        export_sft_dataset(
+            canonical,
+            split_dir,
+            tmp_path / "sft-stale",
+            LeafRegistry.from_path(REGISTRY),
+            TaskConfig.from_mapping({"metadata_fields": TASK_FIELDS}),
+            corpus=_corpus_mapping(),
+        )
+
+
 def test_export_is_deterministic_across_runs(tmp_path) -> None:
     digests = []
     for index in range(2):

@@ -86,14 +86,17 @@ def test_trailing_code_detected_and_kept_by_default(tmp_path) -> None:
         {"field": "level_4", "kept_code": "A3"}
     ]
     assert "rewritten_from" not in by_field["F2"]
-    # legacy opt-in strips the suffix from the stored label
+    # legacy opt-in strips the suffix from the stored label, but keeps an
+    # explicit trace of what was removed (never a silent rewrite)
     stripped = _run(
         tmp_path, _write_csv(tmp_path), tmp_path / "stripped.json",
         strip_trailing_codes=True,
     )
     stripped_by_field = {row["metadata"]["field_name"]: row for row in stripped}
     assert stripped_by_field["F2"]["classification"]["level_4"] == "D2"
-    assert "label_notes" not in stripped_by_field["F2"]
+    assert stripped_by_field["F2"]["label_notes"] == [
+        {"field": "level_4", "stripped_code": "A3"}
+    ]
     # normalize_label stays available as the explicit-strip helper
     assert normalize_label("D2（A3）") == "D2"
 

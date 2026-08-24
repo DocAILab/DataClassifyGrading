@@ -26,7 +26,6 @@ from agent.task import (
     load_dataset_configs,
 )
 from agent.task.canonical_builder import (
-    build_canonical_dataset,
     load_corpus_categories_file,
     prepare_canonical_dataset,
     resolve_record,

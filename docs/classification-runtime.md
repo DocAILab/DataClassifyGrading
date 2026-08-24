@@ -20,12 +20,21 @@ byte-identical outputs given identical inputs.
 
 ```text
 tabular raw (xlsx/csv) ──script.preprocessing.cli preprocess──▶ processed/<ds>/all.json
-standards (runtime-local) ──▶ corpus/registry assets (runtime-local)
+classification standards ──(runtime-local standard conversion; generic
+  builder NOT rebuilt yet, see note below)──▶ corpus/registry assets (runtime-local)
 processed + config + registry ──script.canonical.build──▶ canonical/<ds>/all.json (schema v2)
 canonical ──script.canonical.split──▶ embedded splits + train/val/test views + report
 canonical ──script.verl.sft.export──▶ VeRL messages parquet (label-gap gate)
 parquet + cfg/sft/reference.env ──script.verl.sft.run.sh──▶ reference SFT checkpoint
+checkpoint ──script.verl.sft.record_checkpoint──▶ provenance json (tree sha256)
 ```
+
+Note on corpus/registry assets: this repository CONSUMES pre-built registry
+and corpus JSON through explicit paths. The generic standards→corpus→registry
+builder was removed during the data-sanitation pass and is not rebuilt here
+yet; until then, converting a classification standard into those assets is a
+careful runtime-local step performed outside the repository (original logic is
+archived for reference).
 
 Key contracts:
 

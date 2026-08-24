@@ -20,10 +20,11 @@ the report so no silent metric distortion survives.
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
+
+from agent.hashing import sha256_file
 
 from agent.evaluation import evaluate_stage1_choices, evaluate_stage2_choices
 from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
@@ -43,13 +44,9 @@ from agent.training.common import (
 
 SPLITS = ("train", "val", "test")
 
-
-def _sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+# Provenance marker for embedded-split sources (not a real filesystem path:
+# a synthetic source label so error messages point at the canonical file).
+_EMBEDDED_SPLIT_SOURCE_PREFIX = "#embedded-split="
 
 
 def _registry(value: LeafRegistry | str | Path) -> LeafRegistry:
@@ -258,7 +255,7 @@ def export_sft_dataset(
                         f"carries a {split!r} assignment; re-run script.canonical.split"
                     )
                 view.append(item)
-            source = canonical_path / f"#embedded-split={split}"
+            source = canonical_path / f"{_EMBEDDED_SPLIT_SOURCE_PREFIX}{split}"
         else:
             source = split_root / f"{split}.json"
             view = load_json_records(source)
@@ -269,6 +266,16 @@ def export_sft_dataset(
             item_id = str(item.get("id", "") or "").strip()
             if not item_id:
                 raise ValueError(f"split item {index} in {source} has no id")
+            if split_dir is not None:
+                # legacy join: fail fast when the split copy diverges from the
+                # canonical dataset (unknown id, stale split dir)
+                canonical_item = canonical_by_id.get(item_id)
+                if canonical_item is None:
+                    raise ValueError(
+                        f"split item id {item_id!r} ({source}) is absent from the "
+                        f"canonical dataset {canonical_path}"
+                    )
+                item = canonical_item
             ground_truth = _canonical_target(item, index, source, leaf_registry)
             if ground_truth is None:
                 skipped_unresolved += 1
@@ -318,7 +325,7 @@ def export_sft_dataset(
             "skipped_not_resolved": all_view_sizes[split]
             - len({row["source_id"] for row in all_rows[split]}),
             "output_file": str(destination),
-            "parquet_sha256": _sha256(destination),
+            "parquet_sha256": sha256_file(destination),
         }
     resolved_outside_split_ids = sorted(
         record_id

@@ -10,7 +10,6 @@ from .contracts import (
 from .canonical_builder import (
     SCHEMA_VERSION as CANONICAL_SCHEMA_VERSION,
     CanonicalBuildResult,
-    build_canonical_dataset,
     prepare_canonical_dataset,
     resolve_record as resolve_canonical_record,
 )
@@ -73,7 +72,6 @@ __all__ = [
     "REGISTRY_DERIVATIONS",
     "CANONICAL_SCHEMA_VERSION",
     "CanonicalBuildResult",
-    "build_canonical_dataset",
     "prepare_canonical_dataset",
     "resolve_canonical_record",
     "TargetResolver",

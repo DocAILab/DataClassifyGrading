@@ -30,7 +30,8 @@ from pathlib import Path
 from typing import Any
 
 from script.preprocessing.split import (
-    _build_report,
+    SPLIT_ALGORITHM_VERSION,
+    build_split_report,
     canonical_record_order,
     group_split,
     stratified_split,
@@ -118,7 +119,7 @@ def prepare_split(
             record["split"] = name
         views[name] = split_records
 
-    report = _build_report(tuple(views[name] for name in SPLIT_NAMES))
+    report = build_split_report(tuple(views[name] for name in SPLIT_NAMES))
     reason_counts = Counter(item["reason"] for item in excluded)
     report.update(
         {
@@ -138,6 +139,7 @@ def prepare_split(
                 "test": ratios[2],
             },
             "order_rule": "id-ascending",
+            "algorithm_version": SPLIT_ALGORITHM_VERSION,
         }
     )
     if split_type == "group":
