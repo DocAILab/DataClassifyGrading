@@ -20,6 +20,10 @@ DPO_DEFAULTS = {
     "seed": 42,
 }
 
+
+def effective_save_steps(max_steps: int) -> int:
+    return 1 if max_steps == 1 else int(DPO_DEFAULTS["save_steps"])
+
 REQUIRED_VERSIONS = {
     "trl": "0.24.0",
     "peft": "0.20.0",
@@ -175,6 +179,7 @@ def create_dpo_trainer(
         ],
     )
     kwargs = dict(DPO_DEFAULTS)
+    kwargs["save_steps"] = effective_save_steps(max_steps)
     args = DPOConfig(
         output_dir=str(output_dir),
         **kwargs,

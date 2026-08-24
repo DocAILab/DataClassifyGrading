@@ -6,6 +6,7 @@ import torch
 from method.dpo.training import (
     DPO_DEFAULTS,
     assert_separate_output,
+    effective_save_steps,
     freeze_reference,
     normalize_trl_availability_flags,
     parameter_update_stats,
@@ -26,6 +27,12 @@ def test_dpo_defaults_match_the_approved_experiment_contract():
         "save_steps": 100,
         "seed": 42,
     }
+
+
+def test_smoke_saves_checkpoint_after_its_only_step():
+    assert effective_save_steps(1) == 1
+    assert effective_save_steps(-1) == 100
+    assert effective_save_steps(500) == 100
 
 
 def test_assert_separate_output_rejects_sft_directory_or_descendant(tmp_path):
