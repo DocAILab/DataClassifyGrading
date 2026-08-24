@@ -13,6 +13,13 @@ from typing import Any, Mapping, Sequence
 
 ID_STRATEGIES = ("code", "path")
 DEFAULT_PATH_FIELDS = ("level_1", "level_2", "level_3", "level_4")
+# How the leaf universe behind this dataset's registry was derived. Pure
+# documentation/audit metadata: it never changes resolution semantics.
+REGISTRY_DERIVATIONS = (
+    "standard",          # derived from a classification standard / corpus
+    "shared-standard",   # reuses another dataset's standard via registry_source
+    "dataset-universe",  # no standard exists; registry taken from the full data leaf space
+)
 
 
 @dataclass(frozen=True)
@@ -26,6 +33,12 @@ class DatasetConfig:
     identity_fields: tuple[str, ...] = ()
     placeholder_labels: tuple[str, ...] = ()
     registry_source: str | None = None
+    # Category ids deliberately kept out of the active registry/corpus
+    # (e.g. standard entries absent from the legacy Stage-1 universe).
+    # The canonical builder treats a resolved hit on any of these as a
+    # configuration error instead of silently training on them.
+    projection_excluded_category_ids: tuple[str, ...] = ()
+    registry_derivation: str = "standard"
 
     def __post_init__(self) -> None:
         if not self.dataset.strip():
@@ -55,6 +68,22 @@ class DatasetConfig:
                 raise ValueError("leaf_level must participate in identity_fields")
         if self.registry_source == self.dataset:
             raise ValueError("registry_source must not point at the dataset itself")
+        if len(set(self.projection_excluded_category_ids)) != len(
+            self.projection_excluded_category_ids
+        ):
+            raise ValueError("projection_excluded_category_ids must be unique")
+        if self.registry_derivation not in REGISTRY_DERIVATIONS:
+            raise ValueError(
+                f"registry_derivation must be one of {REGISTRY_DERIVATIONS}, "
+                f"got {self.registry_derivation!r}"
+            )
+        if (
+            self.registry_source is None
+            and self.registry_derivation == "shared-standard"
+        ):
+            raise ValueError(
+                'registry_derivation "shared-standard" requires registry_source'
+            )
 
     def to_mapping(self) -> dict[str, Any]:
         result: dict[str, Any] = {
@@ -63,6 +92,10 @@ class DatasetConfig:
             "id_strategy": self.id_strategy,
             "path_fields": list(self.path_fields),
             "placeholder_labels": list(self.placeholder_labels),
+            "projection_excluded_category_ids": list(
+                self.projection_excluded_category_ids
+            ),
+            "registry_derivation": self.registry_derivation,
         }
         if self.identity_fields:
             result["identity_fields"] = list(self.identity_fields)
@@ -82,6 +115,13 @@ class DatasetConfig:
         placeholders = _string_tuple(
             value.get("placeholder_labels", ()), "placeholder_labels"
         )
+        excluded = _string_tuple(
+            value.get("projection_excluded_category_ids", ()),
+            "projection_excluded_category_ids",
+        )
+        derivation = value.get("registry_derivation", "standard")
+        if not isinstance(derivation, str):
+            raise ValueError("registry_derivation must be a string")
         source = value.get("registry_source")
         if source is not None and not isinstance(source, str):
             raise ValueError("registry_source must be a string or null")
@@ -93,6 +133,8 @@ class DatasetConfig:
             identity_fields=identity_fields,
             placeholder_labels=placeholders,
             registry_source=None if source is None else source.strip(),
+            projection_excluded_category_ids=excluded,
+            registry_derivation=derivation.strip(),
         )
 
     @classmethod
@@ -156,4 +198,5 @@ __all__ = [
     "load_dataset_configs",
     "ID_STRATEGIES",
     "DEFAULT_PATH_FIELDS",
+    "REGISTRY_DERIVATIONS",
 ]

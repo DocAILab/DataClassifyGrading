@@ -7,8 +7,21 @@ from .contracts import (
     SampleTarget,
     TaskConfig,
 )
+from .canonical_builder import (
+    SCHEMA_VERSION as CANONICAL_SCHEMA_VERSION,
+    CanonicalBuildResult,
+    build_canonical_dataset,
+    prepare_canonical_dataset,
+    resolve_record as resolve_canonical_record,
+)
 from .assets import ClassificationAssets, load_corpus_categories
-from .dataset_config import DatasetConfig, load_dataset_configs
+from .dataset_config import (
+    DEFAULT_PATH_FIELDS,
+    ID_STRATEGIES,
+    REGISTRY_DERIVATIONS,
+    DatasetConfig,
+    load_dataset_configs,
+)
 from .identity import code_leaf_map, compact, leaf_registry_from_corpus, qualified_category_id
 from .parser import (
     ChoiceParseResult,
@@ -55,6 +68,14 @@ __all__ = [
     "load_corpus_categories",
     "DatasetConfig",
     "load_dataset_configs",
+    "ID_STRATEGIES",
+    "DEFAULT_PATH_FIELDS",
+    "REGISTRY_DERIVATIONS",
+    "CANONICAL_SCHEMA_VERSION",
+    "CanonicalBuildResult",
+    "build_canonical_dataset",
+    "prepare_canonical_dataset",
+    "resolve_canonical_record",
     "TargetResolver",
     "ClassificationTargetResolver",
     "ResolutionStatus",

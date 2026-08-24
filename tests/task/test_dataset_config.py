@@ -49,3 +49,56 @@ def test_duplicate_dataset_configs_fail(tmp_path: Path) -> None:
     )
     with pytest.raises(ValueError, match="duplicate dataset config"):
         load_dataset_configs(source)
+
+
+def test_registry_derivation_and_projection_fields_round_trip(tmp_path) -> None:
+    from agent.task import REGISTRY_DERIVATIONS
+
+    source = tmp_path / "datasets.json"
+    source.write_text(
+        json.dumps(
+            {
+                "datasets": {
+                    "demo_coded": {
+                        "leaf_level": "level_4",
+                        "id_strategy": "code",
+                        "path_fields": ["level_1", "level_2", "level_3", "level_4"],
+                        "placeholder_labels": ["--"],
+                        "projection_excluded_category_ids": ["Z9-9"],
+                        "registry_source": "demo_other",
+                        "registry_derivation": "shared-standard",
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    config = load_dataset_configs(source)["demo_coded"]
+    assert config.projection_excluded_category_ids == ("Z9-9",)
+    assert config.registry_derivation == "shared-standard"
+    mapping = config.to_mapping()
+    assert mapping["projection_excluded_category_ids"] == ["Z9-9"]
+    assert mapping["registry_derivation"] == "shared-standard"
+    assert set(REGISTRY_DERIVATIONS) == {
+        "standard",
+        "shared-standard",
+        "dataset-universe",
+    }
+
+
+def test_invalid_registry_derivation_rejected() -> None:
+    with pytest.raises(ValueError, match="registry_derivation"):
+        DatasetConfig(dataset="demo", registry_derivation="vibes")
+
+
+def test_shared_standard_requires_registry_source() -> None:
+    with pytest.raises(ValueError, match="shared-standard.*requires"):
+        DatasetConfig(dataset="demo", registry_derivation="shared-standard")
+
+
+def test_duplicate_projection_exclusions_rejected() -> None:
+    with pytest.raises(ValueError, match="must be unique"):
+        DatasetConfig(
+            dataset="demo",
+            projection_excluded_category_ids=("A", "A"),
+        )

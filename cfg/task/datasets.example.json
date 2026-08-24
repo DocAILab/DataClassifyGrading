@@ -1,0 +1,33 @@
+{
+  "datasets": {
+    "demo_fourlevel": {
+      "leaf_level": "level_4",
+      "id_strategy": "path",
+      "path_fields": ["level_1", "level_2", "level_3", "level_4"],
+      "registry_derivation": "standard"
+    },
+    "demo_partial": {
+      "leaf_level": "level_4",
+      "id_strategy": "path",
+      "path_fields": ["level_1", "level_2", "level_3", "level_4"],
+      "identity_fields": ["level_1", "level_2", "level_4"],
+      "registry_derivation": "standard"
+    },
+    "demo_single": {
+      "leaf_level": "level_4",
+      "id_strategy": "path",
+      "path_fields": ["level_4"],
+      "placeholder_labels": [],
+      "registry_derivation": "dataset-universe"
+    },
+    "demo_shared": {
+      "leaf_level": "level_4",
+      "id_strategy": "code",
+      "path_fields": ["level_1", "level_2", "level_3", "level_4"],
+      "placeholder_labels": ["--"],
+      "projection_excluded_category_ids": ["Z9-9"],
+      "registry_source": "demo_fourlevel",
+      "registry_derivation": "shared-standard"
+    }
+  }
+}
