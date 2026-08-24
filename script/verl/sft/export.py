@@ -17,12 +17,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--canonical",
         required=True,
-        help="data/canonical/<dataset>/all.json (canonical dataset records)",
+        help="canonical <dataset>/all.json (schema v2 records with embedded splits)",
     )
     parser.add_argument(
         "--split-dir",
-        required=True,
-        help="Directory containing train.json, val.json, test.json (split boundaries by id)",
+        default=None,
+        help=(
+            "Optional legacy split directory (train.json/val.json/test.json, "
+            "joined by id). When omitted the embedded split fields of the "
+            "schema v2 canonical records are used"
+        ),
     )
     parser.add_argument(
         "--output-dir",
@@ -48,6 +52,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "Optional JSON task config; task_name is retained and CLI "
             "metadata_fields take precedence"
         ),
+    )
+    parser.add_argument(
+        "--allow-label-gaps",
+        nargs="*",
+        default=[],
+        help=(
+            "Ground-truth labels allowed to appear in val/test without any "
+            "train occurrence (reviewed exceptions; recorded in the report)"
+        ),
+    )
+    parser.add_argument(
+        "--allow-any-label-gap",
+        action="store_true",
+        help="Waive every label gap (recorded in the report as waived)",
     )
     return parser.parse_args(argv)
 
@@ -77,6 +95,8 @@ def main(argv: list[str] | None = None) -> int:
             LeafRegistry.from_path(args.registry),
             TaskConfig.from_mapping(config_data),
             corpus=corpus,
+            allow_label_gaps=tuple(args.allow_label_gaps),
+            allow_any_label_gap=args.allow_any_label_gap,
         )
     except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
         print(f"export_sft_dataset: {exc}", file=sys.stderr)

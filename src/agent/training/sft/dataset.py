@@ -1,23 +1,29 @@
 """Exporter and validator for the VeRL SFT messages parquet baseline.
 
 Production labels come EXCLUSIVELY from the canonical dataset contract:
-records are read from data/canonical/<dataset>/all.json, only
-resolution_status == "resolved" records with a target whose category_id
-belongs to the LeafRegistry enter training, and the ground truth is always
+records are read from the canonical all.json, only resolution_status ==
+"resolved" records with a target whose category_id belongs to the
+LeafRegistry enter training, and the ground truth is always
 record["target"]["category_id"]. classification.level_1..level_4 stay
 provenance only — there is deliberately NO fallback to them as labels.
 
-Split boundaries (train/val/test) are taken from the original split JSON
-files by record id; a split record whose id is missing from the canonical
-file is a data-consistency error (fail-fast), while resolved/unresolved
-filtering happens on the canonical status.
+Split boundaries come from one of two sources:
+- canonical schema v2 embedded ``split`` fields (default; produced by
+  script.canonical.split, which also carries per-record exclusion reasons);
+- legacy split JSON files joined by record id (``split_dir`` argument).
+
+Export gate (comparability guard): a label appearing in val or test but
+absent from train fails the export unless explicitly waived via
+``allow_label_gaps`` / ``allow_any_label_gap``. The waiver is recorded in
+the report so no silent metric distortion survives.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from agent.evaluation import evaluate_stage1_choices, evaluate_stage2_choices
 from agent.task.contracts import CorpusCategory, LeafRegistry, TaskConfig
@@ -36,6 +42,14 @@ from agent.training.common import (
 )
 
 SPLITS = ("train", "val", "test")
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _registry(value: LeafRegistry | str | Path) -> LeafRegistry:
@@ -126,27 +140,36 @@ def _write_parquet(rows: list[dict[str, Any]], path: Path) -> None:
 
 def export_sft_dataset(
     canonical_file: str | Path,
-    split_dir: str | Path,
+    split_dir: str | Path | None,
     output_dir: str | Path,
     registry: LeafRegistry | str | Path,
     task_config: TaskConfig | str | Path,
     corpus: Mapping[str, CorpusCategory],
+    *,
+    allow_label_gaps: Sequence[str] = (),
+    allow_any_label_gap: bool = False,
 ) -> dict[str, Any]:
     """Export canonical records to one stage1 + one stage2 SFT row per split.
 
-    Labels come exclusively from target.category_id (canonical contract);
-    split boundaries follow the original split JSON files by record id.
-    corpus is REQUIRED for the production Stage 2 path: candidates are
-    resolved by category_id against the canonical corpus and there is no
-    registry fallback in the exporter.
+    Labels come exclusively from target.category_id (canonical contract).
+    Split boundaries come from embedded schema-v2 ``split`` fields when
+    ``split_dir`` is None, otherwise from the legacy split JSON files by
+    record id. corpus is REQUIRED for the production Stage 2 path:
+    candidates are resolved by category_id against the canonical corpus and
+    there is no registry fallback in the exporter.
+
+    Label-gap gate: a ground-truth label present in val/test but missing
+    from train raises unless the label is whitelisted in
+    ``allow_label_gaps`` or ``allow_any_label_gap`` is set; the report
+    records the gate outcome either way.
     """
     leaf_registry = _registry(registry)
     config = _config(task_config)
-    canonical_path, split_root, output_root = (
-        Path(canonical_file),
-        Path(split_dir),
-        Path(output_dir),
-    )
+    canonical_path = Path(canonical_file)
+    output_root = Path(output_dir)
+    split_root = None if split_dir is None else Path(split_dir)
+    if split_dir is not None and not split_root.is_dir():
+        raise FileNotFoundError(f"split directory not found: {split_root}")
     if not canonical_path.is_file():
         raise FileNotFoundError(f"canonical dataset not found: {canonical_path}")
     canonical_records = load_json_records(canonical_path)
@@ -174,6 +197,21 @@ def export_sft_dataset(
             # by the split join, but must not fail the export
             idless_non_resolved += 1
             continue
+        if split_dir is None:
+            # schema v2 embedded splits must cover every resolved record;
+            # otherwise the splitter was skipped or misconfigured
+            assigned_split = str(item.get("split", "") or "").strip()
+            if status == "resolved":
+                if not assigned_split:
+                    raise ValueError(
+                        f"canonical record {item_id!r} is resolved without a "
+                        "split assignment; run script.canonical.split first"
+                    )
+                if assigned_split not in SPLITS:
+                    raise ValueError(
+                        f"canonical record {item_id!r} carries unknown split "
+                        f"{assigned_split!r}"
+                    )
         if item_id in canonical_by_id:
             raise ValueError(f"duplicate id in canonical dataset: {item_id}")
         canonical_by_id[item_id] = item
@@ -193,6 +231,7 @@ def export_sft_dataset(
             "permuted deterministically by stable source_id (not position-fixed, "
             "not the production retrieval policy)"
         ),
+        "split_source": "embedded_v2" if split_dir is None else "split_dir_join",
         "metadata_fields": list(config.metadata_fields),
         "task_name": config.task_name,
         "registry_size": len(leaf_registry.categories),
@@ -202,39 +241,84 @@ def export_sft_dataset(
         "splits": {},
     }
     trainable_ids: set[str] = set()
+    split_ground_truths: dict[str, set[str]] = {name: set() for name in SPLITS}
+    all_rows: dict[str, list[dict[str, Any]]] = {}
+    all_view_sizes: dict[str, int] = {}
     for split in SPLITS:
-        source = split_root / f"{split}.json"
-        split_records = load_json_records(source)
+        if split_dir is None:
+            # schema v2 embedded splits (script.canonical.split write-back)
+            view: list[dict[str, Any]] = []
+            for item in canonical_records:
+                if str(item.get("split", "") or "").strip() != split:
+                    continue
+                status = str(item.get("resolution_status", "") or "").strip()
+                if status != "resolved":
+                    raise ValueError(
+                        f"canonical record with non-resolved status {status!r} "
+                        f"carries a {split!r} assignment; re-run script.canonical.split"
+                    )
+                view.append(item)
+            source = canonical_path / f"#embedded-split={split}"
+        else:
+            source = split_root / f"{split}.json"
+            view = load_json_records(source)
+        all_view_sizes[split] = len(view)
         rows: list[dict[str, Any]] = []
         skipped_unresolved = 0
-        for index, item in enumerate(split_records):
+        for index, item in enumerate(view):
             item_id = str(item.get("id", "") or "").strip()
             if not item_id:
                 raise ValueError(f"split item {index} in {source} has no id")
-            canonical_item = canonical_by_id.get(item_id)
-            if canonical_item is None:
-                raise ValueError(
-                    f"split item id {item_id!r} ({source}) is absent from the "
-                    f"canonical dataset {canonical_path}"
-                )
-            ground_truth = _canonical_target(canonical_item, index, source, leaf_registry)
+            ground_truth = _canonical_target(item, index, source, leaf_registry)
             if ground_truth is None:
                 skipped_unresolved += 1
                 continue
             trainable_ids.add(item_id)
+            split_ground_truths[split].add(ground_truth)
             rows.extend(
-                _row(canonical_item, source, index, leaf_registry, config, stage, corpus_map)
+                _row(item, source, index, leaf_registry, config, stage, corpus_map)
                 for stage in ("stage1", "stage2")
             )
         if not rows:
             raise ValueError(f"no resolved records available in {source}")
+        all_rows[split] = rows
+
+    # label-gap export gate: val/test labels missing from train distort the
+    # reference baseline; fail fast unless explicitly waived.
+    waived_gaps: list[dict[str, str]] = []
+    blocking_gaps: list[dict[str, str]] = []
+    for later_split in ("val", "test"):
+        for label in sorted(split_ground_truths[later_split] - split_ground_truths["train"]):
+            entry = {"label": label, "split": later_split}
+            if allow_any_label_gap or label in allow_label_gaps:
+                waived_gaps.append(entry)
+            else:
+                blocking_gaps.append(entry)
+    report["label_gap_gate"] = {
+        "status": (
+            "failed" if blocking_gaps else ("waived" if waived_gaps else "passed")
+        ),
+        "blocking": blocking_gaps,
+        "waived": waived_gaps,
+    }
+    if blocking_gaps:
+        raise ValueError(
+            "label-gap gate failed; labels absent from train but present in "
+            f"val/test: {blocking_gaps}. Waive via allow_label_gaps/"
+            "allow_any_label_gap after review."
+        )
+
+    output_root.mkdir(parents=True, exist_ok=True)
+    for split in SPLITS:
         destination = output_root / f"{split}.parquet"
-        _write_parquet(rows, destination)
+        _write_parquet(all_rows[split], destination)
         report["splits"][split] = {
-            "split_records": len(split_records),
-            "exported_records": len(rows),
-            "skipped_not_resolved": skipped_unresolved,
+            "split_records": all_view_sizes[split],
+            "exported_records": len(all_rows[split]),
+            "skipped_not_resolved": all_view_sizes[split]
+            - len({row["source_id"] for row in all_rows[split]}),
             "output_file": str(destination),
+            "parquet_sha256": _sha256(destination),
         }
     resolved_outside_split_ids = sorted(
         record_id
