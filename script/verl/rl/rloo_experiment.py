@@ -194,8 +194,10 @@ class RlooExperimentConfig:
             raise ValueError(
                 "formal RLOO is restricted to one finance+shougang joint release"
             )
-        if self.rollout_n != CASCADE_N:
-            raise ValueError(f"formal cascade rollout N is fixed at {CASCADE_N}")
+        if self.rollout_n not in (CASCADE_N, 2 * CASCADE_N):
+            raise ValueError(
+                f"formal cascade rollout N must be {CASCADE_N} or {2 * CASCADE_N}"
+            )
         if self.kl_coef != 0.001:
             raise ValueError("actor KL loss coefficient is fixed at 0.001")
         if self.resume_mode == "disable":
@@ -511,7 +513,7 @@ def validate_preflight(
         "dataset": config.dataset,
         "release": "finance+shougang",
         "sampling": "p proportional to sqrt(n)",
-        "cascade": {"k": CASCADE_K, "n": CASCADE_N, "direct": True},
+        "cascade": {"k": CASCADE_K, "n": config.rollout_n, "direct": True},
         "actor": {"lora": True, "dtype": "bfloat16", "kl_loss_coef": config.kl_coef},
         "kl_in_reward": False,
         "gpu_target": config.gpu_target,
