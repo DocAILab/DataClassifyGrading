@@ -148,7 +148,7 @@ def build_sqrt_mixture(
                     extra = deepcopy(dict(row["extra_info"]))
                     if extra.get("trajectory_format") != NATIVE_TOOL_TRAJECTORY_FORMAT:
                         raise ValueError(
-                            "formal RL input must use qwen3.5-native-tools-v1"
+                            "formal RL input must use " + NATIVE_TOOL_TRAJECTORY_FORMAT
                         )
                     extra["source_id"] = mixture_id
                     extra["stage"] = "stage1"

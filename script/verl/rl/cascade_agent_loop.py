@@ -229,7 +229,7 @@ else:
             )
             output.extra_fields.update(
                 {
-                    "trajectory_format": "qwen3.5-native-tools-v1",
+                    "trajectory_format": NATIVE_TOOL_TRAJECTORY_FORMAT,
                     "terminal_answer_valid": terminal_valid,
                     "terminal_exact_match": output.reward_score == 1.0,
                 }
