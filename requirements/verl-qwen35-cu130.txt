@@ -1,0 +1,9 @@
+# Validated native-tool RLOO core on RTX PRO 6000 96GB (2026-08-26).
+# Python 3.12; CUDA/PyTorch wheels are installed from the authorized CUDA 13
+# channel before this file. Do not use this file to mutate the archived
+# verl-sft 0.8 environment.
+-c verl-qwen35-cu130.constraints.txt
+verl==0.9.0
+vllm==0.27.1
+transformers==5.10.4
+pyarrow==25.0.1

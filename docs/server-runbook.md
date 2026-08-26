@@ -1,9 +1,9 @@
 # Authorized server runbook
 
-This is the operational sequence for the formal finance+shougang release. It
-assumes an authorized **RTX PRO 6000 96GB** host with one visible GPU, CUDA
-12.8, Python 3.12, PyTorch 2.8.0, VeRL 0.8.0, and a locally frozen exact
-vLLM version. Replace every path below with a runtime-local path; do not copy
+This is the operational sequence for the formal **shougang-only** release. It
+assumes an authorized **RTX PRO 6000 96GB** host with one visible GPU and the
+dedicated Qwen3.5 environment: Python 3.12, VeRL 0.9.0, and its locally
+validated exact CUDA/PyTorch/vLLM lock. Replace every path below with a runtime-local path; do not copy
 production paths, reports, or checkpoints into Git.
 
 ## 0. Set the runtime root and verify the host
@@ -15,8 +15,8 @@ export RAW="/srv/dataclassify/raw"
 export ASSETS="/srv/dataclassify/assets"
 export STANDARDS="/srv/dataclassify/standards"
 export CFG="/srv/dataclassify/config"
-export PYTHON_BIN="/srv/dataclassify/venv/bin/python"
-export VLLM_VERSION="<exact-version-from-the-approved-verl-0.8-lock>"
+export PYTHON_BIN="/root/autodl-tmp/envs/verl-qwen35/bin/python"
+export VLLM_VERSION="<exact-version-from-the-approved-verl-0.9-lock>"
 mkdir -p "$RUN" "$RUN/audits" "$RUN/metrics" "$RUN/releases"
 
 nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
@@ -24,35 +24,36 @@ nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
 "$PYTHON_BIN" -c 'import importlib.metadata as m; print(m.version("verl"), m.version("vllm"))'
 ```
 
-The host gate must show an RTX PRO 6000 with roughly 96 GiB VRAM, CUDA 12.8,
-and one visible device. A CPU interpreter is suitable only for tests and
+The host gate must show an RTX PRO 6000 with roughly 96 GiB VRAM and one
+visible device; the reported CUDA/PyTorch/vLLM versions must match the approved
+VeRL 0.9 lock. A CPU interpreter is suitable only for tests and
 `--dry-run`; formal training is restricted to the designated host.
 
-Install the server stack once in this exact interpreter:
+Use the already isolated `verl-qwen35` environment; its validated core is
+recorded in `requirements/verl-qwen35-cu130.txt` (torch 2.13.0+cu130,
+Transformers 5.10.4, vLLM 0.27.1, VeRL 0.9.0). Do not upgrade it in place and
+do not reuse the archived `verl-sft` 0.8 environment:
 
 ```bash
-"$PYTHON_BIN" -m pip install -r "$ROOT/requirements/verl.txt"
 "$PYTHON_BIN" -m pip install -e "$ROOT" --no-deps
 "$PYTHON_BIN" -m pip check
+"$PYTHON_BIN" -c 'import verl; from verl.experimental.agent_loop.tool_agent_loop import ToolAgentLoop; print(verl.__version__)'
 ```
 
-`requirements/verl*.txt` intentionally leave vLLM unpinned. The approved
-VeRL 0.8 lock supplies the exact version, which is passed to RLOO as
+The approved VeRL 0.9 lock supplies the exact vLLM version passed as
 `--vllm-version`; never infer or silently upgrade it.
 
-## 1. Build and audit canonical data
+## 1. Build and audit the shougang canonical data
 
-For each dataset, normalize the runtime raw source, resolve it against the
-runtime standard registry/corpus, and split the canonical records:
+Normalize the runtime raw source, resolve it against the runtime standard
+registry/corpus, and split the canonical records:
 
 ```bash
-for DATASET in finance shougang; do
-  python -m script.preprocessing.cli preprocess \
-    --input "$RAW/$DATASET.xlsx" \
-    --mapping "$ASSETS/mappings/$DATASET.mapping.json" \
-    --output "$RUN/processed/$DATASET/all.json" \
-    --dataset "$DATASET"
-done
+python -m script.preprocessing.cli preprocess \
+  --input "$RAW/shougang.xlsx" \
+  --mapping "$ASSETS/mappings/shougang.mapping.json" \
+  --output "$RUN/processed/shougang/all.json" \
+  --dataset shougang
 
 python -m script.canonical.build \
   --processed-dir "$RUN/processed" \
@@ -60,12 +61,10 @@ python -m script.canonical.build \
   --config-file "$CFG/datasets.json" \
   --registry-dir "$ASSETS/registries" \
   --corpus-dir "$ASSETS/corpora" \
-  --dataset finance \
   --dataset shougang
 
 python -m script.canonical.split \
   --canonical-dir "$RUN/canonical" \
-  --dataset finance \
   --dataset shougang \
   --split-type random \
   --seed 42
@@ -77,101 +76,150 @@ The formal task config must expose exactly `field_name` and `table_name`:
 {"metadata_fields": ["field_name", "table_name"]}
 ```
 
-Contract change 2026-08-25 (owner decision): field-only prompts are ambiguous
-on real finance+shougang data (audit: 1552 conflict keys, ~54% train rows);
-+table_name resolves to 15 keys / 30 rows (shougang) and 0 (finance).
+Rationale from the historical audit of the former finance+shougang release:
+field-only prompts produced 1552 conflict keys (about 54% of train rows).
+After adding `table_name`, the residual was 15 keys / 30 rows in shougang and
+0 in finance. The formal scope is now shougang-only; keep both fields in every
+formal prompt. The historical residual is not a waiver: the current release
+audit below must pass with `conflict_keys: 0`.
 
 The classification standard is represented by the explicit registry/corpus
 JSON paths. There is no repository-local production standard lookup.
 
-Audit both field-only prompt contracts and write one redacted bundle. The
-key combines normalized `field_name`, classification-standard SHA-256, and
-grading-standard SHA-256, and must identify one `(leaf, data_level)` pair per
-dataset:
+Audit the one shougang source and write one redacted prompt-audit bundle. The
+bundle shape is retained for provenance, but it must contain exactly one
+`shougang` entry. The key combines normalized `field_name`, `table_name`,
+classification-standard SHA-256, and grading-standard SHA-256, and must
+identify one `(leaf, data_level)` pair:
 
 ```bash
 python -m script.analysis.audit_prompt_conflicts --bundle \
-  --canonical finance="$RUN/canonical/finance/all.json" \
   --canonical shougang="$RUN/canonical/shougang/all.json" \
-  --classification-standard finance="$STANDARDS/finance.classification.json" \
   --classification-standard shougang="$STANDARDS/shougang.classification.json" \
-  --grading-standard finance="$STANDARDS/finance.grading.json" \
   --grading-standard shougang="$STANDARDS/shougang.grading.json" \
   --split train \
   --level-field data_level \
-  --report "$RUN/audits/finance-shougang.prompt.json"
+  --report "$RUN/audits/shougang.prompt.json"
 ```
 
-Stop if the bundle is not `status: passed` with `conflict_keys: 0`. It contains
-redacted per-dataset entries and is the report supplied to
+Stop if the report is not `status: passed` with `conflict_keys: 0`. It contains
+redacted shougang entries and is the report supplied to
 `record_checkpoint --prompt-audit-bundle`.
 
-## 2. Publish and validate per-dataset SFT releases
+## 2. Publish and validate the shougang SFT release
 
-Export and validate the two source releases independently. `field_name` and
+Export and validate the one shougang source independently. `field_name` and
 `table_name` are required explicitly; `data_level` is supplied by the grading
-config.
+config:
 
 ```bash
-for DATASET in finance shougang; do
-  python -m script.verl.sft.export \
-    --canonical "$RUN/canonical/$DATASET/all.json" \
-    --output-dir "$RUN/releases/sft/$DATASET" \
-    --registry "$ASSETS/registries/$DATASET.registry.json" \
-    --corpus "$ASSETS/corpora/$DATASET.corpus.json" \
-    --metadata-fields field_name table_name \
-    --task-config "$CFG/$DATASET.task.json" \
-    --grading-config "$STANDARDS/$DATASET.grading.json"
+python -m script.verl.sft.export \
+  --canonical "$RUN/canonical/shougang/all.json" \
+  --output-dir "$RUN/releases/sft/source/shougang" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --metadata-fields field_name table_name \
+  --task-config "$CFG/shougang.task.json" \
+  --grading-config "$STANDARDS/shougang.grading.json"
 
-  python -m script.verl.sft.validate \
-    --dataset-dir "$RUN/releases/sft/$DATASET" \
-    --registry "$ASSETS/registries/$DATASET.registry.json" \
-    --corpus "$ASSETS/corpora/$DATASET.corpus.json" \
-    --metadata-fields field_name table_name \
-    --task-config "$CFG/$DATASET.task.json" \
-    --grading-config "$STANDARDS/$DATASET.grading.json" \
-    --report "$RUN/releases/sft/$DATASET/validation.json"
-done
+python -m script.verl.sft.validate \
+  --dataset-dir "$RUN/releases/sft/source/shougang" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --metadata-fields field_name table_name \
+  --task-config "$CFG/shougang.task.json" \
+  --grading-config "$STANDARDS/shougang.grading.json" \
+  --report "$RUN/releases/sft/source/shougang/validation.json"
 ```
 
 Each successful export creates `train.parquet`, `val.parquet`, `test.parquet`,
 and `export_report.json`. The report is mandatory release evidence: it
 contains the label/level gap gate and actual per-split parquet SHA-256 values.
-Use a new empty output
-directory; publication refuses to overwrite an existing non-empty release.
+The formal standardized release requires a passed `label_gap_gate` with no
+blocking or waived label/`data_level` gaps. Use a new empty output directory;
+publication refuses to overwrite an existing non-empty release.
 
-Build the SFT training mixture only from the two passed releases:
+Create the one-entry grading manifest before building the standardized release.
+Copy the exact runtime grading standard next to the manifest (or use its
+absolute path); its SHA-256 must match the file bytes. For a relative manifest
+path:
+
+```bash
+cp "$STANDARDS/shougang.grading.json" "$RUN/shougang.grading.json"
+sha256sum "$RUN/shougang.grading.json"
+```
+
+Fill the digest from that exact file:
+
+```json
+{
+  "datasets": {
+    "shougang": {
+      "path": "shougang.grading.json",
+      "sha256": "<64 lowercase hex characters>"
+    }
+  }
+}
+```
+
+Build the standardized shougang SFT release from the passed source:
 
 ```bash
 python -m script.verl.common.build_mixture \
   --family sft \
-  --input finance="$RUN/releases/sft/finance" \
-  --input shougang="$RUN/releases/sft/shougang" \
+  --input shougang="$RUN/releases/sft/source/shougang" \
   --grading-manifest "$RUN/grading-manifest.json" \
-  --registry "$ASSETS/registries/shared.registry.json" \
-  --corpus "$ASSETS/corpora/shared.corpus.json" \
-  --task-config "$CFG/cascade.task.json" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --task-config "$CFG/shougang.task.json" \
   --metadata-fields field_name table_name \
-  --output-dir "$RUN/releases/sft/finance-shougang"
+  --output-dir "$RUN/releases/sft/shougang"
 ```
 
-The train source counts follow `p(dataset) ∝ sqrt(source_count)`. Pooled
-validation/test files are diagnostics only; official metrics are computed per
-dataset and then averaged equally.
+The one `--input shougang=...` is intentional: the approved singleton policy
+is a passthrough with weight 1.0 and does not replicate rows.
+The resulting `export_report.json` is the report bound to the reference.
 
-## 3. Run the frozen reference SFT
+## 3. Re-measure the Qwen3.5 token budget, then run the reference SFT
 
 Copy `cfg/sft/reference.env.example` to a runtime-local file and fill in the
-model, mixture, output, and interpreter paths. Keep its Hydra overrides as a
-Bash array:
+model, standardized shougang release, output, interpreter, and measured token
+limit:
 
 ```bash
 cp "$ROOT/cfg/sft/reference.env.example" "$RUN/reference.env"
-# Edit DATASET_NAME, MODEL_PATH, DATA_DIR, OUTPUT_DIR, PYTHON_BIN, and any
-# runtime-local values in $RUN/reference.env.
+# Edit MODEL_PATH, DATA_DIR, OUTPUT_DIR, PYTHON_BIN, QWEN35_MAX_TOKENS, and
+# other runtime-local values in $RUN/reference.env.
 set -a
 source "$RUN/reference.env"
 set +a
+```
+
+The example model is `Qwen3.5-9B`; a local senior SFT checkpoint may be used
+through a runtime override. **All token limits from old Qwen2.5 runs are
+invalid.** Before starting SFT, remeasure the selected Qwen3.5 model's
+chat-template lengths and choose the limit from that report. Do not copy an
+old number or invent a new numeric limit:
+
+```bash
+"$PYTHON_BIN" -m script.verl.sft.prompt_stats \
+  --dataset-dir "$DATA_DIR" \
+  --model "$MODEL_PATH" \
+  --report "$RUN/metrics/shougang.token-stats.json"
+
+# Set QWEN35_MAX_TOKENS from the measured report, then run the gate:
+"$PYTHON_BIN" -m script.verl.sft.check_token_budget \
+  --dataset-dir "$DATA_DIR" \
+  --model "$MODEL_PATH" \
+  --max-length "$QWEN35_MAX_TOKENS" \
+  --report "$RUN/metrics/shougang.token-budget.json"
+```
+
+A failed token-budget gate stops training. Re-run it whenever the model, chat
+template, or exported prompts change. Then launch the frozen reference with
+its Hydra overrides array:
+
+```bash
 PYTHON_BIN="$PYTHON_BIN" NUM_GPUS=1 \
   bash "$ROOT/script/verl/sft/run.sh" "${HYDRA_OVERRIDES[@]}"
 ```
@@ -180,7 +228,7 @@ Do not turn the array into one quoted multiline string. VeRL receives each
 Hydra override as one argument. Save the effective Hydra configuration and
 the selected final `global_step_*` directory under `$RUN`.
 
-## 4. Merge and record the reference
+## 4. Merge and record the one reference
 
 The supported merge layout is one VeRL rank (`world_size=1`, `rank=0`):
 
@@ -206,114 +254,102 @@ collector is a secret-free fact record; the host authorization gate remains a
 human/server check.
 
 Run `record_checkpoint` for the merged HF model. Its `sha256-tree-v2` digest
-is the reference identity used by RL:
+is the identity used by RL:
 
 ```bash
 python -m script.verl.sft.record_checkpoint \
   --checkpoint-dir "$RUN/models/reference-merged" \
-  --export-report "$RUN/releases/sft/finance-shougang/export_report.json" \
+  --export-report "$RUN/releases/sft/shougang/export_report.json" \
   --effective-config "$RUN/reference-effective.yaml" \
   --base-model "$MODEL_PATH" \
   --environment-report "$RUN/environment.json" \
-  --prompt-audit-bundle "$RUN/audits/finance-shougang.prompt.json" \
+  --prompt-audit-bundle "$RUN/audits/shougang.prompt.json" \
   --grading-manifest "$RUN/grading-manifest.json" \
   --git-commit "$(git -C "$ROOT" rev-parse HEAD)" \
   --global-step <N> \
   --output "$RUN/reference.provenance.json"
 ```
 
-`--export-report`, `--prompt-audit-bundle`, and `--grading-manifest` bind the
-joint reference to passed, hashed finance+shougang artifacts. The checkpoint
-must have complete current provenance before it can be used by RL. Since
-2026-08-26 the recorded `checkpoint_dir` is advisory: relocating the model
-directory only warns; the sha256-tree digest remains the binding anchor.
+Every provenance input binds the single shougang release: the passed
+`export_report.json`, prompt-audit bundle, one-entry grading manifest,
+effective config, environment, base model, commit, and global step. The
+checkpoint must have complete current provenance before RL. The recorded
+`checkpoint_dir` is advisory after relocation; the sha256-tree/count/bytes
+remain the binding anti-tamper anchor.
 
-## 5. Build and validate the RL cascade release
+## 5. Build and validate the shougang native-tool RL release
 
-First publish and validate one five-field RL source release per dataset;
-these rows preserve both stages for contract validation:
+Publish and validate one five-field RL source release; these rows preserve
+both stages for contract validation:
 
 ```bash
-for DATASET in finance shougang; do
-  python -m script.verl.rl.export \
-    --canonical "$RUN/canonical/$DATASET/all.json" \
-    --output-dir "$RUN/releases/rl/source/$DATASET" \
-    --dataset "$DATASET" \
-    --registry "$ASSETS/registries/$DATASET.registry.json" \
-    --corpus "$ASSETS/corpora/$DATASET.corpus.json" \
-    --metadata-fields field_name table_name \
-    --task-config "$CFG/$DATASET.task.json" \
-    --grading-config "$STANDARDS/$DATASET.grading.json"
-done
+python -m script.verl.rl.export \
+  --canonical "$RUN/canonical/shougang/all.json" \
+  --output-dir "$RUN/releases/rl/source/shougang" \
+  --dataset shougang \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --metadata-fields field_name table_name \
+  --task-config "$CFG/shougang.task.json" \
+  --grading-config "$STANDARDS/shougang.grading.json"
 ```
 
-Create one manifest that verifies the exact grading standard used by each
-dataset. Paths may be relative to the manifest and the SHA-256 must match the
-file bytes. Fill the digests from the exact files used above (for example,
-`sha256sum "$STANDARDS/finance.grading.json" "$STANDARDS/shougang.grading.json"`).
-
-```json
-{
-  "datasets": {
-    "finance": {
-      "path": "finance.grading.json",
-      "sha256": "<64 lowercase hex characters>"
-    },
-    "shougang": {
-      "path": "shougang.grading.json",
-      "sha256": "<64 lowercase hex characters>"
-    }
-  }
-}
-```
-
-The manifest is strict: its dataset set is exactly `finance` and `shougang`;
-each grading config has level descriptions and `gt_field: "data_level"`.
-Build the formal Stage-1-only cascade mixture from those passed RL releases:
+Reuse the one-entry manifest created in Section 2. Its dataset set is
+strictly `shougang`, and the grading config has level descriptions and
+`gt_field: "data_level"`. Build the formal one-episode-per-source native-tool release from the passed
+RL source:
 
 ```bash
 python -m script.verl.common.build_mixture \
   --family rl-cascade \
-  --input finance="$RUN/releases/rl/source/finance" \
   --input shougang="$RUN/releases/rl/source/shougang" \
   --grading-manifest "$RUN/grading-manifest.json" \
-  --registry "$ASSETS/registries/shared.registry.json" \
-  --corpus "$ASSETS/corpora/shared.corpus.json" \
-  --task-config "$CFG/cascade.task.json" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --task-config "$CFG/shougang.task.json" \
   --metadata-fields field_name table_name \
-  --output-dir "$RUN/releases/rl/finance-shougang"
+  --output-dir "$RUN/releases/rl/shougang"
 ```
 
-Validate the cascade before any RLOO process starts:
+Validate the native-tool release before any RLOO process starts:
 
 ```bash
 python -m script.verl.rl.validate_cascade \
-  --dataset-dir "$RUN/releases/rl/finance-shougang" \
-  --registry "$ASSETS/registries/shared.registry.json" \
-  --corpus "$ASSETS/corpora/shared.corpus.json" \
-  --task-config "$CFG/cascade.task.json" \
+  --dataset-dir "$RUN/releases/rl/shougang" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --task-config "$CFG/shougang.task.json" \
   --grading-manifest "$RUN/grading-manifest.json" \
   --report "$RUN/rl-cascade-validation.json"
 ```
 
 The validator requires `metadata_fields: ["field_name", "table_name"]`,
-passed/published release metadata, the approved sqrt policy, no source-id
-overlap, both datasets in train, and no Stage-2 rows. A non-zero exit is a
-release stop.
+passed/published release metadata, singleton passthrough policy, no source-id
+overlap, shougang rows in train, no Stage-2 runtime rows, and `trajectory_format:
+qwen3.5-native-tools-v1`. A non-zero exit is a release stop.
+
+At rollout time VeRL 0.9's official ToolAgentLoop exposes exactly three
+functions: `search_categories`, `get_category_details`, and
+`get_category_examples`. Search is deterministic lexical retrieval over the
+runtime registry/corpus JSON—there is no embedding model or vector database.
+A trajectory may make no call, one call, or up to three sequential calls.
+Assistant tool-call and terminal tokens have policy mask 1; tool observations
+have mask 0. The terminal JSON uses a global opaque `choice_id` and the
+approved level code.
 
 ## 6. Formal RLOO preflight and launch
 
-Use the merged reference and its provenance, the RL mixture, the same registry,
-corpus, task config, and grading manifest:
+Use the merged reference and its provenance, the standardized shougang RL
+release, the same registry, corpus, task config, and grading manifest:
 
 ```bash
 "$PYTHON_BIN" -m script.verl.rl.rloo_experiment \
-  --dataset finance+shougang \
+  --dataset shougang \
   --model "$RUN/models/reference-merged" \
-  --data-dir "$RUN/releases/rl/finance-shougang" \
-  --registry "$ASSETS/registries/shared.registry.json" \
-  --corpus "$ASSETS/corpora/shared.corpus.json" \
-  --task-config "$CFG/cascade.task.json" \
+  --data-dir "$RUN/releases/rl/shougang" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --task-config "$CFG/shougang.task.json" \
   --grading-manifest "$RUN/grading-manifest.json" \
   --reference-provenance "$RUN/reference.provenance.json" \
   --output-dir "$RUN/rloo" \
@@ -321,29 +357,35 @@ corpus, task config, and grading manifest:
   --vllm-version "$VLLM_VERSION"
 ```
 
-Formal policy fixes the joint release to `finance+shougang`, the cascade
-rollout count to `CASCADE_N` or `2 * CASCADE_N` (4 or 8, recorded truthfully
-in the run manifest), actor KL settings, and the exact reference digest.
-Optional launcher knobs: `--experiment-name` for a stable run name and
-`--max-ckpt-keep` for checkpoint rotation. RLOO
-verifies provenance against the model directory before launching VeRL; it
-does not infer a starting checkpoint or a vLLM version. Use `--dry-run` on a
-CPU checkout to inspect commands, but do not call the real launch there.
+Formal policy fixes the release to `shougang`, the RLOO sibling count to
+`CASCADE_N` or `2 * CASCADE_N` (4 or 8, recorded truthfully in the run
+manifest), `qwen3_coder` tool parsing, at most three sequential calls, one
+strict category+level exact-match reward, actor KL settings, and the exact
+reference digest. Optional
+launcher knobs are `--experiment-name` for a stable run name and
+`--max-ckpt-keep` for checkpoint rotation. RLOO verifies provenance against
+the model directory before launching VeRL; it does not infer a starting
+checkpoint or a vLLM version. Use `--dry-run` on a CPU checkout to inspect
+commands, but do not call the real launch there.
 
-## 7. Joint metrics and retention
+## 7. Evaluate shougang directly and retain evidence
 
-Run true end-to-end evaluation separately on each dataset's test parquet with
-`--grading-config`, then aggregate only the two reports:
+Run true end-to-end evaluation on the shougang test parquet and retain the
+single report as the official metric:
 
 ```bash
-python -m script.analysis.aggregate_joint_metrics \
-  --input finance="$RUN/metrics/finance.true-e2e.json" \
-  --input shougang="$RUN/metrics/shougang.true-e2e.json" \
-  --output "$RUN/metrics/finance-shougang.json"
+"$PYTHON_BIN" -m script.verl.sft.evaluate_true_e2e \
+  --model-path "$RUN/models/reference-merged" \
+  --data "$RUN/releases/sft/shougang/test.parquet" \
+  --registry "$ASSETS/registries/shougang.registry.json" \
+  --corpus "$ASSETS/corpora/shougang.corpus.json" \
+  --task-config "$CFG/shougang.task.json" \
+  --grading-config "$STANDARDS/shougang.grading.json" \
+  --report "$RUN/metrics/shougang.true-e2e.json"
 ```
 
-Retain the per-dataset reports, the equal-macro aggregate, both prompt audits,
-the per-dataset grading manifest and referenced files, SFT and RL
-`export_report.json` files, environment manifest, effective config, commit,
-reference provenance, and validation logs under the runtime run directory.
-Only publish redacted aggregate evidence where policy permits.
+Retain the shougang report, prompt audit, one-entry grading manifest and
+referenced standard, SFT and RL `export_report.json` files, token-budget
+reports, environment manifest, effective config, commit, reference provenance,
+and validation logs under the runtime run directory. Publish only redacted
+evidence where policy permits; keep the metric source-local.

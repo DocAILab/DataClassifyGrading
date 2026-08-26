@@ -18,20 +18,19 @@ from script.verl.rl.rloo_experiment import (
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "cfg" / "task" / "leaf_registry.example.json"
+GRADING_MANIFEST = ROOT / "tests" / "rl" / "fixtures" / "grading_manifest.json"
 
 
 def _config(tmp_path: Path, **overrides) -> RlooExperimentConfig:
     values = {
-        "dataset": "demo",
+        "dataset": "shougang",
         "model_path": tmp_path / "model",
         "data_dir": tmp_path / "rl-data",
         "registry_path": REGISTRY,
         "corpus_path": ROOT / "cfg" / "task" / "corpus.example.json",
         "task_config_path": ROOT / "cfg" / "task" / "task.example.json",
         "output_dir": tmp_path / "output",
-        "grading_manifest_path": (
-            ROOT / "tests" / "sft" / "fixtures" / "grading_manifest.json"
-        ),
+        "grading_manifest_path": GRADING_MANIFEST,
         "python_bin": "python",
     }
     values.update(overrides)
@@ -55,6 +54,14 @@ def test_command_selects_rloo_without_changing_task_framework(tmp_path: Path) ->
     assert overrides["algorithm.use_kl_in_reward"] == "False"
     assert overrides["actor_rollout_ref.rollout.mode"] == "async"
     assert overrides["actor_rollout_ref.rollout.multi_turn.enable"] == "True"
+    assert overrides["actor_rollout_ref.rollout.multi_turn.format"] == "qwen3_coder"
+    assert Path(
+        overrides["actor_rollout_ref.rollout.multi_turn.function_tool_path"]
+    ).name == "native_tools.py"
+    assert overrides["actor_rollout_ref.rollout.multi_turn.max_assistant_turns"] == "4"
+    assert overrides["actor_rollout_ref.rollout.multi_turn.max_user_turns"] == "3"
+    assert overrides["actor_rollout_ref.rollout.multi_turn.max_parallel_calls"] == "1"
+    assert overrides["+data.apply_chat_template_kwargs.enable_thinking"] == "False"
     assert (
         overrides["actor_rollout_ref.rollout.agent.default_agent_loop"]
         == "dataclassify_cascade"
@@ -75,7 +82,7 @@ def test_command_selects_rloo_without_changing_task_framework(tmp_path: Path) ->
     assert "grpo" not in " ".join(command).lower()
 
 
-def test_formal_defaults_cover_two_turn_prompt_and_bridge(tmp_path: Path) -> None:
+def test_formal_defaults_cover_native_tool_trajectory(tmp_path: Path) -> None:
     config = _config(tmp_path)
     assert config.max_prompt_length >= 4096
     assert config.max_response_length >= 1024
@@ -88,10 +95,11 @@ def test_rloo_requires_multiple_sibling_rollouts(tmp_path: Path) -> None:
         build_verl_command(config)
 
 
-def test_formal_release_rejects_duplicate_dataset_names(tmp_path: Path) -> None:
-    config = _config(tmp_path, dataset="finance+finance+shougang")
-    with pytest.raises(ValueError, match="one finance\\+shougang"):
-        config.validate_release_policy()
+def test_formal_release_requires_exact_shougang_dataset(tmp_path: Path) -> None:
+    for dataset in ("finance", "finance+shougang", "shougang+shougang", " Shougang"):
+        config = _config(tmp_path, dataset=dataset)
+        with pytest.raises(ValueError, match="exactly.*shougang"):
+            config.validate_options()
 
 
 def test_validation_reuses_existing_rl_contract_cli(tmp_path: Path) -> None:
@@ -133,151 +141,90 @@ def test_run_manifest_binds_successful_validation_report_path_and_hash(
     }
 
 
-def test_reward_entrypoint_routes_choice_outputs_through_shared_reward(
+def test_reward_entrypoint_is_strict_native_joint_exact_match(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "demo")
+    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "shougang")
     monkeypatch.setenv("DATACLASSIFY_RLOO_REGISTRY", str(REGISTRY))
-
-    stage1 = compute_score(
-        "demo/stage1",
-        json.dumps({"candidates": ["3", "1", "2", "4", "5"]}),
-        "demo:charlie",
-        {"dataset": "demo", "stage": "stage1"},
-    )
-    stage2 = compute_score(
-        "demo/stage2",
-        json.dumps({"answer": "1"}),
-        "demo:charlie",
-        {
-            "dataset": "demo",
-            "stage": "stage2",
-            "candidates": [
-                "demo:charlie",
-                "demo:alpha",
-                "demo:bravo",
-                "demo:delta",
-                "demo:echo",
-            ],
-        },
-    )
-
-    assert stage1 == 1.0
-    assert stage2 == 1.0
-
-
-def test_static_reward_fallback_scores_direct_multiturn_response(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "finance+shougang")
-    monkeypatch.setenv("DATACLASSIFY_RLOO_REGISTRY", str(REGISTRY))
-    monkeypatch.setenv(
-        "DATACLASSIFY_RLOO_GRADING_MANIFEST",
-        str(ROOT / "tests" / "sft" / "fixtures" / "grading_manifest.json"),
-    )
-    solution = (
-        '{"candidates":["1","2","3","4","5"]}\n'
-        "Stage 2 instructions: {\"field_name\":\"f\"}\n"
-        '{"answer":"1","level":"L2"}'
-    )
-    assert compute_score(
-        "finance/stage1",
-        solution,
-        "demo:alpha",
-        {
-            "dataset": "finance",
-            "stage": "stage1",
-            "ground_truth_level": "L2",
-        },
-    ) == pytest.approx(1.0)
-
-
-def test_static_formal_stage2_reward_selects_dataset_grading_manifest(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "finance+shougang")
-    monkeypatch.setenv("DATACLASSIFY_RLOO_REGISTRY", str(REGISTRY))
-    monkeypatch.setenv(
-        "DATACLASSIFY_RLOO_GRADING_MANIFEST",
-        str(ROOT / "tests" / "sft" / "fixtures" / "grading_manifest.json"),
-    )
-
-    candidates = [
-        "demo:charlie",
-        "demo:alpha",
-        "demo:bravo",
-        "demo:delta",
-        "demo:echo",
-    ]
+    monkeypatch.setenv("DATACLASSIFY_RLOO_GRADING_MANIFEST", str(GRADING_MANIFEST))
     info = {
-        "dataset": "finance",
-        "stage": "stage2",
-        "ground_truth_level": "L2",
-        "candidates": candidates,
+        "dataset": "shougang",
+        "stage": "stage1",
+        "ground_truth_level": "L1",
+        "trajectory_format": "qwen3.5-native-tools-v1",
     }
+
     assert compute_score(
-        "finance/stage2",
-        '{"answer":"2","level":"L2"}',
-        "demo:alpha",
+        "shougang/stage1",
+        '{"answer":"3","level":"L1"}',
+        "demo:charlie",
         info,
     ) == 1.0
     assert compute_score(
-        "finance/stage2",
-        '{"answer":"2","level":"L1"}',
-        "demo:alpha",
+        "shougang/stage1",
+        '{"answer":"3","level":"L2"}',
+        "demo:charlie",
         info,
-    ) == 0.5
+    ) == 0.0
+    assert compute_score(
+        "shougang/stage1",
+        'result: {"answer":"3","level":"L1"}',
+        "demo:charlie",
+        info,
+    ) == 0.0
+    assert compute_score(
+        "shougang/stage1",
+        '{"candidates":["1","2","3","4","5"]}',
+        "demo:charlie",
+        info,
+    ) == 0.0
 
 
-def test_static_formal_stage2_reward_fails_closed_without_manifest(
+def test_native_reward_fails_closed_without_manifest(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "finance+shougang")
+    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "shougang")
     monkeypatch.setenv("DATACLASSIFY_RLOO_REGISTRY", str(REGISTRY))
     monkeypatch.delenv("DATACLASSIFY_RLOO_GRADING_MANIFEST", raising=False)
     with pytest.raises(RuntimeError, match="GRADING_MANIFEST"):
         compute_score(
-            "shougang/stage2",
+            "shougang/stage1",
             '{"answer":"1","level":"L1"}',
             "demo:alpha",
             {
                 "dataset": "shougang",
-                "stage": "stage2",
+                "stage": "stage1",
                 "ground_truth_level": "L1",
-                "candidates": [
-                    "demo:alpha",
-                    "demo:bravo",
-                    "demo:charlie",
-                    "demo:delta",
-                    "demo:echo",
-                ],
+                "trajectory_format": "qwen3.5-native-tools-v1",
             },
         )
 
 
-def test_compute_cascade_score_requires_grading_and_fails_closed() -> None:
+def test_compute_cascade_score_rejects_retired_manual_protocol() -> None:
     registry = LeafRegistry.from_path(REGISTRY)
+    grading = GradingConfig(("L1", "L2"))
     assert compute_cascade_score(
         '{"candidates":["1","2","3","4","5"]}',
         '{"answer":"1","level":"L1"}',
         ground_truth="demo:alpha",
         ground_truth_level="L1",
         registry=registry,
+        grading=grading,
     ) == 0.0
     assert compute_cascade_score(
-        '{"candidates":["1","2","3","4","5"]}',
+        "",
         '{"answer":"1","level":"L1"}',
         ground_truth="demo:alpha",
         ground_truth_level="L1",
         registry=registry,
-        grading=GradingConfig(("L1", "L2")),
-    ) == pytest.approx(1.0)
+        grading=grading,
+    ) == 1.0
 
 
 def test_reward_entrypoint_rejects_dataset_routing_mismatch(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "demo")
+    monkeypatch.setenv("DATACLASSIFY_RLOO_DATASET", "shougang")
     monkeypatch.setenv("DATACLASSIFY_RLOO_REGISTRY", str(REGISTRY))
 
     with pytest.raises(ValueError, match="does not match configured dataset"):
@@ -295,7 +242,7 @@ def test_dry_run_prints_commands_without_importing_or_running_verl(
     result = main(
         [
             "--dataset",
-            "demo",
+            "shougang",
             "--model",
             str(tmp_path / "missing-model"),
             "--data-dir",
@@ -307,7 +254,7 @@ def test_dry_run_prints_commands_without_importing_or_running_verl(
             "--task-config",
             str(ROOT / "cfg" / "task" / "task.example.json"),
             "--grading-manifest",
-            str(ROOT / "tests" / "sft" / "fixtures" / "grading_manifest.json"),
+            str(GRADING_MANIFEST),
             "--output-dir",
             str(tmp_path / "output"),
             "--dry-run",

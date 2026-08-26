@@ -1,10 +1,12 @@
-"""Prompt-identifiability audit for the field-only joint task.
+"""Prompt-identifiability audit for the formal field-only task.
 
 When the model sees only the visible prompt metadata (``field_name`` plus
 ``table_name`` under the 2025-08-25 contract change) plus immutable
 standards, identical visible inputs cannot legitimately own different
-``(leaf, data_level)`` targets.  Reports intentionally contain hashes and counts only: no raw field,
-target, or record-id values are emitted.
+``(leaf, data_level)`` targets. Reports intentionally contain hashes and
+counts only: no raw field, target, or record-id values are emitted. The
+serialized bundle API is retained for provenance, but is strictly a singleton
+bundle for the formal shougang release.
 """
 
 from __future__ import annotations
@@ -15,9 +17,10 @@ import unicodedata
 from collections import defaultdict
 from typing import Any, Iterable, Mapping, Sequence
 
+from agent.release_policy import FORMAL_DATASETS, FORMAL_DATASET_SET
+
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 _WS_RE = re.compile(r"\s+")
-_BUNDLE_DATASETS = ("finance", "shougang")
 
 
 def normalize_field_name(value: str) -> str:
@@ -57,8 +60,13 @@ def audit_prompt_target_conflicts(
 ) -> dict[str, Any]:
     """Return a deterministic, redacted identifiability report."""
 
-    if dataset is not None and dataset not in _BUNDLE_DATASETS:
-        raise ValueError("dataset must be finance or shougang")
+    if dataset is None:
+        dataset = FORMAL_DATASETS[0]
+    if not isinstance(dataset, str) or dataset not in FORMAL_DATASET_SET:
+        raise ValueError(
+            "dataset must be one of the formal datasets: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     classification_sha = _standard_sha(
         classification_standard_sha256, "classification_standard_sha256"
     )
@@ -130,7 +138,7 @@ def audit_prompt_target_conflicts(
         )
     all_keys = sorted(grouped_targets)
     report = {
-        **({"dataset": dataset} if dataset is not None else {}),
+        "dataset": dataset,
         "format": "field-prompt-identifiability-v1",
         "status": "failed" if conflicts else "passed",
         "split": "all" if audit_all_splits else split,
@@ -153,6 +161,11 @@ def require_identifiable_prompts(report: Mapping[str, Any]) -> None:
         raise ValueError("unsupported prompt-identifiability report")
     if report.get("format") != "field-prompt-identifiability-v1":
         raise ValueError("unsupported prompt-identifiability report")
+    if report.get("dataset") not in FORMAL_DATASET_SET:
+        raise ValueError(
+            "prompt-identifiability report must identify the formal dataset: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     if report.get("status") != "passed" or report.get("conflict_keys") != 0:
         raise ValueError(
             "prompt-identifiability failed: field-only prompts are not identifiable from their joint targets"
@@ -190,7 +203,10 @@ def _bundle_standard_maps(
         raise ValueError("provide either standards_by_dataset or separate standard maps")
     if standards_by_dataset is not None:
         if set(standards_by_dataset) != datasets:
-            raise ValueError("prompt-audit standards must cover exactly both datasets")
+            raise ValueError(
+                "prompt-audit standards must cover exactly the formal dataset set: "
+                + ", ".join(FORMAL_DATASETS)
+            )
         classification: dict[str, str] = {}
         grading: dict[str, str] = {}
         for dataset in sorted(datasets):
@@ -237,7 +253,10 @@ def _bundle_standard_maps(
     if classification_map is None or grading_map is None:
         raise ValueError("prompt-audit bundle requires per-dataset standard hashes")
     if set(classification_map) != datasets or set(grading_map) != datasets:
-        raise ValueError("prompt-audit standard maps must cover exactly both datasets")
+        raise ValueError(
+            "prompt-audit standard maps must cover exactly the formal dataset set: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     return {
         dataset: _standard_sha(
             classification_map[dataset], f"{dataset} classification_standard_sha256"
@@ -263,12 +282,11 @@ def audit_prompt_target_bundle(
     split: str | None = "all",
     level_field: str = "data_level",
 ) -> dict[str, Any]:
-    """Audit every dataset in the formal finance+shougang release.
+    """Audit the formal shougang release as a singleton serialized bundle.
 
-    A single field-only audit is not enough for a joint release: standards and
-    target vocabularies are dataset-local.  This function emits one redacted
-    report per dataset and a deterministic aggregate.  No record, field,
-    target, or raw standard value is copied into the returned mapping.
+    The bundle shape is retained so provenance consumers can continue to bind
+    one report, while its dataset and standard maps are strictly singleton.
+    No record, field, target, or raw standard value is copied into the result.
     """
 
     if not isinstance(records_by_dataset, Mapping):
@@ -276,8 +294,11 @@ def audit_prompt_target_bundle(
     if split is not None and (not isinstance(split, str) or not split.strip()):
         raise ValueError("split must be a non-empty string or None")
     datasets = set(records_by_dataset)
-    if datasets != set(_BUNDLE_DATASETS):
-        raise ValueError("prompt-audit bundle requires exactly finance and shougang records")
+    if datasets != FORMAL_DATASET_SET:
+        raise ValueError(
+            "prompt-audit bundle requires exactly the formal dataset set: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     classification, grading = _bundle_standard_maps(
         datasets,
         standards_by_dataset=standards_by_dataset,
@@ -287,7 +308,7 @@ def audit_prompt_target_bundle(
         grading_standard_sha256=grading_standard_sha256,
     )
     reports: dict[str, dict[str, Any]] = {}
-    for dataset in _BUNDLE_DATASETS:
+    for dataset in FORMAL_DATASETS:
         report = audit_prompt_target_conflicts(
             records_by_dataset[dataset],
             classification_standard_sha256=classification[dataset],
@@ -299,7 +320,7 @@ def audit_prompt_target_bundle(
         reports[dataset] = report
     aggregate_prompt_keys = [
         f"{dataset}\0{reports[dataset]['prompt_key_sha256']}"
-        for dataset in _BUNDLE_DATASETS
+        for dataset in FORMAL_DATASETS
     ]
     return {
         "format": "field-prompt-identifiability-bundle-v1",
@@ -313,7 +334,7 @@ def audit_prompt_target_bundle(
                 "classification_standard_sha256": classification[dataset],
                 "grading_standard_sha256": grading[dataset],
             }
-            for dataset in _BUNDLE_DATASETS
+            for dataset in FORMAL_DATASETS
         },
         "records_audited": sum(report["records_audited"] for report in reports.values()),
         "prompt_keys": sum(report["prompt_keys"] for report in reports.values()),
@@ -345,17 +366,22 @@ def require_identifiable_prompt_bundle(report: Mapping[str, Any]) -> None:
     if report.get("format") != "field-prompt-identifiability-bundle-v1":
         raise ValueError("unsupported prompt-identifiability bundle")
     datasets = report.get("datasets")
-    if not isinstance(datasets, Mapping) or set(datasets) != set(_BUNDLE_DATASETS):
-        raise ValueError("prompt-identifiability bundle must contain finance and shougang audits")
+    if not isinstance(datasets, Mapping) or set(datasets) != FORMAL_DATASET_SET:
+        raise ValueError(
+            "prompt-identifiability bundle must contain exactly the formal dataset set: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     standards = report.get("standard_hashes")
-    if not isinstance(standards, Mapping) or set(standards) != set(_BUNDLE_DATASETS):
-        raise ValueError("prompt-identifiability bundle has incomplete standard hashes")
+    if not isinstance(standards, Mapping) or set(standards) != FORMAL_DATASET_SET:
+        raise ValueError(
+            "prompt-identifiability bundle has incomplete formal standard hashes"
+        )
     total_records = 0
     total_keys = 0
     total_conflicts = 0
     total_conflicting_records = 0
     aggregate_prompt_keys: list[str] = []
-    for dataset in _BUNDLE_DATASETS:
+    for dataset in FORMAL_DATASETS:
         item = datasets[dataset]
         if not isinstance(item, Mapping) or item.get("dataset") != dataset:
             raise ValueError(f"prompt-identifiability {dataset} audit is malformed")
@@ -393,7 +419,7 @@ def require_identifiable_prompt_bundle(report: Mapping[str, Any]) -> None:
             raise ValueError(f"prompt-identifiability {dataset} conflicts are malformed")
         if item.get("conflict_keys") != 0 or conflicts:
             raise ValueError(
-                "prompt-identifiability failed: field-only prompts are not identifiable for every dataset"
+                "prompt-identifiability failed: field-only prompts are not identifiable for the formal dataset"
             )
         for field in ("records_audited", "prompt_keys", "conflicting_records"):
             value = item.get(field)

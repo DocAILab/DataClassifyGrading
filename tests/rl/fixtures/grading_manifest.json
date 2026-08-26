@@ -1,7 +1,7 @@
 {
   "datasets": {
     "shougang": {
-      "path": "grading.json",
+      "path": "../../sft/fixtures/grading.json",
       "sha256": "fea9a310be423073b21b153b6b13d75877f3d364e1d78e37662ae14632387fad"
     }
   }

@@ -1,0 +1,8 @@
+# Server-verified native-tool core. This is intentionally a narrow runtime
+# contract, not a fabricated full `pip freeze`; record_environment captures
+# the complete installed environment for every released checkpoint.
+torch==2.13.0
+verl==0.9.0
+vllm==0.27.1
+transformers==5.10.4
+pyarrow==25.0.1

@@ -2,7 +2,7 @@
 
 Stage 4A scope: the reusable interfaces future RL training consumes —
 RL samples (resolved-only, target.category_id as the only label), the VeRL
-v0.8.0 five-field RL parquet exporter/validator, the unified output parser
+v0.9.0 native-tool five-field RL parquet exporter/validator, the unified output parser
 (agent.task.parser.check_*), and the shared task reward. No training
 algorithm, rollout engine, vLLM/Ray or GPU code lives here.
 """
@@ -29,12 +29,20 @@ from .reward import (
     reward_stage2_choices,
 )
 from .sample import (
+    NATIVE_TOOL_TRAJECTORY_FORMAT,
     RewardMeta,
     RlMessage,
     RlSample,
+    build_native_tool_prompt,
     build_rl_row,
     build_rl_samples,
     visible_metadata,
+)
+from .native_tools import (
+    CategoryToolEnvironment,
+    FinalToolAnswer,
+    exact_tool_reward,
+    parse_final_tool_answer,
 )
 from .cascade import (
     CASCADE_K,
@@ -67,12 +75,18 @@ from .cascade import (
 )
 
 __all__ = [
+    "NATIVE_TOOL_TRAJECTORY_FORMAT",
     "RlMessage",
     "RewardMeta",
     "RlSample",
+    "build_native_tool_prompt",
     "visible_metadata",
     "build_rl_samples",
     "build_rl_row",
+    "CategoryToolEnvironment",
+    "FinalToolAnswer",
+    "exact_tool_reward",
+    "parse_final_tool_answer",
     "RewardConfig",
     "RewardResult",
     "FULL_REWARD",

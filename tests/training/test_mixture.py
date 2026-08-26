@@ -1,4 +1,4 @@
-"""Deterministic finance+shougang sqrt-mixture planning."""
+"""Formal shougang passthrough mixture tests."""
 
 from __future__ import annotations
 
@@ -7,10 +7,17 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
+
 from agent.task import GradingConfig, LeafRegistry, TaskConfig
 from agent.task.assets import load_corpus_categories
 from agent.task.prompt_choices import PromptChoiceRegistry
-from agent.task.prompts import build_stage1_prompt, build_stage2_prompt, stage1_answer, stage2_answer
+from agent.task.prompts import (
+    build_stage1_prompt,
+    build_stage2_prompt,
+    stage1_answer,
+    stage2_answer,
+)
 from agent.training.common import build_candidates
 from agent.training.mixture import build_sqrt_mixture
 from script.verl.common.build_mixture import main
@@ -40,8 +47,13 @@ def _sft_rows(dataset: str, count: int) -> list[dict]:
                 answer = stage1_answer(candidates, choices=CHOICES)
             else:
                 prompt = build_stage2_prompt(
-                    metadata, candidates, REGISTRY, TASK,
-                    corpus=CORPUS, choices=CHOICES, grading=GRADING,
+                    metadata,
+                    candidates,
+                    REGISTRY,
+                    TASK,
+                    corpus=CORPUS,
+                    choices=CHOICES,
+                    grading=GRADING,
                 )
                 answer = stage2_answer(ground_truth, candidates, level="L2")
             rows.append(
@@ -79,52 +91,67 @@ def _rl_rows(dataset: str, count: int) -> list[dict]:
                         "source_id": source_id,
                         "metadata": {"field_name": source_id, "table_name": "T"},
                         "ground_truth_level": "L2",
-                        **({"candidates": ["a", "b", "c", "d", "e"]} if stage == "stage2" else {}),
+                        **(
+                            {"candidates": ["a", "b", "c", "d", "e"]}
+                            if stage == "stage2"
+                            else {"trajectory_format": "qwen3.5-native-tools-v1"}
+                        ),
                     },
                 }
             )
     return rows
 
 
-def test_sft_mixture_keeps_pairs_and_achieves_sqrt_weights_without_dropping_large_set() -> None:
+def test_sft_mixture_is_singleton_passthrough_and_keeps_pairs() -> None:
+    rows = _sft_rows("shougang", 16)
     result = build_sqrt_mixture(
-        {"finance": _sft_rows("finance", 4), "shougang": _sft_rows("shougang", 16)},
-        family="sft",
-        split="train",
+        {"shougang": rows}, family="sft", split="train"
     )
-    # sqrt(4):sqrt(16) = 1:2. Keeping all 16 shougang sources requires
-    # 8 finance source replicas.
-    assert result.source_counts == {"finance": 8, "shougang": 16}
-    assert result.achieved_weights == {"finance": 1 / 3, "shougang": 2 / 3}
-    assert len(result.rows) == 48
+    assert result.source_counts == {"shougang": 16}
+    assert result.input_source_counts == {"shougang": 16}
+    assert result.achieved_weights == {"shougang": 1.0}
+    assert result.sampling_policy == "single-dataset passthrough"
+    assert len(result.rows) == 32
     grouped: dict[str, set[str]] = {}
     for row in result.rows:
         grouped.setdefault(row["source_id"], set()).add(row["stage"])
-    assert grouped and all(stages == {"stage1", "stage2"} for stages in grouped.values())
+    assert len(grouped) == 16
+    assert all(stages == {"stage1", "stage2"} for stages in grouped.values())
 
 
-def test_formal_rl_mixture_contains_stage1_rows_only_with_unique_episode_ids() -> None:
+def test_formal_rl_mixture_projects_stage1_without_replication() -> None:
+    rows = _rl_rows("shougang", 16)
     result = build_sqrt_mixture(
-        {"finance": _rl_rows("finance", 4), "shougang": _rl_rows("shougang", 16)},
-        family="rl-cascade",
-        split="train",
+        {"shougang": rows}, family="rl-cascade", split="train"
     )
-    assert len(result.rows) == 24
+    assert result.source_counts == {"shougang": 16}
+    assert result.achieved_weights == {"shougang": 1.0}
+    assert len(result.rows) == 16
     source_ids = [row["extra_info"]["source_id"] for row in result.rows]
     assert len(set(source_ids)) == len(source_ids)
     assert all(row["extra_info"]["stage"] == "stage1" for row in result.rows)
-    assert all(row["data_source"].endswith("/stage1") for row in result.rows)
+    assert all(row["data_source"] == "shougang/stage1" for row in result.rows)
     assert all("candidates" not in row["extra_info"] for row in result.rows)
 
 
 def test_mixture_is_input_order_independent_and_does_not_mutate_sources() -> None:
-    inputs = {"finance": _sft_rows("finance", 4), "shougang": _sft_rows("shougang", 16)}
+    inputs = {"shougang": _sft_rows("shougang", 16)}
     original = deepcopy(inputs)
     first = build_sqrt_mixture(inputs, family="sft", split="train")
-    reversed_inputs = {name: list(reversed(rows)) for name, rows in inputs.items()}
-    second = build_sqrt_mixture(reversed_inputs, family="sft", split="train")
+    second = build_sqrt_mixture(
+        {"shougang": list(reversed(inputs["shougang"]))},
+        family="sft",
+        split="train",
+    )
     assert first.rows == second.rows
     assert inputs == original
+
+
+def test_mixture_rejects_nonformal_dataset_inputs() -> None:
+    with pytest.raises(ValueError, match="formal dataset set"):
+        build_sqrt_mixture(
+            {"finance": _sft_rows("finance", 1)}, family="sft", split="train"
+        )
 
 
 def _write_release(root: Path, dataset: str, count: int) -> None:
@@ -146,8 +173,11 @@ def _write_release(root: Path, dataset: str, count: int) -> None:
             {
                 "release": {"status": "passed", "published": True},
                 "label_gap_gate": {
-                    "status": "passed", "blocking": [], "blocking_levels": [],
-                    "waived": [], "waived_levels": [],
+                    "status": "passed",
+                    "blocking": [],
+                    "blocking_levels": [],
+                    "waived": [],
+                    "waived_levels": [],
                 },
                 "validation": {"valid": True},
                 "grading": {
@@ -165,75 +195,93 @@ def _write_release(root: Path, dataset: str, count: int) -> None:
     )
 
 
-def _mixture_args(finance: Path, shougang: Path, output: Path) -> list[str]:
+def _mixture_args(shougang: Path, output: Path) -> list[str]:
     return [
-        "--family", "sft",
-        "--input", f"finance={finance}",
-        "--input", f"shougang={shougang}",
-        "--grading-manifest", str(FIXTURES / "grading_manifest.json"),
-        "--registry", str(FIXTURES / "registry.json"),
-        "--corpus", str(FIXTURES / "corpus.json"),
-        "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name", "table_name",
-        "--grading-config", str(FIXTURES / "grading.json"),
-        "--output-dir", str(output),
+        "--family",
+        "sft",
+        "--input",
+        f"shougang={shougang}",
+        "--grading-manifest",
+        str(FIXTURES / "grading_manifest.json"),
+        "--registry",
+        str(FIXTURES / "registry.json"),
+        "--corpus",
+        str(FIXTURES / "corpus.json"),
+        "--task-config",
+        str(FIXTURES / "task.json"),
+        "--metadata-fields",
+        "field_name",
+        "table_name",
+        "--grading-config",
+        str(FIXTURES / "grading.json"),
+        "--output-dir",
+        str(output),
     ]
 
 
-def test_cli_atomically_publishes_hash_anchored_mixture_release(tmp_path: Path) -> None:
-    finance = tmp_path / "finance"
+def test_cli_atomically_publishes_singleton_mixture_release(tmp_path: Path) -> None:
     shougang = tmp_path / "shougang"
-    _write_release(finance, "finance", 4)
-    _write_release(shougang, "shougang", 16)
+    _write_release(shougang, "shougang", 4)
     output = tmp_path / "mixture"
-    assert main(_mixture_args(finance, shougang, output)) == 0
+    assert main(_mixture_args(shougang, output)) == 0
     report = json.loads((output / "export_report.json").read_text(encoding="utf-8"))
+    assert report["format"] == "dataclassify-shougang-release-v1"
+    assert report["dataset"] == "shougang"
     assert report["release"] == {"status": "passed", "published": True}
-    assert report["sampling"]["policy"] == "p(dataset) proportional to sqrt(source_count)"
-    assert report["sampling"]["train_source_counts"] == {"finance": 8, "shougang": 16}
-    assert report["official_evaluation"] == "per-dataset val/test releases only"
-    assert main(_mixture_args(finance, shougang, output)) == 2
+    assert report["sampling"]["policy"] == "single-dataset passthrough"
+    assert report["sampling"]["train_source_counts"] == {"shougang": 4}
+    assert report["sampling"]["train_input_source_counts"] == {"shougang": 4}
+    assert report["sampling"]["train_achieved_weights"] == {"shougang": 1.0}
+    assert report["official_evaluation"] == "shougang val/test release only"
+    assert main(_mixture_args(shougang, output)) == 2
+
+
+def test_cli_requires_exactly_one_shougang_input(tmp_path: Path) -> None:
+    shougang = tmp_path / "shougang"
+    _write_release(shougang, "shougang", 2)
+    with pytest.raises(ValueError, match="formal dataset set"):
+        from script.verl.common.build_mixture import _inputs
+
+        _inputs([f"finance={shougang}"])
+    with pytest.raises(ValueError, match="formal dataset set"):
+        from script.verl.common.build_mixture import _inputs
+
+        _inputs([f"shougang={shougang}", f"finance={shougang}"])
 
 
 def test_mixture_rejects_tampered_input_artifact_hash(tmp_path: Path) -> None:
-    finance = tmp_path / "finance"
     shougang = tmp_path / "shougang"
-    _write_release(finance, "finance", 2)
     _write_release(shougang, "shougang", 2)
-    (finance / "train.parquet").write_bytes(b"tampered")
-    assert main(_mixture_args(finance, shougang, tmp_path / "mixture")) == 2
+    (shougang / "train.parquet").write_bytes(b"tampered")
+    assert main(_mixture_args(shougang, tmp_path / "mixture")) == 2
 
 
 def test_mixture_rejects_missing_grading_asset_hash(tmp_path: Path) -> None:
-    finance = tmp_path / "finance"
     shougang = tmp_path / "shougang"
-    _write_release(finance, "finance", 2)
     _write_release(shougang, "shougang", 2)
-    report_path = finance / "export_report.json"
+    report_path = shougang / "export_report.json"
     payload = json.loads(report_path.read_text(encoding="utf-8"))
     payload["grading"].pop("standard_sha256")
     report_path.write_text(json.dumps(payload), encoding="utf-8")
-    assert main(_mixture_args(finance, shougang, tmp_path / "mixture")) == 2
+    assert main(_mixture_args(shougang, tmp_path / "mixture")) == 2
 
 
 def test_mixture_rejects_gap_waiver_input_release(tmp_path: Path) -> None:
-    finance = tmp_path / "finance"
     shougang = tmp_path / "shougang"
-    _write_release(finance, "finance", 2)
     _write_release(shougang, "shougang", 2)
-    report_path = finance / "export_report.json"
+    report_path = shougang / "export_report.json"
     payload = json.loads(report_path.read_text(encoding="utf-8"))
     payload["label_gap_gate"]["status"] = "waived"
     payload["label_gap_gate"]["waived"] = [{"label": "synthetic", "split": "test"}]
     report_path.write_text(json.dumps(payload), encoding="utf-8")
-    assert main(_mixture_args(finance, shougang, tmp_path / "mixture")) == 2
+    assert main(_mixture_args(shougang, tmp_path / "mixture")) == 2
 
 
-def test_val_and_test_are_concatenated_once_without_sampling() -> None:
+def test_val_and_test_are_passthrough_without_sampling() -> None:
     result = build_sqrt_mixture(
-        {"finance": _sft_rows("finance", 4), "shougang": _sft_rows("shougang", 16)},
-        family="sft",
-        split="val",
+        {"shougang": _sft_rows("shougang", 16)}, family="sft", split="val"
     )
-    assert result.source_counts == {"finance": 4, "shougang": 16}
-    assert len(result.rows) == 40
+    assert result.source_counts == {"shougang": 16}
+    assert result.input_source_counts == {"shougang": 16}
+    assert result.achieved_weights == {"shougang": 1.0}
+    assert len(result.rows) == 32

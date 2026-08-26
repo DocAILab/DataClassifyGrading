@@ -1,9 +1,9 @@
-"""Audit whether field-only prompts deterministically identify leaf+data_level.
+"""Audit whether formal shougang field-only prompts identify leaf+data_level.
 
 Only aggregate counts and SHA-256 values are written. Raw field names, target
-labels, and source ids never appear in the report or console output.  The
-``--bundle`` mode audits finance and shougang separately before producing one
-verified aggregate suitable for reference-checkpoint provenance.
+labels, and source ids never appear in the report or console output. The
+``--bundle`` mode retains the serialized provenance shape while auditing the
+single formal shougang dataset.
 """
 
 from __future__ import annotations
@@ -15,12 +15,11 @@ import sys
 from typing import Any
 
 from agent.hashing import sha256_file
+from agent.release_policy import FORMAL_DATASETS, FORMAL_DATASET_SET
 from agent.training.input_audit import (
     audit_prompt_target_bundle,
     audit_prompt_target_conflicts,
 )
-
-_DATASETS = ("finance", "shougang")
 
 
 def _args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -28,31 +27,30 @@ def _args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--canonical", action="append", default=[], required=False,
         help=(
-            "Canonical schema-v2 all.json. For --bundle use DATASET=PATH "
-            "twice; single-dataset mode accepts one plain path."
+            "Canonical schema-v2 all.json. For --bundle use the singleton "
+            "shougang=PATH entry; single-dataset mode accepts one plain path."
         ),
     )
     parser.add_argument(
         "--dataset", action="append", default=[], metavar="DATASET=PATH",
-        help="Alias for a DATASET=PATH canonical input in bundle mode",
+        help="Alias for the singleton shougang=PATH canonical input in bundle mode",
     )
     parser.add_argument(
         "--classification-standard", action="append", required=True,
         help=(
             "Exact registry/corpus standard artifact. In bundle mode use "
-            "DATASET=PATH once per dataset."
+            "shougang=PATH."
         ),
     )
     parser.add_argument(
         "--grading-standard", action="append", required=True,
         help=(
-            "Exact approved grading rubric. In bundle mode use DATASET=PATH "
-            "once per dataset."
+            "Exact approved grading rubric. In bundle mode use shougang=PATH."
         ),
     )
     parser.add_argument(
         "--bundle", action="store_true",
-        help="Emit a verified finance+shougang audit bundle",
+        help="Emit a verified singleton shougang audit bundle",
     )
     parser.add_argument("--split", default=None)
     parser.add_argument("--level-field", default="data_level")
@@ -68,14 +66,16 @@ def _named_paths(values: list[str], label: str) -> dict[str, Path]:
             raise ValueError(f"{label} bundle entries must be DATASET=PATH")
         dataset, raw_path = value.split("=", 1)
         dataset = dataset.strip()
-        if dataset not in _DATASETS or dataset in result or not raw_path.strip():
+        if dataset not in FORMAL_DATASET_SET or dataset in result or not raw_path.strip():
             raise ValueError(
-                f"{label} bundle entries must cover finance and shougang exactly once"
+                f"{label} bundle entries must cover the formal dataset set exactly once: "
+                + ", ".join(FORMAL_DATASETS)
             )
         result[dataset] = Path(raw_path).expanduser().resolve()
-    if set(result) != set(_DATASETS):
+    if set(result) != FORMAL_DATASET_SET:
         raise ValueError(
-            f"{label} bundle entries must cover finance and shougang exactly once"
+            f"{label} bundle entries must cover the formal dataset set exactly once: "
+            + ", ".join(FORMAL_DATASETS)
         )
     return result
 
@@ -159,7 +159,7 @@ def main(argv: list[str] | None = None) -> int:
                 "status": report["status"],
                 "records_audited": report["records_audited"],
                 "conflict_keys": report["conflict_keys"],
-                **({"datasets": list(_DATASETS)} if args.bundle else {}),
+                **({"datasets": list(FORMAL_DATASETS)} if args.bundle else {}),
             },
             separators=(",", ":"),
         )

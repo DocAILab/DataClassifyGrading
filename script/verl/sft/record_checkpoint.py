@@ -1,8 +1,9 @@
-"""Release and verify the merged HF model used as the unique RL reference.
+"""Release and verify the shougang merged HF model used as the RL reference.
 
-A reference release is accepted only when its complete lineage verifies:
+A reference release is accepted only when the complete shougang lineage
+verifies:
 
-    passed/approved-waived SFT export + actual parquet hashes
+    passed shougang SFT export with no gap waivers + actual parquet hashes
       -> effective VeRL config + environment + base model
       -> merged HF model tree hash
 
@@ -16,12 +17,20 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 import sys
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from agent.hashing import sha256_file
+from agent.release_policy import (
+    FORMAL_DATASETS,
+    FORMAL_DATASET_SET,
+    FORMAL_RELEASE_FORMAT,
+    FORMAL_RELEASE_NAME,
+    FORMAL_SAMPLING_POLICY,
+)
 from agent.training.input_audit import (
     require_identifiable_prompt_bundle,
     require_identifiable_prompts,
@@ -98,6 +107,75 @@ def _resolve_report_artifact(report: Path, raw_path: object) -> Path:
     )
 
 
+def _verify_sampling(report: Mapping[str, Any]) -> dict[str, Any]:
+    """Verify the formal singleton sampling contract and return it."""
+
+    sampling = report.get("sampling")
+    if not isinstance(sampling, Mapping):
+        raise ValueError("shougang SFT release must contain a sampling object")
+    expected_fields = {
+        "policy",
+        "train_input_source_counts",
+        "train_source_counts",
+        "train_achieved_weights",
+    }
+    if set(sampling) != expected_fields:
+        raise ValueError("shougang SFT release sampling lineage is malformed")
+    if sampling.get("policy") != FORMAL_SAMPLING_POLICY:
+        raise ValueError(
+            "shougang SFT release uses an unsupported sampling policy"
+        )
+
+    counts: dict[str, dict[str, int]] = {}
+    for field in ("train_input_source_counts", "train_source_counts"):
+        raw_counts = sampling.get(field)
+        if not isinstance(raw_counts, Mapping) or set(raw_counts) != FORMAL_DATASET_SET:
+            raise ValueError(
+                f"shougang SFT release sampling {field} must contain exactly shougang"
+            )
+        normalized: dict[str, int] = {}
+        for dataset in FORMAL_DATASETS:
+            count = raw_counts.get(dataset)
+            if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+                raise ValueError(
+                    f"shougang SFT release sampling {field}.{dataset} must be a positive integer"
+                )
+            normalized[dataset] = count
+        counts[field] = normalized
+    if counts["train_input_source_counts"] != counts["train_source_counts"]:
+        raise ValueError("shougang SFT release sampling source count must equal input count")
+
+    raw_weights = sampling.get("train_achieved_weights")
+    if not isinstance(raw_weights, Mapping) or set(raw_weights) != FORMAL_DATASET_SET:
+        raise ValueError(
+            "shougang SFT release sampling train_achieved_weights must contain exactly shougang"
+        )
+    weights: dict[str, float] = {}
+    for dataset in FORMAL_DATASETS:
+        weight = raw_weights.get(dataset)
+        if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+            raise ValueError(
+                f"shougang SFT release sampling train_achieved_weights.{dataset} is invalid"
+            )
+        try:
+            normalized_weight = float(weight)
+        except (OverflowError, ValueError) as exc:
+            raise ValueError(
+                f"shougang SFT release sampling train_achieved_weights.{dataset} is invalid"
+            ) from exc
+        if not math.isfinite(normalized_weight) or normalized_weight != 1.0:
+            raise ValueError(
+                "shougang SFT release sampling weight must be exactly 1.0"
+            )
+        weights[dataset] = normalized_weight
+    return {
+        "policy": FORMAL_SAMPLING_POLICY,
+        "train_input_source_counts": counts["train_input_source_counts"],
+        "train_source_counts": counts["train_source_counts"],
+        "train_achieved_weights": weights,
+    }
+
+
 def _verify_export_report(path: Path) -> dict[str, Any]:
     report = _json_object(path, "SFT export report")
     release = report.get("release")
@@ -107,57 +185,55 @@ def _verify_export_report(path: Path) -> dict[str, Any]:
         or release.get("published") is not True
     ):
         raise ValueError(
-            "export report must describe a passed published release status"
+            "export report must describe a passed published release status for shougang"
         )
     gate = report.get("label_gap_gate")
     if not isinstance(gate, Mapping):
         raise ValueError("export report has no label_gap_gate object")
     status = gate.get("status")
-    if status not in {"passed", "waived"}:
+    if status != "passed":
         raise ValueError(
-            f"export report gate status must be passed or waived, got {status!r}"
+            f"export report gate status must be passed without waiver, got {status!r}"
         )
     gap_fields = ("blocking", "blocking_levels", "waived", "waived_levels")
-    gap_values: dict[str, list[Any]] = {}
     for field in gap_fields:
         raw = gate.get(field, [])
         if raw is None:
             raw = []
         if not isinstance(raw, list):
             raise ValueError(f"export report label_gap_gate.{field} must be an array")
-        gap_values[field] = raw
-    if gap_values["blocking"] or gap_values["blocking_levels"]:
-        raise ValueError("export report still contains blocking gaps")
-    if status == "passed" and (
-        gap_values["waived"] or gap_values["waived_levels"]
-    ):
-        raise ValueError("passed export report must not contain waived gaps")
+        if raw:
+            raise ValueError("export report label/level gap gate must have no gaps or waivers")
 
     report_format = report.get("format")
-    if report_format != "dataclassify-finance-shougang-mixture-v1":
-        raise ValueError("reference checkpoint requires a finance+shougang SFT mixture report")
+    if report_format != FORMAL_RELEASE_FORMAT:
+        raise ValueError(
+            f"reference checkpoint requires the {FORMAL_RELEASE_NAME} SFT release format"
+        )
     if report.get("family") != "sft":
-        raise ValueError("reference checkpoint requires an SFT mixture report")
+        raise ValueError("reference checkpoint requires an SFT release report")
+    if report.get("dataset") != FORMAL_RELEASE_NAME:
+        raise ValueError(
+            f"shougang SFT release dataset must be {FORMAL_RELEASE_NAME}"
+        )
+    validation = report.get("validation")
+    if not isinstance(validation, Mapping) or validation.get("valid") is not True:
+        raise ValueError("shougang SFT release validation.valid must be true")
     raw_inputs = report.get("inputs")
-    input_datasets = (
-        sorted(str(dataset) for dataset in raw_inputs)
-        if isinstance(raw_inputs, Mapping)
-        else []
-    )
-    is_joint_mixture = (
-        report_format == "dataclassify-finance-shougang-mixture-v1"
-        or {"finance", "shougang"}.issubset(set(input_datasets))
-    )
-    if set(input_datasets) != {"finance", "shougang"}:
-        raise ValueError("SFT mixture report inputs must be exactly finance and shougang")
-    if is_joint_mixture and (
-        status != "passed" or gap_values["waived"] or gap_values["waived_levels"]
+    if not isinstance(raw_inputs, Mapping) or any(
+        not isinstance(dataset, str) or not isinstance(details, Mapping)
+        for dataset, details in raw_inputs.items()
     ):
-        raise ValueError("joint finance+shougang release cannot contain gap waivers")
+        raise ValueError("shougang SFT release inputs must be a dataset mapping")
+    input_datasets = sorted(raw_inputs)
+    if set(input_datasets) != FORMAL_DATASET_SET:
+        expected = ", ".join(FORMAL_DATASETS)
+        raise ValueError(f"shougang SFT release inputs must be exactly {expected}")
+    sampling = _verify_sampling(report)
 
     raw_splits = report.get("splits")
-    if not isinstance(raw_splits, Mapping):
-        raise ValueError("export report has no splits object")
+    if not isinstance(raw_splits, Mapping) or set(raw_splits) != set(_SPLITS):
+        raise ValueError("export report must contain exactly train, val, and test splits")
     parquet_sha256: dict[str, str] = {}
     parquet_paths: dict[str, str] = {}
     for split in _SPLITS:
@@ -183,23 +259,27 @@ def _verify_export_report(path: Path) -> dict[str, Any]:
         "parquet_sha256": parquet_sha256,
         "format": report_format,
         "family": report.get("family"),
+        "dataset": report.get("dataset"),
         "datasets": input_datasets,
+        "sampling": sampling,
     }
     raw_manifest = report.get("grading_manifest")
     if not isinstance(raw_manifest, Mapping):
-        raise ValueError("SFT mixture report must contain grading_manifest lineage")
+        raise ValueError("shougang SFT release must contain grading_manifest lineage")
+    if set(raw_manifest) != {"path", "sha256", "datasets"}:
+        raise ValueError("shougang SFT grading_manifest lineage is malformed")
     manifest_path = raw_manifest.get("path")
     manifest_sha = raw_manifest.get("sha256")
-    if not isinstance(manifest_path, str) or not isinstance(manifest_sha, str):
-        raise ValueError("SFT mixture grading_manifest lineage is malformed")
+    if not isinstance(manifest_path, str) or not manifest_path.strip() or not isinstance(manifest_sha, str):
+        raise ValueError("shougang SFT grading_manifest lineage is malformed")
     manifest_source = Path(manifest_path)
     if not manifest_source.is_absolute():
         manifest_source = path.parent / manifest_source
     manifest_lineage = _verify_grading_manifest(manifest_source)
     if manifest_lineage["sha256"] != manifest_sha:
-        raise ValueError("SFT mixture grading_manifest sha256 mismatch")
+        raise ValueError("shougang SFT grading_manifest sha256 mismatch")
     if raw_manifest.get("datasets") != manifest_lineage["datasets"]:
-        raise ValueError("SFT mixture grading_manifest dataset lineage mismatch")
+        raise ValueError("shougang SFT grading_manifest dataset lineage mismatch")
     lineage["grading_manifest"] = manifest_lineage
     return lineage
 
@@ -222,6 +302,10 @@ def _verify_prompt_audit_file(
             raise ValueError(f"prompt-identifiability bundle rejected: {exc}") from exc
         datasets = report["datasets"]
         actual_datasets = set(datasets)
+        if actual_datasets != FORMAL_DATASET_SET:
+            raise ValueError(
+                "prompt-identifiability bundle must contain exactly shougang"
+            )
         if expected_datasets is not None and actual_datasets != expected_datasets:
             raise ValueError("prompt-identifiability bundle datasets do not match release")
         if expected_grading_hashes is not None:
@@ -244,7 +328,7 @@ def _verify_prompt_audit_file(
         }
     if require_bundle:
         raise ValueError(
-            "prompt-identifiability: joint finance+shougang release requires per-dataset prompt-audit bundle"
+            "prompt-identifiability: shougang release requires a serialized shougang prompt-audit bundle"
         )
     if expected_dataset is not None and report.get("dataset") != expected_dataset:
         raise ValueError(
@@ -273,14 +357,14 @@ def _verify_prompt_audit(
     *,
     require_bundle: bool,
     expected_datasets: set[str] | None = None,
+    expected_dataset: str | None = None,
     expected_grading_hashes: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
-    """Verify a single report or a dataset-local report mapping.
+    """Verify the serialized shougang prompt-identifiability audit.
 
-    A joint release must use a serialized bundle.  Mapping/sequence support is
-    retained for callers that already hold two report paths; it is normalized
-    to the same redacted per-dataset lineage shape but is not accepted as a
-    substitute for a bundle when ``require_bundle`` is true.
+    Dataset path mappings and sequences are deliberately rejected.  They were
+    the old joint-release API and accepting them would permit finance or other
+    stale audits to be silently substituted for the formal singleton bundle.
     """
 
     if isinstance(value, Mapping):
@@ -288,19 +372,14 @@ def _verify_prompt_audit(
             "prompt-identifiability report mapping is not a serialized bundle"
         )
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, Path)):
-        paths = list(value)
-        if len(paths) != 2:
-            raise ValueError("prompt-audit report sequence must contain both datasets")
-        return _verify_prompt_audit(
-            {dataset: paths[index] for index, dataset in enumerate(("finance", "shougang"))},
-            require_bundle=require_bundle,
-            expected_datasets=expected_datasets,
-            expected_grading_hashes=expected_grading_hashes,
+        raise ValueError(
+            "prompt-identifiability report sequence is not a serialized bundle"
         )
     return _verify_prompt_audit_file(
         value,
         require_bundle=require_bundle,
         expected_datasets=expected_datasets,
+        expected_dataset=expected_dataset,
         expected_grading_hashes=expected_grading_hashes,
     )
 
@@ -373,7 +452,7 @@ def _verify_grading_manifest(path: str | Path) -> dict[str, Any]:
         "sha256": sha256_file(source),
         "datasets": {
             dataset: {"sha256": manifest.sha256_for(dataset)}
-            for dataset in ("finance", "shougang")
+            for dataset in FORMAL_DATASETS
         },
     }
 
@@ -406,38 +485,31 @@ def build_provenance(
     # used as the only environment anchor.
     environment_path = Path(environment_report)
     _json_object(environment_path, "environment report")
+    effective_config_path = _validate_effective_config(effective_config)
 
     training_lineage = _verify_export_report(Path(export_report))
-    joint_release = set(training_lineage.get("datasets", [])) == {
-        "finance", "shougang"
-    }
+    if set(training_lineage.get("datasets", [])) != FORMAL_DATASET_SET:
+        raise ValueError("reference checkpoint requires a shougang-only SFT release")
     manifest_lineage = _verify_grading_manifest(grading_manifest)
-    expected_grading_hashes: dict[str, str] = {}
-    if manifest_lineage is not None:
-        expected_grading_hashes = {
-            dataset: details["sha256"]
-            for dataset, details in manifest_lineage["datasets"].items()
-        }
-    else:
-        # A mixture may carry a manifest lineage from its source release.  If
-        # present, use it as an additional binding for the prompt audit.
-        raw_manifest = training_lineage.get("grading_manifest")
-        if isinstance(raw_manifest, Mapping):
-            raw_datasets = raw_manifest.get("datasets")
-            if isinstance(raw_datasets, Mapping):
-                for dataset, details in raw_datasets.items():
-                    if isinstance(details, Mapping) and isinstance(
-                        details.get("sha256"), str
-                    ):
-                        expected_grading_hashes[str(dataset)] = details["sha256"]
+    report_manifest = training_lineage.get("grading_manifest")
+    if not isinstance(report_manifest, Mapping):
+        raise ValueError("shougang SFT release grading lineage is missing")
+    if report_manifest.get("sha256") != manifest_lineage.get("sha256") or report_manifest.get(
+        "datasets"
+    ) != manifest_lineage.get("datasets"):
+        raise ValueError("SFT release grading manifest does not match supplied manifest")
+    expected_grading_hashes = {
+        dataset: details["sha256"]
+        for dataset, details in manifest_lineage["datasets"].items()
+    }
 
     checkpoint_sha, files, total_bytes = tree_hash(checkpoint)
     base_sha, base_files, base_bytes = tree_hash(base)
     prompt_lineage = _verify_prompt_audit(
         prompt_audit_report,
-        require_bundle=joint_release,
-        expected_datasets={"finance", "shougang"} if joint_release else None,
-        expected_grading_hashes=expected_grading_hashes or None,
+        require_bundle=True,
+        expected_datasets=set(FORMAL_DATASET_SET),
+        expected_grading_hashes=expected_grading_hashes,
     )
     provenance: dict[str, Any] = {
         "algorithm": CHECKPOINT_HASH_ALGORITHM,
@@ -449,7 +521,7 @@ def build_provenance(
         "global_step": global_step,
         "git_commit": git_commit.lower(),
         "training_export_report": training_lineage,
-        "effective_config": _file_lineage(effective_config, "effective config"),
+        "effective_config": _file_lineage(effective_config_path, "effective config"),
         "environment_report": _file_lineage(environment_path, "environment report"),
         "prompt_identifiability": prompt_lineage,
         "base_model": {
@@ -460,8 +532,7 @@ def build_provenance(
             "total_bytes": base_bytes,
         },
     }
-    if manifest_lineage is not None:
-        provenance["grading_manifest"] = manifest_lineage
+    provenance["grading_manifest"] = manifest_lineage
     return provenance
 
 
@@ -527,9 +598,20 @@ def verify_reference_provenance(
     if sha256_file(report_file) != expected_report_sha:
         raise ValueError("training export report sha256 mismatch")
     verified_training = _verify_export_report(report_file)
-    for field in ("parquet_sha256", "gate_status", "format", "family", "datasets"):
+    for field in (
+        "parquet_sha256",
+        "gate_status",
+        "format",
+        "family",
+        "dataset",
+        "datasets",
+        "sampling",
+        "grading_manifest",
+    ):
         if verified_training.get(field) != training.get(field):
             raise ValueError(f"training export report {field} lineage mismatch")
+    if set(verified_training.get("datasets", [])) != FORMAL_DATASET_SET:
+        raise ValueError("reference provenance training report is not shougang-only")
 
     def verify_file_lineage(value: object, description: str) -> Path:
         if not isinstance(value, Mapping):
@@ -544,6 +626,7 @@ def verify_reference_provenance(
         return source
 
     effective = verify_file_lineage(provenance["effective_config"], "effective config")
+    _validate_effective_config(effective)
     environment = verify_file_lineage(provenance["environment_report"], "environment report")
     _json_object(environment, "environment report")
 
@@ -566,9 +649,11 @@ def verify_reference_provenance(
     grading_lineage = provenance["grading_manifest"]
     if not isinstance(grading_lineage, Mapping):
         raise ValueError("reference provenance grading manifest lineage is missing")
+    if set(grading_lineage) != {"path", "sha256", "datasets"}:
+        raise ValueError("reference provenance grading manifest lineage is malformed")
     manifest_path = grading_lineage.get("path")
     expected_manifest_sha = grading_lineage.get("sha256")
-    if not isinstance(manifest_path, str) or not isinstance(expected_manifest_sha, str):
+    if not isinstance(manifest_path, str) or not manifest_path.strip() or not isinstance(expected_manifest_sha, str):
         raise ValueError("reference provenance grading manifest lineage is malformed")
     manifest_file = Path(manifest_path)
     if sha256_file(manifest_file) != expected_manifest_sha:
@@ -576,6 +661,15 @@ def verify_reference_provenance(
     verified_manifest = _verify_grading_manifest(manifest_file)
     if verified_manifest["datasets"] != grading_lineage.get("datasets"):
         raise ValueError("grading manifest dataset lineage mismatch")
+    training_manifest = training.get("grading_manifest")
+    if not isinstance(training_manifest, Mapping) or training_manifest.get(
+        "sha256"
+    ) != expected_manifest_sha or training_manifest.get("datasets") != grading_lineage.get(
+        "datasets"
+    ):
+        raise ValueError("training export grading manifest lineage mismatch")
+    if set(verified_manifest["datasets"]) != FORMAL_DATASET_SET:
+        raise ValueError("reference provenance grading manifest is not shougang-only")
 
     prompt = provenance["prompt_identifiability"]
     if not isinstance(prompt, Mapping):
@@ -584,27 +678,44 @@ def verify_reference_provenance(
         dataset: details["sha256"]
         for dataset, details in verified_manifest["datasets"].items()
     }
-    if prompt.get("kind") == "bundle":
-        prompt_path = prompt.get("path")
-        expected_prompt_sha = prompt.get("sha256")
-        if not isinstance(prompt_path, str) or not isinstance(expected_prompt_sha, str):
-            raise ValueError("reference provenance prompt bundle lineage is malformed")
-        prompt_file = Path(prompt_path)
-        if sha256_file(prompt_file) != expected_prompt_sha:
-            raise ValueError("prompt-identifiability bundle sha256 mismatch")
-        try:
-            verified_prompt = _verify_prompt_audit_file(
-                prompt_file,
-                require_bundle=True,
-                expected_datasets={"finance", "shougang"},
-                expected_grading_hashes=expected_grading_hashes,
-            )
-        except ValueError as exc:
-            raise ValueError(f"prompt-identifiability bundle rejected: {exc}") from exc
-        if verified_prompt["sha256"] != expected_prompt_sha or prompt.get("datasets") != ["finance", "shougang"]:
-            raise ValueError("reference provenance prompt bundle lineage mismatch")
-    else:
-        raise ValueError("reference provenance requires a serialized prompt-identifiability bundle")
+    if prompt.get("kind") != "bundle":
+        raise ValueError(
+            "reference provenance requires a serialized shougang prompt-identifiability bundle"
+        )
+    prompt_path = prompt.get("path")
+    expected_prompt_sha = prompt.get("sha256")
+    if not isinstance(prompt_path, str) or not prompt_path.strip() or not isinstance(expected_prompt_sha, str):
+        raise ValueError("reference provenance prompt bundle lineage is malformed")
+    prompt_file = Path(prompt_path)
+    if sha256_file(prompt_file) != expected_prompt_sha:
+        raise ValueError("prompt-identifiability bundle sha256 mismatch")
+    try:
+        verified_prompt = _verify_prompt_audit_file(
+            prompt_file,
+            require_bundle=True,
+            expected_datasets=set(FORMAL_DATASET_SET),
+            expected_grading_hashes=expected_grading_hashes,
+        )
+    except ValueError as exc:
+        raise ValueError(f"prompt-identifiability bundle rejected: {exc}") from exc
+    if set(prompt) != {
+        "kind",
+        "path",
+        "sha256",
+        "status",
+        "conflict_keys",
+        "datasets",
+        "standard_hashes",
+    }:
+        raise ValueError("reference provenance prompt bundle lineage is malformed")
+    if (
+        verified_prompt["sha256"] != expected_prompt_sha
+        or prompt.get("datasets") != list(FORMAL_DATASETS)
+        or prompt.get("status") != "passed"
+        or prompt.get("conflict_keys") != 0
+        or prompt.get("standard_hashes") != verified_prompt["standard_hashes"]
+    ):
+        raise ValueError("reference provenance prompt bundle lineage mismatch")
     return provenance
 
 
@@ -615,7 +726,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--checkpoint-dir", required=True,
                         help="Merged HF reference model directory loaded by RL")
     parser.add_argument("--export-report", required=True,
-                        help="Passed/approved-waived SFT export_report.json")
+                        help="Passed shougang SFT export_report.json with no gap waivers")
     parser.add_argument("--effective-config", required=True,
                         help="Effective VeRL Hydra config saved for this run")
     parser.add_argument("--base-model", required=True,
@@ -624,15 +735,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         help="JSON manifest of the training Python/CUDA environment")
     parser.add_argument(
         "--prompt-audit-report",
-        help="Passed field-only prompt identifiability report or bundle",
+        help="Passed shougang field-only prompt-identifiability bundle",
     )
     parser.add_argument(
         "--prompt-audit-bundle", dest="prompt_audit_bundle",
-        help="Alias for --prompt-audit-report when using the joint bundle",
+        help="Alias for --prompt-audit-report (shougang bundle)",
     )
     parser.add_argument(
         "--grading-manifest", required=True,
-        help="Verified finance+shougang grading-standard manifest",
+        help="Verified shougang grading-standard manifest",
     )
     parser.add_argument("--git-commit", required=True,
                         help="Training source commit (7-40 hex characters)")
@@ -652,7 +763,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     prompt_audit = args.prompt_audit_bundle or args.prompt_audit_report
     if not prompt_audit:
-        print("prompt audit report or bundle is required", file=sys.stderr)
+        print("shougang prompt-audit bundle is required", file=sys.stderr)
         return 2
     if args.prompt_audit_bundle and args.prompt_audit_report:
         print("provide only one prompt audit option", file=sys.stderr)

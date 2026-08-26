@@ -1,4 +1,4 @@
-"""Publish a validated joint RL source release atomically.
+"""Publish a validated per-dataset RL source release atomically.
 
 The five-field VeRL rows are first written to a hidden sibling staging
 folder, validated with the same registry/corpus/task/grading contract, hashed,

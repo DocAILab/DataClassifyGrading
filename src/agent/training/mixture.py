@@ -1,10 +1,10 @@
-"""Deterministic finance+shougang static mixture for VeRL releases.
+"""Deterministic materialization for the formal shougang VeRL release.
 
-VeRL's stock dataset loaders do not expose a dataset-level weighted sampler.
-This module materializes the accepted ``p(dataset) ∝ sqrt(source_count)``
-policy without dropping the larger dataset: smaller-dataset source groups are
-cycled deterministically. SFT Stage1/Stage2 rows remain paired; formal cascade
-RL materializes one Stage1 episode row per replica.
+The formal release has one dataset and therefore uses a passthrough policy:
+source groups are never replicated or downsampled. SFT Stage1/Stage2 rows
+remain paired, while cascade RL projects each pair to one Stage1 episode row.
+The historical ``build_sqrt_mixture`` name is retained for callers that use
+this module as the static-mixture seam.
 """
 
 from __future__ import annotations
@@ -12,10 +12,14 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import dataclass
 import hashlib
-import math
 from typing import Any, Mapping, Sequence
 
-_DATASETS = ("finance", "shougang")
+from agent.release_policy import (
+    FORMAL_DATASETS,
+    FORMAL_DATASET_SET,
+    FORMAL_SAMPLING_POLICY,
+)
+from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT
 
 
 def _hash(*parts: str) -> str:
@@ -30,6 +34,7 @@ class MixtureResult:
     input_source_counts: dict[str, int]
     family: str
     split: str
+    sampling_policy: str = FORMAL_SAMPLING_POLICY
 
 
 def _source_id(row: Mapping[str, Any], family: str) -> str:
@@ -78,18 +83,15 @@ def _group_rows(
 
 
 def _targets(counts: Mapping[str, int], split: str) -> dict[str, int]:
-    if split != "train":
-        return dict(counts)
-    roots = {dataset: math.sqrt(count) for dataset, count in counts.items()}
-    total_root = sum(roots.values())
-    weights = {dataset: root / total_root for dataset, root in roots.items()}
-    # The maximum scale ensures no dataset is downsampled.  The smaller input
-    # is deterministically repeated until the accepted sqrt proportion is met.
-    scale = max(counts[dataset] / weights[dataset] for dataset in counts)
-    return {
-        dataset: max(counts[dataset], math.ceil(scale * weights[dataset] - 1e-12))
-        for dataset in counts
-    }
+    """Return passthrough source counts for every split.
+
+    ``split`` remains an argument for API compatibility with the former
+    sqrt-weighted implementation.  With one formal dataset, train/val/test
+    all have exactly the input source groups and no materialization replicas.
+    """
+
+    del split
+    return dict(counts)
 
 
 def build_sqrt_mixture(
@@ -100,24 +102,27 @@ def build_sqrt_mixture(
 ) -> MixtureResult:
     """Build deterministic rows for ``sft`` or formal ``rl-cascade``."""
 
-    if set(rows_by_dataset) != set(_DATASETS):
-        raise ValueError("mixture inputs must be exactly finance and shougang")
+    if set(rows_by_dataset) != FORMAL_DATASET_SET:
+        raise ValueError(
+            "mixture inputs must be exactly the formal dataset set: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     if family not in {"sft", "rl-cascade"}:
         raise ValueError("mixture family must be sft or rl-cascade")
     if split not in {"train", "val", "test"}:
         raise ValueError("mixture split must be train, val, or test")
     grouped = {
         dataset: _group_rows(tuple(rows_by_dataset[dataset]), family)
-        for dataset in _DATASETS
+        for dataset in FORMAL_DATASETS
     }
-    input_counts = {dataset: len(grouped[dataset]) for dataset in _DATASETS}
+    input_counts = {dataset: len(grouped[dataset]) for dataset in FORMAL_DATASETS}
     target_counts = _targets(input_counts, split)
     output: list[dict[str, Any]] = []
     # Hash truncation keeps parquet ids readable, but collisions must never be
     # silently accepted.  SFT intentionally emits one id for its paired rows;
     # formal RL emits exactly one row per episode id.
     seen_mixture_ids: set[str] = set()
-    for dataset in _DATASETS:
+    for dataset in FORMAL_DATASETS:
         sources = sorted(
             grouped[dataset], key=lambda source: (_hash(dataset, source), source)
         )
@@ -141,6 +146,10 @@ def build_sqrt_mixture(
                     }
                 else:
                     extra = deepcopy(dict(row["extra_info"]))
+                    if extra.get("trajectory_format") != NATIVE_TOOL_TRAJECTORY_FORMAT:
+                        raise ValueError(
+                            "formal RL input must use qwen3.5-native-tools-v1"
+                        )
                     extra["source_id"] = mixture_id
                     extra["stage"] = "stage1"
                     extra.pop("candidates", None)
@@ -156,7 +165,7 @@ def build_sqrt_mixture(
     )
     total = sum(target_counts.values())
     achieved = {
-        dataset: target_counts[dataset] / total for dataset in _DATASETS
+        dataset: target_counts[dataset] / total for dataset in FORMAL_DATASETS
     }
     return MixtureResult(
         rows=tuple(output),
@@ -165,6 +174,7 @@ def build_sqrt_mixture(
         input_source_counts=input_counts,
         family=family,
         split=split,
+        sampling_policy=FORMAL_SAMPLING_POLICY,
     )
 
 

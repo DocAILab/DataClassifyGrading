@@ -1,12 +1,12 @@
-"""Exporter and validator for the VeRL RL parquet (v0.8.0 five-field schema).
+"""Exporter and validator for the VeRL 0.9 native-tool RL parquet.
 
 RL rows are built from the same canonical contract as SFT: only
 resolution_status == "resolved" records with target.category_id in the
 LeafRegistry enter, split boundaries follow the original split JSON files
 by record id, and classification level_1..level_4 stay provenance.
 
-VeRL v0.8.0 RL parquet columns (verified against verl v0.8.0 RLHFDataset and
-the reward manager, which reads ``non_tensor_batch["reward_model"]
+VeRL v0.9.0 RL parquet columns (consumed by RLHFDataset and the native
+ToolAgentLoop; the reward target remains in ``non_tensor_batch["reward_model"]
 ["ground_truth"]``):
 
 - data_source: ``<dataset>/stage1`` or ``<dataset>/stage2`` — routes the
@@ -35,7 +35,12 @@ from agent.training.common import (
     require_corpus,
     require_corpus_covers_registry,
 )
-from agent.training.rl.sample import build_rl_row, build_rl_samples
+from agent.training.rl.sample import (
+    NATIVE_TOOL_TRAJECTORY_FORMAT,
+    build_native_tool_prompt,
+    build_rl_row,
+    build_rl_samples,
+)
 
 RL_SPLITS = ("train", "val", "test")
 VERL_RL_COLUMNS = ("data_source", "prompt", "ability", "reward_model", "extra_info")
@@ -145,7 +150,8 @@ def export_rl_dataset(
 
     report: dict[str, Any] = {
         "format": "verl_rl_parquet",
-        "version": "verl 0.8.0 five-field schema (data_source/prompt/ability/reward_model/extra_info)",
+        "version": "verl 0.9.0 native-tool five-field schema",
+        "trajectory_format": NATIVE_TOOL_TRAJECTORY_FORMAT,
         "label_source": "canonical target.category_id (resolution_status == resolved)",
         "candidate_policy": (
             "baseline fixture: (ground_truth + first four registry negatives) "
@@ -303,7 +309,7 @@ def _validate_row(
     corpus: Mapping[str, CorpusCategory],
     grading: GradingConfig | None = None,
 ) -> list[str]:
-    """Validate one RL parquet row against the VeRL v0.8.0 contract."""
+    """Validate one RL parquet row against the VeRL v0.9.0 contract."""
     errors: list[str] = []
 
     if set(row) != set(VERL_RL_COLUMNS):
@@ -421,9 +427,19 @@ def _validate_row(
                 errors.append("stage2 extra_info.candidates contain an ID absent from registry")
             else:
                 candidates = raw_candidates
+        trajectory_format = extra_info.get("trajectory_format")
+        if raw_stage == "stage1":
+            if grading is not None and trajectory_format != NATIVE_TOOL_TRAJECTORY_FORMAT:
+                errors.append(
+                    f"stage1 trajectory_format must be {NATIVE_TOOL_TRAJECTORY_FORMAT}"
+                )
+            elif grading is None and trajectory_format is not None:
+                errors.append("classification-only stage1 must not carry trajectory_format")
+        elif trajectory_format is not None:
+            errors.append("stage2 fixture row must not carry trajectory_format")
         unknown_keys = set(extra_info) - {
             "dataset", "stage", "source_id", "metadata", "candidates",
-            "ground_truth_level",
+            "ground_truth_level", "trajectory_format",
         }
         if unknown_keys:
             errors.append(f"extra_info contains unexpected keys: {sorted(unknown_keys)}")
@@ -433,7 +449,11 @@ def _validate_row(
     if ground_truth is not None and metadata is not None and roles == ["system", "user"]:
         expected_prompt = None
         if stage == "stage1":
-            expected_prompt = build_stage1_prompt(metadata, registry, config)
+            expected_prompt = (
+                build_native_tool_prompt(metadata, grading)
+                if grading is not None
+                else build_stage1_prompt(metadata, registry, config)
+            )
         elif stage == "stage2" and candidates is not None:
             expected_prompt = build_stage2_prompt(
                 metadata,
@@ -449,25 +469,36 @@ def _validate_row(
         ]:
             errors.append("prompt does not match registry and task contract")
         if stage == "stage1" and contents:
-            user = contents[1]
-            if '"category_id"' in user:
+            joined_prompt = "\n".join(contents)
+            if any(category_id in joined_prompt for category_id in registry.ids):
                 errors.append("stage1 prompt must not expose canonical category ids")
-            try:
-                catalog = json.loads(
-                    user.split("\n", 1)[1].split("\nField metadata:", 1)[0]
-                )
-            except (json.JSONDecodeError, AttributeError):
-                errors.append("stage1 prompt catalog must be a JSON array")
+            if grading is not None:
+                if "catalog" in contents[1].casefold() or '"candidates"' in joined_prompt:
+                    errors.append("native-tool prompt must not embed a category catalog or candidates")
+                try:
+                    visible = json.loads(contents[1].split("\n", 1)[1])
+                except (json.JSONDecodeError, AttributeError, IndexError):
+                    errors.append("native-tool user prompt must end with metadata JSON")
+                else:
+                    if visible != metadata:
+                        errors.append("native-tool user prompt metadata does not match extra_info")
             else:
-                if (
-                    not isinstance(catalog, list)
-                    or len(catalog) != len(registry.categories)
-                    or any(
-                        not (isinstance(entry, list) and len(entry) == 2)
-                        for entry in catalog
+                try:
+                    catalog = json.loads(
+                        contents[1].split("\n", 1)[1].split("\nField metadata:", 1)[0]
                     )
-                ):
-                    errors.append("stage1 prompt must render the full leaf registry catalog")
+                except (json.JSONDecodeError, AttributeError):
+                    errors.append("stage1 prompt catalog must be a JSON array")
+                else:
+                    if (
+                        not isinstance(catalog, list)
+                        or len(catalog) != len(registry.categories)
+                        or any(
+                            not (isinstance(entry, list) and len(entry) == 2)
+                            for entry in catalog
+                        )
+                    ):
+                        errors.append("stage1 prompt must render the full leaf registry catalog")
     return errors
 
 

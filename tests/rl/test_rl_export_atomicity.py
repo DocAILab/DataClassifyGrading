@@ -20,7 +20,7 @@ def _args(output: Path, *extra: str) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name",
+        "--metadata-fields", "field_name", "table_name",
         "--grading-config", str(FIXTURES / "grading.json"),
         *extra,
     ]

@@ -1,9 +1,9 @@
-"""Publish a deterministic finance+shougang sqrt-weighted VeRL release.
+"""Publish the formal deterministic shougang VeRL release.
 
-Inputs must be separately validated, passed releases. Training uses the
-accepted ``p(dataset) ∝ sqrt(source_count)`` policy. Val/test files are pooled
-only for trainer diagnostics; formal EM/F1 remains per-dataset and is never
-computed from these pooled files.
+The formal input is exactly one separately validated, passed shougang release.
+Training and evaluation use the singleton passthrough policy: SFT rows retain
+Stage1/Stage2 pairs and cascade RL projects each pair to one Stage1 row,
+without replication.
 """
 
 from __future__ import annotations
@@ -18,6 +18,12 @@ import tempfile
 from typing import Any, Mapping
 
 from agent.hashing import sha256_file
+from agent.release_policy import (
+    FORMAL_DATASETS,
+    FORMAL_DATASET_SET,
+    FORMAL_RELEASE_FORMAT,
+    FORMAL_SAMPLING_POLICY,
+)
 from agent.task import GradingConfig, LeafRegistry, TaskConfig
 from agent.task.assets import load_corpus_categories
 from agent.task.grading_manifest import DatasetGradingManifest
@@ -31,10 +37,10 @@ from agent.task.prompts import (
 from agent.training.common import build_candidates, require_corpus_covers_registry
 from agent.training.mixture import build_sqrt_mixture
 from agent.training.rl import validate_rl_dataset
+from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT
 from agent.training.sft import validate_sft_dataset
 
 _SPLITS = ("train", "val", "test")
-_DATASETS = ("finance", "shougang")
 
 
 def _args(argv: list[str] | None) -> argparse.Namespace:
@@ -42,18 +48,18 @@ def _args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument("--family", choices=("sft", "rl-cascade"), required=True)
     parser.add_argument(
         "--input", action="append", required=True, metavar="DATASET=DIR",
-        help="Exactly finance=<passed release> and shougang=<passed release>",
+        help="Exactly shougang=<passed release>",
     )
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--grading-manifest",
-        help="Optional verified per-dataset grading manifest for provenance",
+        help="Optional verified shougang grading manifest for provenance",
     )
     parser.add_argument("--registry", help="Leaf registry for output row validation")
     parser.add_argument("--corpus", help="Canonical corpus for output row validation")
     parser.add_argument("--metadata-fields", nargs="+", help="Prompt-visible fields for output validation")
     parser.add_argument("--task-config", help="Optional task config for output validation")
-    parser.add_argument("--grading-config", help="Optional joint grading config for output validation")
+    parser.add_argument("--grading-config", help="Optional grading config for output validation")
     return parser.parse_args(argv)
 
 
@@ -67,8 +73,11 @@ def _inputs(values: list[str]) -> dict[str, Path]:
         if name in result:
             raise ValueError(f"duplicate mixture input: {name}")
         result[name] = Path(raw_path).expanduser().resolve()
-    if set(result) != set(_DATASETS):
-        raise ValueError("mixture requires exactly finance and shougang inputs")
+    if set(result) != FORMAL_DATASET_SET:
+        raise ValueError(
+            "mixture requires exactly the formal dataset set: "
+            + ", ".join(FORMAL_DATASETS)
+        )
     return result
 
 
@@ -141,7 +150,7 @@ def _read_passed_release(
     if family in {"sft", "rl-cascade"}:
         grading = report.get("grading")
         if not isinstance(grading, Mapping) or grading.get("enabled") is not True:
-            raise ValueError("formal mixture inputs require joint grading")
+            raise ValueError("formal mixture inputs require grading")
         levels = grading.get("levels")
         if not isinstance(levels, list) or not levels or not all(
             isinstance(level, str) and level.strip() for level in levels
@@ -326,7 +335,7 @@ def _validate_sft_output(
     corpus: Mapping[str, Any],
     grading_manifest: DatasetGradingManifest,
 ) -> dict[str, Any]:
-    """Validate each output dataset with its own immutable grading rubric."""
+    """Validate the singleton output with its immutable grading rubric."""
 
     try:
         import pyarrow as pa
@@ -334,7 +343,7 @@ def _validate_sft_output(
     except ImportError as exc:  # pragma: no cover
         raise RuntimeError("SFT mixture validation requires pyarrow") from exc
     reports: dict[str, Any] = {}
-    for dataset in _DATASETS:
+    for dataset in FORMAL_DATASETS:
         dataset_root = staging / f".validate-{dataset}"
         dataset_root.mkdir()
         for split in _SPLITS:
@@ -385,7 +394,7 @@ def main(argv: list[str] | None = None) -> int:
         rows_by_dataset: dict[str, dict[str, list[dict[str, Any]]]] = {}
         input_lineage: dict[str, Any] = {}
         registry, task, corpus, _ = output_contract
-        for dataset in _DATASETS:
+        for dataset in FORMAL_DATASETS:
             rows_by_dataset[dataset], input_lineage[dataset] = _read_passed_release(
                 inputs[dataset], family=args.family
             )
@@ -429,7 +438,7 @@ def main(argv: list[str] | None = None) -> int:
             result = build_sqrt_mixture(
                 {
                     dataset: rows_by_dataset[dataset][split]
-                    for dataset in _DATASETS
+                    for dataset in FORMAL_DATASETS
                 },
                 family=args.family,
                 split=split,
@@ -450,7 +459,7 @@ def main(argv: list[str] | None = None) -> int:
                                 row["mixture_provenance"]["dataset"]
                             )
                             if isinstance(row.get("mixture_provenance"), Mapping)
-                            else grading_manifest.config_for("finance")
+                            else grading_manifest.config_for(FORMAL_DATASETS[0])
                         ),
                     )
                     for row in output_rows
@@ -473,12 +482,12 @@ def main(argv: list[str] | None = None) -> int:
                 "sha256": sha256_file(grading_manifest.source_path),
                 "datasets": {
                     dataset: {"sha256": grading_manifest.sha256_for(dataset)}
-                    for dataset in _DATASETS
+                    for dataset in FORMAL_DATASETS
                 },
             }
         registry, task, corpus, grading = output_contract
         if args.family == "sft" and grading is None:
-            grading = grading_manifest.config_for("finance")
+            grading = grading_manifest.config_for(FORMAL_DATASETS[0])
         validation_report: dict[str, Any]
         if args.family == "sft":
             validation_report = _validate_sft_output(
@@ -493,8 +502,13 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("formal RL mixture requires grading manifest")
             validation_report = {"valid": True, "format": "pending-cascade-validation-v1"}
         report = {
-            "format": "dataclassify-finance-shougang-mixture-v1",
+            "format": FORMAL_RELEASE_FORMAT,
             "family": args.family,
+            **(
+                {"trajectory_format": NATIVE_TOOL_TRAJECTORY_FORMAT}
+                if args.family == "rl-cascade"
+                else {}
+            ),
             "release": {"status": "passed", "published": True},
             "label_gap_gate": {
                 "status": "passed",
@@ -505,13 +519,14 @@ def main(argv: list[str] | None = None) -> int:
             },
             "validation": validation_report,
             "sampling": {
-                "policy": "p(dataset) proportional to sqrt(source_count)",
+                "policy": FORMAL_SAMPLING_POLICY,
                 "train_input_source_counts": train.input_source_counts,
                 "train_source_counts": train.source_counts,
                 "train_achieved_weights": train.achieved_weights,
             },
             "inputs": input_lineage,
-            "official_evaluation": "per-dataset val/test releases only",
+            "dataset": FORMAL_DATASETS[0],
+            "official_evaluation": "shougang val/test release only",
             **({"grading_manifest": manifest_lineage} if manifest_lineage else {}),
             "splits": split_reports,
         }

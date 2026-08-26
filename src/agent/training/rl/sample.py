@@ -1,4 +1,9 @@
-"""RL sample contract and builder for the two-stage classification task.
+"""RL source-pair builder with a native-tool runtime episode.
+
+The source export retains a Stage1/Stage2 pair for shared release validation,
+but formal mixture materialization projects only the Stage1 row. That row is
+a complete Qwen3.5 native-tool episode prompt; runtime never splices the
+fixture Stage2 prompt into the trajectory.
 
 A sample is the unit consumed by future RL training: prompt messages,
 ground truth, task metadata and reward metadata — never training-algorithm
@@ -13,11 +18,15 @@ level_1..level_4 stay provenance and are deliberately not consulted.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from pathlib import Path
 from typing import Any, Mapping
 
 from agent.task.contracts import CorpusCategory, GradingConfig, LeafRegistry, TaskConfig
-from agent.task.prompts import build_stage1_prompt, build_stage2_prompt
+from agent.task.prompts import Prompt, build_stage1_prompt, build_stage2_prompt
+
+
+NATIVE_TOOL_TRAJECTORY_FORMAT = "qwen3.5-native-tools-v1"
 from agent.training.common import build_candidates, canonical_target
 
 
@@ -83,6 +92,7 @@ class RlSample:
     # Optional joint grading target.  Kept in task/sample data (not algorithm
     # state) so Stage 1 and Stage 2 rows share one immutable level label.
     ground_truth_level: str | None = None
+    trajectory_format: str | None = None
 
     def __post_init__(self) -> None:
         if self.stage not in {"stage1", "stage2"}:
@@ -102,6 +112,37 @@ class RlSample:
             raise ValueError("stage1 sample must not carry a candidate bundle")
         if self.ground_truth_level is not None and not self.ground_truth_level.strip():
             raise ValueError("ground_truth_level must be non-empty when provided")
+        if self.trajectory_format is not None:
+            if self.stage != "stage1":
+                raise ValueError("trajectory_format is valid only for the runtime stage1 row")
+            if self.trajectory_format != NATIVE_TOOL_TRAJECTORY_FORMAT:
+                raise ValueError("unsupported RL trajectory_format")
+
+
+def build_native_tool_prompt(
+    metadata: Mapping[str, str], grading: GradingConfig
+) -> Prompt:
+    """Build the catalog-free prompt consumed by the native ToolAgentLoop."""
+
+    if set(metadata) != {"field_name", "table_name"}:
+        raise ValueError("native tool prompt metadata must be field_name+table_name")
+    rubric = [[code, description] for code, description in grading.rubric()]
+    system = (
+        "You classify one database field using the provided category tools. "
+        "You may answer directly when certain, call search_categories once, and "
+        "optionally call get_category_details or get_category_examples to resolve "
+        "ambiguity. Make at most three sequential tool calls. Your terminal response "
+        "must be exactly one JSON object with keys answer and level. answer must be "
+        "an opaque choice_id, never a category name or canonical id. level must be "
+        "one approved sensitivity code. Do not output reasoning, Markdown, or extra keys.\n"
+        "Approved sensitivity levels:\n"
+        + json.dumps(rubric, ensure_ascii=False, separators=(",", ":"))
+    )
+    user = (
+        "Classify this field metadata:\n"
+        + json.dumps(dict(metadata), ensure_ascii=False, separators=(",", ":"))
+    )
+    return Prompt(system=system, user=user)
 
 
 def visible_metadata(metadata: Mapping[str, Any], config: TaskConfig) -> dict[str, str]:
@@ -155,7 +196,11 @@ def build_rl_samples(
                 f"item {index} in {source} has grading label {ground_truth_level!r} "
                 f"outside configured levels {list(grading.levels)}"
             )
-    stage1_prompt = build_stage1_prompt(metadata, registry, config)
+    stage1_prompt = (
+        build_native_tool_prompt(metadata, grading)
+        if grading is not None
+        else build_stage1_prompt(metadata, registry, config)
+    )
     stage2_prompt = build_stage2_prompt(
         metadata,
         candidates,
@@ -177,6 +222,9 @@ def build_rl_samples(
         metadata=metadata,
         reward=RewardMeta(dataset=dataset, stage="stage1"),
         ground_truth_level=ground_truth_level,
+        trajectory_format=(
+            NATIVE_TOOL_TRAJECTORY_FORMAT if grading is not None else None
+        ),
     )
     stage2 = RlSample(
         stage="stage2",
@@ -196,7 +244,7 @@ def build_rl_samples(
 
 
 def build_rl_row(sample: RlSample, task_config: TaskConfig) -> dict[str, Any]:
-    """Convert an RL sample to one VeRL v0.8.0 RL parquet row.
+    """Convert an RL sample to one VeRL v0.9.0 RL parquet row.
 
     Five fields exactly (data_source / prompt / ability / reward_model /
     extra_info); ``prompt`` carries only system+user (rollout appends the
@@ -211,6 +259,8 @@ def build_rl_row(sample: RlSample, task_config: TaskConfig) -> dict[str, Any]:
         "metadata": dict(sample.metadata),
         "ground_truth_level": sample.ground_truth_level,
     }
+    if sample.trajectory_format is not None:
+        extra_info["trajectory_format"] = sample.trajectory_format
     if sample.stage == "stage2":
         extra_info["candidates"] = list(sample.candidates)
     return {
@@ -229,6 +279,8 @@ __all__ = [
     "RlMessage",
     "RewardMeta",
     "RlSample",
+    "NATIVE_TOOL_TRAJECTORY_FORMAT",
+    "build_native_tool_prompt",
     "visible_metadata",
     "build_rl_samples",
     "build_rl_row",

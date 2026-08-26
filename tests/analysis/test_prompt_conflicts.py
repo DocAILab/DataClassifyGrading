@@ -1,4 +1,4 @@
-"""Field-only prompt identifiability gate."""
+"""Formal shougang field-only prompt identifiability gate."""
 
 from __future__ import annotations
 
@@ -41,6 +41,7 @@ def test_same_prompt_key_with_multiple_joint_targets_is_blocking_and_redacted() 
         classification_standard_sha256=CLASSIFICATION_SHA,
         grading_standard_sha256=GRADING_SHA,
     )
+    assert report["dataset"] == "shougang"
     assert report["status"] == "failed"
     assert report["conflict_keys"] == 1
     assert report["conflicting_records"] == 2
@@ -65,6 +66,16 @@ def test_duplicate_prompt_with_same_target_is_identifiable() -> None:
     assert report["status"] == "passed"
     assert report["conflict_keys"] == 0
     require_identifiable_prompts(report)
+
+
+def test_nonformal_dataset_is_rejected() -> None:
+    with pytest.raises(ValueError, match="formal dataset"):
+        audit_prompt_target_conflicts(
+            [_record("one", "id", "leaf:a", "L1")],
+            classification_standard_sha256=CLASSIFICATION_SHA,
+            grading_standard_sha256=GRADING_SHA,
+            dataset="finance",
+        )
 
 
 def test_different_standard_hashes_are_different_prompt_contracts() -> None:
@@ -99,14 +110,20 @@ def test_cli_writes_redacted_blocking_report(tmp_path: Path) -> None:
     report = tmp_path / "audit.json"
     assert main(
         [
-            "--canonical", str(canonical),
-            "--classification-standard", str(classification),
-            "--grading-standard", str(grading),
-            "--report", str(report),
+            "--canonical",
+            str(canonical),
+            "--classification-standard",
+            str(classification),
+            "--grading-standard",
+            str(grading),
+            "--report",
+            str(report),
         ]
     ) == 1
+    payload = json.loads(report.read_text(encoding="utf-8"))
+    assert payload["dataset"] == "shougang"
+    assert payload["status"] == "failed"
     rendered = report.read_text(encoding="utf-8")
-    assert '"status": "failed"' in rendered
     assert "Secret_Field" not in rendered
     assert "secret-one" not in rendered
 
@@ -121,27 +138,23 @@ def test_missing_joint_contract_fields_fail_fast() -> None:
         )
 
 
-def test_finance_shougang_bundle_requires_two_clean_redacted_audits() -> None:
-    finance = [_record("finance-one", "finance_field", "leaf:a", "L1")]
+def test_shougang_bundle_has_single_clean_redacted_audit() -> None:
     shougang = [_record("shougang-one", "shougang_field", "leaf:b", "L2")]
     bundle = audit_prompt_target_bundle(
-        {"finance": finance, "shougang": shougang},
+        {"shougang": shougang},
         standards_by_dataset={
-            "finance": {
+            "shougang": {
                 "classification_standard_sha256": CLASSIFICATION_SHA,
                 "grading_standard_sha256": GRADING_SHA,
-            },
-            "shougang": {
-                "classification_standard_sha256": "c" * 64,
-                "grading_standard_sha256": "d" * 64,
-            },
+            }
         },
     )
     require_identifiable_prompt_bundle(bundle)
     assert bundle["status"] == "passed"
-    assert set(bundle["datasets"]) == {"finance", "shougang"}
+    assert set(bundle["datasets"]) == {"shougang"}
+    assert set(bundle["standard_hashes"]) == {"shougang"}
     rendered = json.dumps(bundle, ensure_ascii=False)
-    for forbidden in ("finance_field", "shougang_field", "leaf:a", "finance-one"):
+    for forbidden in ("shougang_field", "leaf:b", "shougang-one"):
         assert forbidden not in rendered
 
     broken = json.loads(json.dumps(bundle))
@@ -150,11 +163,30 @@ def test_finance_shougang_bundle_requires_two_clean_redacted_audits() -> None:
         require_identifiable_prompt_bundle(broken)
 
 
-def test_bundle_cli_audits_each_dataset_without_raw_values(tmp_path: Path) -> None:
-    finance = tmp_path / "finance.json"
+def test_bundle_rejects_two_dataset_inputs() -> None:
+    records = [_record("one", "id", "leaf:a", "L1")]
+    with pytest.raises(ValueError, match="formal dataset set"):
+        audit_prompt_target_bundle(
+            {"finance": records, "shougang": records},
+            standards_by_dataset={
+                "finance": {
+                    "classification_standard_sha256": CLASSIFICATION_SHA,
+                    "grading_standard_sha256": GRADING_SHA,
+                },
+                "shougang": {
+                    "classification_standard_sha256": CLASSIFICATION_SHA,
+                    "grading_standard_sha256": GRADING_SHA,
+                },
+            },
+        )
+
+
+def test_bundle_cli_audits_single_dataset_without_raw_values(tmp_path: Path) -> None:
     shougang = tmp_path / "shougang.json"
-    finance.write_text(json.dumps([_record("f-secret", "F_secret", "leaf:a", "L1")]), encoding="utf-8")
-    shougang.write_text(json.dumps([_record("s-secret", "S_secret", "leaf:b", "L2")]), encoding="utf-8")
+    shougang.write_text(
+        json.dumps([_record("s-secret", "S_secret", "leaf:b", "L2")]),
+        encoding="utf-8",
+    )
     classification = tmp_path / "classification.json"
     grading = tmp_path / "grading.json"
     classification.write_text('{"standard":"classification"}', encoding="utf-8")
@@ -163,16 +195,17 @@ def test_bundle_cli_audits_each_dataset_without_raw_values(tmp_path: Path) -> No
     assert main(
         [
             "--bundle",
-            "--canonical", f"finance={finance}",
-            "--canonical", f"shougang={shougang}",
-            "--classification-standard", f"finance={classification}",
-            "--classification-standard", f"shougang={classification}",
-            "--grading-standard", f"finance={grading}",
-            "--grading-standard", f"shougang={grading}",
-            "--report", str(output),
+            "--canonical",
+            f"shougang={shougang}",
+            "--classification-standard",
+            f"shougang={classification}",
+            "--grading-standard",
+            f"shougang={grading}",
+            "--report",
+            str(output),
         ]
     ) == 0
     payload = json.loads(output.read_text(encoding="utf-8"))
     require_identifiable_prompt_bundle(payload)
     rendered = output.read_text(encoding="utf-8")
-    assert "F_secret" not in rendered and "s-secret" not in rendered
+    assert "S_secret" not in rendered and "s-secret" not in rendered

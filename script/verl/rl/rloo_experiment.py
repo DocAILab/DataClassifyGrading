@@ -1,4 +1,4 @@
-"""Standalone VeRL v0.8.0 RLOO experiment adapter.
+"""Standalone VeRL v0.9.0 native-tool RLOO experiment adapter.
 
 This file is both the VeRL custom-reward entrypoint (``compute_score``) and a
 launcher that selects RLOO through Hydra overrides. It deliberately keeps all
@@ -24,26 +24,28 @@ import subprocess
 import sys
 from typing import Any, Mapping, Sequence
 
+from agent.release_policy import (
+    FORMAL_DATASETS,
+    FORMAL_DATASET_SET,
+    FORMAL_RELEASE_FORMAT,
+    FORMAL_RELEASE_NAME,
+    FORMAL_SAMPLING_POLICY,
+)
 from agent.task import GradingConfig, LeafRegistry
 from agent.task.grading_manifest import DatasetGradingManifest
-from agent.training.rl.cascade import (
-    CASCADE_K,
-    CASCADE_N,
-    CascadeConfig,
-    cascade_reward,
-    decode_stage1_candidates,
-    decode_stage2_output,
-)
-from agent.training.rl.reward import reward_stage1_choices, reward_stage2_choices
+from agent.training.rl.cascade import CASCADE_K, CASCADE_N
+from agent.training.rl.native_tools import exact_tool_reward
+from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT
 
-_EXPECTED_VERL_VERSION = "0.8.0"
+_EXPECTED_VERL_VERSION = "0.9.0"
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 _DATASET_ENV = "DATACLASSIFY_RLOO_DATASET"
 _REGISTRY_ENV = "DATACLASSIFY_RLOO_REGISTRY"
 _CORPUS_ENV = "DATACLASSIFY_RLOO_CORPUS"
 _GRADING_MANIFEST_ENV = "DATACLASSIFY_RLOO_GRADING_MANIFEST"
 _AGENT_LOOP_CONFIG = _REPO_ROOT / "cfg" / "verl" / "rl" / "cascade_agent_loop.yaml"
-_RELEASE_DATASETS = frozenset({"finance", "shougang"})
+_FUNCTION_TOOL_PATH = _REPO_ROOT / "script" / "verl" / "rl" / "native_tools.py"
+_RELEASE_DATASETS = FORMAL_DATASET_SET
 _GPU_TARGET = "RTX PRO 6000 96GB"
 _EXACT_VERSION = re.compile(r"^v?\d+\.\d+\.\d+(?:[.+-][0-9A-Za-z.-]+)?$")
 
@@ -68,8 +70,8 @@ class RlooExperimentConfig:
     train_max_samples: int = 8
     val_max_samples: int = 2
     max_prompt_length: int = 7168
-    # Multi-turn response space contains Stage1 assistant tokens, the masked
-    # dynamic Stage2 user bridge, and Stage2 assistant tokens.
+    # Multi-turn response space contains native assistant tool calls, masked
+    # tool observations, and one strict terminal assistant JSON response.
     max_response_length: int = 2048
     max_model_len: int = 12288
     ppo_max_token_len_per_gpu: int = 16384
@@ -109,6 +111,10 @@ class RlooExperimentConfig:
     def validate_options(self) -> None:
         if not self.dataset.strip():
             raise ValueError("dataset must be non-empty")
+        if self.dataset != FORMAL_RELEASE_NAME:
+            raise ValueError(
+                f"formal dataset must be exactly {FORMAL_RELEASE_NAME!r}"
+            )
         if not self.python_bin.strip():
             raise ValueError("python_bin must be non-empty")
         if self.rollout_n < 2:
@@ -178,25 +184,27 @@ class RlooExperimentConfig:
 
     @property
     def release_datasets(self) -> tuple[str, ...]:
-        values = tuple(
+        if self.dataset == FORMAL_RELEASE_NAME:
+            return FORMAL_DATASETS
+        return tuple(
             item.strip().lower()
             for item in re.split(r"[+,]", self.dataset)
             if item.strip()
         )
-        return values
 
     def validate_release_policy(self) -> None:
         release_datasets = self.release_datasets
         if (
-            len(release_datasets) != len(set(release_datasets))
+            self.dataset != FORMAL_RELEASE_NAME
+            or release_datasets != FORMAL_DATASETS
             or set(release_datasets) != _RELEASE_DATASETS
         ):
             raise ValueError(
-                "formal RLOO is restricted to one finance+shougang joint release"
+                f"formal RLOO is restricted to the exact {FORMAL_RELEASE_NAME} dataset"
             )
         if self.rollout_n not in (CASCADE_N, 2 * CASCADE_N):
             raise ValueError(
-                f"formal cascade rollout N must be {CASCADE_N} or {2 * CASCADE_N}"
+                f"formal RLOO sibling count must be {CASCADE_N} or {2 * CASCADE_N}"
             )
         if self.kl_coef != 0.001:
             raise ValueError("actor KL loss coefficient is fixed at 0.001")
@@ -205,7 +213,7 @@ class RlooExperimentConfig:
         if self.reference_provenance_path is None:
             raise ValueError("reference provenance JSON is required for formal RLOO")
         if self.grading_manifest_path is None:
-            raise ValueError("formal cascade RLOO requires a grading manifest")
+            raise ValueError("formal native-tool RLOO requires a grading manifest")
         if self.vllm_version is None:
             raise ValueError("vLLM exact frozen version is required; no unverified pin is assumed")
 
@@ -240,28 +248,42 @@ def _bool(value: bool) -> str:
     return "True" if value else "False"
 
 
-def sqrt_sampling_probabilities(counts: Mapping[str, int] | Sequence[int]) -> dict[str, float] | tuple[float, ...]:
-    """Return dataset sampling probabilities proportional to ``sqrt(n)``."""
+def sqrt_sampling_probabilities(
+    counts: Mapping[str, int] | Sequence[int],
+) -> dict[str, float] | tuple[float, ...]:
+    """Return the formal singleton passthrough sampling probability.
+
+    The historical helper name is retained for API compatibility, but formal
+    RLOO no longer accepts a sqrt-weighted joint dataset.  Any non-formal or
+    multi-dataset input fails closed.
+    """
 
     if isinstance(counts, Mapping):
-        values = {str(name): int(count) for name, count in counts.items()}
-        if not values or any(count < 0 for count in values.values()):
-            raise ValueError("dataset counts must be non-negative and non-empty")
-        total = sum(value ** 0.5 for value in values.values())
-        if total <= 0:
-            raise ValueError("at least one dataset count must be positive")
-        return {name: (count ** 0.5) / total for name, count in values.items()}
-    values = tuple(int(count) for count in counts)
-    if not values or any(count < 0 for count in values):
-        raise ValueError("dataset counts must be non-negative and non-empty")
-    total = sum(value ** 0.5 for value in values)
-    if total <= 0:
-        raise ValueError("at least one dataset count must be positive")
-    return tuple((count ** 0.5) / total for count in values)
+        if set(counts) != FORMAL_DATASET_SET:
+            raise ValueError(
+                f"formal sampling requires exactly the {FORMAL_RELEASE_NAME} count"
+            )
+        count = counts.get(FORMAL_RELEASE_NAME)
+        if (
+            isinstance(count, bool)
+            or not isinstance(count, int)
+            or count <= 0
+        ):
+            raise ValueError("formal sampling count must be a positive integer")
+        return {FORMAL_RELEASE_NAME: 1.0}
+    values = tuple(counts)
+    if len(values) != 1:
+        raise ValueError(
+            f"formal sampling requires exactly one {FORMAL_RELEASE_NAME} count"
+        )
+    count = values[0]
+    if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+        raise ValueError("formal sampling count must be a positive integer")
+    return (1.0,)
 
 
 def build_validation_command(config: RlooExperimentConfig) -> list[str]:
-    """Build the formal Stage1-only cascade mixture validation command."""
+    """Build the formal shougang Stage1-only release validation command."""
     config.validate_options()
     if config.grading_manifest_path is None:
         raise ValueError("cascade validation requires a grading manifest")
@@ -306,6 +328,7 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         "data.dataloader_num_workers=0",
         "data.prompt_key=prompt",
         "data.reward_fn_key=data_source",
+        "+data.apply_chat_template_kwargs.enable_thinking=False",
         f"actor_rollout_ref.model.path={config.model_path}",
         "actor_rollout_ref.model.use_remove_padding=False",
         "actor_rollout_ref.model.enable_gradient_checkpointing=True",
@@ -327,6 +350,14 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         "actor_rollout_ref.rollout.name=vllm",
         "actor_rollout_ref.rollout.mode=async",
         "actor_rollout_ref.rollout.multi_turn.enable=True",
+        "actor_rollout_ref.rollout.multi_turn.format=qwen3_coder",
+        f"actor_rollout_ref.rollout.multi_turn.function_tool_path={_FUNCTION_TOOL_PATH}",
+        "actor_rollout_ref.rollout.multi_turn.max_assistant_turns=4",
+        "actor_rollout_ref.rollout.multi_turn.max_user_turns=3",
+        "actor_rollout_ref.rollout.multi_turn.max_parallel_calls=1",
+        "actor_rollout_ref.rollout.multi_turn.max_tool_response_length=4096",
+        "actor_rollout_ref.rollout.multi_turn.tool_response_truncate_side=right",
+        "actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=strict",
         "actor_rollout_ref.rollout.agent.default_agent_loop=dataclassify_cascade",
         f"actor_rollout_ref.rollout.agent.agent_loop_config_path={_AGENT_LOOP_CONFIG}",
         "actor_rollout_ref.rollout.tensor_model_parallel_size=1",
@@ -511,9 +542,21 @@ def validate_preflight(
     return {
         "passed": True,
         "dataset": config.dataset,
-        "release": "finance+shougang",
-        "sampling": "p proportional to sqrt(n)",
-        "cascade": {"k": CASCADE_K, "n": config.rollout_n, "direct": True},
+        "release": FORMAL_RELEASE_NAME,
+        "release_format": FORMAL_RELEASE_FORMAT,
+        "sampling": FORMAL_SAMPLING_POLICY,
+        "trajectory": {
+            "format": NATIVE_TOOL_TRAJECTORY_FORMAT,
+            "search_top_k": CASCADE_K,
+            "rollout_n": config.rollout_n,
+            "max_tool_calls": 3,
+            "tools": [
+                "search_categories",
+                "get_category_details",
+                "get_category_examples",
+            ],
+            "reward": "strict category+level exact match",
+        },
         "actor": {"lora": True, "dtype": "bfloat16", "kl_loss_coef": config.kl_coef},
         "kl_in_reward": False,
         "gpu_target": config.gpu_target,
@@ -594,7 +637,7 @@ def _load_grading_manifest(path: str) -> DatasetGradingManifest:
 
 
 def _check_formal_assets(config: RlooExperimentConfig) -> dict[str, Any]:
-    """Validate immutable prompt/rubric assets before any server starts."""
+    """Validate immutable shougang prompt/rubric assets before any server starts."""
 
     registry = LeafRegistry.from_path(config.registry_path)
     missing_descriptions = sorted(
@@ -615,12 +658,12 @@ def _check_formal_assets(config: RlooExperimentConfig) -> dict[str, Any]:
     )
     invalid_gt_field = sorted(
         dataset
-        for dataset in ("finance", "shougang")
+        for dataset in FORMAL_DATASETS
         if grading_manifest.config_for(dataset).gt_field != "data_level"
     )
     if invalid_gt_field:
         raise ValueError(
-            "formal cascade grading gt_field must be data_level for: "
+            "formal shougang grading gt_field must be data_level for: "
             + ", ".join(invalid_gt_field)
         )
     return {
@@ -633,14 +676,11 @@ def _check_formal_assets(config: RlooExperimentConfig) -> dict[str, Any]:
 
 def _configured_datasets() -> frozenset[str]:
     raw = os.environ.get(_DATASET_ENV, "")
-    values = frozenset(
-        item.strip().lower()
-        for item in re.split(r"[+,]", raw)
-        if item.strip()
-    )
-    if not values:
-        raise RuntimeError(f"{_DATASET_ENV} is required")
-    return values
+    if raw != FORMAL_RELEASE_NAME:
+        raise RuntimeError(
+            f"{_DATASET_ENV} must be exactly {FORMAL_RELEASE_NAME!r}"
+        )
+    return FORMAL_DATASET_SET
 
 
 def _route(data_source: str, extra_info: Mapping[str, Any] | None) -> tuple[str, Mapping[str, Any]]:
@@ -649,9 +689,9 @@ def _route(data_source: str, extra_info: Mapping[str, Any] | None) -> tuple[str,
     try:
         dataset, stage = data_source.rsplit("/", 1)
     except ValueError:
-        raise ValueError("data_source must be '<dataset>/stage1|stage2'") from None
-    if stage not in {"stage1", "stage2"} or not dataset:
-        raise ValueError("data_source must be '<dataset>/stage1|stage2'")
+        raise ValueError("data_source must be '<dataset>/stage1'") from None
+    if stage != "stage1" or not dataset:
+        raise ValueError("formal native-tool data_source must be '<dataset>/stage1'")
     expected_datasets = _configured_datasets()
     if dataset not in expected_datasets:
         configured = ",".join(sorted(expected_datasets))
@@ -663,103 +703,11 @@ def _route(data_source: str, extra_info: Mapping[str, Any] | None) -> tuple[str,
         raise ValueError("extra_info must be a mapping")
     if extra_info.get("dataset") != dataset or extra_info.get("stage") != stage:
         raise ValueError("extra_info dataset/stage must match data_source")
+    if extra_info.get("trajectory_format") != NATIVE_TOOL_TRAJECTORY_FORMAT:
+        raise ValueError(
+            f"extra_info.trajectory_format must be {NATIVE_TOOL_TRAJECTORY_FORMAT}"
+        )
     return stage, extra_info
-
-
-def _json_objects(solution: str) -> tuple[Mapping[str, Any], ...]:
-    """Extract object-shaped JSON values from a multi-turn response.
-
-    The direct AgentLoop response contains Stage 1 JSON, a natural-language
-    bridge, and Stage 2 JSON.  VeRL's static reward callback receives the
-    decoded concatenation when a pre-computed ``reward_score`` is unavailable;
-    scanning complete objects gives that fallback a deterministic, bounded
-    parser without treating bridge prose as model output.
-    """
-
-    if not isinstance(solution, str):
-        return ()
-    decoder = json.JSONDecoder()
-    values: list[Mapping[str, Any]] = []
-    for index, character in enumerate(solution):
-        if character != "{":
-            continue
-        try:
-            value, _ = decoder.raw_decode(solution, index)
-        except json.JSONDecodeError:
-            continue
-        if isinstance(value, Mapping):
-            values.append(value)
-        if len(values) >= 32:
-            break
-    return tuple(values)
-
-
-def _static_cascade_fallback(
-    solution: str,
-    *,
-    ground_truth: str,
-    ground_truth_level: str | None,
-    registry: LeafRegistry,
-    grading: GradingConfig,
-) -> float | None:
-    """Score a complete direct response for reward-manager fallback."""
-
-    if ground_truth not in registry.ids:
-        return 0.0
-    stage1_object = next(
-        (
-            value
-            for value in _json_objects(solution)
-            if set(value) == {"candidates"}
-        ),
-        None,
-    )
-    if stage1_object is None:
-        return None
-    stage1_solution = json.dumps(stage1_object, separators=(",", ":"))
-    try:
-        candidates, stage1_errors = decode_stage1_candidates(
-            stage1_solution, registry=registry
-        )
-    except (TypeError, ValueError):
-        return 0.0
-    if stage1_errors:
-        return 0.0
-    stage2_object = next(
-        (
-            value
-            for value in _json_objects(solution)
-            if set(value) == {"answer", "level"}
-            and isinstance(value.get("answer"), str)
-            and isinstance(value.get("level"), str)
-            and value.get("level") in grading.levels
-        ),
-        None,
-    )
-    if stage2_object is None:
-        # A standalone Stage 1 response remains scoreable by the static task
-        # reward; the direct-cascade reward is used only once both objects are
-        # present.
-        return float(
-            reward_stage1_choices(
-                stage1_solution,
-                ground_truth=ground_truth,
-                registry=registry,
-            ).reward
-        )
-    stage2_solution = json.dumps(stage2_object, separators=(",", ":"))
-    leaf, level, stage2_errors = decode_stage2_output(
-        stage2_solution, candidates=candidates, grading=grading
-    )
-    if stage2_errors:
-        return 0.0
-    return cascade_reward(
-        stage1_hit=ground_truth in candidates,
-        leaf_correct=leaf == ground_truth,
-        level_correct=(ground_truth_level is not None and level == ground_truth_level),
-        valid=True,
-        config=CascadeConfig(),
-    )
 
 
 def compute_cascade_score(
@@ -771,41 +719,21 @@ def compute_cascade_score(
     registry: LeafRegistry,
     grading: "GradingConfig | None" = None,
 ) -> float:
-    """Score one complete direct-cascade trajectory.
+    """Compatibility seam for the native terminal exact-match reward.
 
-    This helper is backend agnostic and is useful to VeRL reward adapters as
-    well as CPU fake-rollout tests.  Stage 2 is decoded only against the
-    actual Stage 1 candidates; malformed either segment yields zero.
+    A non-empty Stage-1 JSON proves the caller is using the retired manual
+    cascade protocol and therefore fails closed. Native callers pass the
+    terminal assistant JSON as ``stage2_solution`` and an empty first value.
     """
 
-    if grading is None or ground_truth not in registry.ids:
-        # The formal cascade always has a dataset-specific grading rubric;
-        # silently dropping to classification-only scoring would make a
-        # malformed release look successful.  Return the safe reward instead
-        # of raising from a training reward callback.
+    if stage1_solution.strip() or grading is None or ground_truth_level is None:
         return 0.0
-    try:
-        candidates, stage1_errors = decode_stage1_candidates(
-            stage1_solution, registry=registry
-        )
-    except (TypeError, ValueError):
-        return 0.0
-    if stage1_errors:
-        return 0.0
-    try:
-        leaf, level, stage2_errors = decode_stage2_output(
-            stage2_solution, candidates=candidates, grading=grading
-        )
-    except (TypeError, ValueError):
-        return 0.0
-    if stage2_errors:
-        return 0.0
-    return cascade_reward(
-        stage1_hit=ground_truth in candidates,
-        leaf_correct=leaf == ground_truth,
-        level_correct=(ground_truth_level is not None and level == ground_truth_level),
-        valid=True,
-        config=CascadeConfig(),
+    return exact_tool_reward(
+        stage2_solution,
+        ground_truth=ground_truth,
+        ground_truth_level=ground_truth_level,
+        registry=registry,
+        grading=grading,
     )
 
 
@@ -816,63 +744,39 @@ def compute_score(
     extra_info: Mapping[str, Any] | None = None,
     **_: object,
 ) -> float:
-    """VeRL custom reward entrypoint routed through the shared task reward."""
-    stage, info = _route(data_source, extra_info)
+    """Fail-closed static fallback for the native terminal exact match.
+
+    The task AgentLoop normally supplies ``rm_scores`` directly. This callback
+    remains for offline reward probes; it accepts only a standalone strict
+    terminal JSON object, never the retired concatenated manual cascade.
+    """
+    _, info = _route(data_source, extra_info)
     registry_path = os.environ.get(_REGISTRY_ENV, "").strip()
     if not registry_path:
         raise RuntimeError(f"{_REGISTRY_ENV} is required")
     registry = _load_registry(str(Path(registry_path).resolve()))
     manifest_path = os.environ.get(_GRADING_MANIFEST_ENV, "").strip()
-    manifest_grading: GradingConfig | None = None
-    if manifest_path:
-        level = info.get("ground_truth_level")
-        if not isinstance(level, str) or not level.strip():
-            raise ValueError(
-                "formal reward requires extra_info.ground_truth_level"
-            )
-        info_level = level.strip()
-        manifest_grading = _load_grading_manifest(
-            str(Path(manifest_path).resolve())
-        ).config_for(info["dataset"])
-        if info_level not in manifest_grading.levels:
-            raise ValueError(
-                f"ground_truth_level {info_level!r} is outside the approved "
-                f"{info['dataset']} rubric"
-            )
-    else:
-        info_level = None
-    if stage == "stage1":
-        result = reward_stage1_choices(
-            solution_str,
-            ground_truth=ground_truth,
-            registry=registry,
+    if not manifest_path:
+        raise RuntimeError(f"{_GRADING_MANIFEST_ENV} is required for formal reward")
+    level = info.get("ground_truth_level")
+    if not isinstance(level, str) or not level.strip():
+        raise ValueError("formal reward requires extra_info.ground_truth_level")
+    info_level = level.strip()
+    manifest_grading = _load_grading_manifest(
+        str(Path(manifest_path).resolve())
+    ).config_for(FORMAL_RELEASE_NAME)
+    if info_level not in manifest_grading.levels:
+        raise ValueError(
+            f"ground_truth_level {info_level!r} is outside the approved "
+            f"{FORMAL_RELEASE_NAME} rubric"
         )
-        if manifest_grading is not None and not result.format_valid:
-            fallback = _static_cascade_fallback(
-                solution_str,
-                ground_truth=ground_truth,
-                ground_truth_level=info_level,
-                registry=registry,
-                grading=manifest_grading,
-            )
-            if fallback is not None:
-                return float(fallback)
-    else:
-        grading: GradingConfig | None = manifest_grading
-        expected_level: str | None = info_level
-        if grading is None and info["dataset"] in _RELEASE_DATASETS:
-            raise RuntimeError(
-                f"{_GRADING_MANIFEST_ENV} is required for formal Stage 2 reward"
-            )
-        result = reward_stage2_choices(
-            solution_str,
-            ground_truth=ground_truth,
-            candidates=info.get("candidates"),
-            registry=registry,
-            grading=grading,
-            expected_level=expected_level,
-        )
-    return float(result.reward)
+    return exact_tool_reward(
+        solution_str,
+        ground_truth=ground_truth,
+        ground_truth_level=info_level,
+        registry=registry,
+        grading=manifest_grading,
+    )
 
 
 def _check_verl_version(allow_mismatch: bool) -> str:
@@ -950,7 +854,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--reference-checkpoint-sha256")
     parser.add_argument(
         "--vllm-version",
-        help="Exact frozen vLLM version from the VeRL 0.8 compatibility lock",
+        help="Exact frozen vLLM version from the VeRL 0.9 compatibility lock",
     )
     parser.add_argument("--prompt-budget-chars", type=int, default=200_000)
     parser.add_argument("--dry-run", action="store_true")

@@ -1,4 +1,4 @@
-"""Formal Stage1-only finance+shougang cascade release validation."""
+"""Formal Stage1-only shougang release validation."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from agent.training.input_audit import audit_prompt_target_bundle
 from script.verl.common.build_mixture import main as mixture_main
 from script.verl.rl.export import main as export_main
 from script.verl.rl.validate_cascade import (
+    expected_passthrough_materialization,
     expected_sqrt_materialization,
     validate_cascade_release,
 )
@@ -21,6 +22,8 @@ from script.verl.sft.record_checkpoint import build_provenance, verify_reference
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "tests" / "sft" / "fixtures"
+RL_FIXTURES = ROOT / "tests" / "rl" / "fixtures"
+GRADING_MANIFEST = RL_FIXTURES / "grading_manifest.json"
 
 
 def _export_args(dataset: str, output: Path) -> list[str]:
@@ -36,7 +39,7 @@ def _export_args(dataset: str, output: Path) -> list[str]:
     ]
 
 
-def _sft_export_args(dataset: str, output: Path) -> list[str]:
+def _sft_export_args(output: Path) -> list[str]:
     return [
         "--canonical", str(FIXTURES / "canonical" / "all.json"),
         "--output-dir", str(output),
@@ -48,74 +51,96 @@ def _sft_export_args(dataset: str, output: Path) -> list[str]:
     ]
 
 
-def test_sqrt_weights_use_ceil_materialized_counts_for_non_square_inputs() -> None:
-    counts, weights = expected_sqrt_materialization(
-        {"finance": 425, "shougang": 14715}
-    )
-    assert counts == {"finance": 2501, "shougang": 14715}
-    assert weights == {"finance": 2501 / 17216, "shougang": 14715 / 17216}
+def _mixture_args(family: str, source: Path, output: Path) -> list[str]:
+    return [
+        "--family", family,
+        "--input", f"shougang={source}",
+        "--grading-manifest", str(GRADING_MANIFEST),
+        "--registry", str(FIXTURES / "registry.json"),
+        "--corpus", str(FIXTURES / "corpus.json"),
+        "--task-config", str(FIXTURES / "task.json"),
+        "--metadata-fields", "field_name", "table_name",
+        "--grading-config", str(FIXTURES / "grading.json"),
+        "--output-dir", str(output),
+    ]
 
 
-def test_formal_mixture_is_stage1_only_and_contract_valid(tmp_path: Path) -> None:
-    finance = tmp_path / "finance"
-    shougang = tmp_path / "shougang"
-    assert export_main(_export_args("finance", finance)) == 0
-    assert export_main(_export_args("shougang", shougang)) == 0
-    mixture = tmp_path / "mixture"
-    assert mixture_main(
-        [
-            "--family", "rl-cascade",
-            "--input", f"finance={finance}",
-            "--input", f"shougang={shougang}",
-            "--grading-manifest", str(FIXTURES / "grading_manifest.json"),
-            "--registry", str(FIXTURES / "registry.json"),
-            "--corpus", str(FIXTURES / "corpus.json"),
-            "--task-config", str(FIXTURES / "task.json"),
-            "--metadata-fields", "field_name", "table_name",
-            "--grading-config", str(FIXTURES / "grading.json"),
-            "--output-dir", str(mixture),
-        ]
-    ) == 0
+def test_passthrough_materialization_is_singleton_and_unit_weight() -> None:
+    counts, weights = expected_passthrough_materialization({"shougang": 9})
+    assert counts == {"shougang": 9}
+    assert weights == {"shougang": 1.0}
+    # The historical name is retained only as a strict compatibility alias.
+    assert expected_sqrt_materialization({"shougang": 9}) == (counts, weights)
+    try:
+        expected_passthrough_materialization({"finance": 1, "shougang": 9})
+    except ValueError:
+        pass
+    else:  # pragma: no cover - assertion gives a clearer failure than pytest.raises
+        raise AssertionError("joint materialization must fail closed")
+
+
+def test_formal_shougang_release_is_stage1_only_and_contract_valid(tmp_path: Path) -> None:
+    source = tmp_path / "shougang"
+    assert export_main(_export_args("shougang", source)) == 0
+    release = tmp_path / "release"
+    assert mixture_main(_mixture_args("rl-cascade", source, release)) == 0
+
     registry = LeafRegistry.from_path(FIXTURES / "registry.json")
     task = TaskConfig.from_path(FIXTURES / "task.json")
     corpus = {
         item.category_id: item
         for item in load_corpus_categories(FIXTURES / "corpus.json")
     }
-    grading_manifest = DatasetGradingManifest.from_path(
-        FIXTURES / "grading_manifest.json"
-    )
+    grading_manifest = DatasetGradingManifest.from_path(GRADING_MANIFEST)
     report = validate_cascade_release(
-        mixture,
+        release,
         registry=registry,
         task_config=task,
         corpus=corpus,
         grading_manifest=grading_manifest,
     )
     assert report["valid"], report
-    assert report["datasets"] == ["finance", "shougang"]
+    assert report["datasets"] == ["shougang"]
     assert report["stage2_rows"] == 0
     assert report["duplicate_source_ids"] == 0
+    assert report["rows_by_dataset"]["train"] == {"shougang": 3}
 
-    payload = json.loads((mixture / "export_report.json").read_text(encoding="utf-8"))
-    payload["sampling"]["train_achieved_weights"]["finance"] = 0.25
-    (mixture / "export_report.json").write_text(json.dumps(payload), encoding="utf-8")
+    payload = json.loads((release / "export_report.json").read_text(encoding="utf-8"))
+    assert payload["format"] == "dataclassify-shougang-release-v1"
+    assert payload["sampling"]["policy"] == "single-dataset passthrough"
+    assert set(payload["inputs"]) == {"shougang"}
+    payload["sampling"]["train_achieved_weights"]["shougang"] = 0.25
+    (release / "export_report.json").write_text(json.dumps(payload), encoding="utf-8")
     forged = validate_cascade_release(
-        mixture,
+        release,
         registry=registry,
         task_config=task,
         corpus=corpus,
         grading_manifest=grading_manifest,
     )
     assert not forged["valid"]
-    assert any("achieved weight mismatch" in error for error in forged["errors"])
+    assert any("achieved weight" in error for error in forged["errors"])
+
+    payload["sampling"]["train_achieved_weights"]["shougang"] = 1.0
+    payload["sampling"]["train_input_source_counts"]["shougang"] = 2
+    payload["sampling"]["train_source_counts"]["shougang"] = 2
+    (release / "export_report.json").write_text(json.dumps(payload), encoding="utf-8")
+    forged_count = validate_cascade_release(
+        release,
+        registry=registry,
+        task_config=task,
+        corpus=corpus,
+        grading_manifest=grading_manifest,
+    )
+    assert not forged_count["valid"]
+    assert any("does not match actual train rows" in error for error in forged_count["errors"])
 
     incomplete_registry = replace(
         registry,
         categories=(replace(registry.categories[0], description=""), *registry.categories[1:]),
     )
     rejected = validate_cascade_release(
-        mixture,
+        release,
         registry=incomplete_registry,
         task_config=task,
         corpus=corpus,
@@ -125,39 +150,60 @@ def test_formal_mixture_is_stage1_only_and_contract_valid(tmp_path: Path) -> Non
     assert any("non-empty descriptions" in error for error in rejected["errors"])
 
 
-def test_synthetic_release_to_mixture_validation_and_provenance(tmp_path: Path) -> None:
-    finance = tmp_path / "finance"
-    shougang = tmp_path / "shougang"
-    assert sft_export_main(_sft_export_args("finance", finance)) == 0
-    assert sft_export_main(_sft_export_args("shougang", shougang)) == 0
-    grading_manifest = DatasetGradingManifest.from_path(FIXTURES / "grading_manifest.json")
-    mixture = tmp_path / "mixture"
-    assert mixture_main(
-        [
-            "--family", "sft",
-            "--input", f"finance={finance}",
-            "--input", f"shougang={shougang}",
-            "--grading-manifest", str(FIXTURES / "grading_manifest.json"),
-            "--registry", str(FIXTURES / "registry.json"),
-            "--corpus", str(FIXTURES / "corpus.json"),
-            "--task-config", str(FIXTURES / "task.json"),
-            "--metadata-fields", "field_name", "table_name",
-            "--grading-config", str(FIXTURES / "grading.json"),
-            "--output-dir", str(mixture),
-        ]
-    ) == 0
+def test_legacy_joint_report_and_finance_rows_fail_closed(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "shougang"
+    assert export_main(_export_args("shougang", source)) == 0
+    release = tmp_path / "release"
+    assert mixture_main(_mixture_args("rl-cascade", source, release)) == 0
+    report_path = release / "export_report.json"
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    payload["format"] = "dataclassify-finance-shougang-mixture-v1"
+    payload["inputs"]["finance"] = payload["inputs"]["shougang"]
+    report_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    registry = LeafRegistry.from_path(FIXTURES / "registry.json")
+    task = TaskConfig.from_path(FIXTURES / "task.json")
+    corpus = {
+        item.category_id: item
+        for item in load_corpus_categories(FIXTURES / "corpus.json")
+    }
+    grading_manifest = DatasetGradingManifest.from_path(GRADING_MANIFEST)
+    report = validate_cascade_release(
+        release,
+        registry=registry,
+        task_config=task,
+        corpus=corpus,
+        grading_manifest=grading_manifest,
+    )
+    assert not report["valid"]
+    assert any("format" in error for error in report["errors"])
+    assert any("exactly the shougang input" in error for error in report["errors"])
+
+
+def test_synthetic_shougang_release_to_mixture_validation_and_provenance(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "shougang"
+    assert sft_export_main(_sft_export_args(source)) == 0
+    release = tmp_path / "release"
+    assert mixture_main(_mixture_args("sft", source, release)) == 0
     mixture_report = json.loads(
-        (mixture / "export_report.json").read_text(encoding="utf-8")
+        (release / "export_report.json").read_text(encoding="utf-8")
     )
     assert mixture_report["validation"]["valid"] is True
 
+    grading_manifest = DatasetGradingManifest.from_path(GRADING_MANIFEST)
     records = json.loads((FIXTURES / "canonical" / "all.json").read_text(encoding="utf-8"))
-    grading_sha = grading_manifest.sha256_for("finance")
+    grading_sha = grading_manifest.sha256_for("shougang")
     bundle = audit_prompt_target_bundle(
-        {"finance": records, "shougang": records},
+        {"shougang": records},
         standards_by_dataset={
-            "finance": {"classification_standard_sha256": "a" * 64, "grading_standard_sha256": grading_sha},
-            "shougang": {"classification_standard_sha256": "b" * 64, "grading_standard_sha256": grading_manifest.sha256_for("shougang")},
+            "shougang": {
+                "classification_standard_sha256": "b" * 64,
+                "grading_standard_sha256": grading_sha,
+            }
         },
     )
     audit_path = tmp_path / "prompt-audit-bundle.json"
@@ -178,17 +224,20 @@ def test_synthetic_release_to_mixture_validation_and_provenance(tmp_path: Path) 
     environment.write_text(json.dumps({"python": "synthetic"}), encoding="utf-8")
     provenance = build_provenance(
         checkpoint,
-        mixture / "export_report.json",
+        release / "export_report.json",
         effective_config=effective_config,
         base_model=base,
         environment_report=environment,
         prompt_audit_report=audit_path,
-        grading_manifest=FIXTURES / "grading_manifest.json",
+        grading_manifest=GRADING_MANIFEST,
         git_commit="a" * 40,
         global_step=1,
     )
     assert provenance["prompt_identifiability"]["kind"] == "bundle"
-    assert provenance["grading_manifest"]["datasets"]["finance"]["sha256"] == grading_sha
+    assert provenance["grading_manifest"]["datasets"]["shougang"]["sha256"] == grading_sha
     provenance_path = tmp_path / "provenance.json"
     provenance_path.write_text(json.dumps(provenance), encoding="utf-8")
-    assert verify_reference_provenance(provenance_path, checkpoint)["checkpoint_sha256"] == provenance["checkpoint_sha256"]
+    assert (
+        verify_reference_provenance(provenance_path, checkpoint)["checkpoint_sha256"]
+        == provenance["checkpoint_sha256"]
+    )

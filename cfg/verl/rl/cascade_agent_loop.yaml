@@ -3,5 +3,3 @@
   registry_path: ${oc.env:DATACLASSIFY_RLOO_REGISTRY}
   corpus_path: ${oc.env:DATACLASSIFY_RLOO_CORPUS}
   grading_manifest_path: ${oc.env:DATACLASSIFY_RLOO_GRADING_MANIFEST}
-  stage1_max_tokens: 96
-  stage2_max_tokens: 64

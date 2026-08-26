@@ -1,4 +1,4 @@
-"""Verified per-dataset grading standards for finance+shougang joint runs."""
+"""Verified grading standard manifest for the formal shougang release."""
 
 from __future__ import annotations
 
@@ -9,9 +9,9 @@ import re
 from typing import Any, Mapping
 
 from agent.hashing import sha256_file
+from agent.release_policy import FORMAL_DATASETS, FORMAL_DATASET_SET
 from .contracts import GradingConfig
 
-_DATASETS = ("finance", "shougang")
 _SHA_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -23,19 +23,22 @@ class DatasetGradingManifest:
     source_path: Path
 
     def __post_init__(self) -> None:
-        if set(self.configs) != set(_DATASETS):
+        if set(self.configs) != FORMAL_DATASET_SET:
             raise ValueError(
-                "grading manifest configs must be exactly finance and shougang"
+                "grading manifest configs must be exactly the formal dataset set: "
+                + ", ".join(FORMAL_DATASETS)
             )
-        if set(self.hashes) != set(_DATASETS):
+        if set(self.hashes) != FORMAL_DATASET_SET:
             raise ValueError(
-                "grading manifest hashes must be exactly finance and shougang"
+                "grading manifest hashes must be exactly the formal dataset set: "
+                + ", ".join(FORMAL_DATASETS)
             )
-        if set(self.paths) != set(_DATASETS):
+        if set(self.paths) != FORMAL_DATASET_SET:
             raise ValueError(
-                "grading manifest paths must be exactly finance and shougang"
+                "grading manifest paths must be exactly the formal dataset set: "
+                + ", ".join(FORMAL_DATASETS)
             )
-        for dataset in _DATASETS:
+        for dataset in FORMAL_DATASETS:
             config = self.configs[dataset]
             if not isinstance(config, GradingConfig):
                 raise ValueError(f"grading manifest {dataset} config is invalid")
@@ -85,12 +88,15 @@ class DatasetGradingManifest:
         if not isinstance(value, Mapping) or set(value) != {"datasets"}:
             raise ValueError("grading manifest must contain only a datasets object")
         datasets = value.get("datasets")
-        if not isinstance(datasets, Mapping) or set(datasets) != set(_DATASETS):
-            raise ValueError("grading manifest datasets must be exactly finance and shougang")
+        if not isinstance(datasets, Mapping) or set(datasets) != FORMAL_DATASET_SET:
+            raise ValueError(
+                "grading manifest datasets must be exactly the formal dataset set: "
+                + ", ".join(FORMAL_DATASETS)
+            )
         configs: dict[str, GradingConfig] = {}
         hashes: dict[str, str] = {}
         paths: dict[str, Path] = {}
-        for dataset in _DATASETS:
+        for dataset in FORMAL_DATASETS:
             entry = datasets[dataset]
             if not isinstance(entry, Mapping) or set(entry) != {"path", "sha256"}:
                 raise ValueError(

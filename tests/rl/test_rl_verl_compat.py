@@ -1,4 +1,4 @@
-"""VeRL 0.8 compatibility seam for the RL parquet contract.
+"""VeRL 0.9 compatibility seam for the native-tool RL contract.
 
 The compatibility job installs the pinned VeRL wheel and runs this module;
 ordinary CPU CI skips only the backend-specific test while retaining the
@@ -23,6 +23,14 @@ from agent.training.rl.reward import reward_stage2_choices
 pytestmark = pytest.mark.verl
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "tests" / "sft" / "fixtures"
+RL_FIXTURES = ROOT / "tests" / "rl" / "fixtures"
+
+
+def _require_verl09() -> None:
+    pytest.importorskip("verl")
+    version = importlib.metadata.version("verl")
+    if version != "0.9.0":
+        pytest.skip(f"native-tool compatibility requires VeRL 0.9.0, found {version}")
 
 
 def _assets():
@@ -43,7 +51,7 @@ def _export(tmp_path: Path) -> Path:
         FIXTURES / "canonical" / "all.json",
         None,
         output,
-        "demo",
+        "shougang",
         registry,
         task,
         corpus=corpus,
@@ -52,7 +60,7 @@ def _export(tmp_path: Path) -> Path:
     assert report["label_gap_gate"]["status"] == "passed"
     validation = validate_rl_dataset(
         output,
-        "demo",
+        "shougang",
         registry,
         task,
         corpus=corpus,
@@ -112,6 +120,9 @@ def test_exported_rl_parquet_has_verl_five_field_contract(tmp_path: Path) -> Non
         "reward_model",
         "extra_info",
     }
+    stage1 = next(row for row in rows if row["extra_info"]["stage"] == "stage1")
+    assert stage1["extra_info"]["trajectory_format"] == "qwen3.5-native-tools-v1"
+    assert "category catalog" not in stage1["prompt"][1]["content"].lower()
     stage2 = next(row for row in rows if row["extra_info"]["stage"] == "stage2")
     assert stage2["extra_info"]["ground_truth_level"] in {"L1", "L2", "L3", "L4"}
     assert len(stage2["extra_info"]["candidates"]) == 5
@@ -119,10 +130,9 @@ def test_exported_rl_parquet_has_verl_five_field_contract(tmp_path: Path) -> Non
 
 @pytest.mark.verl
 def test_official_agent_loop_api_and_reward_tensor_probe() -> None:
-    """Probe VeRL 0.8's CPU-visible dataclasses; never starts Ray or CUDA."""
+    """Probe VeRL 0.9's CPU-visible dataclasses; never starts Ray or CUDA."""
 
-    pytest.importorskip("verl")
-    assert importlib.metadata.version("verl") == "0.8.0"
+    _require_verl09()
     from verl.experimental.agent_loop.agent_loop import (
         AgentLoopBase,
         AgentLoopMetrics,
@@ -170,7 +180,7 @@ def test_agent_loop_config_loads_as_named_hydra_entries(monkeypatch: pytest.Monk
     for name, value in {
         "DATACLASSIFY_RLOO_REGISTRY": str(FIXTURES / "registry.json"),
         "DATACLASSIFY_RLOO_CORPUS": str(FIXTURES / "corpus.json"),
-        "DATACLASSIFY_RLOO_GRADING_MANIFEST": str(FIXTURES / "grading_manifest.json"),
+        "DATACLASSIFY_RLOO_GRADING_MANIFEST": str(RL_FIXTURES / "grading_manifest.json"),
     }.items():
         monkeypatch.setenv(name, value)
     configs = OmegaConf.load(ROOT / "cfg" / "verl" / "rl" / "cascade_agent_loop.yaml")
@@ -181,17 +191,16 @@ def test_agent_loop_config_loads_as_named_hydra_entries(monkeypatch: pytest.Monk
     )
 
 
-def test_cascade_agent_loop_uses_official_verl_08_interface() -> None:
-    pytest.importorskip("verl")
-    assert importlib.metadata.version("verl") == "0.8.0"
-    from verl.experimental.agent_loop.agent_loop import AgentLoopBase
+def test_cascade_agent_loop_uses_official_verl_09_tool_interface() -> None:
+    _require_verl09()
+    from verl.experimental.agent_loop.tool_agent_loop import ToolAgentLoop
     from script.verl.rl.cascade_agent_loop import (
         DataClassifyCascadeAgentLoop,
         VERL_AGENT_LOOP_AVAILABLE,
     )
 
     assert VERL_AGENT_LOOP_AVAILABLE
-    assert issubclass(DataClassifyCascadeAgentLoop, AgentLoopBase)
+    assert issubclass(DataClassifyCascadeAgentLoop, ToolAgentLoop)
     config_text = (
         ROOT / "cfg" / "verl" / "rl" / "cascade_agent_loop.yaml"
     ).read_text(encoding="utf-8")
@@ -200,18 +209,16 @@ def test_cascade_agent_loop_uses_official_verl_08_interface() -> None:
 
 
 @pytest.mark.verl
-def test_rl_parquet_loads_through_verl_08_rlhfdataset(tmp_path: Path) -> None:
+def test_rl_parquet_loads_through_verl_09_rlhfdataset(tmp_path: Path) -> None:
     # The regular CPU suite has no VeRL; the dedicated compat job installs
     # requirements/verl.txt and turns this into a real backend load test.
-    pytest.importorskip("verl")
-    assert importlib.metadata.version("verl") == "0.8.0"
+    _require_verl09()
     module = importlib.import_module("verl.utils.dataset.rl_dataset")
     dataset_cls = getattr(module, "RLHFDataset")
     output = _export(tmp_path)
 
-    # VeRL 0.8 has used both ``data_files`` and ``parquet_files`` names in
-    # nearby patch releases.  Inspect the installed class rather than hiding
-    # a version-specific constructor behind a fake import.
+    # Inspect the installed class rather than hiding a version-specific
+    # constructor behind a fake import.
     params = inspect.signature(dataset_cls).parameters
     kwargs: dict[str, object] = {}
     if "data_files" in params:
@@ -231,6 +238,9 @@ def test_rl_parquet_loads_through_verl_08_rlhfdataset(tmp_path: Path) -> None:
             "filter_prompts": False,
             "filter_overlong_prompts": False,
             "return_raw_chat": True,
+            "function_tool_path": str(
+                ROOT / "script" / "verl" / "rl" / "native_tools.py"
+            ),
         }
     dataset = dataset_cls(**kwargs)
     assert len(dataset) == 6

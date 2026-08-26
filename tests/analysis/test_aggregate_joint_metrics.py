@@ -1,4 +1,4 @@
-"""Equal-macro aggregation of finance and shougang joint metrics."""
+"""Singleton shougang metric summary."""
 
 from __future__ import annotations
 
@@ -20,36 +20,65 @@ def _report(path: Path, em: float, f1: float) -> Path:
     return path
 
 
-def test_overall_is_equal_dataset_macro_not_pooled_by_sample_count(tmp_path: Path) -> None:
-    finance = _report(tmp_path / "finance.json", 0.2, 0.4)
+def test_summary_is_single_shougang_report_without_cross_dataset_average(
+    tmp_path: Path,
+) -> None:
     shougang = _report(tmp_path / "shougang.json", 0.8, 0.6)
-    result = aggregate_reports({"finance": finance, "shougang": shougang})
+    result = aggregate_reports({"shougang": shougang})
+    assert result["format"] == "dataclassify-shougang-metrics-v1"
+    assert result["dataset"] == "shougang"
     assert result["overall"] == {
-        "joint_em": pytest.approx(0.5),
-        "composite_macro_f1": pytest.approx(0.5),
-        "aggregation": "equal macro over datasets",
+        "joint_em": pytest.approx(0.8),
+        "composite_macro_f1": pytest.approx(0.6),
+        "aggregation": "single-dataset passthrough",
     }
-    assert set(result["datasets"]) == {"finance", "shougang"}
-    assert all("report_sha256" in value for value in result["datasets"].values())
+    assert set(result["datasets"]) == {"shougang"}
+    assert "report_sha256" in result["datasets"]["shougang"]
 
 
-def test_cli_rejects_missing_dataset_and_writes_atomic_report(tmp_path: Path) -> None:
-    finance = _report(tmp_path / "finance.json", 0.2, 0.4)
+def test_cli_rejects_missing_or_extra_dataset_and_writes_atomic_report(
+    tmp_path: Path,
+) -> None:
     shougang = _report(tmp_path / "shougang.json", 0.8, 0.6)
     output = tmp_path / "overall.json"
     assert main(
         [
-            "--input", f"finance={finance}",
-            "--input", f"shougang={shougang}",
-            "--output", str(output),
+            "--input",
+            f"shougang={shougang}",
+            "--output",
+            str(output),
         ]
     ) == 0
-    assert json.loads(output.read_text(encoding="utf-8"))["overall"]["joint_em"] == 0.5
-    assert main(["--input", f"finance={finance}", "--output", str(tmp_path / "bad.json")]) == 2
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["overall"]["joint_em"] == 0.8
+    assert payload["dataset"] == "shougang"
+    assert (
+        main(
+            [
+                "--input",
+                f"finance={shougang}",
+                "--output",
+                str(tmp_path / "bad.json"),
+            ]
+        )
+        == 2
+    )
+    assert (
+        main(
+            [
+                "--input",
+                f"shougang={shougang}",
+                "--input",
+                f"finance={shougang}",
+                "--output",
+                str(tmp_path / "bad-extra.json"),
+            ]
+        )
+        == 2
+    )
 
 
 def test_invalid_metric_range_is_rejected(tmp_path: Path) -> None:
-    finance = _report(tmp_path / "finance.json", 1.1, 0.4)
-    shougang = _report(tmp_path / "shougang.json", 0.8, 0.6)
+    shougang = _report(tmp_path / "shougang.json", 1.1, 0.4)
     with pytest.raises(ValueError, match="within"):
-        aggregate_reports({"finance": finance, "shougang": shougang})
+        aggregate_reports({"shougang": shougang})

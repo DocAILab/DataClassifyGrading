@@ -33,20 +33,20 @@ def _make_export_release(
     root: Path, *, status: str = "passed", release_status: str = "passed"
 ) -> Path:
     root.mkdir(parents=True)
-    standards: dict[str, dict[str, str]] = {}
-    for dataset, prefix in (("finance", "F"), ("shougang", "S")):
-        standard = root / f"{dataset}-grading.json"
-        standard.write_text(
-            json.dumps(
-                {
-                    "levels": ["L1", "L2", "L3", "L4"],
-                    "descriptions": [f"{prefix}-{index}" for index in range(1, 5)],
-                    "gt_field": "data_level",
-                }
-            ),
-            encoding="utf-8",
-        )
-        standards[dataset] = {"path": standard.name, "sha256": _sha256(standard)}
+    standard = root / "shougang-grading.json"
+    standard.write_text(
+        json.dumps(
+            {
+                "levels": ["L1", "L2", "L3", "L4"],
+                "descriptions": [f"S-{index}" for index in range(1, 5)],
+                "gt_field": "data_level",
+            }
+        ),
+        encoding="utf-8",
+    )
+    standards = {
+        "shougang": {"path": standard.name, "sha256": _sha256(standard)}
+    }
     manifest = root / "grading_manifest.json"
     manifest.write_text(json.dumps({"datasets": standards}), encoding="utf-8")
     splits: dict[str, dict[str, str]] = {}
@@ -72,9 +72,16 @@ def _make_export_release(
                     "status": release_status,
                     "published": release_status == "passed",
                 },
-                "format": "dataclassify-finance-shougang-mixture-v1",
+                "format": "dataclassify-shougang-release-v1",
                 "family": "sft",
-                "inputs": {"finance": {}, "shougang": {}},
+                "dataset": "shougang",
+                "sampling": {
+                    "policy": "single-dataset passthrough",
+                    "train_input_source_counts": {"shougang": 3},
+                    "train_source_counts": {"shougang": 3},
+                    "train_achieved_weights": {"shougang": 1.0},
+                },
+                "inputs": {"shougang": {}},
                 "grading_manifest": {
                     "path": manifest.name,
                     "sha256": _sha256(manifest),
@@ -117,7 +124,7 @@ def _inputs(tmp_path: Path) -> dict[str, object]:
     }
 
 
-def _make_prompt_bundle(root: Path) -> Path:
+def _make_prompt_bundle(root: Path, release_name: str = "release") -> Path:
     def record(record_id: str, field_name: str, leaf: str, level: str) -> dict:
         return {
             "id": record_id,
@@ -129,20 +136,16 @@ def _make_prompt_bundle(root: Path) -> Path:
         }
 
     manifest = json.loads(
-        (root / "release" / "grading_manifest.json").read_text(encoding="utf-8")
+        (root / release_name / "grading_manifest.json").read_text(encoding="utf-8")
     )
-    grading_hashes = {
-        dataset: details["sha256"]
-        for dataset, details in manifest["datasets"].items()
-    }
+    grading_hash = manifest["datasets"]["shougang"]["sha256"]
     report = audit_prompt_target_bundle(
-        {
-            "finance": [record("f-one", "finance-field", "leaf:f", "L1")],
-            "shougang": [record("s-one", "shougang-field", "leaf:s", "L2")],
-        },
+        {"shougang": [record("s-one", "shougang-field", "leaf:s", "L2")]},
         standards_by_dataset={
-            "finance": {"classification_standard_sha256": "a" * 64, "grading_standard_sha256": grading_hashes["finance"]},
-            "shougang": {"classification_standard_sha256": "c" * 64, "grading_standard_sha256": grading_hashes["shougang"]},
+            "shougang": {
+                "classification_standard_sha256": "c" * 64,
+                "grading_standard_sha256": grading_hash,
+            }
         },
     )
     path = root / "prompt-audit-bundle.json"
@@ -191,47 +194,63 @@ def test_provenance_verifies_release_inputs_and_final_model(tmp_path: Path) -> N
     assert verified["checkpoint_sha256"] == provenance["checkpoint_sha256"]
 
 
-def test_joint_provenance_requires_and_binds_dataset_prompt_bundle(tmp_path: Path) -> None:
+def test_shougang_provenance_requires_and_binds_singleton_prompt_bundle(tmp_path: Path) -> None:
     inputs = _inputs(tmp_path)
-    export_report = Path(inputs["export_report"])  # type: ignore[arg-type]
-    payload = json.loads(export_report.read_text(encoding="utf-8"))
-    payload["format"] = "dataclassify-finance-shougang-mixture-v1"
-    payload["family"] = "sft"
-    payload["inputs"] = {"finance": {}, "shougang": {}}
-    export_report.write_text(json.dumps(payload), encoding="utf-8")
     single = tmp_path / "single-prompt-audit.json"
-    single.write_text(
-        json.dumps({"format": "field-prompt-identifiability-v1", "status": "passed", "conflict_keys": 0}),
-        encoding="utf-8",
+    bundle = json.loads(
+        Path(inputs["prompt_audit_report"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
     )
-    with pytest.raises(ValueError, match="per-dataset prompt-audit bundle"):
+    single.write_text(json.dumps(bundle["datasets"]["shougang"]), encoding="utf-8")
+    with pytest.raises(ValueError, match="serialized shougang prompt-audit bundle"):
         build_provenance(**{**inputs, "prompt_audit_report": single})
 
-    bundle = _make_prompt_bundle(tmp_path)
-    provenance = build_provenance(**{**inputs, "prompt_audit_report": bundle})
+    provenance = build_provenance(**inputs)
     assert provenance["prompt_identifiability"]["kind"] == "bundle"
-    assert provenance["prompt_identifiability"]["datasets"] == ["finance", "shougang"]
-    provenance_path = tmp_path / "joint.provenance.json"
+    assert provenance["prompt_identifiability"]["datasets"] == ["shougang"]
+    provenance_path = tmp_path / "shougang.provenance.json"
     provenance_path.write_text(json.dumps(provenance), encoding="utf-8")
     verify_reference_provenance(provenance_path, inputs["checkpoint_dir"])  # type: ignore[arg-type]
-    bundle.write_text(bundle.read_text(encoding="utf-8").replace('"status": "passed"', '"status": "failed"', 1), encoding="utf-8")
+    prompt_path = Path(inputs["prompt_audit_report"])  # type: ignore[arg-type]
+    prompt_path.write_text(
+        prompt_path.read_text(encoding="utf-8").replace('"status": "passed"', '"status": "failed"', 1),
+        encoding="utf-8",
+    )
     with pytest.raises(ValueError, match="prompt-identifiability bundle sha256 mismatch"):
         verify_reference_provenance(provenance_path, inputs["checkpoint_dir"])  # type: ignore[arg-type]
 
 
-def test_joint_provenance_rejects_two_standalone_reports_without_serialized_bundle(tmp_path: Path) -> None:
+def test_old_joint_and_finance_release_artifacts_fail_closed(tmp_path: Path) -> None:
+    inputs = _inputs(tmp_path)
+    report = Path(inputs["export_report"])  # type: ignore[arg-type]
+    payload = json.loads(report.read_text(encoding="utf-8"))
+    payload["format"] = "dataclassify-finance-shougang-mixture-v1"
+    payload["inputs"] = {"finance": {}, "shougang": {}}
+    report.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="shougang SFT release format"):
+        build_provenance(**inputs)
+
+    payload["format"] = "dataclassify-shougang-release-v1"
+    payload["inputs"] = {"finance": {}}
+    payload["sampling"] = {
+        "policy": "single-dataset passthrough",
+        "train_input_source_counts": {"finance": 3},
+        "train_source_counts": {"finance": 3},
+        "train_achieved_weights": {"finance": 1.0},
+    }
+    report.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="inputs must be exactly shougang"):
+        build_provenance(**inputs)
+
+
+def test_shougang_provenance_rejects_standalone_reports_without_serialized_bundle(tmp_path: Path) -> None:
     inputs = _inputs(tmp_path)
     bundle = json.loads(
         Path(inputs["prompt_audit_report"]).read_text(encoding="utf-8")  # type: ignore[arg-type]
     )
-    report_paths = {
-        dataset: tmp_path / f"{dataset}-prompt-audit.json"
-        for dataset in ("finance", "shougang")
-    }
-    for dataset, path in report_paths.items():
-        path.write_text(json.dumps(bundle["datasets"][dataset]), encoding="utf-8")
-    with pytest.raises(ValueError, match="serialized bundle"):
-        build_provenance(**{**inputs, "prompt_audit_report": report_paths})
+    standalone = tmp_path / "shougang-prompt-audit.json"
+    standalone.write_text(json.dumps(bundle["datasets"]["shougang"]), encoding="utf-8")
+    with pytest.raises(ValueError, match="serialized shougang prompt-audit bundle"):
+        build_provenance(**{**inputs, "prompt_audit_report": standalone})
 
 
 def test_failed_or_forged_export_release_is_rejected(tmp_path: Path) -> None:
@@ -254,11 +273,19 @@ def test_failed_or_forged_export_release_is_rejected(tmp_path: Path) -> None:
         build_provenance(**inputs)
 
 
-def test_gap_waivers_are_rejected_for_joint_sft_mixture(tmp_path: Path) -> None:
+def test_shougang_reference_rejects_gap_waivers(tmp_path: Path) -> None:
     inputs = _inputs(tmp_path)
     waived = _make_export_release(tmp_path / "waived-release", status="waived")
-    with pytest.raises(ValueError, match="gap waiver"):
-        build_provenance(**{**inputs, "export_report": waived})
+    prompt_audit = _make_prompt_bundle(tmp_path, "waived-release")
+    with pytest.raises(ValueError, match="passed without waiver"):
+        build_provenance(
+            **{
+                **inputs,
+                "export_report": waived,
+                "prompt_audit_report": prompt_audit,
+                "grading_manifest": waived.parent / "grading_manifest.json",
+            }
+        )
 
 
 def test_provenance_rejects_invalid_metadata_and_modified_model(tmp_path: Path) -> None:
