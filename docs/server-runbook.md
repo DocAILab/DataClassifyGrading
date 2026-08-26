@@ -71,11 +71,15 @@ python -m script.canonical.split \
   --seed 42
 ```
 
-The formal task config must expose only `field_name`:
+The formal task config must expose exactly `field_name` and `table_name`:
 
 ```json
-{"metadata_fields": ["field_name"]}
+{"metadata_fields": ["field_name", "table_name"]}
 ```
+
+Contract change 2026-08-25 (owner decision): field-only prompts are ambiguous
+on real finance+shougang data (audit: 1552 conflict keys, ~54% train rows);
++table_name resolves to 15 keys / 30 rows (shougang) and 0 (finance).
 
 The classification standard is represented by the explicit registry/corpus
 JSON paths. There is no repository-local production standard lookup.
@@ -104,8 +108,9 @@ redacted per-dataset entries and is the report supplied to
 
 ## 2. Publish and validate per-dataset SFT releases
 
-Export and validate the two source releases independently. `field_name` is
-required explicitly; `data_level` is supplied by the grading config.
+Export and validate the two source releases independently. `field_name` and
+`table_name` are required explicitly; `data_level` is supplied by the grading
+config.
 
 ```bash
 for DATASET in finance shougang; do
@@ -114,7 +119,7 @@ for DATASET in finance shougang; do
     --output-dir "$RUN/releases/sft/$DATASET" \
     --registry "$ASSETS/registries/$DATASET.registry.json" \
     --corpus "$ASSETS/corpora/$DATASET.corpus.json" \
-    --metadata-fields field_name \
+    --metadata-fields field_name table_name \
     --task-config "$CFG/$DATASET.task.json" \
     --grading-config "$STANDARDS/$DATASET.grading.json"
 
@@ -122,7 +127,7 @@ for DATASET in finance shougang; do
     --dataset-dir "$RUN/releases/sft/$DATASET" \
     --registry "$ASSETS/registries/$DATASET.registry.json" \
     --corpus "$ASSETS/corpora/$DATASET.corpus.json" \
-    --metadata-fields field_name \
+    --metadata-fields field_name table_name \
     --task-config "$CFG/$DATASET.task.json" \
     --grading-config "$STANDARDS/$DATASET.grading.json" \
     --report "$RUN/releases/sft/$DATASET/validation.json"
@@ -146,7 +151,7 @@ python -m script.verl.common.build_mixture \
   --registry "$ASSETS/registries/shared.registry.json" \
   --corpus "$ASSETS/corpora/shared.corpus.json" \
   --task-config "$CFG/cascade.task.json" \
-  --metadata-fields field_name \
+  --metadata-fields field_name table_name \
   --output-dir "$RUN/releases/sft/finance-shougang"
 ```
 
@@ -219,7 +224,9 @@ python -m script.verl.sft.record_checkpoint \
 
 `--export-report`, `--prompt-audit-bundle`, and `--grading-manifest` bind the
 joint reference to passed, hashed finance+shougang artifacts. The checkpoint
-must have complete current provenance before it can be used by RL.
+must have complete current provenance before it can be used by RL. Since
+2026-08-26 the recorded `checkpoint_dir` is advisory: relocating the model
+directory only warns; the sha256-tree digest remains the binding anchor.
 
 ## 5. Build and validate the RL cascade release
 
@@ -234,7 +241,7 @@ for DATASET in finance shougang; do
     --dataset "$DATASET" \
     --registry "$ASSETS/registries/$DATASET.registry.json" \
     --corpus "$ASSETS/corpora/$DATASET.corpus.json" \
-    --metadata-fields field_name \
+    --metadata-fields field_name table_name \
     --task-config "$CFG/$DATASET.task.json" \
     --grading-config "$STANDARDS/$DATASET.grading.json"
 done
@@ -273,7 +280,7 @@ python -m script.verl.common.build_mixture \
   --registry "$ASSETS/registries/shared.registry.json" \
   --corpus "$ASSETS/corpora/shared.corpus.json" \
   --task-config "$CFG/cascade.task.json" \
-  --metadata-fields field_name \
+  --metadata-fields field_name table_name \
   --output-dir "$RUN/releases/rl/finance-shougang"
 ```
 
@@ -289,9 +296,10 @@ python -m script.verl.rl.validate_cascade \
   --report "$RUN/rl-cascade-validation.json"
 ```
 
-The validator requires `metadata_fields: ["field_name"]`, passed/published
-release metadata, the approved sqrt policy, no source-id overlap, both
-datasets in train, and no Stage-2 rows. A non-zero exit is a release stop.
+The validator requires `metadata_fields: ["field_name", "table_name"]`,
+passed/published release metadata, the approved sqrt policy, no source-id
+overlap, both datasets in train, and no Stage-2 rows. A non-zero exit is a
+release stop.
 
 ## 6. Formal RLOO preflight and launch
 
@@ -314,7 +322,10 @@ corpus, task config, and grading manifest:
 ```
 
 Formal policy fixes the joint release to `finance+shougang`, the cascade
-rollout count, actor KL settings, and the exact reference digest. RLOO
+rollout count to `CASCADE_N` or `2 * CASCADE_N` (4 or 8, recorded truthfully
+in the run manifest), actor KL settings, and the exact reference digest.
+Optional launcher knobs: `--experiment-name` for a stable run name and
+`--max-ckpt-keep` for checkpoint rotation. RLOO
 verifies provenance against the model directory before launching VeRL; it
 does not infer a starting checkpoint or a vLLM version. Use `--dry-run` on a
 CPU checkout to inspect commands, but do not call the real launch there.

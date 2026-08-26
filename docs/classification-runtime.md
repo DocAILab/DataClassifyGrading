@@ -31,7 +31,7 @@ checkout (or in ignored local directories). See [data-policy.md](data-policy.md)
 
 | Concern | Required production contract |
 | --- | --- |
-| Prompt metadata | `metadata_fields` is exactly `field_name` for the formal finance+shougang release. Do not expose `table_name` implicitly. |
+| Prompt metadata | `metadata_fields` is exactly `("field_name", "table_name")` for the formal finance+shougang release (contract change 2026-08-25, owner decision on server: field-only prompts are ambiguous on real data — audit found 1552 conflict keys / ~54% train rows; adding `table_name` resolves to 15 keys / 30 rows in shougang and 0 in finance). |
 | Classification standard | A runtime-local standard is converted outside this repository into the registry/corpus JSON consumed by `--registry` and `--corpus`; those paths are explicit. |
 | Canonical target | The resolved leaf is the canonical `category_id` (`target.category_id`, represented by the `leaf` resolution block). |
 | Joint target | Stage 2 predicts the leaf and `data_level`; grading JSON uses `gt_field: "data_level"`. |
@@ -39,9 +39,9 @@ checkout (or in ignored local directories). See [data-policy.md](data-policy.md)
 | Release lineage | Every SFT release writes `export_report.json` and per-split parquet SHA-256 values. The report is mandatory reference-provenance evidence. |
 
 A task config may carry other task metadata, but the formal cascade validator
-rejects anything other than `metadata_fields: ["field_name"]`. The `leaf` and
-`data_level` labels are never inferred from a filename or a repository-local
-default.
+rejects anything other than `metadata_fields: ["field_name", "table_name"]`.
+The `leaf` and `data_level` labels are never inferred from a filename or a
+repository-local default.
 
 ## Exact CLI inventory
 
@@ -101,13 +101,15 @@ python -m script.analysis.audit_prompt_conflicts --bundle \
 The report stores only aggregate counts and standard hashes. A non-zero
 `conflict_keys` is a blocking failure: normalized `field_name` plus the two
 standard hashes must identify one `(leaf, data_level)` pair in each dataset.
-The bundle must be passed to `record_checkpoint`; retain its per-dataset
-entries for review.
+This audit measures the field-name ambiguity that motivated the
+field_name+table_name contract; the bundle must be passed to
+`record_checkpoint`; retain its per-dataset entries for review.
 
 ### Export and validate one SFT release
 
-Export each dataset independently. Formal joint runs use `field_name` and a
-grading config whose ground-truth field is `data_level`:
+Export each dataset independently. Formal joint runs use
+`field_name table_name` and a grading config whose ground-truth field is
+`data_level`:
 
 ```bash
 python -m script.verl.sft.export \
@@ -115,7 +117,7 @@ python -m script.verl.sft.export \
   --output-dir "$RUN/releases/sft/finance" \
   --registry "$ASSETS/registries/finance.registry.json" \
   --corpus "$ASSETS/corpora/finance.corpus.json" \
-  --metadata-fields field_name \
+  --metadata-fields field_name table_name \
   --task-config "$CFG/finance.task.json" \
   --grading-config "$STANDARDS/finance.grading.json"
 
@@ -123,7 +125,7 @@ python -m script.verl.sft.validate \
   --dataset-dir "$RUN/releases/sft/finance" \
   --registry "$ASSETS/registries/finance.registry.json" \
   --corpus "$ASSETS/corpora/finance.corpus.json" \
-  --metadata-fields field_name \
+  --metadata-fields field_name table_name \
   --task-config "$CFG/finance.task.json" \
   --grading-config "$STANDARDS/finance.grading.json" \
   --report "$RUN/releases/sft/finance/validation.json"
@@ -146,7 +148,7 @@ python -m script.verl.common.build_mixture \
   --registry "$ASSETS/registries/shared.registry.json" \
   --corpus "$ASSETS/corpora/shared.corpus.json" \
   --task-config "$CFG/cascade.task.json" \
-  --metadata-fields field_name \
+  --metadata-fields field_name table_name \
   --output-dir "$RUN/releases/sft/finance-shougang"
 ```
 
@@ -212,8 +214,11 @@ are in [server-runbook.md](server-runbook.md). In brief:
    grading manifest. Its `sha256-tree-v2` digest, the passed
    `export_report.json`, effective Hydra config, environment manifest, base
    model, prompt audit, commit, and global step form the only accepted RL
-   reference. RLOO must verify this provenance against the exact model path;
-   every reference must carry current, complete provenance.
+   reference. RLOO must verify this provenance against the model directory
+   (2026-08-26: the recorded `checkpoint_dir` is advisory — a relocated model
+   directory only raises `warnings.warn`; sha256-tree/count/bytes remain the
+   binding anti-tamper anchor); every reference must carry current, complete
+   provenance.
 5. Export each canonical dataset with `script.verl.rl.export`, then build a
    second mixture with `--family rl-cascade`. Validate it with
    `script.verl.rl.validate_cascade`, passing a manifest that covers exactly
