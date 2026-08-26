@@ -63,7 +63,14 @@ def test_command_selects_rloo_without_changing_task_framework(tmp_path: Path) ->
         overrides["actor_rollout_ref.rollout.agent.agent_loop_config_path"]
     ).name == "cascade_agent_loop.yaml"
     assert overrides["reward.custom_reward_function.name"] == "compute_score"
-    assert Path(overrides["reward.custom_reward_function.path"]).name == "rloo_experiment.py"
+    # pkg:// module form (server patch 2026-08-26): verl's load_module does not
+    # register sys.modules for plain file paths, which crashes @dataclass
+    # annotation resolution in the reward worker. The pkg:// branch requires
+    # no .py suffix (ModuleNotFoundError otherwise).
+    assert (
+        overrides["reward.custom_reward_function.path"]
+        == "pkg://script/verl/rl/rloo_experiment"
+    )
     assert not any(argument.startswith("critic.") for argument in command)
     assert "grpo" not in " ".join(command).lower()
 
