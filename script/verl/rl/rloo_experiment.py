@@ -304,7 +304,7 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         f"actor_rollout_ref.model.path={config.model_path}",
         "actor_rollout_ref.model.use_remove_padding=False",
         "actor_rollout_ref.model.enable_gradient_checkpointing=True",
-        "+actor_rollout_ref.model.override_config.attn_implementation=sdpa",
+        "+actor_rollout_ref.model.override_config.attn_implementation=flash_attention_2",
         f"actor_rollout_ref.model.lora_rank={config.lora_rank}",
         f"actor_rollout_ref.model.lora_alpha={config.lora_alpha}",
         "actor_rollout_ref.model.target_modules=all-linear",
@@ -892,10 +892,13 @@ def _environment(config: RlooExperimentConfig) -> dict[str, str]:
         )
     source_path = str(_REPO_ROOT / "src")
     existing_pythonpath = environment.get("PYTHONPATH", "")
-    environment["PYTHONPATH"] = (
-        source_path
-        if not existing_pythonpath
-        else source_path + os.pathsep + existing_pythonpath
+    # script.* lives at the repo root (not under src); Ray workers do not
+    # inherit the launcher cwd, so repo root must be on PYTHONPATH too.
+    root_path = str(_REPO_ROOT)
+    environment["PYTHONPATH"] = os.pathsep.join(
+        part
+        for part in (root_path, source_path, existing_pythonpath)
+        if part
     )
     environment.setdefault("TOKENIZERS_PARALLELISM", "false")
     environment.setdefault("HYDRA_FULL_ERROR", "1")

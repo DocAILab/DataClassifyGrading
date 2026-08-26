@@ -32,7 +32,7 @@ def _sft_rows(dataset: str, count: int) -> list[dict]:
     for index in range(count):
         source_id = f"{dataset}-{index}"
         ground_truth = REGISTRY.ids[index % len(REGISTRY.ids)]
-        metadata = {"field_name": source_id}
+        metadata = {"field_name": source_id, "table_name": "T"}
         candidates = build_candidates(ground_truth, REGISTRY, source_id=source_id)
         for stage in ("stage1", "stage2"):
             if stage == "stage1":
@@ -77,7 +77,7 @@ def _rl_rows(dataset: str, count: int) -> list[dict]:
                         "dataset": dataset,
                         "stage": stage,
                         "source_id": source_id,
-                        "metadata": {"field_name": source_id},
+                        "metadata": {"field_name": source_id, "table_name": "T"},
                         "ground_truth_level": "L2",
                         **({"candidates": ["a", "b", "c", "d", "e"]} if stage == "stage2" else {}),
                     },
@@ -174,7 +174,7 @@ def _mixture_args(finance: Path, shougang: Path, output: Path) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name",
+        "--metadata-fields", "field_name", "table_name",
         "--grading-config", str(FIXTURES / "grading.json"),
         "--output-dir", str(output),
     ]

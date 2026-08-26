@@ -1,4 +1,7 @@
 {
   "task_name": "synthetic_field_classification",
-  "metadata_fields": ["field_name"]
+  "metadata_fields": [
+    "field_name",
+    "table_name"
+  ]
 }

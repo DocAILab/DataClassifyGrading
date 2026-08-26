@@ -1,8 +1,9 @@
 """Prompt-identifiability audit for the field-only joint task.
 
-When the model sees only ``field_name`` plus immutable standards, identical
-visible inputs cannot legitimately own different ``(leaf, data_level)``
-targets.  Reports intentionally contain hashes and counts only: no raw field,
+When the model sees only the visible prompt metadata (``field_name`` plus
+``table_name`` under the 2025-08-25 contract change) plus immutable
+standards, identical visible inputs cannot legitimately own different
+``(leaf, data_level)`` targets.  Reports intentionally contain hashes and counts only: no raw field,
 target, or record-id values are emitted.
 """
 
@@ -81,6 +82,15 @@ def audit_prompt_target_conflicts(
         if not isinstance(metadata, Mapping):
             raise ValueError(f"record {index} has no metadata mapping")
         field_name = normalize_field_name(metadata.get("field_name"))
+        raw_table = metadata.get("table_name")
+        if raw_table is None:
+            table_name = ""
+        elif not isinstance(raw_table, str):
+            raise ValueError(f"record {index} has non-string metadata.table_name")
+        else:
+            table_name = _WS_RE.sub(
+                " ", unicodedata.normalize("NFKC", raw_table)
+            ).strip()
         target = record.get("target")
         if not isinstance(target, Mapping):
             raise ValueError(f"record {index} has no target mapping")
@@ -93,7 +103,11 @@ def audit_prompt_target_conflicts(
             raise ValueError(f"record {index} has no {level_field}")
         if not isinstance(record_id, str) or not record_id.strip():
             raise ValueError(f"record {index} has no stable id")
-        key_sha = _digest(field_name, classification_sha, grading_sha)
+        key_sha = _digest(
+            "\x1f".join((field_name, table_name)),
+            classification_sha,
+            grading_sha,
+        )
         target_sha = _digest(leaf.strip(), level.strip())
         grouped_targets[key_sha].add(target_sha)
         grouped_records[key_sha].append(_digest(record_id.strip()))

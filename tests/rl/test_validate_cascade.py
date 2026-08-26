@@ -31,7 +31,7 @@ def _export_args(dataset: str, output: Path) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name",
+        "--metadata-fields", "field_name", "table_name",
         "--grading-config", str(FIXTURES / "grading.json"),
     ]
 
@@ -43,7 +43,7 @@ def _sft_export_args(dataset: str, output: Path) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name",
+        "--metadata-fields", "field_name", "table_name",
         "--grading-config", str(FIXTURES / "grading.json"),
     ]
 
@@ -71,7 +71,7 @@ def test_formal_mixture_is_stage1_only_and_contract_valid(tmp_path: Path) -> Non
             "--registry", str(FIXTURES / "registry.json"),
             "--corpus", str(FIXTURES / "corpus.json"),
             "--task-config", str(FIXTURES / "task.json"),
-            "--metadata-fields", "field_name",
+            "--metadata-fields", "field_name", "table_name",
             "--grading-config", str(FIXTURES / "grading.json"),
             "--output-dir", str(mixture),
         ]
@@ -141,7 +141,7 @@ def test_synthetic_release_to_mixture_validation_and_provenance(tmp_path: Path) 
             "--registry", str(FIXTURES / "registry.json"),
             "--corpus", str(FIXTURES / "corpus.json"),
             "--task-config", str(FIXTURES / "task.json"),
-            "--metadata-fields", "field_name",
+            "--metadata-fields", "field_name", "table_name",
             "--grading-config", str(FIXTURES / "grading.json"),
             "--output-dir", str(mixture),
         ]

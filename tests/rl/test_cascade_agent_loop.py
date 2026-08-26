@@ -116,7 +116,7 @@ def test_real_adapter_reuses_sticky_request_and_masks_bridge() -> None:
                 "stage": "stage1",
                 "source_id": "source-1",
                 "ground_truth_level": "L2",
-                "metadata": {"field_name": "f"},
+                "metadata": {"field_name": "f", "table_name": "t"},
             },
             reward_model={"style": "rule", "ground_truth": "demo:alpha"},
         )

@@ -230,8 +230,11 @@ def _load_output_contract(args: argparse.Namespace) -> tuple[LeafRegistry, TaskC
     config_data["metadata_fields"] = args.metadata_fields
     registry = LeafRegistry.from_path(args.registry)
     task = TaskConfig.from_mapping(config_data)
-    if task.metadata_fields != ("field_name",):
-        raise ValueError("formal mixture task metadata_fields must be exactly field_name")
+    if task.metadata_fields != ("field_name", "table_name"):
+        raise ValueError(
+            "formal mixture task metadata_fields must be field_name+table_name "
+            "(contract change 2025-08-25)"
+        )
     corpus = {
         item.category_id: item for item in load_corpus_categories(args.corpus)
     }

@@ -83,8 +83,11 @@ def validate_cascade_release(
             "grading gt_field must be data_level for: "
             + ", ".join(invalid_gt_field)
         )
-    if task_config.metadata_fields != ("field_name",):
-        errors.append("task config metadata_fields must be exactly field_name")
+    if task_config.metadata_fields != ("field_name", "table_name"):
+        errors.append(
+            "task config metadata_fields must be field_name+table_name "
+            "(contract change 2025-08-25)"
+        )
     if source_report.get("family") != "rl-cascade":
         errors.append("release family must be rl-cascade")
     if source_report.get("format") != "dataclassify-finance-shougang-mixture-v1":

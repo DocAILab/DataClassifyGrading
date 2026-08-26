@@ -93,8 +93,11 @@ def _source_from_kwargs(kwargs: Mapping[str, Any]) -> CascadeSource:
             + ", ".join(sorted(str(key) for key in unknown_extra))
         )
     metadata = _mapping(extra.get("metadata"), "extra_info.metadata")
-    if set(metadata) != {"field_name"}:
-        raise ValueError("formal cascade prompt metadata must contain only field_name")
+    if set(metadata) != {"field_name", "table_name"}:
+        raise ValueError(
+            "formal cascade prompt metadata must be field_name+table_name "
+            "(contract change 2025-08-25)"
+        )
     reward_model = _mapping(kwargs.get("reward_model"), "reward_model")
     if set(reward_model) != {"style", "ground_truth"} or reward_model.get("style") != "rule":
         raise ValueError("cascade reward_model must be the exact rule/ground_truth shape")
