@@ -494,8 +494,17 @@ def verify_reference_provenance(
 
     model = Path(model_dir)
     _validate_hf_model_dir(model, "reference HF model")
-    if provenance.get("checkpoint_dir") != model.as_posix():
-        raise ValueError("reference provenance checkpoint path does not match model")
+    # Path is advisory context (owner decision 2026-08-26): model dirs may
+    # legitimately relocate. The sha256-tree/count/bytes below remain the
+    # binding anti-tamper anchor.
+    recorded_path = provenance.get("checkpoint_dir")
+    if isinstance(recorded_path, str) and recorded_path != model.as_posix():
+        import warnings
+
+        warnings.warn(
+            f"reference model relocated: recorded {recorded_path!r}, "
+            f"verified at {model.as_posix()!r} (hash still binding)"
+        )
     actual, files, total_bytes = tree_hash(model)
     expected = provenance.get("checkpoint_sha256")
     if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
