@@ -85,6 +85,8 @@ class RlooExperimentConfig:
     param_offload: bool = False
     save_freq: int = 1
     test_freq: int = 1
+    max_ckpt_keep: int = 1
+    experiment_name: str | None = None
     resume_mode: str = "auto"
     reference_provenance_path: Path | None = None
     reference_checkpoint_sha256: str | None = None
@@ -121,6 +123,7 @@ class RlooExperimentConfig:
             "ppo_max_token_len_per_gpu": self.ppo_max_token_len_per_gpu,
             "total_training_steps": self.total_training_steps,
             "save_freq": self.save_freq,
+            "max_ckpt_keep": self.max_ckpt_keep,
             "test_freq": self.test_freq,
             "prompt_budget_chars": self.prompt_budget_chars,
         }
@@ -347,11 +350,12 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         "trainer.nnodes=1",
         "trainer.logger=[\"console\"]",
         "trainer.project_name=dataclassify-rloo",
-        f"trainer.experiment_name=rloo-smoke-{config.dataset}",
+        f"trainer.experiment_name={config.experiment_name or 'rloo-smoke-' + config.dataset}",
         f"trainer.default_local_dir={config.output_dir / 'checkpoints'}",
         "trainer.total_epochs=4",
         f"trainer.total_training_steps={config.total_training_steps}",
         f"trainer.save_freq={config.save_freq}",
+        f"trainer.max_actor_ckpt_to_keep={config.max_ckpt_keep}",
         f"trainer.test_freq={config.test_freq}",
         "trainer.val_before_train=False",
         f"trainer.resume_mode={config.resume_mode}",
@@ -519,6 +523,7 @@ def validate_preflight(
         "reachable": {
             "total_training_steps": config.total_training_steps,
             "save_freq": config.save_freq,
+            "max_ckpt_keep": config.max_ckpt_keep,
             "test_freq": config.test_freq,
             "resume_mode": config.resume_mode,
             "manifest": str(config.manifest_path),
@@ -935,6 +940,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--enforce-eager", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--param-offload", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--save-freq", type=int, default=1)
+    parser.add_argument("--max-ckpt-keep", type=int, default=1)
+    parser.add_argument("--experiment-name", default=None)
     parser.add_argument("--test-freq", type=int, default=1)
     parser.add_argument("--resume-mode", choices=("auto", "resume", "disable"), default="auto")
     parser.add_argument("--reference-provenance", type=Path)
@@ -984,6 +991,8 @@ def _config(args: argparse.Namespace) -> RlooExperimentConfig:
         param_offload=args.param_offload,
         save_freq=args.save_freq,
         test_freq=args.test_freq,
+        max_ckpt_keep=args.max_ckpt_keep,
+        experiment_name=args.experiment_name,
         resume_mode=args.resume_mode,
         reference_provenance_path=(
             args.reference_provenance.expanduser().resolve()
