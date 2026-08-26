@@ -154,11 +154,12 @@ def test_official_agent_loop_api_and_reward_tensor_probe() -> None:
         reward_score=0.75,
         num_turns=4,
         metrics=AgentLoopMetrics(generate_sequences=0.0, num_preempted=0),
+        extra_fields={},
     )
     payload = output.as_dict()
     assert payload["responses"].tolist() == [20, 21]
     assert payload["response_mask"].tolist() == [1, 0]
-    assert payload["rollout_log_probs"].tolist() == [-0.1, 0.0]
+    assert payload["rollout_log_probs"].tolist() == pytest.approx([-0.1, 0.0])
     assert payload["rm_scores"].tolist() == [0.0, 0.75]
 
 

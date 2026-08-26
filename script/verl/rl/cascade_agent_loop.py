@@ -309,6 +309,11 @@ else:
                     extra_fields={
                         "cascade_stage1_valid": False,
                         "cascade_termination": "invalid_stage1",
+                        "cascade_stage1_hit": None,
+                        "cascade_stage2_valid": None,
+                        "cascade_leaf_correct": None,
+                        "cascade_level_correct": None,
+                        "cascade_candidates": [],
                         "turn_scores": [],
                         "tool_rewards": [],
                     },
@@ -405,6 +410,7 @@ else:
                 metrics=metrics,
                 extra_fields={
                     "cascade_stage1_valid": True,
+                    "cascade_termination": "completed",
                     "cascade_stage1_hit": stage1_hit,
                     "cascade_stage2_valid": stage2_valid,
                     "cascade_leaf_correct": leaf_correct,
