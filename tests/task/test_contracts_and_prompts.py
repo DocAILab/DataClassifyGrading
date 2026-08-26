@@ -41,11 +41,11 @@ def test_prompts_use_choice_protocol_without_canonical_ids() -> None:
     assert '"answer"' in stage2.system
     assert "demo:" not in stage1.user
     assert '"category_id"' not in stage1.user + stage2.user
-    assert "fixture alpha" in stage1.user
+    assert "fixture alpha" not in stage1.user
     catalog = json.loads(
         stage1.user.split("catalog:\n", 1)[1].split("\nField metadata:", 1)[0]
     )
-    assert catalog[0] == ["1", "Alpha", "fixture alpha"]
+    assert catalog[0] == ["1", "Alpha"]
     assert "hidden" not in stage1.user
     bundle = json.loads(stage2.user.split("Candidate bundle:\n", 1)[1].split("\nField metadata:", 1)[0])
     assert [entry["id"] for entry in bundle] == ["1", "2", "3", "4", "5"]

@@ -463,7 +463,7 @@ def _validate_row(
                     not isinstance(catalog, list)
                     or len(catalog) != len(registry.categories)
                     or any(
-                        not (isinstance(entry, list) and len(entry) == 3)
+                        not (isinstance(entry, list) and len(entry) == 2)
                         for entry in catalog
                     )
                 ):

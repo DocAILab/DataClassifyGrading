@@ -55,16 +55,11 @@ def build_stage1_prompt(
         "The value must contain exactly five unique choice ids from the catalog. "
         "Do not output Markdown, commentary, canonical category ids, or any other keys."
     )
-    # Stage 1 must see the classification standard, not only opaque label
-    # names. Registry descriptions are the compact standard summaries; full
-    # corpus descriptions/examples remain in the five-candidate Stage 2
-    # bundle. Canonical ids stay hidden behind choice ids.
+    # Stage 1 shows choice ids and display names only; registry/corpus
+    # descriptions stay in the five-candidate Stage 2 bundle. Canonical ids
+    # remain hidden behind choice ids.
     catalog = [
-        [
-            choice.choice_id,
-            choice.display_name,
-            registry.get(choice.category_id).description,
-        ]
+        [choice.choice_id, choice.display_name]
         for choice in choices.choices
     ]
     user = (
