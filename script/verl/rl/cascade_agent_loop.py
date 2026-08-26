@@ -21,6 +21,7 @@ from agent.training.rl.native_tools import (
     exact_tool_reward,
     parse_final_tool_answer,
 )
+from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT, PROMPT_METADATA_FIELDS
 
 try:
     from verl.experimental.agent_loop.agent_loop import register
@@ -77,11 +78,16 @@ def _source_from_kwargs(kwargs: Mapping[str, Any]) -> CascadeSource:
         )
     if extra.get("stage") != "stage1":
         raise ValueError("formal native-tool parquet must contain one episode row per source")
-    if extra.get("trajectory_format") != "qwen3.5-native-tools-v1":
-        raise ValueError("formal trajectory_format must be qwen3.5-native-tools-v1")
+    if extra.get("trajectory_format") != NATIVE_TOOL_TRAJECTORY_FORMAT:
+        raise ValueError(
+            f"formal trajectory_format must be {NATIVE_TOOL_TRAJECTORY_FORMAT}"
+        )
     metadata = _mapping(extra.get("metadata"), "extra_info.metadata")
-    if set(metadata) != {"field_name", "table_name"}:
-        raise ValueError("formal native-tool metadata must be exactly field_name+table_name")
+    if set(metadata) != set(PROMPT_METADATA_FIELDS):
+        raise ValueError(
+            "formal native-tool metadata must be exactly "
+            + "+".join(PROMPT_METADATA_FIELDS)
+        )
     reward_model = _mapping(kwargs.get("reward_model"), "reward_model")
     if set(reward_model) != {"style", "ground_truth"} or reward_model.get("style") != "rule":
         raise ValueError("native-tool reward_model must be the exact rule/ground_truth shape")
@@ -108,7 +114,7 @@ def _source_from_kwargs(kwargs: Mapping[str, Any]) -> CascadeSource:
         ground_truth=ground_truth.strip(),
         ground_truth_level=level.strip(),
         dataset=dataset.strip(),
-        metadata={"field_name": field_name.strip(), "table_name": table_name.strip()},
+        metadata={field: metadata.get(field, "") for field in PROMPT_METADATA_FIELDS},
     )
 
 

@@ -20,8 +20,13 @@ def _kwargs(**extra_overrides):
         "stage": "stage1",
         "source_id": "source-1",
         "ground_truth_level": "L2",
-        "trajectory_format": "qwen3.5-native-tools-v1",
-        "metadata": {"field_name": "f", "table_name": "t"},
+        "trajectory_format": "qwen3.5-native-tools-v2",
+        "metadata": {
+            "field_name": "f",
+            "table_name": "t",
+            "field_description": "",
+            "table_description": "",
+        },
     }
     extra.update(extra_overrides)
     return {
@@ -30,16 +35,21 @@ def _kwargs(**extra_overrides):
     }
 
 
-def test_source_contract_is_shougang_native_tools_and_field_table_only() -> None:
+def test_source_contract_is_shougang_native_tools_and_four_metadata_fields() -> None:
     source = _source_from_kwargs(_kwargs())
     assert source.dataset == "shougang"
-    assert source.metadata == {"field_name": "f", "table_name": "t"}
+    assert source.metadata == {
+        "field_name": "f",
+        "table_name": "t",
+        "field_description": "",
+        "table_description": "",
+    }
 
     with pytest.raises(ValueError, match="trajectory_format"):
         _source_from_kwargs(_kwargs(trajectory_format="manual-cascade"))
     with pytest.raises(ValueError, match="only shougang"):
         _source_from_kwargs(_kwargs(dataset="finance"))
-    with pytest.raises(ValueError, match=r"field_name\+table_name"):
+    with pytest.raises(ValueError, match=r"field_name\+table_name\+field_description\+table_description"):
         _source_from_kwargs(_kwargs(metadata={"field_name": "f"}))
 
 

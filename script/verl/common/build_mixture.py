@@ -37,7 +37,7 @@ from agent.task.prompts import (
 from agent.training.common import build_candidates, require_corpus_covers_registry
 from agent.training.mixture import build_sqrt_mixture
 from agent.training.rl import validate_rl_dataset
-from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT
+from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT, PROMPT_METADATA_FIELDS
 from agent.training.sft import validate_sft_dataset
 
 _SPLITS = ("train", "val", "test")
@@ -239,10 +239,11 @@ def _load_output_contract(args: argparse.Namespace) -> tuple[LeafRegistry, TaskC
     config_data["metadata_fields"] = args.metadata_fields
     registry = LeafRegistry.from_path(args.registry)
     task = TaskConfig.from_mapping(config_data)
-    if task.metadata_fields != ("field_name", "table_name"):
+    if task.metadata_fields != PROMPT_METADATA_FIELDS:
         raise ValueError(
-            "formal mixture task metadata_fields must be field_name+table_name "
-            "(contract change 2025-08-25)"
+            "formal mixture task metadata_fields must be "
+            + "+".join(PROMPT_METADATA_FIELDS)
+            + " (native-tools-v2 contract change 2026-08-26)"
         )
     corpus = {
         item.category_id: item for item in load_corpus_categories(args.corpus)

@@ -121,7 +121,7 @@ def test_exported_rl_parquet_has_verl_five_field_contract(tmp_path: Path) -> Non
         "extra_info",
     }
     stage1 = next(row for row in rows if row["extra_info"]["stage"] == "stage1")
-    assert stage1["extra_info"]["trajectory_format"] == "qwen3.5-native-tools-v1"
+    assert stage1["extra_info"]["trajectory_format"] == "qwen3.5-native-tools-v2"
     assert "category catalog" not in stage1["prompt"][1]["content"].lower()
     stage2 = next(row for row in rows if row["extra_info"]["stage"] == "stage2")
     assert stage2["extra_info"]["ground_truth_level"] in {"L1", "L2", "L3", "L4"}

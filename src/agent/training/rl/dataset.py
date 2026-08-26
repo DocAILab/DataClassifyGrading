@@ -450,7 +450,7 @@ def _validate_row(
         expected_prompt = None
         if stage == "stage1":
             expected_prompt = (
-                build_native_tool_prompt(metadata, grading)
+                build_native_tool_prompt(metadata, grading, registry)
                 if grading is not None
                 else build_stage1_prompt(metadata, registry, config)
             )

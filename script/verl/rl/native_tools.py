@@ -64,6 +64,7 @@ def search_categories(
     field_name: str,
     table_name: str,
     top_k: int = 5,
+    scope: str = "",
 ) -> dict[str, Any]:
     """Search the approved category catalog using field and table metadata.
 
@@ -71,9 +72,14 @@ def search_categories(
         field_name: The source field or column name to classify.
         table_name: The source table name; use an empty string when unavailable.
         top_k: Number of candidates. The formal task fixes this value at five.
+        scope: Optional level-1 group key from browse_categories; empty means all groups.
     """
 
-    return _runtime_environment().search_categories(field_name, table_name, top_k)
+    return _runtime_environment().search_categories(field_name, table_name, top_k, scope)
+
+
+@function_tool
+def get_category_details(choice_ids: list[str]) -> dict[str, Any]:
 
 
 @function_tool
@@ -102,9 +108,22 @@ def get_category_examples(
     return _runtime_environment().get_category_examples(choice_ids, limit)
 
 
+@function_tool
+def browse_categories(prefix: str = "") -> dict[str, Any]:
+    """Browse the category catalog hierarchy.
+
+    Args:
+        prefix: Empty to list all level-1 groups with their scope keys;
+            or a scope key to list its leaf categories.
+    """
+
+    return _runtime_environment().browse_categories(prefix or None)
+
+
 __all__ = [
     "VERL_FUNCTION_TOOLS_AVAILABLE",
     "search_categories",
     "get_category_details",
     "get_category_examples",
+    "browse_categories",
 ]

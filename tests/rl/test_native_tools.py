@@ -107,3 +107,71 @@ def test_final_answer_rejects_old_manual_or_nonexact_shapes(text: str) -> None:
     grading = GradingConfig(("L1", "L2", "L3", "L4"))
     with pytest.raises(ValueError):
         parse_final_tool_answer(text, registry=registry, grading=grading)
+
+
+def test_scope_restricts_search_and_browse_lists_groups() -> None:
+    environment = _environment()
+    groups = environment.browse_categories()
+    assert groups["groups"] and all(
+        set(item) == {"scope_key", "leaf_count"} for item in groups["groups"]
+    )
+    key = groups["groups"][0]["scope_key"]
+    subtree = environment.browse_categories(key)
+    assert subtree["scope_key"] == key
+    assert len(subtree["leaves"]) == subtree["leaf_count"]
+
+    scoped = environment.search_categories("Alpha", "demo_table", scope=key)
+    known_ids = {leaf["choice_id"] for leaf in subtree["leaves"]}
+    assert all(item["choice_id"] in known_ids for item in scoped["candidates"])
+
+    with pytest.raises(ValueError, match="unknown scope"):
+        environment.search_categories("Alpha", "demo_table", scope="nope")
+
+
+def test_v2b_scoring_is_deterministic_and_downweights_ubiquitous_tokens() -> None:
+    environment = _environment()
+    first = environment.search_categories("Alpha", "demo_table")
+    second = environment.search_categories("Alpha", "demo_table")
+    assert first == second
+
+
+def test_render_catalog_index_and_four_field_prompt() -> None:
+    from agent.task import GradingConfig
+    from agent.training.rl.sample import (
+        NATIVE_TOOL_TRAJECTORY_FORMAT,
+        PROMPT_METADATA_FIELDS,
+        build_native_tool_prompt,
+        render_catalog_index,
+    )
+
+    registry = LeafRegistry.from_path(REGISTRY)
+    index = render_catalog_index(registry)
+    lines = index.splitlines()
+    assert len(lines) == len(registry.ids)
+    assert all("|" in line for line in lines)
+
+    grading = GradingConfig(("L1", "L2", "L3", "L4"))
+    base = {
+        "field_name": "EQ_CODE",
+        "table_name": "SRL_BASIC_TEST",
+        "field_description": "",
+        "table_description": "",
+    }
+    prompt = build_native_tool_prompt(base, grading, registry)
+    assert "Catalog (choice_id|name):" in prompt.system
+    assert '"field_name":"EQ_CODE"' in prompt.user
+
+    # Parquet round-trips reorder mapping keys alphabetically; the rendered
+    # user content must stay byte-identical regardless of input dict order.
+    shuffled = {
+        "table_description": "",
+        "field_description": "",
+        "table_name": "SRL_BASIC_TEST",
+        "field_name": "EQ_CODE",
+    }
+    assert build_native_tool_prompt(shuffled, grading, registry).user == prompt.user
+
+    with pytest.raises(ValueError, match="native tool prompt metadata"):
+        build_native_tool_prompt(
+            {"field_name": "a", "table_name": "b"}, grading, registry
+        )

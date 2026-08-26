@@ -20,7 +20,7 @@ from agent.task import LeafRegistry, TaskConfig
 from agent.task.assets import load_corpus_categories
 from agent.task.grading_manifest import DatasetGradingManifest
 from agent.training.rl import validate_rl_row
-from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT
+from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT, PROMPT_METADATA_FIELDS
 
 _DATASETS = FORMAL_DATASETS
 _SPLITS = ("train", "val", "test")
@@ -150,10 +150,11 @@ def validate_cascade_release(
         errors.append(
             f"grading gt_field must be data_level for: {FORMAL_RELEASE_NAME}"
         )
-    if task_config.metadata_fields != ("field_name", "table_name"):
+    if task_config.metadata_fields != PROMPT_METADATA_FIELDS:
         errors.append(
-            "task config metadata_fields must be field_name+table_name "
-            "(contract change 2025-08-25)"
+            "task config metadata_fields must be "
+            + "+".join(PROMPT_METADATA_FIELDS)
+            + " (native-tools-v2 contract change 2026-08-26)"
         )
 
     if source_report.get("family") != "rl-cascade":

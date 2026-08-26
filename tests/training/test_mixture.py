@@ -39,7 +39,8 @@ def _sft_rows(dataset: str, count: int) -> list[dict]:
     for index in range(count):
         source_id = f"{dataset}-{index}"
         ground_truth = REGISTRY.ids[index % len(REGISTRY.ids)]
-        metadata = {"field_name": source_id, "table_name": "T"}
+        metadata = {"field_name": source_id, "table_name": "T",
+                  "field_description": "", "table_description": ""}
         candidates = build_candidates(ground_truth, REGISTRY, source_id=source_id)
         for stage in ("stage1", "stage2"):
             if stage == "stage1":
@@ -89,12 +90,13 @@ def _rl_rows(dataset: str, count: int) -> list[dict]:
                         "dataset": dataset,
                         "stage": stage,
                         "source_id": source_id,
-                        "metadata": {"field_name": source_id, "table_name": "T"},
+                        "metadata": {"field_name": source_id, "table_name": "T",
+                        "field_description": "", "table_description": ""},
                         "ground_truth_level": "L2",
                         **(
                             {"candidates": ["a", "b", "c", "d", "e"]}
                             if stage == "stage2"
-                            else {"trajectory_format": "qwen3.5-native-tools-v1"}
+                            else {"trajectory_format": "qwen3.5-native-tools-v2"}
                         ),
                     },
                 }
@@ -212,6 +214,8 @@ def _mixture_args(shougang: Path, output: Path) -> list[str]:
         "--metadata-fields",
         "field_name",
         "table_name",
+        "field_description",
+        "table_description",
         "--grading-config",
         str(FIXTURES / "grading.json"),
         "--output-dir",

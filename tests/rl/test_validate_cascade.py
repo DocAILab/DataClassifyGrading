@@ -34,7 +34,7 @@ def _export_args(dataset: str, output: Path) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name", "table_name",
+        "--metadata-fields", "field_name", "table_name", "field_description", "table_description",
         "--grading-config", str(FIXTURES / "grading.json"),
     ]
 
@@ -46,7 +46,7 @@ def _sft_export_args(output: Path) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name", "table_name",
+        "--metadata-fields", "field_name", "table_name", "field_description", "table_description",
         "--grading-config", str(FIXTURES / "grading.json"),
     ]
 
@@ -59,7 +59,7 @@ def _mixture_args(family: str, source: Path, output: Path) -> list[str]:
         "--registry", str(FIXTURES / "registry.json"),
         "--corpus", str(FIXTURES / "corpus.json"),
         "--task-config", str(FIXTURES / "task.json"),
-        "--metadata-fields", "field_name", "table_name",
+        "--metadata-fields", "field_name", "table_name", "field_description", "table_description",
         "--grading-config", str(FIXTURES / "grading.json"),
         "--output-dir", str(output),
     ]

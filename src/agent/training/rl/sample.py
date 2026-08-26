@@ -23,10 +23,17 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from agent.task.contracts import CorpusCategory, GradingConfig, LeafRegistry, TaskConfig
+from agent.task.prompt_choices import PromptChoiceRegistry
 from agent.task.prompts import Prompt, build_stage1_prompt, build_stage2_prompt
 
 
-NATIVE_TOOL_TRAJECTORY_FORMAT = "qwen3.5-native-tools-v1"
+NATIVE_TOOL_TRAJECTORY_FORMAT = "qwen3.5-native-tools-v2"
+PROMPT_METADATA_FIELDS = (
+    "field_name",
+    "table_name",
+    "field_description",
+    "table_description",
+)
 from agent.training.common import build_candidates, canonical_target
 
 
@@ -119,28 +126,57 @@ class RlSample:
                 raise ValueError("unsupported RL trajectory_format")
 
 
-def build_native_tool_prompt(
-    metadata: Mapping[str, str], grading: GradingConfig
-) -> Prompt:
-    """Build the catalog-free prompt consumed by the native ToolAgentLoop."""
+def render_catalog_index(registry: LeafRegistry) -> str:
+    """Render the compact "choice_id|display_name" catalog for in-context recall.
 
-    if set(metadata) != {"field_name", "table_name"}:
-        raise ValueError("native tool prompt metadata must be field_name+table_name")
+    The index is the primary recall surface: opaque choice ids keep canonical
+    ids out of the prompt while letting the model match semantics directly,
+    independent of any deterministic retriever's lexical ceiling.
+    """
+
+    choices = PromptChoiceRegistry.from_registry(registry).choices
+    return "\n".join(f"{choice.choice_id}|{choice.display_name}" for choice in choices)
+
+
+def build_native_tool_prompt(
+    metadata: Mapping[str, str], grading: GradingConfig, registry: LeafRegistry
+) -> Prompt:
+    """Build the catalog-in-context prompt consumed by the native ToolAgentLoop.
+
+    Metadata exposes both identity keys (field_name/table_name) and their
+    human descriptions when present — the measured oracle-recall driver
+    (3.2% -> 61.8% top-5 on real shougang records). Empty descriptions are
+    normalized to empty strings by :func:`visible_metadata`.
+    """
+
+    if set(metadata) != set(PROMPT_METADATA_FIELDS):
+        raise ValueError(
+            "native tool prompt metadata must be " + "+".join(PROMPT_METADATA_FIELDS)
+        )
+    # Canonical key order: parquet round-trips reorder mapping keys, and the
+    # prompt bytes must stay identical between export and validation.
+    ordered = {field: str(metadata.get(field, "")) for field in PROMPT_METADATA_FIELDS}
     rubric = [[code, description] for code, description in grading.rubric()]
     system = (
-        "You classify one database field using the provided category tools. "
-        "You may answer directly when certain, call search_categories once, and "
-        "optionally call get_category_details or get_category_examples to resolve "
-        "ambiguity. Make at most three sequential tool calls. Your terminal response "
-        "must be exactly one JSON object with keys answer and level. answer must be "
-        "an opaque choice_id, never a category name or canonical id. level must be "
-        "one approved sensitivity code. Do not output reasoning, Markdown, or extra keys.\n"
+        "You classify one database field into one category and assign a sensitivity level.\n"
+        "The full category catalog is listed below as \"choice_id|name\" lines; recall "
+        "candidates from this catalog directly using field and table semantics. When "
+        "candidate names alone are ambiguous, call get_category_details or "
+        "get_category_examples on the candidate ids to inspect definitions and samples. "
+        "If the catalog seems insufficient you may call search_categories(field_name, "
+        "table_name) once as a fallback hint. Make at most three tool calls total.\n"
+        "Your terminal response must be exactly one JSON object with keys answer and "
+        "level. answer must be an opaque choice_id from the catalog, never a category "
+        "name or canonical id. level must be one approved sensitivity code. Do not "
+        "output reasoning, Markdown, or extra keys.\n"
         "Approved sensitivity levels:\n"
         + json.dumps(rubric, ensure_ascii=False, separators=(",", ":"))
+        + "\nCatalog (choice_id|name):\n"
+        + render_catalog_index(registry)
     )
     user = (
         "Classify this field metadata:\n"
-        + json.dumps(dict(metadata), ensure_ascii=False, separators=(",", ":"))
+        + json.dumps(ordered, ensure_ascii=False, separators=(",", ":"))
     )
     return Prompt(system=system, user=user)
 
@@ -197,7 +233,7 @@ def build_rl_samples(
                 f"outside configured levels {list(grading.levels)}"
             )
     stage1_prompt = (
-        build_native_tool_prompt(metadata, grading)
+        build_native_tool_prompt(metadata, grading, registry)
         if grading is not None
         else build_stage1_prompt(metadata, registry, config)
     )
@@ -280,7 +316,9 @@ __all__ = [
     "RewardMeta",
     "RlSample",
     "NATIVE_TOOL_TRAJECTORY_FORMAT",
+    "PROMPT_METADATA_FIELDS",
     "build_native_tool_prompt",
+    "render_catalog_index",
     "visible_metadata",
     "build_rl_samples",
     "build_rl_row",

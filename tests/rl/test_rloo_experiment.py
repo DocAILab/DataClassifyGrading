@@ -151,7 +151,7 @@ def test_reward_entrypoint_is_strict_native_joint_exact_match(
         "dataset": "shougang",
         "stage": "stage1",
         "ground_truth_level": "L1",
-        "trajectory_format": "qwen3.5-native-tools-v1",
+        "trajectory_format": "qwen3.5-native-tools-v2",
     }
 
     assert compute_score(
@@ -195,7 +195,7 @@ def test_native_reward_fails_closed_without_manifest(
                 "dataset": "shougang",
                 "stage": "stage1",
                 "ground_truth_level": "L1",
-                "trajectory_format": "qwen3.5-native-tools-v1",
+                "trajectory_format": "qwen3.5-native-tools-v2",
             },
         )
 
