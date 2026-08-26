@@ -282,7 +282,7 @@ def build_validation_command(config: RlooExperimentConfig) -> list[str]:
 def build_verl_command(config: RlooExperimentConfig) -> list[str]:
     """Build the VeRL command; all RLOO math remains inside VeRL."""
     config.validate_options()
-    reward_adapter = Path(__file__).resolve()
+    reward_adapter = "pkg://" + Path(__file__).resolve().relative_to(_REPO_ROOT).with_suffix("").as_posix()
     overrides = [
         "algorithm.adv_estimator=rloo",
         # Fixed policy: KL is an actor loss only; never add KL to reward.
