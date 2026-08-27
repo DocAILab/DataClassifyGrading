@@ -1,27 +1,164 @@
 --- a/verl/utils/dataset/multiturn_sft_dataset.py
 +++ b/verl/utils/dataset/multiturn_sft_dataset.py
-@@ -212,7 +212,12 @@
-             apply_chat_template_kwargs["enable_thinking"] = enable_thinking
- 
+@@ -40,0 +41,147 @@
++
++def _token_list(value):
++    """Normalize tokenizer output to a flat list of token ids."""
++
++    if hasattr(value, "tolist"):
++        value = value.tolist()
++    while isinstance(value, list) and value and isinstance(value[0], list):
++        value = value[0]
++    return [int(token_id) for token_id in value]
++
++
++def _find_token_subsequence(values, needle, *, start=0):
++    """Find the first occurrence of ``needle`` at or after ``start``."""
++
++    if not needle:
++        return None
++    first = max(0, start)
++    last = len(values) - len(needle)
++    if last < first:
++        return None
++    for position in range(first, last + 1):
++        if values[position : position + len(needle)] == needle:
++            return position
++    return None
++
++
++def _terminal_content_boundary(real_ids, empty_ids, content_ids):
++    """Locate the terminal content region inside the assistant delta.
++
++    ``real_ids`` is the assistant delta (think + content + template suffix);
++    ``empty_ids`` is the same delta rendered with the content emptied.  The
++    content region starts at the unique split point ``i`` such that::
++
++        real_ids == empty_ids[:i] + content_ids + empty_ids[i:]
++
++    Zero or multiple qualifying splits mean the boundary is not provable (the
++    value may also live in reasoning), so None is returned (fail-closed).
++    Callers must never fall back to searching reasoning or the full input for
++    answer/level values.
++    """
++
++    if not content_ids:
++        return None
++    n, e, c = len(real_ids), len(empty_ids), len(content_ids)
++    # The empty delta must differ from the real delta by exactly the content.
++    if e != n - c or n < c:
++        return None
++    candidates = []
++    for i in range(e + 1):
++        if (
++            real_ids[:i] == empty_ids[:i]
++            and real_ids[i : i + c] == content_ids
++            and real_ids[i + c :] == empty_ids[i:]
++        ):
++            candidates.append(i)
++    if len(candidates) != 1:
++        return None
++    return candidates[0]
++
++
++def _answer_mask_positions(tokenizer, input_ids, content, empty_input_ids=None):
++    """Return answer/level value positions inside the terminal content region.
++
++    Only the current terminal assistant's rendered ``content`` may receive
++    answer weighting; values inside ``reasoning_content`` are never eligible.
++    The content boundary comes from the prefix rendered with the content
++    emptied (``empty_input_ids``).  When that render is unavailable, the
++    complete content token sequence is located only if it occurs exactly once
++    in the delta.  Any ambiguity returns [] (fail-closed); answer/level values
++    are never searched for in reasoning or the full input.
++    """
++
++    if not isinstance(content, str):
++        return []
++    ids = _token_list(input_ids)
++    try:
++        content_ids = _token_list(tokenizer.encode(content, add_special_tokens=False))
++    except Exception:
++        return []
++    if not content_ids:
++        return []
++
++    content_start = None
++    if empty_input_ids is not None:
++        content_start = _terminal_content_boundary(ids, _token_list(empty_input_ids), content_ids)
++    if content_start is None:
++        # Fallback: the full content encoding must occur exactly once; a
++        # second occurrence (e.g. verbatim inside think) is not provably
++        # terminal.
++        content_start = _find_token_subsequence(ids, content_ids)
++        if content_start is None:
++            return []
++        if _find_token_subsequence(ids, content_ids, start=content_start + 1) is not None:
++            return []
++
++    patterns = (
++        re.compile(r'"answer"\s*:\s*"((?:\\.|[^"\\])*)"'),
++        re.compile(r'"level"\s*:\s*"((?:\\.|[^"\\])*)"'),
++    )
++    matches = []
++    for pattern in patterns:
++        matches.extend(pattern.finditer(content))
++    matches.sort(key=lambda match: match.start(1))
++    if not matches:
++        return []
++
++    # Prefer offset mappings when available: they preserve the exact value
++    # span even when two fields have identical token ids.
++    offsets = None
++    try:
++        encoded = tokenizer(content, add_special_tokens=False, return_offsets_mapping=True)
++        encoded_ids = _token_list(encoded["input_ids"])
++        raw_offsets = encoded.get("offset_mapping")
++        if hasattr(raw_offsets, "tolist"):
++            raw_offsets = raw_offsets.tolist()
++        while isinstance(raw_offsets, list) and raw_offsets and isinstance(raw_offsets[0], list):
++            raw_offsets = raw_offsets[0]
++        if len(encoded_ids) == len(content_ids) and len(raw_offsets) == len(content_ids):
++            offsets = [(int(start), int(end)) for start, end in raw_offsets]
++    except Exception:
++        # Slow/custom tokenizers use the token-subsequence path below.
++        offsets = None
++
++    positions = []
++    if offsets is not None:
++        for match in matches:
++            for local, (start, end) in enumerate(offsets):
++                if start < match.end(1) and end > match.start(1):
++                    positions.append(content_start + local)
++        return positions
++
++    cursor = 0
++    for match in matches:
++        try:
++            value_ids = _token_list(tokenizer.encode(match.group(1), add_special_tokens=False))
++        except Exception:
++            return []
++        # The value must occur inside the content region itself; a missing
++        # value (truncated or encoding mismatch) fails closed.
++        local = _find_token_subsequence(content_ids, value_ids, start=cursor)
++        if local is None:
++            return []
++        positions.extend(range(content_start + local, content_start + local + len(value_ids)))
++        cursor = local + len(value_ids)
++    return positions
++
++
+@@ -213,0 +361,5 @@
 +        # AmberFalcon patch: Qwen3.5 templates cannot render standalone
 +        # messages (thinking structure + system-first constraint). Render the
 +        # full prefix up to this message and diff against the previous prefix;
 +        # verified exact for [user] -> [user,assistant] on Qwen3.5-9B.
 +        prefix = full_message[: index + 1]
-         inputs = apply_chat_template(
-             processor,
+@@ -216 +368 @@
 -            messages=[message],
 +            messages=prefix,
-             tools=tools,
-             add_generation_prompt=False,
-@@ -226,9 +231,21 @@
-         input_ids = inputs.pop("input_ids")[0]
-         attention_mask = inputs.pop("attention_mask")[0]
--
--        # remove system prompt if exists
--        if index != 0 and message["role"] != "system":
--            input_ids = input_ids[len(self.system_prompt) :]
--            attention_mask = attention_mask[len(self.system_prompt) :]
+@@ -227,0 +380,15 @@
++        prev_len = 0
 +        if index > 0:
 +            prev_inputs = apply_chat_template(
 +                processor,
@@ -36,99 +173,83 @@
 +            prev_len = prev_inputs["input_ids"][0].shape[0]
 +            input_ids = input_ids[prev_len:]
 +            attention_mask = attention_mask[prev_len:]
-+
+@@ -229,4 +396,2 @@
+-        # remove system prompt if exists
+-        if index != 0 and message["role"] != "system":
+-            input_ids = input_ids[len(self.system_prompt) :]
+-            attention_mask = attention_mask[len(self.system_prompt) :]
 +        # AmberFalcon patch: prefix-diff segments are exact; the legacy
 +        # system-prompt strip no longer applies.
- 
-         if message["role"] == "assistant":
-@@ -236,8 +253,28 @@
-             # mask out generation prompt if assistant message
-             loss_mask[: len(self.generation_prompt)] = 0
+@@ -237,0 +403,40 @@
 +            answer_mask = torch.zeros_like(attention_mask)
-+            try:
-+                import re as _re
-+                content = str(message.get("content", ""))
-+                ids_list = input_ids.tolist()
-+                for pat in (_re.compile(r'"answer"\s*:\s*"([^"]+)"'),
-+                            _re.compile(r'"level"\s*:\s*"([^"]+)"')):
-+                    m = pat.search(content)
-+                    if not m:
-+                        continue
-+                    sub = self.tokenizer.encode(m.group(1), add_special_tokens=False)
-+                    if not sub:
-+                        continue
-+                    for i in range(len(ids_list) - len(sub) + 1):
-+                        if ids_list[i:i + len(sub)] == sub:
-+                            answer_mask[i:i + len(sub)] = 1
-+                            break
-+            except Exception:
-+                pass
-         else:
-             loss_mask = torch.zeros_like(attention_mask)
--
++            # The terminal assistant is the only supervised answer channel.
++            # Anchor matches to its rendered content; reasoning_content is a
++            # separate <think> block in the complete assistant segment.
++            if index == len(full_message) - 1:
++                content = message.get("content", "")
++                if not isinstance(message.get("reasoning_content"), str) and isinstance(content, str):
++                    # Legacy rows embed the think block in content; the answer
++                    # region is the text after the last </think>.
++                    if "</think>" in content:
++                        content = content.split("</think>")[-1].lstrip("\n")
++                empty_input_ids = None
++                if isinstance(content, str):
++                    # Render the same prefix with the terminal content emptied;
++                    # the unique split of the two deltas is the exact content
++                    # boundary (fail-closed on ambiguity, see
++                    # _answer_mask_positions).
++                    empty_message = dict(message)
++                    empty_message["content"] = ""
++                    try:
++                        empty_inputs = apply_chat_template(
++                            processor,
++                            messages=prefix[:-1] + [empty_message],
++                            tools=tools,
++                            add_generation_prompt=False,
++                            tokenize=True,
++                            return_dict=True,
++                            return_tensors="pt",
++                            **apply_chat_template_kwargs,
++                        )
++                        empty_input_ids = empty_inputs["input_ids"][0][prev_len:]
++                    except Exception:
++                        empty_input_ids = None
++                try:
++                    positions = _answer_mask_positions(self.tokenizer, input_ids, content, empty_input_ids)
++                except Exception:
++                    positions = []
++                for position in positions:
++                    if 0 <= position < answer_mask.shape[0]:
++                        answer_mask[position] = 1
+@@ -239,0 +445 @@
++            answer_mask = torch.zeros_like(attention_mask)
+@@ -241 +447 @@
 -        return input_ids, loss_mask, attention_mask, inputs
-+            answer_mask = torch.zeros_like(attention_mask)
-+
 +        return input_ids, loss_mask, answer_mask, attention_mask, inputs
- 
-     def _build_messages(self, example: dict):
-@@ -300,7 +337,7 @@
- 
-         # 1. tokenize each message
+@@ -302 +508 @@
 -        input_ids, loss_mask, attention_mask, multi_modal_inputs = [], [], [], {}
 +        input_ids, loss_mask, answer_mask, attention_mask, multi_modal_inputs = [], [], [], [], {}
-         for i, message in enumerate(messages):
+@@ -304 +510 @@
 -            _input_ids, _loss_mask, _attention_mask, _inputs = self._process_single_message(
 +            _input_ids, _loss_mask, _answer_mask, _attention_mask, _inputs = self._process_single_message(
-                 index=i,
-                 message=message,
-@@ -311,4 +348,5 @@
-             input_ids.append(_input_ids)
-             loss_mask.append(_loss_mask)
+@@ -312,0 +519 @@
 +            answer_mask.append(_answer_mask)
-             attention_mask.append(_attention_mask)
-             for k, v in _inputs.items():
-@@ -317,6 +355,7 @@
-         input_ids = torch.cat(input_ids, dim=0)
-         loss_mask = torch.cat(loss_mask, dim=0)
+@@ -318,0 +526 @@
 +        answer_mask = torch.cat(answer_mask, dim=0)
-         attention_mask = torch.cat(attention_mask, dim=0)
+@@ -320 +528 @@
 -        assert input_ids.shape == loss_mask.shape == attention_mask.shape, (
 +        assert input_ids.shape == loss_mask.shape == answer_mask.shape == attention_mask.shape, (
-             f"Shape mismatch: {input_ids.shape}, {loss_mask.shape}, {attention_mask.shape}"
-         )
-@@ -372,8 +411,10 @@
-                 padded_attention_mask = torch.zeros((self.max_length - sequence_length,), dtype=attention_mask.dtype)
-                 padded_loss_mask = torch.zeros((self.max_length - sequence_length,), dtype=loss_mask.dtype)
+@@ -373,0 +582 @@
 +                padded_answer_mask = torch.zeros((self.max_length - sequence_length,), dtype=answer_mask.dtype)
- 
-                 input_ids = torch.cat((input_ids, padded_input_ids))
-                 attention_mask = torch.cat((attention_mask, padded_attention_mask))
-                 loss_mask = torch.cat((loss_mask, padded_loss_mask))
+@@ -377,0 +587 @@
 +                answer_mask = torch.cat((answer_mask, padded_answer_mask))
-                 position_ids = F.pad(position_ids, (0, self.max_length - sequence_length), value=0)
-             elif sequence_length > self.max_length:
-@@ -382,4 +423,5 @@
-                     attention_mask = attention_mask[-self.max_length :]
-                     loss_mask = loss_mask[-self.max_length :]
+@@ -383,0 +594 @@
 +                    answer_mask = answer_mask[-self.max_length :]
-                     position_ids = position_ids[..., -self.max_length :]
-                 elif self.truncation == "right":
-@@ -387,4 +429,5 @@
-                     attention_mask = attention_mask[: self.max_length]
-                     loss_mask = loss_mask[: self.max_length]
+@@ -388,0 +600 @@
 +                    answer_mask = answer_mask[: self.max_length]
-                     position_ids = position_ids[..., : self.max_length]
-                 elif self.truncation == "error":
-@@ -398,4 +441,5 @@
-                 "position_ids": position_ids,
-                 "loss_mask": loss_mask,
+@@ -399,0 +612 @@
 +                "answer_mask": answer_mask,
-             }
-             if len(multi_modal_inputs) > 0:
-@@ -416,4 +460,5 @@
-                 "position_ids": position_ids,
-                 "loss_mask": loss_mask,
+@@ -410,0 +624 @@
++                answer_mask = answer_mask[: self.max_length]
+@@ -417,0 +632 @@
 +                "answer_mask": answer_mask,
-             }
-             if len(multi_modal_inputs) > 0:

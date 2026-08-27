@@ -21,8 +21,8 @@ OPTIONAL_DEBUG="agent_loop-debug.patch"
 
 declare -A EXPECTED=(
   ["verl/utils/tokenizer/chat_template.py"]="58031af7a001a1208129b271f110e9cf94a3978874fadc5da43db9eec0322578"
-  ["verl/utils/dataset/multiturn_sft_dataset.py"]="060f0adfe4caf5a4a19b0b7dd443ec417117070db16039ee8905691bd8aa85ba"
-  ["verl/workers/utils/losses.py"]="7035e59a0678b8172c608f72d296ef9893babf35fa27650f72be8d54d1d6fdca"
+  ["verl/utils/dataset/multiturn_sft_dataset.py"]="ce7486288a68a85a0777d9e587688501e09603533703e57d91e4f2c85139ecd9"
+  ["verl/workers/utils/losses.py"]="f107371e5c77b8f81800d3676d85894a64ad6646ea78f83ecb59d768ebc09a5c"
   ["verl/experimental/agent_loop/agent_loop.py"]="902cc8c4007b944974d77c54bc1ce227df49de4390e5b3a0fc831f5cf0a4a801"
 )
 
@@ -32,6 +32,10 @@ sha256_of() { sha256sum "$1" | cut -d' ' -f1; }
 
 FAIL=0
 for target in "${!EXPECTED[@]}"; do
+  # The DEBUG patch is optional and intentionally absent from formal installs.
+  if [ "$target" = "verl/experimental/agent_loop/agent_loop.py" ] && [ "${INCLUDE_DEBUG:-0}" != "1" ]; then
+    continue
+  fi
   f="$SP/$target"
   if [ ! -f "$f" ]; then
     echo "MISSING: $target" >&2; FAIL=1; continue

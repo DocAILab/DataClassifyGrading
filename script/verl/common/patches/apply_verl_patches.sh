@@ -34,8 +34,8 @@ OPTIONAL_DEBUG="agent_loop-debug.patch"
 # target relative path -> expected sha256 after applying (installed values)
 declare -A EXPECTED=(
   ["verl/utils/tokenizer/chat_template.py"]="58031af7a001a1208129b271f110e9cf94a3978874fadc5da43db9eec0322578"
-  ["verl/utils/dataset/multiturn_sft_dataset.py"]="060f0adfe4caf5a4a19b0b7dd443ec417117070db16039ee8905691bd8aa85ba"
-  ["verl/workers/utils/losses.py"]="7035e59a0678b8172c608f72d296ef9893babf35fa27650f72be8d54d1d6fdca"
+  ["verl/utils/dataset/multiturn_sft_dataset.py"]="ce7486288a68a85a0777d9e587688501e09603533703e57d91e4f2c85139ecd9"
+  ["verl/workers/utils/losses.py"]="f107371e5c77b8f81800d3676d85894a64ad6646ea78f83ecb59d768ebc09a5c"
   ["verl/experimental/agent_loop/agent_loop.py"]="902cc8c4007b944974d77c54bc1ce227df49de4390e5b3a0fc831f5cf0a4a801"
 )
 # target relative path -> official wheel sha256 (pre-condition for patching)
@@ -53,6 +53,7 @@ WHEEL_FULL=(
 )
 
 sha16() { sha256sum "$1" | cut -d' ' -f1 | cut -c1-16; }
+sha256_full() { sha256sum "$1" | cut -d' ' -f1; }
 
 if [ ! -d "$SP/verl" ]; then
   echo "error: $SP/verl not found (not a site-packages?)" >&2
@@ -78,13 +79,17 @@ for pf in "${PLAN[@]}"; do
     echo "error: target $target missing" >&2
     exit 2
   fi
-  cur="$(sha16 "$target")"
-  if [ "${EXPECTED[$target]}" = "$cur" ]; then
+  # already-applied detection compares the full sha256 against the installed
+  # table (sha16 is only used for the wheel-pristine pre-condition below); a
+  # 16-char prefix can never equal the 64-char installed hash, which would
+  # make a patched tree look unpatchable and exit 2 on every re-run.
+  if [ "$(sha256_full "$target")" = "${EXPECTED[$target]}" ]; then
     echo "skip (already applied): $target"
     continue
   fi
   # pre-condition: must be pristine wheel content
   wheel_ok=0
+  cur="$(sha16 "$target")"
   for entry in "${WHEEL_FULL[@]}"; do
     set -- $entry
     if [ "$1" = "$target" ] && [ "$2" = "$cur" ]; then wheel_ok=1; fi
@@ -107,10 +112,14 @@ done
 # post-apply verification
 FAIL=0
 for target in "${!EXPECTED[@]}"; do
-  got="$(sha16 "$SP/$target")"
+  # The DEBUG patch is optional and intentionally absent from formal installs.
+  if [ "$target" = "verl/experimental/agent_loop/agent_loop.py" ] && [ "${INCLUDE_DEBUG:-0}" != "1" ]; then
+    continue
+  fi
+  got="$(sha256_full "$SP/$target")"
   want="${EXPECTED[$target]}"
   if [ "$got" != "$want" ]; then
-    echo "VERIFY FAIL: $target sha16=$got want=$want" >&2
+    echo "VERIFY FAIL: $target sha256=$got want=$want" >&2
     FAIL=1
   fi
 done
