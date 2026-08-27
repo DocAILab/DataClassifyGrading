@@ -13,8 +13,10 @@ from agent.task.assets import load_corpus_categories
 from agent.training.rl.native_tools import CategoryToolEnvironment, parse_final_tool_answer
 from agent.training.rl.sample import NATIVE_TOOL_TRAJECTORY_FORMAT, build_native_tool_prompt
 from agent.training.sft.tool_trajectories import (
+    FileThinkGenerator,
     TRAJECTORY_CLASSES,
     build_tool_trajectory_prompt,
+    estimate_think_tokens,
     export_tool_trajectory_dataset,
     render_tool_call,
     select_trajectory_class,
@@ -108,6 +110,7 @@ def test_direct_trajectory_has_no_tools(tmp_path: Path) -> None:
         assert row["stage"] == "tool_trajectory"
         assert row["dataset"] == "shougang"
         assert row["messages"][-1]["reasoning_content"].strip()
+        assert estimate_think_tokens(row["messages"][-1]["reasoning_content"]) <= 128
         assert row["think_truncated"] is False
 
 
@@ -135,7 +138,67 @@ def test_tool_classes_follow_assistant_tool_alternation(
             trajectory_class == "no_result"
             and [c["name"] for c in row["tool_calls"]][0] == "browse_categories"
         )
+        assistant_messages = [
+            message for message in row["messages"] if message["role"] == "assistant"
+        ]
+        assert len(assistant_messages) == expected_tool_calls + 1
+        assert all(
+            isinstance(message.get("reasoning_content"), str)
+            and message["reasoning_content"].strip()
+            for message in assistant_messages
+        )
+        assert all(
+            estimate_think_tokens(message["reasoning_content"]) <= 64
+            for message in assistant_messages[:-1]
+        )
+        assert estimate_think_tokens(assistant_messages[-1]["reasoning_content"]) <= 128
     assert seen >= 1
+
+
+def test_validator_requires_reasoning_on_every_assistant_turn(tmp_path: Path) -> None:
+    output, _ = _export(tmp_path)
+    rows = _rows(output)
+    row = next(row for row in rows if row["tool_calls"])
+    tool_assistant = next(
+        message for message in row["messages"] if message["role"] == "assistant"
+    )
+    del tool_assistant["reasoning_content"]
+    _write_mutated(output, rows)
+    validation = validate_tool_trajectory_dataset(
+        output,
+        _registry(),
+        corpus=_corpus_map(),
+        task_config=_config(FIELDS_4),
+        grading=_grading(),
+    )
+    assert validation["valid"] is False
+    assert any(
+        "tool assistant message must carry non-empty reasoning_content" in error
+        for error in validation["splits"]["train"]["errors"]
+    )
+
+
+def test_validator_enforces_tool_think_64_token_cap(tmp_path: Path) -> None:
+    output, _ = _export(tmp_path)
+    rows = _rows(output)
+    row = next(row for row in rows if row["tool_calls"])
+    tool_assistant = next(
+        message for message in row["messages"] if message["role"] == "assistant"
+    )
+    tool_assistant["reasoning_content"] = "x" * 300
+    _write_mutated(output, rows)
+    validation = validate_tool_trajectory_dataset(
+        output,
+        _registry(),
+        corpus=_corpus_map(),
+        task_config=_config(FIELDS_4),
+        grading=_grading(),
+    )
+    assert validation["valid"] is False
+    assert any(
+        "tool reasoning_content exceeds 64-token cap" in error
+        for error in validation["splits"]["train"]["errors"]
+    )
 
 
 def test_terminal_json_is_the_only_label_and_matches_ground_truth(
@@ -360,17 +423,31 @@ def test_mock_think_is_deterministic_and_gt_free(tmp_path: Path) -> None:
     second, _ = _export(tmp_path / "b")
     assert report["think"]["generator"] == "mock"
     assert report["think"]["max_tokens"] == 128
+    assert report["think"]["tool_max_tokens"] == 64
     assert report["think"]["over_limit_policy"] == "truncate"
     assert report["think"]["tokenizer"] == "conservative_approx"
     assert report["think_truncated"] == 0
     for split in ("train", "val", "test"):
         for left, right in zip(_rows(first, split), _rows(second, split)):
-            assert left["messages"][-1]["reasoning_content"] == right[
-                "messages"
-            ][-1]["reasoning_content"]
-            reasoning = left["messages"][-1]["reasoning_content"]
-            assert reasoning.strip()
-            assert left["ground_truth"] not in reasoning
+            left_assistant = [
+                message for message in left["messages"] if message["role"] == "assistant"
+            ]
+            right_assistant = [
+                message for message in right["messages"] if message["role"] == "assistant"
+            ]
+            assert [
+                message["reasoning_content"] for message in left_assistant
+            ] == [message["reasoning_content"] for message in right_assistant]
+            assert all(
+                message["reasoning_content"].strip()
+                and left["ground_truth"] not in message["reasoning_content"]
+                for message in left_assistant
+            )
+            assert all(
+                estimate_think_tokens(message["reasoning_content"]) <= 64
+                for message in left_assistant[:-1]
+            )
+            assert estimate_think_tokens(left_assistant[-1]["reasoning_content"]) <= 128
 
 
 def _variable_think_generator() -> object:
@@ -512,6 +589,121 @@ def test_validation_rejects_over_limit_reasoning_content(tmp_path: Path) -> None
 # --- collect / file think source seam ---------------------------------------
 
 
+def _write_think_shard(tmp_path: Path, entry: dict) -> Path:
+    shard = tmp_path / "think.jsonl"
+    shard.write_text(json.dumps(entry, ensure_ascii=False) + "\n", encoding="utf-8")
+    return shard
+
+
+def test_file_think_legacy_fallback_requires_all_new_markers_absent(
+    tmp_path: Path,
+) -> None:
+    # Keeping the collect-era assistant count while dropping tool_think is not
+    # legacy: a tool trajectory must fail rather than reuse its terminal text.
+    # ``assistant_turns`` alone already declares one tool round, so the
+    # missing tool_think slots are rejected at load time.
+    shard = _write_think_shard(
+        tmp_path,
+        {"sample_id": "sample", "assistant_turns": 2, "think": "terminal"},
+    )
+    with pytest.raises(ValueError, match="tool_think"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_tool_slot_count_mismatch_at_load(tmp_path: Path) -> None:
+    # tool_think slot count must equal assistant_turns - 1 (the tool rounds
+    # declared by the marker); a mismatch is reported when the shard loads,
+    # not later during generate().
+    shard = _write_think_shard(
+        tmp_path,
+        {
+            "sample_id": "sample",
+            "assistant_turns": 3,
+            "think": "terminal",
+            "tool_think": ["only one slot"],
+        },
+    )
+    with pytest.raises(ValueError, match="does not match tool_think slots"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_declared_tool_rounds_without_slots_at_load(
+    tmp_path: Path,
+) -> None:
+    # assistant_turns = 2 declares one tool round; with no tool_think or
+    # assistant slots the entry is inconsistent for every trajectory class
+    # and must fail at load rather than at generate time.
+    shard = _write_think_shard(
+        tmp_path,
+        {
+            "sample_id": "sample",
+            "assistant_turns": 2,
+            "think": {"terminal": "terminal"},
+        },
+    )
+    with pytest.raises(ValueError, match="no tool_think/assistant think slots"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_empty_terminal_at_load(tmp_path: Path) -> None:
+    shard = _write_think_shard(tmp_path, {"sample_id": "sample", "think": "  "})
+    with pytest.raises(ValueError, match="terminal think.*non-empty"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_empty_new_tool_slot_at_load(tmp_path: Path) -> None:
+    shard = _write_think_shard(
+        tmp_path,
+        {"sample_id": "sample", "think": "terminal", "tool_think": [""]},
+    )
+    with pytest.raises(ValueError, match="tool_think slot 0.*non-empty"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_explicit_empty_tool_think_instead_of_backfill(
+    tmp_path: Path,
+) -> None:
+    shard = _write_think_shard(
+        tmp_path,
+        {
+            "sample_id": "sample",
+            "think": {"tool": ["inline tool"], "terminal": "terminal"},
+            "tool_think": [],
+        },
+    )
+    with pytest.raises(ValueError, match="mixes inline and top-level"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_conflicting_terminal_sources(tmp_path: Path) -> None:
+    shard = _write_think_shard(
+        tmp_path,
+        {
+            "sample_id": "sample",
+            "think": {
+                "assistant": ["tool thought", "list terminal"],
+                "terminal": "other terminal",
+            },
+        },
+    )
+    with pytest.raises(ValueError, match="conflicting terminal"):
+        FileThinkGenerator(shard)
+
+
+def test_file_think_rejects_conflicting_alias_spellings(tmp_path: Path) -> None:
+    shard = _write_think_shard(
+        tmp_path,
+        {
+            "sample_id": "sample",
+            "think": "terminal",
+            "tool_think": ["canonical tool"],
+            "tool_thinks": ["alias tool"],
+        },
+    )
+    with pytest.raises(ValueError, match="conflicting tool_think aliases"):
+        FileThinkGenerator(shard)
+
+
 def _collect(tmp_path: Path, **kwargs: object):
     from agent.training.sft.tool_trajectories import collect_tool_trajectory_contexts
 
@@ -536,6 +728,10 @@ def _fill_shards(collect_dir: Path, *, with_gt: bool = False, mutate: dict | Non
                 f"reasoning for {entry['sample_id']}"
                 + (f" target {entry['ground_truth']}" if with_gt else "")
             )
+            entry["tool_think"] = [
+                f"tool reasoning {turn} for {entry['sample_id']}"
+                for turn in range(len(entry.get("tool_calls", [])))
+            ]
             if mutate is not None and entry["sample_id"] == mutate.get("sample_id"):
                 entry["think"] = mutate["think"]
         shard.write_text(
@@ -563,7 +759,7 @@ def _export_file(tmp_path: Path, collect_dir: Path, **kwargs: object):
 
 def test_collect_shards_cover_all_records_and_carry_full_context(tmp_path: Path) -> None:
     collect_dir, report = _collect(tmp_path, shard_size=8)
-    assert report["format"] == "verl_tool_trajectory_think_collect_v1"
+    assert report["format"] == "verl_tool_trajectory_think_collect_v2"
     assert report["label_aware"] is True
     assert report["total_samples"] == 24
     assert report["splits"] == {"train": 8, "val": 8, "test": 8}
@@ -583,6 +779,9 @@ def test_collect_shards_cover_all_records_and_carry_full_context(tmp_path: Path)
         assert row["ground_truth_level"] in _grading().levels
         assert set(row["terminal_json"]) == {"answer", "level"}
         assert isinstance(row["tool_calls"], list)
+        assert row["assistant_turns"] == len(row["tool_calls"]) + 1
+        assert isinstance(row["tool_think"], list)
+        assert len(row["tool_think"]) == len(row["tool_calls"])
         if row["trajectory_class"] == "direct":
             assert row["tool_calls"] == []
             assert row["tool_results"] == []
@@ -604,9 +803,118 @@ def test_file_think_assemble_roundtrip(tmp_path: Path) -> None:
     for split in ("train", "val", "test"):
         for row in _rows(output, split):
             assert row["think_source"] == "file"
-            assert row["messages"][-1]["reasoning_content"] == (
+            assistants = [
+                message for message in row["messages"] if message["role"] == "assistant"
+            ]
+            assert assistants[-1]["reasoning_content"] == (
                 f"reasoning for {row['source_id']}"
             )
+            tool_assistants = assistants[:-1]
+            assert [message["reasoning_content"] for message in tool_assistants] == [
+                f"tool reasoning {turn} for {row['source_id']}"
+                for turn in range(len(tool_assistants))
+            ]
+
+
+def test_file_think_legacy_single_string_fills_every_assistant_turn(tmp_path: Path) -> None:
+    collect_dir, _ = _collect(tmp_path)
+    # Simulate a pre-change shard: only the terminal string exists and the
+    # new tool_think field is absent. The compatibility path must still put a
+    # non-empty thought on every assistant turn.
+    for shard in sorted(collect_dir.glob("*.jsonl")):
+        entries = [json.loads(line) for line in shard.read_text(encoding="utf-8").splitlines()]
+        for entry in entries:
+            entry["think"] = f"legacy reasoning for {entry['sample_id']}"
+            entry.pop("tool_think", None)
+            entry.pop("assistant_turns", None)
+        shard.write_text(
+            "\n".join(json.dumps(entry, ensure_ascii=False) for entry in entries) + "\n",
+            encoding="utf-8",
+        )
+    output, _ = _export_file(tmp_path, collect_dir)
+    validation = validate_tool_trajectory_dataset(
+        output,
+        _registry(),
+        corpus=_corpus_map(),
+        task_config=_config(FIELDS_4),
+        grading=_grading(),
+    )
+    assert validation["valid"] is True
+    for split in ("train", "val", "test"):
+        for row in _rows(output, split):
+            assistants = [
+                message for message in row["messages"] if message["role"] == "assistant"
+            ]
+            assert [message["reasoning_content"] for message in assistants] == [
+                f"legacy reasoning for {row['source_id']}"
+            ] * len(assistants)
+
+
+def test_file_think_list_and_mapping_preserve_turn_order(tmp_path: Path) -> None:
+    collect_dir, _ = _collect(tmp_path)
+    entries_by_id: dict[str, dict] = {}
+    for shard in sorted(collect_dir.glob("*.jsonl")):
+        entries = [json.loads(line) for line in shard.read_text(encoding="utf-8").splitlines()]
+        for entry in entries:
+            entries_by_id[entry["sample_id"]] = entry
+            turns = [
+                f"turn {index} for {entry['sample_id']}"
+                for index in range(entry["assistant_turns"])
+            ]
+            # Exercise the compact list form for one row and the mapping form
+            # for another; both are ordered by assistant turn index.
+            ordinal = len(entries_by_id)
+            if ordinal == 1:
+                entry["think"] = turns
+                entry.pop("tool_think", None)
+            elif ordinal == 2:
+                entry["think"] = {
+                    "tool": turns[:-1],
+                    "terminal": turns[-1],
+                }
+                entry.pop("tool_think", None)
+            else:
+                entry["think"] = f"legacy reasoning for {entry['sample_id']}"
+                entry["tool_think"] = [
+                    f"legacy tool reasoning {turn} for {entry['sample_id']}"
+                    for turn in range(len(entry["tool_calls"]))
+                ]
+        shard.write_text(
+            "\n".join(json.dumps(entry, ensure_ascii=False) for entry in entries) + "\n",
+            encoding="utf-8",
+        )
+    output, _ = _export_file(tmp_path, collect_dir)
+    for row in _rows(output, "train") + _rows(output, "val") + _rows(output, "test"):
+        if row["source_id"] not in entries_by_id:
+            continue
+        entry = entries_by_id[row["source_id"]]
+        if isinstance(entry["think"], list):
+            expected = entry["think"]
+        elif isinstance(entry["think"], dict):
+            expected = entry["think"]["tool"] + [entry["think"]["terminal"]]
+        else:
+            continue
+        actual = [
+            message["reasoning_content"]
+            for message in row["messages"]
+            if message["role"] == "assistant"
+        ]
+        assert actual == expected
+
+
+def test_file_think_rejects_wrong_tool_slot_count(tmp_path: Path) -> None:
+    collect_dir, _ = _collect(tmp_path)
+    shard = sorted(collect_dir.glob("*.jsonl"))[0]
+    entries = [json.loads(line) for line in shard.read_text(encoding="utf-8").splitlines()]
+    entry = next(item for item in entries if item["tool_calls"])
+    entry["think"] = "terminal reasoning"
+    entry["tool_think"] = []
+    shard.write_text(
+        "\n".join(json.dumps(item, ensure_ascii=False) for item in entries) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="tool_think slot"):
+        _export_file(tmp_path, collect_dir)
 
 
 def test_file_think_missing_sample_fails_fast(tmp_path: Path) -> None:
@@ -685,12 +993,12 @@ def test_collect_context_matches_assemble_messages_byte_for_byte(
     # path: both derive from _build_trajectory_context, so prompts, tool
     # calls, tool results, and the terminal JSON must match byte-for-byte.
     collect_dir, _ = _collect(tmp_path)
+    _fill_shards(collect_dir)
     shard_entries = {
         json.loads(line)["sample_id"]: json.loads(line)
         for shard in sorted(collect_dir.glob("*.jsonl"))
         for line in shard.read_text(encoding="utf-8").splitlines()
     }
-    _fill_shards(collect_dir)
     output, _ = _export_file(tmp_path, collect_dir)
     for split in ("train", "val", "test"):
         for row in _rows(output, split):
@@ -721,6 +1029,17 @@ def test_collect_context_matches_assemble_messages_byte_for_byte(
             assert entry["ground_truth"] == row["ground_truth"]
             assert entry["ground_truth_level"] == row["ground_truth_level"]
             assert entry["trajectory_class"] == row["trajectory_class"]
+            assistants = [
+                message for message in row["messages"] if message["role"] == "assistant"
+            ]
+            assert entry["assistant_turns"] == len(assistants)
+            assert len(entry["tool_think"]) == len(assistants) - 1
+            assert [
+                message["reasoning_content"] for message in assistants[:-1]
+            ] == entry["tool_think"]
+            assert assistants[-1]["reasoning_content"] == (
+                f"reasoning for {row['source_id']}"
+            )
 
 
 def test_truncate_backs_off_to_closed_prefix(tmp_path: Path) -> None:

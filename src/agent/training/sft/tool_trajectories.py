@@ -13,26 +13,29 @@ not participate in the trajectory data line).
 
 Trajectory classes (one deterministic class per canonical record):
 
-- ``direct``: no tools; the assistant answers with the strict terminal JSON
-  immediately after the user turn.
-- ``single_tool``: one ``search_categories`` call, real result, terminal JSON.
-- ``multi_tool``: ``search_categories`` -> ``get_category_details`` ->
-  ``get_category_examples``, real results, terminal JSON (three different
-  tools, within the formal ``max_assistant_turns=4`` cap).
-- ``no_result``: ``browse_categories`` + a scoped search in a level-1 group
-  that does NOT contain the ground truth; the model must still emit the
-  terminal JSON even though tools never surfaced the answer.
+- ``direct``: no tools; the assistant thinks briefly, then emits the strict
+  terminal JSON immediately after the user turn.
+- ``single_tool``: one assistant think + ``search_categories`` call, real
+  result, terminal think + JSON.
+- ``multi_tool``: three assistant think/tool rounds
+  (``search_categories`` -> ``get_category_details`` ->
+  ``get_category_examples``), real results, then terminal think + JSON.
+- ``no_result``: two assistant think/tool rounds (``browse_categories`` + a
+  scoped search in a level-1 group that does NOT contain the ground truth);
+  the model recovers and still emits terminal JSON even though tools never
+  surfaced the answer.
 
-The terminal assistant message also carries a ``reasoning_content`` key
-(thinking text) produced by a pluggable think generator. The default is the
-local deterministic :class:`MockThinkGenerator` (no credentials, no network);
-a real deepseek-v4-flash-backed generator plugs into the same protocol later
-(runtime-local credentials only). Generated think text is enforced against
-``max_think_tokens`` (default 128, coordinator decision): over-limit text is
-truncated to the prefix within budget or the row is discarded, per
-``think_over_limit``. Loss scope is pinned by decision: think enters the SFT
-loss at weight 1 and the answer/level value spans at weight 8 (the server
-scheme-C answer_mask patch is the contract; the patch is not changed).
+Every assistant message also carries a ``reasoning_content`` key (thinking
+text) produced by a pluggable think generator. Tool-call turns use a short
+think budget (at most 64 tokens); the terminal assistant keeps the 128-token
+budget. The default is the local deterministic :class:`MockThinkGenerator`
+(no credentials, no network); a real deepseek-v4-flash-backed generator plugs
+into the same protocol later (runtime-local credentials only). Generated think
+text is enforced against the per-turn budget: over-limit text is truncated to
+the prefix within budget or the row is discarded, per ``think_over_limit``.
+Loss scope is pinned by decision: think enters the SFT loss at weight 1 and the
+answer/level value spans at weight 8 (the server scheme-C answer_mask patch is
+the contract; the patch is not changed).
 
 Leakage discipline (audited by :func:`validate_tool_trajectory_dataset`):
 
@@ -40,9 +43,9 @@ Leakage discipline (audited by :func:`validate_tool_trajectory_dataset`):
   re-executed from the recorded arguments (inference-time content only);
 - tool-call arguments come only from the record metadata, ids returned by
   earlier tool results, and scope keys returned by browse;
-- the system/user prompt and the reasoning_content never contain the
-  canonical ground-truth id and never frame the answer as "this is the
-  answer";
+- the system/user prompt and mock reasoning_content never contain the
+  canonical ground-truth id; label-aware file reasoning may contain a bare id
+  but never frames a terminal JSON object or answer/level key-value lookalike;
 - the strict terminal JSON is the ONLY supervised label (the training loss
   masks user/tool messages per the existing messages contract); it must parse
   with ``parse_final_tool_answer`` and match ground_truth + level.
@@ -63,6 +66,7 @@ field contract is owner-blocked — see the phase design note.
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 from pathlib import Path
 import re
@@ -101,24 +105,31 @@ _TOOL_TOP_K = 5
 _MAX_DETAIL_IDS = 2
 _MAX_EXAMPLE_IDS = 1
 _EXAMPLE_LIMIT = 2
-# Default ceiling for generated think text: 128 tokens (coordinator
-# decision 2026-08-27; the SFT line is terminal-think only). RL-stage budgets
-# are 64 per tool turn / 128 terminal (design note). Mock think (~30 tokens)
-# is unaffected. Loss scope is pinned: think enters the SFT loss at weight 1,
-# answer/level value spans at weight 8 (server scheme-C patch is the
-# contract; the patch itself is not changed).
+# Default ceilings for generated think text (coordinator decision
+# 2026-08-27): terminal think keeps a 128-token cap and every tool-call
+# assistant turn gets the short 64-token cap. ``max_think_tokens`` remains
+# the public terminal cap; tool turns use ``min(64, max_think_tokens)`` so a
+# caller choosing a smaller global budget still gets a valid row.
 _DEFAULT_MAX_THINK_TOKENS = 128
+_TOOL_MAX_THINK_TOKENS = 64
 _CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff]")
 
 
 class ThinkGenerator(Protocol):
-    """Pluggable think-text generator for the terminal assistant turn.
+    """Pluggable think-text generator for each assistant turn.
 
+    ``turn_index`` is zero-based across assistant messages (tool calls first,
+    terminal answer last), and ``is_terminal`` identifies the final turn.
     Implementations must be deterministic for identical inputs when used in
-    reproducible exports, and must never receive or emit ground-truth
-    content. The default :class:`MockThinkGenerator` is local and credential-
-    free; a deepseek-v4-flash-backed implementation plugs in here with
-    runtime-local credentials only.
+    reproducible exports. They must not receive or emit ground-truth content
+    unless the source is explicitly label-aware (the file source is audited
+    separately). The default :class:`MockThinkGenerator` is local and
+    credential-free; a deepseek-v4-flash-backed implementation plugs in here
+    with runtime-local credentials only.
+
+    Third-party generators implementing the original three-argument protocol
+    remain supported: the exporter only supplies turn arguments when the
+    ``generate`` signature accepts them.
     """
 
     name: str
@@ -129,18 +140,38 @@ class ThinkGenerator(Protocol):
         source_id: str,
         metadata: Mapping[str, str],
         trajectory_class: str,
+        turn_index: int = 0,
+        is_terminal: bool = True,
     ) -> str: ...
 
 
 class MockThinkGenerator:
     """Deterministic local think generator (no credentials, no network).
 
-    Emits short reasoning text anchored to inference-time content only
-    (metadata and trajectory class); it never contains canonical ids or the
-    ground truth, and its output is stable across runs.
+    Emits one or two short reasoning sentences anchored to inference-time
+    content only (metadata, trajectory class, and turn position). It never
+    contains canonical ids or the ground truth, and its output is stable
+    across runs. Tool turns deliberately use distinct plans so a mock export
+    teaches the assistant/tool alternation rather than repeating terminal
+    prose on every turn.
     """
 
     name = "mock"
+
+    _TOOL_THINK = {
+        "single_tool": (
+            "I will search the catalog using the field and table metadata before selecting a candidate.",
+        ),
+        "multi_tool": (
+            "I will search the catalog for candidates that match the visible field semantics.",
+            "I will inspect the returned definitions to narrow the candidate set.",
+            "I will check examples for the remaining candidate before answering.",
+        ),
+        "no_result": (
+            "I will browse category scopes before trying a targeted search.",
+            "The scoped lookup may miss the target, so I will recover from the available catalog context.",
+        ),
+    }
 
     def generate(
         self,
@@ -148,7 +179,15 @@ class MockThinkGenerator:
         source_id: str,
         metadata: Mapping[str, str],
         trajectory_class: str,
+        turn_index: int = 0,
+        is_terminal: bool = True,
     ) -> str:
+        del source_id  # deterministic output is intentionally source-id agnostic
+        if not is_terminal:
+            options = self._TOOL_THINK.get(trajectory_class)
+            if options:
+                return options[min(max(turn_index, 0), len(options) - 1)]
+            return "I will inspect the catalog before selecting a candidate."
         field = str(metadata.get("field_name", "") or "the field")
         table = str(metadata.get("table_name", "") or "its table")
         return (
@@ -162,16 +201,20 @@ class MockThinkGenerator:
 class FileThinkGenerator:
     """Read pre-generated think text from JSONL shards by sample id.
 
-    Backs the ``--think-source file:<path>`` seam: the collect step writes
-    one JSONL context shard per (split, shard) with an empty ``think`` field;
-    a label-aware sub-agent (e.g. deepseek-v4-flash) fills ``think`` in its
-    own reserved shard file only, and export/assemble reads every shard from
-    ``path`` (a single file or a directory of ``*.jsonl`` shards) keyed by
-    ``sample_id``. Missing samples fail fast so a partial shard set can never
-    silently produce a release.
+    The recommended shard shape is a terminal ``think`` string plus an ordered
+    ``tool_think`` list (one entry for each assistant tool-call turn). Compact
+    list/mapping forms and their historical aliases remain accepted, but
+    conflicting or mixed sources are rejected instead of being resolved by
+    precedence. A legacy one-string shard is reusable for every assistant turn
+    only when *all* new-schema markers are absent.
     """
 
     name = "file"
+    _ASSISTANT_ALIASES = ("assistant_think", "assistant_thinks", "think_turns")
+    _TOOL_ALIASES = ("tool_think", "tool_thinks")
+    _INLINE_ASSISTANT_ALIASES = ("assistant", "turns", "assistant_think", "assistant_thinks")
+    _INLINE_TOOL_ALIASES = ("tool", "tools", "tool_think", "tool_thinks")
+    _INLINE_TERMINAL_ALIASES = ("terminal", "final")
 
     def __init__(self, path: str | Path) -> None:
         source = Path(path)
@@ -182,7 +225,7 @@ class FileThinkGenerator:
         )
         if not shard_files:
             raise ValueError(f"think shard directory contains no *.jsonl: {source}")
-        self._think: dict[str, str] = {}
+        self._think: dict[str, dict[str, Any]] = {}
         self._shard_files = [str(path) for path in shard_files]
         for shard in shard_files:
             for line_number, line in enumerate(
@@ -196,21 +239,328 @@ class FileThinkGenerator:
                     raise ValueError(
                         f"invalid JSON in think shard {shard} line {line_number}: {exc}"
                     ) from exc
-                sample_id = entry.get("sample_id") if isinstance(entry, Mapping) else None
-                think = entry.get("think") if isinstance(entry, Mapping) else None
+                if not isinstance(entry, Mapping):
+                    raise ValueError(
+                        f"think shard {shard} line {line_number} must contain an object"
+                    )
+                sample_id = entry.get("sample_id")
                 if not isinstance(sample_id, str) or not sample_id.strip():
                     raise ValueError(
                         f"think shard {shard} line {line_number} lacks sample_id"
-                    )
-                if not isinstance(think, str):
-                    raise ValueError(
-                        f"think shard {shard} line {line_number} lacks a string think"
                     )
                 if sample_id in self._think:
                     raise ValueError(
                         f"duplicate sample_id {sample_id!r} across think shards"
                     )
-                self._think[sample_id] = think
+                self._think[sample_id] = self._normalize_entry(
+                    entry, shard=shard, line_number=line_number
+                )
+
+    @staticmethod
+    def _alias_value(
+        mapping: Mapping[str, Any],
+        aliases: Sequence[str],
+        *,
+        field: str,
+        shard: Path,
+        line_number: int,
+    ) -> tuple[bool, Any]:
+        """Return one alias value, rejecting duplicate spellings.
+
+        Alias precedence is unsafe for label-aware data: two producers can
+        otherwise provide different terminal/tool slots and the later lookup
+        silently wins. Presence is tracked separately from the value so an
+        explicit ``null``/empty field can never be mistaken for omission.
+        """
+
+        present = [name for name in aliases if name in mapping]
+        if len(present) > 1:
+            raise ValueError(
+                f"think shard {shard} line {line_number} has conflicting "
+                f"{field} aliases: {', '.join(present)}"
+            )
+        if not present:
+            return False, None
+        return True, mapping[present[0]]
+
+    @classmethod
+    def _string_list(
+        cls,
+        value: Any,
+        *,
+        field: str,
+        shard: Path,
+        line_number: int,
+        present: bool = True,
+    ) -> list[str] | None:
+        if not present:
+            return None
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            raise ValueError(
+                f"think shard {shard} line {line_number} field {field!r} "
+                "must be a list of strings"
+            )
+        for index, item in enumerate(value):
+            if not item.strip():
+                raise ValueError(
+                    f"think shard {shard} line {line_number} {field} slot "
+                    f"{index} must be non-empty"
+                )
+        return list(value)
+
+    @staticmethod
+    def _nonempty_string(
+        value: Any, *, field: str, shard: Path, line_number: int
+    ) -> str:
+        if not isinstance(value, str):
+            raise ValueError(
+                f"think shard {shard} line {line_number} {field} must be a string"
+            )
+        if not value.strip():
+            raise ValueError(
+                f"think shard {shard} line {line_number} {field} must be non-empty"
+            )
+        return value
+
+    @classmethod
+    def _normalize_entry(
+        cls, entry: Mapping[str, Any], *, shard: Path, line_number: int
+    ) -> dict[str, Any]:
+        think_present = "think" in entry
+        think = entry.get("think")
+        terminal: str | None = None
+        assistant: list[str] | None = None
+        inline_tool: list[str] | None = None
+        inline_assistant_present = False
+        inline_tool_present = False
+        inline_terminal_present = False
+
+        if isinstance(think, str):
+            terminal = cls._nonempty_string(
+                think, field="terminal think", shard=shard, line_number=line_number
+            )
+        elif isinstance(think, list):
+            assistant = cls._string_list(
+                think,
+                field="think",
+                shard=shard,
+                line_number=line_number,
+            )
+            if assistant:
+                terminal = assistant[-1]
+        elif isinstance(think, Mapping):
+            allowed = set(cls._INLINE_ASSISTANT_ALIASES) | set(
+                cls._INLINE_TOOL_ALIASES
+            ) | set(cls._INLINE_TERMINAL_ALIASES)
+            unknown = sorted(set(think) - allowed)
+            if unknown:
+                raise ValueError(
+                    f"think shard {shard} line {line_number} has unsupported "
+                    f"think mapping fields: {unknown}"
+                )
+            inline_terminal_present, terminal_value = cls._alias_value(
+                think,
+                cls._INLINE_TERMINAL_ALIASES,
+                field="terminal think",
+                shard=shard,
+                line_number=line_number,
+            )
+            if inline_terminal_present:
+                terminal = cls._nonempty_string(
+                    terminal_value,
+                    field="terminal think",
+                    shard=shard,
+                    line_number=line_number,
+                )
+            inline_assistant_present, assistant_value = cls._alias_value(
+                think,
+                cls._INLINE_ASSISTANT_ALIASES,
+                field="assistant think",
+                shard=shard,
+                line_number=line_number,
+            )
+            assistant = cls._string_list(
+                assistant_value,
+                field="think.assistant",
+                shard=shard,
+                line_number=line_number,
+                present=inline_assistant_present,
+            )
+            inline_tool_present, tool_value = cls._alias_value(
+                think,
+                cls._INLINE_TOOL_ALIASES,
+                field="tool_think",
+                shard=shard,
+                line_number=line_number,
+            )
+            inline_tool = cls._string_list(
+                tool_value,
+                field="think.tool",
+                shard=shard,
+                line_number=line_number,
+                present=inline_tool_present,
+            )
+            if inline_assistant_present and inline_tool_present:
+                raise ValueError(
+                    f"think shard {shard} line {line_number} mixes assistant "
+                    "and tool think sources"
+                )
+            if assistant:
+                derived_terminal = assistant[-1]
+                if terminal is None:
+                    terminal = derived_terminal
+                elif terminal != derived_terminal:
+                    raise ValueError(
+                        f"think shard {shard} line {line_number} has conflicting "
+                        "terminal think sources"
+                    )
+        elif think_present and think is not None:
+            raise ValueError(
+                f"think shard {shard} line {line_number} field 'think' "
+                "must be a string, list, or object"
+            )
+
+        assistant_alias_present, explicit_assistant = cls._alias_value(
+            entry,
+            cls._ASSISTANT_ALIASES,
+            field="assistant think",
+            shard=shard,
+            line_number=line_number,
+        )
+        parsed_assistant = cls._string_list(
+            explicit_assistant,
+            field="assistant_think",
+            shard=shard,
+            line_number=line_number,
+            present=assistant_alias_present,
+        )
+        tool_alias_present, explicit_tool = cls._alias_value(
+            entry,
+            cls._TOOL_ALIASES,
+            field="tool_think",
+            shard=shard,
+            line_number=line_number,
+        )
+        parsed_tool = cls._string_list(
+            explicit_tool,
+            field="tool_think",
+            shard=shard,
+            line_number=line_number,
+            present=tool_alias_present,
+        )
+
+        # The only mixed source intentionally supported is the recommended
+        # terminal string + top-level ordered tool_think list. All other
+        # compact/explicit combinations are ambiguous, even when one value is
+        # empty; never let an empty explicit list be backfilled by inline data.
+        if inline_assistant_present or inline_tool_present:
+            if assistant_alias_present or tool_alias_present:
+                raise ValueError(
+                    f"think shard {shard} line {line_number} mixes inline and "
+                    "top-level think sources"
+                )
+        if isinstance(think, (list, Mapping)) and (
+            assistant_alias_present or tool_alias_present
+        ):
+            raise ValueError(
+                f"think shard {shard} line {line_number} mixes compact and "
+                "top-level think sources"
+            )
+        if isinstance(think, str) and assistant_alias_present:
+            raise ValueError(
+                f"think shard {shard} line {line_number} mixes terminal think "
+                "with assistant think sources"
+            )
+
+        if parsed_assistant is not None:
+            assistant = parsed_assistant
+            if assistant:
+                derived_terminal = assistant[-1]
+                if terminal is None:
+                    terminal = derived_terminal
+                elif terminal != derived_terminal:
+                    raise ValueError(
+                        f"think shard {shard} line {line_number} has conflicting "
+                        "terminal think sources"
+                    )
+        if parsed_tool is not None:
+            inline_tool = parsed_tool
+
+        # ``assistant_turns`` is a schema marker, not optional metadata. Even
+        # a null/incorrect value must not silently opt into legacy fallback.
+        assistant_turns_present = "assistant_turns" in entry
+        assistant_turns = entry.get("assistant_turns")
+        if assistant_turns_present:
+            if (
+                isinstance(assistant_turns, bool)
+                or not isinstance(assistant_turns, int)
+                or assistant_turns < 1
+            ):
+                raise ValueError(
+                    f"think shard {shard} line {line_number} assistant_turns "
+                    "must be a positive integer"
+                )
+
+        # A terminal value is mandatory for both legacy and new shards. This
+        # catches empty strings at load time rather than allowing a row with an
+        # empty reasoning_content to reach parquet publication/validation.
+        if terminal is None:
+            raise ValueError(
+                f"think shard {shard} line {line_number} lacks terminal think"
+            )
+        terminal = cls._nonempty_string(
+            terminal, field="terminal think", shard=shard, line_number=line_number
+        )
+
+        tool_explicit = tool_alias_present or inline_tool_present
+        assistant_explicit = assistant_alias_present or inline_assistant_present or isinstance(
+            think, list
+        )
+        new_schema = (
+            assistant_turns_present
+            or tool_explicit
+            or assistant_explicit
+            or isinstance(think, Mapping)
+        )
+
+        if assistant_turns_present and assistant is not None:
+            if len(assistant) != assistant_turns:
+                raise ValueError(
+                    f"think shard {shard} line {line_number} assistant_turns "
+                    "does not match assistant think slots"
+                )
+        if assistant_turns_present and inline_tool is not None:
+            if len(inline_tool) + 1 != assistant_turns:
+                raise ValueError(
+                    f"think shard {shard} line {line_number} assistant_turns "
+                    "does not match tool_think slots"
+                )
+        # The marker alone already declares the tool round count (``assistant_
+        # turns - 1``); an entry that declares tool rounds without any
+        # tool_think/assistant slots is internally inconsistent for every
+        # trajectory class and is rejected here at load time instead of
+        # surfacing per-sample during generate().
+        if (
+            assistant_turns_present
+            and assistant_turns > 1
+            and inline_tool is None
+            and assistant is None
+        ):
+            raise ValueError(
+                f"think shard {shard} line {line_number} assistant_turns "
+                f"{assistant_turns} declares {assistant_turns - 1} tool "
+                "rounds but no tool_think/assistant think slots are present"
+            )
+
+        return {
+            "terminal": terminal,
+            "tool": inline_tool,
+            "assistant": assistant,
+            "tool_explicit": tool_explicit,
+            "assistant_explicit": assistant_explicit,
+            "new_schema": new_schema,
+            "assistant_turns": assistant_turns,
+        }
 
     def generate(
         self,
@@ -218,13 +568,93 @@ class FileThinkGenerator:
         source_id: str,
         metadata: Mapping[str, str],
         trajectory_class: str,
+        turn_index: int = 0,
+        is_terminal: bool = True,
     ) -> str:
+        del metadata
         if source_id not in self._think:
             raise ValueError(
                 f"think shards ({len(self._shard_files)} file(s)) are missing "
                 f"sample_id {source_id!r}; assemble requires every record"
             )
-        return self._think[source_id]
+        expected_tool_calls = _EXPECTED_TOOL_CALLS.get(trajectory_class)
+        if expected_tool_calls is None:
+            raise ValueError(f"unknown trajectory class {trajectory_class!r}")
+        if not isinstance(turn_index, int) or isinstance(turn_index, bool) or turn_index < 0:
+            raise ValueError("turn_index must be a non-negative integer")
+        entry = self._think[source_id]
+        expected_assistant_turns = expected_tool_calls + 1
+        assistant_turns = entry.get("assistant_turns")
+        if assistant_turns is not None and assistant_turns != expected_assistant_turns:
+            raise ValueError(
+                f"think shard sample_id {source_id!r} assistant_turns must be "
+                f"{expected_assistant_turns} for {trajectory_class}"
+            )
+
+        tool = entry.get("tool")
+        if entry.get("tool_explicit"):
+            if not isinstance(tool, list) or len(tool) != expected_tool_calls:
+                raise ValueError(
+                    f"think shard sample_id {source_id!r} must provide exactly "
+                    f"{expected_tool_calls} tool_think slots for {trajectory_class}"
+                )
+        assistant = entry.get("assistant")
+        if entry.get("assistant_explicit"):
+            if not isinstance(assistant, list) or len(assistant) != expected_assistant_turns:
+                raise ValueError(
+                    f"think shard sample_id {source_id!r} must provide exactly "
+                    f"{expected_assistant_turns} assistant think slots for {trajectory_class}"
+                )
+
+        # New schemas cannot silently fall back to their terminal string for a
+        # missing tool slot. A complete assistant list is an independent
+        # compact form; otherwise a tool trajectory needs explicit tool slots.
+        if (
+            entry.get("new_schema")
+            and expected_tool_calls > 0
+            and not entry.get("tool_explicit")
+            and not entry.get("assistant_explicit")
+        ):
+            raise ValueError(
+                f"think shard sample_id {source_id!r} new schema requires "
+                f"{expected_tool_calls} tool_think slots for {trajectory_class}"
+            )
+
+        if is_terminal:
+            # The terminal value is always independently validated during
+            # normalization and never selected from a tool slot.
+            return entry["terminal"]
+
+        if turn_index >= expected_tool_calls:
+            raise ValueError(
+                f"think shard sample_id {source_id!r} tool turn index {turn_index} "
+                f"is outside {expected_tool_calls} expected slots"
+            )
+        if entry.get("tool_explicit"):
+            value = tool[turn_index]
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    f"think shard sample_id {source_id!r} tool_think slot "
+                    f"{turn_index} must be non-empty"
+                )
+            return value
+        if entry.get("assistant_explicit"):
+            value = assistant[turn_index]
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    f"think shard sample_id {source_id!r} assistant think slot "
+                    f"{turn_index} must be non-empty"
+                )
+            return value
+
+        # The only path that reuses one string is a true legacy shard: every
+        # new marker (assistant_turns, tool/assistant aliases, compact list or
+        # mapping) is absent.
+        if not entry.get("new_schema"):
+            return entry["terminal"]
+        raise ValueError(
+            f"think shard sample_id {source_id!r} is missing a tool think slot"
+        )
 
 
 def estimate_think_tokens(text: str, tokenizer=None) -> int:
@@ -262,6 +692,15 @@ def _think_closed(text: str) -> bool:
 
 _THINK_KEY_LOOKALIKE = re.compile(r'"(?:answer|level)"\s*:')
 _THINK_TERMINAL_JSON = re.compile(r'\{\s*"answer"\s*:')
+_THINK_SENTENCE_END = re.compile(r"[.!?。！？]+")
+
+
+def _think_sentence_count(text: str) -> int:
+    """Return a conservative sentence count for the short-think contract."""
+
+    if not isinstance(text, str) or not text.strip():
+        return 0
+    return max(1, len(_THINK_SENTENCE_END.findall(text)))
 
 
 def _truncate_think_to_budget(text: str, max_tokens: int, tokenizer=None) -> str:
@@ -409,6 +848,63 @@ def _tool_message(result: Mapping[str, Any]) -> dict[str, str]:
 
 def _assistant_message(content: str) -> dict[str, str]:
     return {"role": "assistant", "content": content}
+
+
+def _generate_think(
+    think_generator: ThinkGenerator,
+    *,
+    source_id: str,
+    metadata: Mapping[str, str],
+    trajectory_class: str,
+    turn_index: int,
+    is_terminal: bool,
+) -> str:
+    """Call a think generator while preserving the pre-turn API seam.
+
+    The original generator protocol accepted only ``source_id``, ``metadata``
+    and ``trajectory_class``.  New generators can use ``turn_index`` and
+    ``is_terminal`` to produce per-assistant-turn thoughts; signature probing
+    keeps existing local/test generators source-compatible and avoids catching
+    unrelated ``TypeError`` exceptions raised inside a generator.
+    """
+
+    generate = think_generator.generate
+    base_kwargs = {
+        "source_id": source_id,
+        "metadata": metadata,
+        "trajectory_class": trajectory_class,
+    }
+    try:
+        parameters = inspect.signature(generate).parameters
+    except (TypeError, ValueError):  # pragma: no cover - unusual C extensions
+        parameters = {}
+    accepts_kwargs = any(
+        parameter.kind is inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters.values()
+    )
+    kwargs = dict(base_kwargs)
+    if accepts_kwargs or "turn_index" in parameters:
+        kwargs["turn_index"] = turn_index
+    elif "assistant_turn" in parameters:
+        kwargs["assistant_turn"] = turn_index
+    elif "turn" in parameters:
+        kwargs["turn"] = turn_index
+    if accepts_kwargs or "is_terminal" in parameters:
+        kwargs["is_terminal"] = is_terminal
+    elif "terminal" in parameters:
+        kwargs["terminal"] = is_terminal
+    return generate(**kwargs)
+
+
+def _think_budget(is_terminal: bool, max_think_tokens: int) -> int:
+    """Return the cap for one assistant turn.
+
+    ``max_think_tokens`` is historically the terminal cap; keeping tool turns
+    bounded by the fixed 64-token policy while applying a smaller requested
+    cap makes the CLI's existing option intuitive for smoke tests.
+    """
+
+    return max_think_tokens if is_terminal else min(_TOOL_MAX_THINK_TOKENS, max_think_tokens)
 
 
 def _result_choice_ids(result: Mapping[str, Any]) -> list[str]:
@@ -609,10 +1105,11 @@ def build_trajectory(
     """Build one deterministic tool-trajectory row for a resolved record.
 
     The trajectory context (prompt/tool calls/results/terminal JSON) comes
-    from :func:`_build_trajectory_context`; think text is injected into the
-    terminal assistant message with the over-limit policy applied. Returns
-    None when ``think_over_limit == "discard"`` and the think text exceeds
-    ``max_think_tokens`` (the caller counts the skip).
+    from :func:`_build_trajectory_context`; one think text is injected into
+    every assistant message. Tool-call turns use a 64-token cap and the
+    terminal assistant uses ``max_think_tokens`` (128 by default). Returns
+    None when ``think_over_limit == "discard"`` and any turn exceeds its cap
+    (the caller counts the skip).
     """
 
     if dataset != FORMAL_RELEASE_NAME:
@@ -637,25 +1134,37 @@ def build_trajectory(
         env=env,
         dataset=dataset,
     )
-    think_text = think_generator.generate(
-        source_id=context["source_id"],
-        metadata=context["metadata"],
-        trajectory_class=context["trajectory_class"],
-    )
-    think_truncated = False
-    if estimate_think_tokens(think_text, think_tokenizer) > max_think_tokens:
-        if think_over_limit == "discard":
-            return None
-        think_text = _truncate_think_to_budget(
-            think_text, max_think_tokens, think_tokenizer
+    think_truncated_turns = 0
+    assistant_turn = 0
+    messages = context["messages"]
+    for message in messages:
+        if message.get("role") != "assistant":
+            continue
+        is_terminal = message is messages[-1]
+        turn_cap = _think_budget(is_terminal, max_think_tokens)
+        think_text = _generate_think(
+            think_generator,
+            source_id=context["source_id"],
+            metadata=context["metadata"],
+            trajectory_class=context["trajectory_class"],
+            turn_index=assistant_turn,
+            is_terminal=is_terminal,
         )
-        if not think_text.strip():
-            raise ValueError(
-                f"record {context['source_id']!r} think truncation produced an "
-                "empty reasoning_content; no closed prefix fits the budget"
+        if estimate_think_tokens(think_text, think_tokenizer) > turn_cap:
+            if think_over_limit == "discard":
+                return None
+            think_text = _truncate_think_to_budget(
+                think_text, turn_cap, think_tokenizer
             )
-        think_truncated = True
-    context["messages"][-1]["reasoning_content"] = think_text
+            if not think_text.strip():
+                raise ValueError(
+                    f"record {context['source_id']!r} think truncation produced an "
+                    "empty reasoning_content; no closed prefix fits the budget"
+                )
+            think_truncated_turns += 1
+        message["reasoning_content"] = think_text
+        assistant_turn += 1
+    think_truncated = think_truncated_turns > 0
     return {
         "messages": context["messages"],
         "stage": _STAGE,
@@ -669,6 +1178,7 @@ def build_trajectory(
         "tool_calls": context["tool_calls"],
         "think_source": think_generator.name,
         "think_truncated": think_truncated,
+        "think_truncated_turns": think_truncated_turns,
     }
 
 
@@ -711,15 +1221,17 @@ def collect_tool_trajectory_contexts(
     dataset: str = FORMAL_RELEASE_NAME,
     shard_size: int = 64,
 ) -> dict[str, Any]:
-    """Export think-free trajectory contexts as JSONL shards for a label-aware
-    sub-agent (e.g. deepseek-v4-flash) to fill ``think`` in.
+    """Export think-free trajectory contexts as JSONL shards.
 
     Every shard line carries the deterministic trajectory context (prompt,
-    tool calls, tool results, ground truth, terminal JSON) with an empty
-    ``think`` field; the sub-agent writes only its own reserved shard file.
-    ``export_tool_trajectory_dataset`` with ``think_source=file:<collect_dir>``
-    is the assemble path: it re-derives the same contexts, reads the filled
-    think by ``sample_id``, and validates the merged release.
+    tool calls, tool results, ground truth, terminal JSON), an empty terminal
+    ``think`` field, and one empty ``tool_think`` slot per tool-call assistant
+    turn. A label-aware sub-agent (e.g. deepseek-v4-flash) fills both fields in
+    its reserved shard. ``export_tool_trajectory_dataset`` with
+    ``think_source=file:<collect_dir>`` re-derives the same contexts, reads
+    the filled thoughts by ``sample_id``, and validates the merged release.
+    Legacy producers may fill only ``think``; ``FileThinkGenerator`` keeps
+    that format compatible while still injecting a thought into each turn.
     """
 
     if dataset != FORMAL_RELEASE_NAME:
@@ -774,19 +1286,28 @@ def collect_tool_trajectory_contexts(
                 "ground_truth": context["ground_truth"],
                 "ground_truth_level": context["ground_truth_level"],
                 "terminal_json": context["terminal_json"],
+                "assistant_turns": len(context["tool_calls"]) + 1,
+                # ``think`` remains the terminal slot for backwards
+                # compatibility; tool-call assistant turns have explicit
+                # ordered slots so a label-aware generator can fill every
+                # assistant turn independently.
                 "think": "",
+                "tool_think": ["" for _ in context["tool_calls"]],
             }
         )
 
     output_root.mkdir(parents=True, exist_ok=True)
     report: dict[str, Any] = {
-        "format": "verl_tool_trajectory_think_collect_v1",
+        "format": "verl_tool_trajectory_think_collect_v2",
         "dataset": dataset,
         "label_aware": True,
         "instruction": (
-            "fill the think field with reasoning consistent with the given "
-            "terminal_json/ground_truth; never emit a terminal JSON object or "
-            "\"answer\"/\"level\" key-value lookalikes inside think"
+            "fill think (terminal) and tool_think (one entry per tool-call "
+            "assistant turn) with one or two short reasoning sentences "
+            "consistent with the given terminal_json/ground_truth; each "
+            "tool_think entry is capped at 64 tokens and terminal think at "
+            "128; never emit a terminal JSON object or \"answer\"/\"level\" "
+            "key-value lookalikes inside think"
         ),
         "shard_size": shard_size,
         "shards": [],
@@ -910,6 +1431,7 @@ def export_tool_trajectory_dataset(
         "think": {
             "generator": think_generator.name,
             "max_tokens": max_think_tokens,
+            "tool_max_tokens": min(_TOOL_MAX_THINK_TOKENS, max_think_tokens),
             "over_limit_policy": think_over_limit,
             "tokenizer": "exact" if think_tokenizer is not None else "conservative_approx",
         },
@@ -928,6 +1450,7 @@ def export_tool_trajectory_dataset(
         "splits": {},
         "trajectory_class_counts": {},
         "think_truncated": 0,
+        "think_truncated_turns": 0,
         "think_discarded": 0,
     }
 
@@ -935,6 +1458,7 @@ def export_tool_trajectory_dataset(
     split_levels: dict[str, set[str]] = {name: set() for name in SPLITS}
     all_rows: dict[str, list[dict[str, Any]]] = {}
     think_truncated_total = 0
+    think_truncated_turns_total = 0
     think_discarded_total = 0
     for split in SPLITS:
         view = [
@@ -946,6 +1470,7 @@ def export_tool_trajectory_dataset(
         skipped_no_grading_label = 0
         skipped_think_discarded = 0
         truncated_think = 0
+        truncated_think_turns = 0
         for index, item in enumerate(view):
             item_id = str(item.get("id", "") or "").strip()
             if not item_id:
@@ -987,11 +1512,13 @@ def export_tool_trajectory_dataset(
                 continue
             if row["think_truncated"]:
                 truncated_think += 1
+            truncated_think_turns += int(row.get("think_truncated_turns", 0) or 0)
             rows.append(row)
         if not rows:
             raise ValueError(f"no resolved records available in {canonical_path}")
         all_rows[split] = rows
         think_truncated_total += truncated_think
+        think_truncated_turns_total += truncated_think_turns
         think_discarded_total += skipped_think_discarded
 
         class_counts = {name: 0 for name in TRAJECTORY_CLASSES}
@@ -1003,6 +1530,7 @@ def export_tool_trajectory_dataset(
             "skipped_no_grading_label": skipped_no_grading_label,
             "skipped_think_discarded": skipped_think_discarded,
             "think_truncated": truncated_think,
+            "think_truncated_turns": truncated_think_turns,
             "trajectory_class_counts": class_counts,
         }
         for name, count in class_counts.items():
@@ -1010,6 +1538,7 @@ def export_tool_trajectory_dataset(
                 report["trajectory_class_counts"].get(name, 0) + count
             )
     report["think_truncated"] = think_truncated_total
+    report["think_truncated_turns"] = think_truncated_turns_total
     report["think_discarded"] = think_discarded_total
 
     blocking_gaps: list[dict[str, str]] = []
@@ -1160,23 +1689,45 @@ def _validate_row(
         errors.append("system/user prompt must not expose canonical ground truth")
 
     # Think (reasoning_content) audit, source-aware (coordinator decision
-    # 2026-08-27): public constraints for every source are non-empty, within
-    # the token ceiling, closed (balanced brackets), no terminal JSON object
-    # and no `"answer"`/`"level"` key-value lookalikes (answer_mask
-    # doppelgangers). Mock think stays ground-truth-free; file think (the
-    # label-aware sub-agent seam) may contain bare ground-truth ids as
-    # legitimate reasoning.
+    # 2026-08-27): every assistant turn must carry non-empty, one/two-sentence
+    # reasoning within its per-turn cap, with balanced brackets, no terminal
+    # JSON object and no `"answer"`/`"level"` key-value lookalikes
+    # (answer_mask doppelgangers). Mock think stays ground-truth-free; file
+    # think (the label-aware sub-agent seam) may contain bare ground-truth ids
+    # as legitimate reasoning.
     think_source = row.get("think_source")
     if not isinstance(think_source, str) or not think_source.strip():
         errors.append("think_source must be a non-empty generator name")
-    terminal_message = messages[-1]
-    reasoning = terminal_message.get("reasoning_content")
-    if not isinstance(reasoning, str) or not reasoning.strip():
-        errors.append("terminal assistant message must carry non-empty reasoning_content")
-    else:
-        if estimate_think_tokens(reasoning) > max_think_tokens:
+    for message_index, message in enumerate(messages):
+        reasoning = message.get("reasoning_content")
+        if message.get("role") != "assistant":
+            # Parquet list<struct> round-trips absent keys with None.  Any
+            # actual thought on user/system/tool content is a schema leak.
+            if reasoning is not None:
+                errors.append(
+                    f"message {message_index} non-assistant must not carry reasoning_content"
+                )
+            continue
+        is_terminal = message is messages[-1]
+        cap = _think_budget(is_terminal, max_think_tokens)
+        turn_name = "terminal" if is_terminal else "tool"
+        if not isinstance(reasoning, str) or not reasoning.strip():
             errors.append(
-                f"reasoning_content exceeds max_think_tokens={max_think_tokens}"
+                f"{turn_name} assistant message must carry non-empty reasoning_content"
+            )
+            continue
+        if estimate_think_tokens(reasoning) > cap:
+            if is_terminal:
+                errors.append(
+                    f"reasoning_content exceeds max_think_tokens={max_think_tokens}"
+                )
+            else:
+                errors.append(
+                    f"tool reasoning_content exceeds {cap}-token cap"
+                )
+        if _think_sentence_count(reasoning) > 2:
+            errors.append(
+                f"{turn_name} reasoning_content must contain at most two sentences"
             )
         if not _think_closed(reasoning):
             errors.append("reasoning_content is not closed (unbalanced brackets)")
@@ -1191,11 +1742,6 @@ def _validate_row(
             )
         if think_source == "mock" and ground_truth in reasoning:
             errors.append("mock reasoning_content must not expose canonical ground truth")
-    for message in messages[:-1]:
-        # Parquet list<struct> round-trips pad missing keys with None; only a
-        # non-None reasoning_content on a non-terminal message is a violation.
-        if message.get("reasoning_content") is not None:
-            errors.append("only the terminal assistant message may carry reasoning_content")
 
     tool_calls = row.get("tool_calls")
     if not isinstance(tool_calls, list) or len(tool_calls) != expected_tool_calls:
