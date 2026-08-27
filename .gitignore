@@ -65,3 +65,6 @@ Desktop.ini
 .env.*
 *.pem
 *.key
+
+# ---- Local agent subagent configs (runtime-local, not committed) ----
+.pi/
