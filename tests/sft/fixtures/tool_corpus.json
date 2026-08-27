@@ -1,0 +1,10 @@
+{
+  "categories": [
+    {"category_id": "demo:alpha", "name": "Alpha", "description": "Synthetic explanation for alpha.", "descriptions": ["Alpha fields describe fabricated alpha records."], "examples": ["fabricated-alpha-example"], "path": ["Finance", "Alpha"]},
+    {"category_id": "demo:bravo", "name": "Bravo", "description": "Synthetic explanation for bravo.", "descriptions": ["Bravo fields describe fabricated bravo records."], "examples": ["fabricated-bravo-example"], "path": ["Finance", "Bravo"]},
+    {"category_id": "demo:charlie", "name": "Charlie", "description": "Synthetic explanation for charlie.", "descriptions": ["Charlie fields describe fabricated charlie records."], "examples": ["fabricated-charlie-example"], "path": ["Finance", "Charlie"]},
+    {"category_id": "demo:delta", "name": "Delta", "description": "Synthetic explanation for delta.", "descriptions": ["Delta fields describe fabricated delta records."], "examples": ["fabricated-delta-example"], "path": ["Hr", "Delta"]},
+    {"category_id": "demo:echo", "name": "Echo", "description": "Synthetic explanation for echo.", "descriptions": ["Echo fields describe fabricated echo records."], "examples": ["fabricated-echo-example"], "path": ["Hr", "Echo"]},
+    {"category_id": "demo:foxtrot", "name": "Foxtrot", "description": "Synthetic explanation for foxtrot.", "descriptions": ["Foxtrot fields describe fabricated foxtrot records."], "examples": ["fabricated-foxtrot-example"], "path": ["Hr", "Foxtrot"]}
+  ]
+}

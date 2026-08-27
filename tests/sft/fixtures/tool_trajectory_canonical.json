@@ -1,0 +1,650 @@
+[
+  {
+    "schema_version": 2,
+    "id": "train-00",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "alpha_field",
+      "table_name": "tbl_alpha",
+      "field_description": "Source column alpha_field in table tbl_alpha.",
+      "table_description": "Synthetic table holding fabricated alpha records."
+    },
+    "classification": {
+      "group": "Alpha",
+      "category": "Alpha"
+    },
+    "data_level": "L1",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Alpha",
+      "category_id": "demo:alpha",
+      "category_path": [
+        "Finance",
+        "Alpha"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-01",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "bravo_field",
+      "table_name": "tbl_bravo",
+      "field_description": "Source column bravo_field in table tbl_bravo.",
+      "table_description": "Synthetic table holding fabricated bravo records."
+    },
+    "classification": {
+      "group": "Bravo",
+      "category": "Bravo"
+    },
+    "data_level": "L2",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Bravo",
+      "category_id": "demo:bravo",
+      "category_path": [
+        "Finance",
+        "Bravo"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-02",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "charlie_field",
+      "table_name": "tbl_charlie",
+      "field_description": "Source column charlie_field in table tbl_charlie.",
+      "table_description": "Synthetic table holding fabricated charlie records."
+    },
+    "classification": {
+      "group": "Charlie",
+      "category": "Charlie"
+    },
+    "data_level": "L3",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Charlie",
+      "category_id": "demo:charlie",
+      "category_path": [
+        "Finance",
+        "Charlie"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-03",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "delta_field",
+      "table_name": "tbl_delta",
+      "field_description": "Source column delta_field in table tbl_delta.",
+      "table_description": "Synthetic table holding fabricated delta records."
+    },
+    "classification": {
+      "group": "Delta",
+      "category": "Delta"
+    },
+    "data_level": "L4",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Delta",
+      "category_id": "demo:delta",
+      "category_path": [
+        "Hr",
+        "Delta"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-04",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "echo_field",
+      "table_name": "tbl_echo",
+      "field_description": "Source column echo_field in table tbl_echo.",
+      "table_description": "Synthetic table holding fabricated echo records."
+    },
+    "classification": {
+      "group": "Echo",
+      "category": "Echo"
+    },
+    "data_level": "L1",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Echo",
+      "category_id": "demo:echo",
+      "category_path": [
+        "Hr",
+        "Echo"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-05",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "foxtrot_field",
+      "table_name": "tbl_foxtrot",
+      "field_description": "Source column foxtrot_field in table tbl_foxtrot.",
+      "table_description": "Synthetic table holding fabricated foxtrot records."
+    },
+    "classification": {
+      "group": "Foxtrot",
+      "category": "Foxtrot"
+    },
+    "data_level": "L2",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Foxtrot",
+      "category_id": "demo:foxtrot",
+      "category_path": [
+        "Hr",
+        "Foxtrot"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-06",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "alpha_field",
+      "table_name": "tbl_alpha",
+      "field_description": "Source column alpha_field in table tbl_alpha.",
+      "table_description": "Synthetic table holding fabricated alpha records."
+    },
+    "classification": {
+      "group": "Alpha",
+      "category": "Alpha"
+    },
+    "data_level": "L3",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Alpha",
+      "category_id": "demo:alpha",
+      "category_path": [
+        "Finance",
+        "Alpha"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "train-07",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "bravo_field",
+      "table_name": "tbl_bravo",
+      "field_description": "Source column bravo_field in table tbl_bravo.",
+      "table_description": "Synthetic table holding fabricated bravo records."
+    },
+    "classification": {
+      "group": "Bravo",
+      "category": "Bravo"
+    },
+    "data_level": "L4",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Bravo",
+      "category_id": "demo:bravo",
+      "category_path": [
+        "Finance",
+        "Bravo"
+      ]
+    },
+    "split": "train",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-00",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "alpha_field",
+      "table_name": "tbl_alpha",
+      "field_description": "Source column alpha_field in table tbl_alpha.",
+      "table_description": "Synthetic table holding fabricated alpha records."
+    },
+    "classification": {
+      "group": "Alpha",
+      "category": "Alpha"
+    },
+    "data_level": "L1",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Alpha",
+      "category_id": "demo:alpha",
+      "category_path": [
+        "Finance",
+        "Alpha"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-01",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "bravo_field",
+      "table_name": "tbl_bravo",
+      "field_description": "Source column bravo_field in table tbl_bravo.",
+      "table_description": "Synthetic table holding fabricated bravo records."
+    },
+    "classification": {
+      "group": "Bravo",
+      "category": "Bravo"
+    },
+    "data_level": "L2",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Bravo",
+      "category_id": "demo:bravo",
+      "category_path": [
+        "Finance",
+        "Bravo"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-02",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "charlie_field",
+      "table_name": "tbl_charlie",
+      "field_description": "Source column charlie_field in table tbl_charlie.",
+      "table_description": "Synthetic table holding fabricated charlie records."
+    },
+    "classification": {
+      "group": "Charlie",
+      "category": "Charlie"
+    },
+    "data_level": "L3",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Charlie",
+      "category_id": "demo:charlie",
+      "category_path": [
+        "Finance",
+        "Charlie"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-03",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "delta_field",
+      "table_name": "tbl_delta",
+      "field_description": "Source column delta_field in table tbl_delta.",
+      "table_description": "Synthetic table holding fabricated delta records."
+    },
+    "classification": {
+      "group": "Delta",
+      "category": "Delta"
+    },
+    "data_level": "L4",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Delta",
+      "category_id": "demo:delta",
+      "category_path": [
+        "Hr",
+        "Delta"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-04",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "echo_field",
+      "table_name": "tbl_echo",
+      "field_description": "Source column echo_field in table tbl_echo.",
+      "table_description": "Synthetic table holding fabricated echo records."
+    },
+    "classification": {
+      "group": "Echo",
+      "category": "Echo"
+    },
+    "data_level": "L1",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Echo",
+      "category_id": "demo:echo",
+      "category_path": [
+        "Hr",
+        "Echo"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-05",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "foxtrot_field",
+      "table_name": "tbl_foxtrot",
+      "field_description": "Source column foxtrot_field in table tbl_foxtrot.",
+      "table_description": "Synthetic table holding fabricated foxtrot records."
+    },
+    "classification": {
+      "group": "Foxtrot",
+      "category": "Foxtrot"
+    },
+    "data_level": "L2",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Foxtrot",
+      "category_id": "demo:foxtrot",
+      "category_path": [
+        "Hr",
+        "Foxtrot"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-06",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "alpha_field",
+      "table_name": "tbl_alpha",
+      "field_description": "Source column alpha_field in table tbl_alpha.",
+      "table_description": "Synthetic table holding fabricated alpha records."
+    },
+    "classification": {
+      "group": "Alpha",
+      "category": "Alpha"
+    },
+    "data_level": "L3",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Alpha",
+      "category_id": "demo:alpha",
+      "category_path": [
+        "Finance",
+        "Alpha"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "val-07",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "bravo_field",
+      "table_name": "tbl_bravo",
+      "field_description": "Source column bravo_field in table tbl_bravo.",
+      "table_description": "Synthetic table holding fabricated bravo records."
+    },
+    "classification": {
+      "group": "Bravo",
+      "category": "Bravo"
+    },
+    "data_level": "L4",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Bravo",
+      "category_id": "demo:bravo",
+      "category_path": [
+        "Finance",
+        "Bravo"
+      ]
+    },
+    "split": "val",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-00",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "alpha_field",
+      "table_name": "tbl_alpha",
+      "field_description": "Source column alpha_field in table tbl_alpha.",
+      "table_description": "Synthetic table holding fabricated alpha records."
+    },
+    "classification": {
+      "group": "Alpha",
+      "category": "Alpha"
+    },
+    "data_level": "L1",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Alpha",
+      "category_id": "demo:alpha",
+      "category_path": [
+        "Finance",
+        "Alpha"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-01",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "bravo_field",
+      "table_name": "tbl_bravo",
+      "field_description": "Source column bravo_field in table tbl_bravo.",
+      "table_description": "Synthetic table holding fabricated bravo records."
+    },
+    "classification": {
+      "group": "Bravo",
+      "category": "Bravo"
+    },
+    "data_level": "L2",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Bravo",
+      "category_id": "demo:bravo",
+      "category_path": [
+        "Finance",
+        "Bravo"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-02",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "charlie_field",
+      "table_name": "tbl_charlie",
+      "field_description": "Source column charlie_field in table tbl_charlie.",
+      "table_description": "Synthetic table holding fabricated charlie records."
+    },
+    "classification": {
+      "group": "Charlie",
+      "category": "Charlie"
+    },
+    "data_level": "L3",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Charlie",
+      "category_id": "demo:charlie",
+      "category_path": [
+        "Finance",
+        "Charlie"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-03",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "delta_field",
+      "table_name": "tbl_delta",
+      "field_description": "Source column delta_field in table tbl_delta.",
+      "table_description": "Synthetic table holding fabricated delta records."
+    },
+    "classification": {
+      "group": "Delta",
+      "category": "Delta"
+    },
+    "data_level": "L4",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Delta",
+      "category_id": "demo:delta",
+      "category_path": [
+        "Hr",
+        "Delta"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-04",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "echo_field",
+      "table_name": "tbl_echo",
+      "field_description": "Source column echo_field in table tbl_echo.",
+      "table_description": "Synthetic table holding fabricated echo records."
+    },
+    "classification": {
+      "group": "Echo",
+      "category": "Echo"
+    },
+    "data_level": "L1",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Echo",
+      "category_id": "demo:echo",
+      "category_path": [
+        "Hr",
+        "Echo"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-05",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "foxtrot_field",
+      "table_name": "tbl_foxtrot",
+      "field_description": "Source column foxtrot_field in table tbl_foxtrot.",
+      "table_description": "Synthetic table holding fabricated foxtrot records."
+    },
+    "classification": {
+      "group": "Foxtrot",
+      "category": "Foxtrot"
+    },
+    "data_level": "L2",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Foxtrot",
+      "category_id": "demo:foxtrot",
+      "category_path": [
+        "Hr",
+        "Foxtrot"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-06",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "alpha_field",
+      "table_name": "tbl_alpha",
+      "field_description": "Source column alpha_field in table tbl_alpha.",
+      "table_description": "Synthetic table holding fabricated alpha records."
+    },
+    "classification": {
+      "group": "Alpha",
+      "category": "Alpha"
+    },
+    "data_level": "L3",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Alpha",
+      "category_id": "demo:alpha",
+      "category_path": [
+        "Finance",
+        "Alpha"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  },
+  {
+    "schema_version": 2,
+    "id": "test-07",
+    "resolution_status": "resolved",
+    "metadata": {
+      "field_name": "bravo_field",
+      "table_name": "tbl_bravo",
+      "field_description": "Source column bravo_field in table tbl_bravo.",
+      "table_description": "Synthetic table holding fabricated bravo records."
+    },
+    "classification": {
+      "group": "Bravo",
+      "category": "Bravo"
+    },
+    "data_level": "L4",
+    "target": {
+      "leaf_level": "category",
+      "leaf_name": "Bravo",
+      "category_id": "demo:bravo",
+      "category_path": [
+        "Finance",
+        "Bravo"
+      ]
+    },
+    "split": "test",
+    "split_exclusion_reason": null
+  }
+]
