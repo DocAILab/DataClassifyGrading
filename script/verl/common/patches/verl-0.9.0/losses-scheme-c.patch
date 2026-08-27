@@ -1,0 +1,22 @@
+--- a/verl/workers/utils/losses.py
++++ b/verl/workers/utils/losses.py
+@@ -47,5 +47,17 @@
+         # For FSDP backend, the loss is directly used for backward; while for Megatron backend,
+         # the loss should be scaled by `num_microbatches` for pp schedule.
+-        loss = -masked_sum(log_prob_flatten, loss_mask_flatten) / batch_num_tokens * dp_size
++        # AmberFalcon patch: upweight answer tokens (scheme C) so the sparse
++        # answer signal is not drowned by format tokens.
++        answer_mask = data.get("answer_mask", None)
++        if answer_mask is not None:
++            answer_mask_flatten = answer_mask.values().float()
++            answer_mask_flatten = torch.roll(answer_mask_flatten, shifts=-1, dims=0)
++            w_ans = 8.0
++            loss = -(
++                w_ans * masked_sum(log_prob_flatten, answer_mask_flatten)
++                + masked_sum(log_prob_flatten, loss_mask_flatten * (1 - answer_mask_flatten))
++            ) / batch_num_tokens * dp_size
++        else:
++            loss = -masked_sum(log_prob_flatten, loss_mask_flatten) / batch_num_tokens * dp_size
+     else:
+         response_mask = data["response_mask"].to(bool)
+[rc=0]

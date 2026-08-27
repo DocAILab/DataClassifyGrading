@@ -1,0 +1,15 @@
+--- a/verl/experimental/agent_loop/agent_loop.py
++++ b/verl/experimental/agent_loop/agent_loop.py
+@@ -547,4 +547,6 @@
+         # Load custom agent loop implementations from config path
+         agent_loop_config_path = self.rollout_config.agent.agent_loop_config_path
++        print(f"[DEBUG] agent_loop_config_path={agent_loop_config_path}", flush=True)
++        print(f"[DEBUG] agent config={dict(self.rollout_config.agent)}", flush=True)
+         if agent_loop_config_path:
+             resolved_path = resolve_config_path(agent_loop_config_path)
+@@ -695,4 +697,5 @@
+ 
+             agent_loop_config = _agent_loop_registry[agent_name]
++            print(f"[DEBUG] agent_loop_config={agent_loop_config}", flush=True)
+             agent_loop = hydra.utils.instantiate(
+                 config=agent_loop_config,

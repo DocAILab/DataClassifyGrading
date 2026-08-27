@@ -1,0 +1,16 @@
+--- a/verl/utils/tokenizer/chat_template.py
++++ b/verl/utils/tokenizer/chat_template.py
+@@ -184,6 +184,12 @@
+             **kwargs,
+         )
++        # A leading system message must stay first (Qwen3.5 template constraint);
++        # insert the dummy user query after it instead of before the whole list.
++        if messages and messages[0].get("role") == "system":
++            stitched = [messages[0], *dummy_user_message, *messages[1:]]
++        else:
++            stitched = dummy_user_message + messages
+         output = processor.apply_chat_template(
+-            dummy_user_message + messages,
++            stitched,
+             tokenize=tokenize,
+             add_generation_prompt=add_generation_prompt,

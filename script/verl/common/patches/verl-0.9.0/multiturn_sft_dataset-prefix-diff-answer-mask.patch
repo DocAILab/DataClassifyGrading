@@ -1,0 +1,134 @@
+--- a/verl/utils/dataset/multiturn_sft_dataset.py
++++ b/verl/utils/dataset/multiturn_sft_dataset.py
+@@ -212,7 +212,12 @@
+             apply_chat_template_kwargs["enable_thinking"] = enable_thinking
+ 
++        # AmberFalcon patch: Qwen3.5 templates cannot render standalone
++        # messages (thinking structure + system-first constraint). Render the
++        # full prefix up to this message and diff against the previous prefix;
++        # verified exact for [user] -> [user,assistant] on Qwen3.5-9B.
++        prefix = full_message[: index + 1]
+         inputs = apply_chat_template(
+             processor,
+-            messages=[message],
++            messages=prefix,
+             tools=tools,
+             add_generation_prompt=False,
+@@ -226,9 +231,21 @@
+         input_ids = inputs.pop("input_ids")[0]
+         attention_mask = inputs.pop("attention_mask")[0]
+-
+-        # remove system prompt if exists
+-        if index != 0 and message["role"] != "system":
+-            input_ids = input_ids[len(self.system_prompt) :]
+-            attention_mask = attention_mask[len(self.system_prompt) :]
++        if index > 0:
++            prev_inputs = apply_chat_template(
++                processor,
++                messages=prefix[:-1],
++                tools=None,
++                add_generation_prompt=False,
++                tokenize=True,
++                return_dict=True,
++                return_tensors="pt",
++                **apply_chat_template_kwargs,
++            )
++            prev_len = prev_inputs["input_ids"][0].shape[0]
++            input_ids = input_ids[prev_len:]
++            attention_mask = attention_mask[prev_len:]
++
++        # AmberFalcon patch: prefix-diff segments are exact; the legacy
++        # system-prompt strip no longer applies.
+ 
+         if message["role"] == "assistant":
+@@ -236,8 +253,28 @@
+             # mask out generation prompt if assistant message
+             loss_mask[: len(self.generation_prompt)] = 0
++            answer_mask = torch.zeros_like(attention_mask)
++            try:
++                import re as _re
++                content = str(message.get("content", ""))
++                ids_list = input_ids.tolist()
++                for pat in (_re.compile(r'"answer"\s*:\s*"([^"]+)"'),
++                            _re.compile(r'"level"\s*:\s*"([^"]+)"')):
++                    m = pat.search(content)
++                    if not m:
++                        continue
++                    sub = self.tokenizer.encode(m.group(1), add_special_tokens=False)
++                    if not sub:
++                        continue
++                    for i in range(len(ids_list) - len(sub) + 1):
++                        if ids_list[i:i + len(sub)] == sub:
++                            answer_mask[i:i + len(sub)] = 1
++                            break
++            except Exception:
++                pass
+         else:
+             loss_mask = torch.zeros_like(attention_mask)
+-
+-        return input_ids, loss_mask, attention_mask, inputs
++            answer_mask = torch.zeros_like(attention_mask)
++
++        return input_ids, loss_mask, answer_mask, attention_mask, inputs
+ 
+     def _build_messages(self, example: dict):
+@@ -300,7 +337,7 @@
+ 
+         # 1. tokenize each message
+-        input_ids, loss_mask, attention_mask, multi_modal_inputs = [], [], [], {}
++        input_ids, loss_mask, answer_mask, attention_mask, multi_modal_inputs = [], [], [], [], {}
+         for i, message in enumerate(messages):
+-            _input_ids, _loss_mask, _attention_mask, _inputs = self._process_single_message(
++            _input_ids, _loss_mask, _answer_mask, _attention_mask, _inputs = self._process_single_message(
+                 index=i,
+                 message=message,
+@@ -311,4 +348,5 @@
+             input_ids.append(_input_ids)
+             loss_mask.append(_loss_mask)
++            answer_mask.append(_answer_mask)
+             attention_mask.append(_attention_mask)
+             for k, v in _inputs.items():
+@@ -317,6 +355,7 @@
+         input_ids = torch.cat(input_ids, dim=0)
+         loss_mask = torch.cat(loss_mask, dim=0)
++        answer_mask = torch.cat(answer_mask, dim=0)
+         attention_mask = torch.cat(attention_mask, dim=0)
+-        assert input_ids.shape == loss_mask.shape == attention_mask.shape, (
++        assert input_ids.shape == loss_mask.shape == answer_mask.shape == attention_mask.shape, (
+             f"Shape mismatch: {input_ids.shape}, {loss_mask.shape}, {attention_mask.shape}"
+         )
+@@ -372,8 +411,10 @@
+                 padded_attention_mask = torch.zeros((self.max_length - sequence_length,), dtype=attention_mask.dtype)
+                 padded_loss_mask = torch.zeros((self.max_length - sequence_length,), dtype=loss_mask.dtype)
++                padded_answer_mask = torch.zeros((self.max_length - sequence_length,), dtype=answer_mask.dtype)
+ 
+                 input_ids = torch.cat((input_ids, padded_input_ids))
+                 attention_mask = torch.cat((attention_mask, padded_attention_mask))
+                 loss_mask = torch.cat((loss_mask, padded_loss_mask))
++                answer_mask = torch.cat((answer_mask, padded_answer_mask))
+                 position_ids = F.pad(position_ids, (0, self.max_length - sequence_length), value=0)
+             elif sequence_length > self.max_length:
+@@ -382,4 +423,5 @@
+                     attention_mask = attention_mask[-self.max_length :]
+                     loss_mask = loss_mask[-self.max_length :]
++                    answer_mask = answer_mask[-self.max_length :]
+                     position_ids = position_ids[..., -self.max_length :]
+                 elif self.truncation == "right":
+@@ -387,4 +429,5 @@
+                     attention_mask = attention_mask[: self.max_length]
+                     loss_mask = loss_mask[: self.max_length]
++                    answer_mask = answer_mask[: self.max_length]
+                     position_ids = position_ids[..., : self.max_length]
+                 elif self.truncation == "error":
+@@ -398,4 +441,5 @@
+                 "position_ids": position_ids,
+                 "loss_mask": loss_mask,
++                "answer_mask": answer_mask,
+             }
+             if len(multi_modal_inputs) > 0:
+@@ -416,4 +460,5 @@
+                 "position_ids": position_ids,
+                 "loss_mask": loss_mask,
++                "answer_mask": answer_mask,
+             }
+             if len(multi_modal_inputs) > 0:
