@@ -4,7 +4,12 @@ This file is both the VeRL custom-reward entrypoint (``compute_score``) and a
 launcher that selects RLOO through Hydra overrides. It deliberately keeps all
 algorithm configuration outside ``agent.task`` and ``agent.training``.
 
-The launcher requires explicit runtime-local model/data/registry/corpus/task
+The launcher supports the formal ``tool_loop`` rollout by default and a
+``direct`` single-turn rollout for CPU/static validation. The latter leaves
+VeRL's standard single-turn defaults in place and does not load tools; any
+real (non-dry-run) direct launch is a non-formal diagnostic control smoke and
+requires an explicit ``--diagnostic-smoke`` opt-in. The
+launcher requires explicit runtime-local model/data/registry/corpus/task
 paths. Use ``--dry-run`` locally; GPU execution must wait for an authorized
 server validation session.
 """
@@ -47,6 +52,7 @@ _AGENT_LOOP_CONFIG = _REPO_ROOT / "cfg" / "verl" / "rl" / "cascade_agent_loop.ya
 _FUNCTION_TOOL_PATH = _REPO_ROOT / "script" / "verl" / "rl" / "native_tools.py"
 _RELEASE_DATASETS = FORMAL_DATASET_SET
 _GPU_TARGET = "RTX PRO 6000 96GB"
+_ROLLOUT_MODES = ("tool_loop", "direct")
 _EXACT_VERSION = re.compile(r"^v?\d+\.\d+\.\d+(?:[.+-][0-9A-Za-z.-]+)?$")
 
 
@@ -92,9 +98,19 @@ class RlooExperimentConfig:
     resume_mode: str = "auto"
     reference_provenance_path: Path | None = None
     reference_checkpoint_sha256: str | None = None
+    skip_reference_provenance: bool = False
     vllm_version: str | None = None
     prompt_budget_chars: int = 200_000
     gpu_target: str = _GPU_TARGET
+    # Launcher-only protocol selection; distinct from VeRL rollout.mode=async.
+    rollout_mode: str = "tool_loop"
+    # Launcher-only opt-in: any real (non-dry-run) direct launch is a
+    # non-formal diagnostic control smoke and must declare this flag. Never
+    # emitted as a Hydra override.
+    diagnostic_smoke: bool = False
+    # Launcher-only marker: static inspection only. Relaxes the launch-only
+    # constraints (direct opt-in, provenance skip) for command printing.
+    dry_run: bool = False
 
     @property
     def train_file(self) -> Path:
@@ -117,6 +133,25 @@ class RlooExperimentConfig:
             )
         if not self.python_bin.strip():
             raise ValueError("python_bin must be non-empty")
+        if self.rollout_mode not in _ROLLOUT_MODES:
+            modes = ", ".join(_ROLLOUT_MODES)
+            raise ValueError(f"rollout_mode must be one of: {modes}")
+        if self.diagnostic_smoke and self.rollout_mode != "direct":
+            raise ValueError("diagnostic_smoke requires rollout_mode=direct")
+        if (
+            not self.dry_run
+            and self.rollout_mode == "direct"
+            and not self.diagnostic_smoke
+        ):
+            raise ValueError(
+                "direct rollout requires --diagnostic-smoke for a real launch; "
+                "use --dry-run for static inspection"
+            )
+        if not self.dry_run and self.skip_reference_provenance:
+            raise ValueError(
+                "skip_reference_provenance is only allowed with --dry-run; "
+                "real launches must verify reference provenance"
+            )
         if self.rollout_n < 2:
             raise ValueError("RLOO rollout_n must be at least 2")
         positive_integers = {
@@ -128,7 +163,6 @@ class RlooExperimentConfig:
             "max_model_len": self.max_model_len,
             "ppo_max_token_len_per_gpu": self.ppo_max_token_len_per_gpu,
             "total_training_steps": self.total_training_steps,
-            "save_freq": self.save_freq,
             "max_ckpt_keep": self.max_ckpt_keep,
             "test_freq": self.test_freq,
             "prompt_budget_chars": self.prompt_budget_chars,
@@ -159,6 +193,22 @@ class RlooExperimentConfig:
             raise ValueError("kl_coef must be non-negative")
         if self.lora_rank < 0 or self.lora_alpha < 1:
             raise ValueError("lora_rank must be non-negative and lora_alpha positive")
+        if self.diagnostic_smoke:
+            # Real direct launches are short diagnostic control smokes.
+            if self.total_training_steps > 3:
+                raise ValueError(
+                    "diagnostic smoke total_training_steps must be <= 3 "
+                    "(short-step guard)"
+                )
+            # Only a diagnostic direct smoke may use the non-positive
+            # save_freq that VeRL's trainer verifiably never saves with
+            # (``save_freq > 0 and (is_last_step or step % save_freq == 0)``).
+            if self.save_freq > 0:
+                raise ValueError(
+                    "diagnostic smoke must disable checkpoints (save_freq <= 0)"
+                )
+        elif self.rollout_mode == "tool_loop" and self.save_freq < 1:
+            raise ValueError("tool_loop save_freq must be positive")
         if self.save_freq > self.total_training_steps:
             raise ValueError("save_freq must be reachable within total_training_steps")
         if self.test_freq > self.total_training_steps:
@@ -210,7 +260,7 @@ class RlooExperimentConfig:
             raise ValueError("actor KL loss coefficient is fixed at 0.001")
         if self.resume_mode == "disable":
             raise ValueError("formal RLOO requires a reachable resume mode")
-        if self.reference_provenance_path is None:
+        if self.reference_provenance_path is None and not self.skip_reference_provenance:
             raise ValueError("reference provenance JSON is required for formal RLOO")
         if self.grading_manifest_path is None:
             raise ValueError("formal native-tool RLOO requires a grading manifest")
@@ -310,6 +360,25 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
     """Build the VeRL command; all RLOO math remains inside VeRL."""
     config.validate_options()
     reward_adapter = "pkg://" + Path(__file__).resolve().relative_to(_REPO_ROOT).with_suffix("").as_posix()
+    if config.rollout_mode == "tool_loop":
+        rollout_overrides = [
+            "actor_rollout_ref.rollout.multi_turn.enable=True",
+            "actor_rollout_ref.rollout.multi_turn.format=qwen3_coder",
+            f"actor_rollout_ref.rollout.multi_turn.function_tool_path={_FUNCTION_TOOL_PATH}",
+            "actor_rollout_ref.rollout.multi_turn.max_assistant_turns=4",
+            "actor_rollout_ref.rollout.multi_turn.max_user_turns=3",
+            "actor_rollout_ref.rollout.multi_turn.max_parallel_calls=1",
+            "actor_rollout_ref.rollout.multi_turn.max_tool_response_length=4096",
+            "actor_rollout_ref.rollout.multi_turn.tool_response_truncate_side=right",
+            "actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=strict",
+            "actor_rollout_ref.rollout.agent.default_agent_loop=dataclassify_cascade",
+            f"actor_rollout_ref.rollout.agent.agent_loop_config_path={_AGENT_LOOP_CONFIG}",
+        ]
+    else:
+        # VeRL's standard defaults are multi_turn.enable=False and
+        # agent.default_agent_loop=single_turn_agent.  Leaving those fields
+        # absent also keeps tools out of the worker and chat-template call.
+        rollout_overrides = []
     overrides = [
         "algorithm.adv_estimator=rloo",
         # Fixed policy: KL is an actor loss only; never add KL to reward.
@@ -328,7 +397,10 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         "data.dataloader_num_workers=0",
         "data.prompt_key=prompt",
         "data.reward_fn_key=data_source",
-        "+data.apply_chat_template_kwargs.enable_thinking=False",
+        # Coordinator decision (2026-08-27): thinking stays enabled (VeRL
+        # default); no enable_thinking override is emitted. Think stripping
+        # happens in the render layer (prefix-diff rendering); the strict
+        # terminal parser and reward are unchanged.
         f"actor_rollout_ref.model.path={config.model_path}",
         "actor_rollout_ref.model.use_remove_padding=False",
         "actor_rollout_ref.model.enable_gradient_checkpointing=True",
@@ -340,6 +412,17 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         "actor_rollout_ref.actor.fsdp_config.model_dtype=bfloat16",
         "actor_rollout_ref.actor.fsdp_config.optimizer_offload=False",
         f"actor_rollout_ref.actor.fsdp_config.param_offload={_bool(config.param_offload)}",
+        # The actor.checkpoint node is a plain dict in the structured config,
+        # and Hydra struct mode rejects new keys without the "+" prefix (live
+        # verl 0.9.0 ``--cfg job`` probe: "Key 'save_lora_only' is not in
+        # struct (object_type=dict)"). The trainer CheckpointConfig dataclass
+        # itself carries save_lora_only, so the "+"-injected key is consumed:
+        # the checkpoint manager reads it via DictConfig.get("save_lora_only",
+        # False) and the fsdp manager filters to LoRA keys when the actor has
+        # a peft_config. A top-level ``+checkpoint.save_lora_only`` resolves
+        # but never reaches the actor (engine_workers passes
+        # actor_config.checkpoint), risking a full 9B FSDP shard write.
+        "+actor_rollout_ref.actor.checkpoint.save_lora_only=True",
         f"actor_rollout_ref.actor.ppo_mini_batch_size={config.ppo_mini_batch_size}",
         f"actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu={config.ppo_micro_batch_size}",
         f"actor_rollout_ref.actor.ppo_max_token_len_per_gpu={config.ppo_max_token_len_per_gpu}",
@@ -349,17 +432,7 @@ def build_verl_command(config: RlooExperimentConfig) -> list[str]:
         f"actor_rollout_ref.actor.optim.lr={config.actor_lr}",
         "actor_rollout_ref.rollout.name=vllm",
         "actor_rollout_ref.rollout.mode=async",
-        "actor_rollout_ref.rollout.multi_turn.enable=True",
-        "actor_rollout_ref.rollout.multi_turn.format=qwen3_coder",
-        f"actor_rollout_ref.rollout.multi_turn.function_tool_path={_FUNCTION_TOOL_PATH}",
-        "actor_rollout_ref.rollout.multi_turn.max_assistant_turns=4",
-        "actor_rollout_ref.rollout.multi_turn.max_user_turns=3",
-        "actor_rollout_ref.rollout.multi_turn.max_parallel_calls=1",
-        "actor_rollout_ref.rollout.multi_turn.max_tool_response_length=4096",
-        "actor_rollout_ref.rollout.multi_turn.tool_response_truncate_side=right",
-        "actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=strict",
-        "actor_rollout_ref.rollout.agent.default_agent_loop=dataclassify_cascade",
-        f"actor_rollout_ref.rollout.agent.agent_loop_config_path={_AGENT_LOOP_CONFIG}",
+        *rollout_overrides,
         "actor_rollout_ref.rollout.tensor_model_parallel_size=1",
         f"actor_rollout_ref.rollout.n={config.rollout_n}",
         f"actor_rollout_ref.rollout.prompt_length={config.max_prompt_length}",
@@ -528,7 +601,11 @@ def validate_preflight(
     config.validate_release_policy()
     config.validate_local_paths()
     assets = _check_formal_assets(config)
-    reference = _check_reference_provenance(config)
+    reference = (
+        _check_reference_provenance(config)
+        if not config.skip_reference_provenance
+        else {"skipped": True}
+    )
     prompt_budget = _check_prompt_budget(config)
     runtime = _check_selected_python(config) if check_runtime else {
         "python": config.python_bin,
@@ -545,18 +622,32 @@ def validate_preflight(
         "release": FORMAL_RELEASE_NAME,
         "release_format": FORMAL_RELEASE_FORMAT,
         "sampling": FORMAL_SAMPLING_POLICY,
-        "trajectory": {
-            "format": NATIVE_TOOL_TRAJECTORY_FORMAT,
-            "search_top_k": CASCADE_K,
-            "rollout_n": config.rollout_n,
-            "max_tool_calls": 3,
-            "tools": [
-                "search_categories",
-                "get_category_details",
-                "get_category_examples",
-            ],
-            "reward": "strict category+level exact match",
-        },
+        "trajectory": (
+            {
+                "rollout_mode": "tool_loop",
+                "formal": True,
+                "format": NATIVE_TOOL_TRAJECTORY_FORMAT,
+                "search_top_k": CASCADE_K,
+                "rollout_n": config.rollout_n,
+                "max_tool_calls": 3,
+                "tools": [
+                    "search_categories",
+                    "get_category_details",
+                    "get_category_examples",
+                ],
+                "reward": "strict category+level exact match",
+            }
+            if config.rollout_mode == "tool_loop"
+            else {
+                "rollout_mode": "direct",
+                "formal": False,
+                "diagnostic": True,
+                "format": NATIVE_TOOL_TRAJECTORY_FORMAT,
+                "max_tool_calls": 0,
+                "tools": [],
+                "reward": "strict category+level exact match",
+            }
+        ),
         "actor": {"lora": True, "dtype": "bfloat16", "kl_loss_coef": config.kl_coef},
         "kl_in_reward": False,
         "gpu_target": config.gpu_target,
@@ -827,6 +918,15 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--grading-manifest", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--python-bin", default=sys.executable)
+    parser.add_argument(
+        "--rollout-mode",
+        choices=_ROLLOUT_MODES,
+        default="tool_loop",
+        help=(
+            "launcher protocol, not VeRL rollout.mode=async "
+            "(tool_loop is the formal default)"
+        ),
+    )
     parser.add_argument("--rollout-n", type=int, default=4)
     parser.add_argument("--train-batch-size", type=int, default=4)
     parser.add_argument("--ppo-mini-batch-size", type=int, default=4)
@@ -845,12 +945,36 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--lora-alpha", type=int, default=16)
     parser.add_argument("--enforce-eager", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--param-offload", action=argparse.BooleanOptionalAction, default=False)
-    parser.add_argument("--save-freq", type=int, default=1)
+    parser.add_argument(
+        "--save-freq",
+        type=int,
+        default=None,
+        help=(
+            "checkpoint frequency; defaults to 0 (disabled) for direct and "
+            "1 for tool_loop"
+        ),
+    )
     parser.add_argument("--max-ckpt-keep", type=int, default=1)
     parser.add_argument("--experiment-name", default=None)
     parser.add_argument("--test-freq", type=int, default=1)
     parser.add_argument("--resume-mode", choices=("auto", "resume", "disable"), default="auto")
     parser.add_argument("--reference-provenance", type=Path)
+    parser.add_argument(
+        "--skip-reference-provenance", action="store_true",
+        help=(
+            "dry-run only: skip the released-reference provenance gate; "
+            "rejected on any real launch"
+        ),
+    )
+    parser.add_argument(
+        "--diagnostic-smoke",
+        action="store_true",
+        help=(
+            "opt-in for a real (non-dry-run) direct rollout as a non-formal "
+            "diagnostic control smoke: full provenance, disabled checkpoint, "
+            "short steps; launcher-only, never a Hydra override"
+        ),
+    )
     parser.add_argument("--reference-checkpoint-sha256")
     parser.add_argument(
         "--vllm-version",
@@ -871,6 +995,9 @@ def _config(args: argparse.Namespace) -> RlooExperimentConfig:
         corpus_path=args.corpus.expanduser().resolve(),
         task_config_path=args.task_config.expanduser().resolve(),
         output_dir=args.output_dir.expanduser().resolve(),
+        rollout_mode=args.rollout_mode,
+        diagnostic_smoke=args.diagnostic_smoke,
+        dry_run=args.dry_run,
         grading_manifest_path=(
             args.grading_manifest.expanduser().resolve()
             if args.grading_manifest is not None
@@ -895,7 +1022,11 @@ def _config(args: argparse.Namespace) -> RlooExperimentConfig:
         lora_alpha=args.lora_alpha,
         enforce_eager=args.enforce_eager,
         param_offload=args.param_offload,
-        save_freq=args.save_freq,
+        save_freq=(
+            args.save_freq
+            if args.save_freq is not None
+            else (0 if args.rollout_mode == "direct" else 1)
+        ),
         test_freq=args.test_freq,
         max_ckpt_keep=args.max_ckpt_keep,
         experiment_name=args.experiment_name,
@@ -906,6 +1037,7 @@ def _config(args: argparse.Namespace) -> RlooExperimentConfig:
             else None
         ),
         reference_checkpoint_sha256=args.reference_checkpoint_sha256,
+        skip_reference_provenance=args.skip_reference_provenance,
         vllm_version=args.vllm_version,
         prompt_budget_chars=args.prompt_budget_chars,
     )
