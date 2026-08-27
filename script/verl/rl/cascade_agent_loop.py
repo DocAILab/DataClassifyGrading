@@ -9,6 +9,7 @@ There is no synthetic Stage-2 user bridge.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -39,6 +40,7 @@ _EXPECTED_TOOLS = {
     "search_categories",
     "get_category_details",
     "get_category_examples",
+    "browse_categories",
 }
 
 
@@ -152,11 +154,30 @@ else:
         def __init__(
             self,
             *args: Any,
-            registry_path: str,
-            corpus_path: str,
-            grading_manifest_path: str,
+            registry_path: str | None = None,
+            corpus_path: str | None = None,
+            grading_manifest_path: str | None = None,
             **kwargs: Any,
         ) -> None:
+            import os as _os
+            # Hydra drops yaml custom fields under @register (registry stores
+            # only _target_); read the three runtime paths from env instead.
+            # NOTE: the params MUST have None defaults -- keyword-only args
+            # without defaults fail at bind time, before the body runs, so an
+            # env fallback inside the body would never execute.
+            if registry_path is None:
+                registry_path = _os.environ.get("DATACLASSIFY_RLOO_REGISTRY")
+            if corpus_path is None:
+                corpus_path = _os.environ.get("DATACLASSIFY_RLOO_CORPUS")
+            if grading_manifest_path is None:
+                grading_manifest_path = _os.environ.get(
+                    "DATACLASSIFY_RLOO_GRADING_MANIFEST"
+                )
+            if not registry_path or not corpus_path or not grading_manifest_path:
+                raise ValueError(
+                    "cascade agent loop requires DATACLASSIFY_RLOO_REGISTRY/"
+                    "CORPUS/GRADING_MANIFEST env"
+                )
             super().__init__(*args, **kwargs)
             self.registry = LeafRegistry.from_path(Path(registry_path))
             self.corpus = {
@@ -227,6 +248,16 @@ else:
                 registry=self.registry,
                 grading=grading,
             )
+            if (
+                os.environ.get("SMOKE_DEBUG_AGENT_LOOP") == "1"
+                and output.reward_score == 0.0
+            ):
+                print(
+                    f"[SMOKE] valid={terminal_valid} "
+                    f"gt={source.ground_truth}/{source.ground_truth_level} "
+                    f"text_tail={final_text[-160:]!r}",
+                    flush=True,
+                )
             output.extra_fields.update(
                 {
                     "trajectory_format": NATIVE_TOOL_TRAJECTORY_FORMAT,

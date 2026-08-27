@@ -2,16 +2,25 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
+from agent.task import GradingConfig, LeafRegistry
+from agent.training.rl.native_tools import exact_tool_reward, parse_final_tool_answer
 from script.verl.rl.cascade_agent_loop import (
     VERL_AGENT_LOOP_AVAILABLE,
     DataClassifyCascadeAgentLoop,
     _source_from_kwargs,
     final_policy_token_ids,
 )
+
+
+ROOT = Path(__file__).resolve().parents[2]
+TRAJECTORY_FIXTURE = Path(__file__).with_name("fixtures") / "native_tool_trajectories.json"
+REGISTRY = ROOT / "cfg" / "task" / "leaf_registry.example.json"
 
 
 def _kwargs(**extra_overrides):
@@ -68,6 +77,48 @@ def test_final_policy_segment_supports_no_single_and_multi_tool_paths() -> None:
         final_policy_token_ids([1], [1, 0])
     with pytest.raises(ValueError, match="0/1"):
         final_policy_token_ids([1], [2])
+
+
+def _fixture_response_ids(case: dict) -> tuple[list[int], list[int]]:
+    if "response_text" in case:
+        return [ord(char) for char in case["response_text"]], [1] * len(case["response_text"])
+    ids: list[int] = []
+    mask: list[int] = []
+    for segment in case["response_segments"]:
+        text = segment["text"]
+        ids.extend(ord(char) for char in text)
+        mask.extend([1 if segment["policy"] else 0] * len(text))
+    return ids, mask
+
+
+@pytest.mark.parametrize(
+    "case", json.loads(TRAJECTORY_FIXTURE.read_text(encoding="utf-8")),
+    ids=lambda case: case["name"],
+)
+def test_final_text_rule_and_reward_cover_native_terminal_shapes(case: dict) -> None:
+    """Only the trailing policy segment is terminal; malformed text scores zero."""
+
+    response_ids, response_mask = _fixture_response_ids(case)
+    final_ids = final_policy_token_ids(response_ids, response_mask)
+    final_text = "".join(chr(token) for token in final_ids).strip()
+    assert final_text == case["expected_final_text"]
+
+    registry = LeafRegistry.from_path(REGISTRY)
+    grading = GradingConfig(("L1", "L2", "L3", "L4"))
+    if case["expected_terminal_valid"]:
+        parsed = parse_final_tool_answer(final_text, registry=registry, grading=grading)
+        assert parsed.category_id == case["ground_truth"]
+        assert parsed.level == case["ground_truth_level"]
+    else:
+        with pytest.raises(ValueError):
+            parse_final_tool_answer(final_text, registry=registry, grading=grading)
+    assert exact_tool_reward(
+        final_text,
+        ground_truth=case["ground_truth"],
+        ground_truth_level=case["ground_truth_level"],
+        registry=registry,
+        grading=grading,
+    ) == case["expected_reward"]
 
 
 def test_missing_verl_fails_at_adapter_construction_not_module_import() -> None:

@@ -80,10 +80,6 @@ def search_categories(
 
 @function_tool
 def get_category_details(choice_ids: list[str]) -> dict[str, Any]:
-
-
-@function_tool
-def get_category_details(choice_ids: list[str]) -> dict[str, Any]:
     """Get definitions for one or more opaque category choice ids.
 
     Args:

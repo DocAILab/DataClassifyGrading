@@ -1,0 +1,44 @@
+[
+  {
+    "name": "terminal_tool_call",
+    "response_text": "<tool_call><function=search_categories><parameter=field_name>f</parameter></function></tool_call>",
+    "response_mask": "all_policy",
+    "ground_truth": "demo:alpha",
+    "ground_truth_level": "L1",
+    "expected_final_text": "<tool_call><function=search_categories><parameter=field_name>f</parameter></function></tool_call>",
+    "expected_reward": 0.0,
+    "expected_terminal_valid": false
+  },
+  {
+    "name": "terminal_free_text",
+    "response_text": "I need more information before I can classify this field.",
+    "response_mask": "all_policy",
+    "ground_truth": "demo:alpha",
+    "ground_truth_level": "L1",
+    "expected_final_text": "I need more information before I can classify this field.",
+    "expected_reward": 0.0,
+    "expected_terminal_valid": false
+  },
+  {
+    "name": "tool_result_then_terminal_json",
+    "response_segments": [
+      {
+        "text": "<tool_call><function=search_categories></function></tool_call>",
+        "policy": true
+      },
+      {
+        "text": "{\"candidates\":[{\"choice_id\":\"1\"}]}",
+        "policy": false
+      },
+      {
+        "text": "{\"answer\":\"1\",\"level\":\"L1\"}",
+        "policy": true
+      }
+    ],
+    "ground_truth": "demo:alpha",
+    "ground_truth_level": "L1",
+    "expected_final_text": "{\"answer\":\"1\",\"level\":\"L1\"}",
+    "expected_reward": 1.0,
+    "expected_terminal_valid": true
+  }
+]
