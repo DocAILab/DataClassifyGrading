@@ -38,7 +38,7 @@ checkout (or in ignored local directories). See [data-policy.md](data-policy.md)
 | Concern | Required production contract |
 | --- | --- |
 | Formal scope | The formal source is exactly `shougang`; release reports and manifests contain no other source. |
-| Prompt metadata | `metadata_fields` is exactly `("field_name", "table_name")`. In the historical finance+shougang field-only audit, 1552 conflict keys (about 54% of train rows) were found; after adding `table_name`, the residual was 15 keys / 30 rows in shougang and 0 in finance. The formal scope is now shougang-only; keep both fields and require a current clean audit. |
+| Prompt metadata | `metadata_fields` is exactly `("field_name", "table_name", "field_description", "table_description")` (four native fields, user decision 2026-08-27). In the historical finance+shougang field-only audit, 1552 conflict keys (about 54% of train rows) were found; after adding `table_name`, the residual was 15 keys / 30 rows in shougang and 0 in finance. The formal scope is now shougang-only; keep all four fields and require a current clean audit. |
 | Classification standard | A runtime-local standard is converted outside this repository into the registry/corpus JSON consumed by `--registry` and `--corpus`; those paths are explicit. |
 | Canonical target | The resolved leaf is the canonical `category_id` (`target.category_id`, represented by the `leaf` resolution block). |
 | Native-tool target | The terminal assistant JSON predicts one opaque global `choice_id` and `data_level`; grading JSON uses `gt_field: "data_level"`. The reward decodes the choice internally and is 1 only when both heads match. |
@@ -47,7 +47,7 @@ checkout (or in ignored local directories). See [data-policy.md](data-policy.md)
 
 A task config may carry other task metadata, but the formal native-tool
 validator rejects anything other than `metadata_fields: ["field_name",
-"table_name"]`.
+"table_name", "field_description", "table_description"]`.
 The `leaf` and `data_level` labels are never inferred from a filename or a
 repository-local default. Any non-zero `conflict_keys` in the current shougang
 audit is a blocking failure; the historical residual is not a waiver.
@@ -105,8 +105,9 @@ python -m script.analysis.audit_prompt_conflicts --bundle \
 The report stores only summary counts and standard hashes. A non-zero
 `conflict_keys` is a blocking failure: normalized `field_name` plus
 `table_name` and the two standard hashes must identify one `(leaf, data_level)`
-pair. The field_name+table_name choice records the shougang conflict result
-above; it does not permit a conflict waiver. Pass this exact redacted report to
+pair. The field_name+table_name audit key records the shougang conflict result
+above; the formal prompt metadata contract is the four native fields (user
+decision 2026-08-27), and no conflict waiver is permitted. Pass this exact redacted report to
 `record_checkpoint`.
 
 ### Export and validate one SFT release
@@ -121,7 +122,7 @@ python -m script.verl.sft.export \
   --output-dir "$RUN/releases/sft/source/shougang" \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --task-config "$CFG/shougang.task.json" \
   --grading-config "$STANDARDS/shougang.grading.json"
 
@@ -129,7 +130,7 @@ python -m script.verl.sft.validate \
   --dataset-dir "$RUN/releases/sft/source/shougang" \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --task-config "$CFG/shougang.task.json" \
   --grading-config "$STANDARDS/shougang.grading.json" \
   --report "$RUN/releases/sft/source/shougang/validation.json"
@@ -169,7 +170,7 @@ python -m script.verl.common.build_mixture \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
   --task-config "$CFG/shougang.task.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --output-dir "$RUN/releases/sft/shougang"
 ```
 

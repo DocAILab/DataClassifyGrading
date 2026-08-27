@@ -70,16 +70,18 @@ python -m script.canonical.split \
   --seed 42
 ```
 
-The formal task config must expose exactly `field_name` and `table_name`:
+The formal task config must expose exactly the four native fields
+`field_name`, `table_name`, `field_description`, `table_description` (user
+decision 2026-08-27):
 
 ```json
-{"metadata_fields": ["field_name", "table_name"]}
+{"metadata_fields": ["field_name", "table_name", "field_description", "table_description"]}
 ```
 
 Rationale from the historical audit of the former finance+shougang release:
 field-only prompts produced 1552 conflict keys (about 54% of train rows).
 After adding `table_name`, the residual was 15 keys / 30 rows in shougang and
-0 in finance. The formal scope is now shougang-only; keep both fields in every
+0 in finance. The formal scope is now shougang-only; keep all four fields in every
 formal prompt. The historical residual is not a waiver: the current release
 audit below must pass with `conflict_keys: 0`.
 
@@ -118,7 +120,7 @@ python -m script.verl.sft.export \
   --output-dir "$RUN/releases/sft/source/shougang" \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --task-config "$CFG/shougang.task.json" \
   --grading-config "$STANDARDS/shougang.grading.json"
 
@@ -126,7 +128,7 @@ python -m script.verl.sft.validate \
   --dataset-dir "$RUN/releases/sft/source/shougang" \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --task-config "$CFG/shougang.task.json" \
   --grading-config "$STANDARDS/shougang.grading.json" \
   --report "$RUN/releases/sft/source/shougang/validation.json"
@@ -172,7 +174,7 @@ python -m script.verl.common.build_mixture \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
   --task-config "$CFG/shougang.task.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --output-dir "$RUN/releases/sft/shougang"
 ```
 
@@ -289,7 +291,7 @@ python -m script.verl.rl.export \
   --dataset shougang \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --task-config "$CFG/shougang.task.json" \
   --grading-config "$STANDARDS/shougang.grading.json"
 ```
@@ -307,7 +309,7 @@ python -m script.verl.common.build_mixture \
   --registry "$ASSETS/registries/shougang.registry.json" \
   --corpus "$ASSETS/corpora/shougang.corpus.json" \
   --task-config "$CFG/shougang.task.json" \
-  --metadata-fields field_name table_name \
+  --metadata-fields field_name table_name field_description table_description \
   --output-dir "$RUN/releases/rl/shougang"
 ```
 
@@ -323,7 +325,7 @@ python -m script.verl.rl.validate_cascade \
   --report "$RUN/rl-cascade-validation.json"
 ```
 
-The validator requires `metadata_fields: ["field_name", "table_name"]`,
+The validator requires `metadata_fields: ["field_name", "table_name", "field_description", "table_description"]`,
 passed/published release metadata, singleton passthrough policy, no source-id
 overlap, shougang rows in train, no Stage-2 runtime rows, and `trajectory_format:
 qwen3.5-native-tools-v1`. A non-zero exit is a release stop.
