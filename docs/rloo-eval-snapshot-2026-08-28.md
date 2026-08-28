@@ -53,8 +53,8 @@ Qwen3.5-9B RLOO（shougang 域）阶段性评估快照。
 5. 训练/评估所需 registry/corpus/manifest 为 runtime-local 资产（不入库）。
 
 ### P2 训练信号
-6. 训练 reward 饱和（pg_loss≈0、梯度由 KL 驱动）、entropy 低——训练 reward 不可作泛化证据；训练/泛化差距大（train ~1.0 vs held-out 77–79%）。
-7. `response_length=512` 存在截断风险（见 §3 唯一格式错样本）。
+6. 训练 reward 饱和（pg_loss≈0、梯度由 KL 驱动）、entropy 低——训练 reward 不可作泛化证据；训练/泛化差距大（train ~1.0 vs held-out 77–82%）。
+7. `response_length=512` 定性为**潜在性能限制**（非根因）：可能截断长 reasoning / 第二次 tool call / terminal answer（§3 唯一格式错样本为实证），但不解释"基模≈w300、step232 突然稳定"的强干预结果。
 
 ### P3 数据/评估
 8. 219 条测试集偏小（CI ±~5.5%），77.63 vs 78.99 不显著；未做 F1/更大集对比。
@@ -64,5 +64,6 @@ Qwen3.5-9B RLOO（shougang 域）阶段性评估快照。
 
 - smoke（早期 checkpoint）bad：**格式/行为失败为主**（无终局 JSON：工具调用收尾/推理文本泄漏/截断畸形）；
 - 正式 RLOO bad：**预测错为主**（48/49 格式对、答案错）；
-- 两个阶段瓶颈完全不同：smoke 是"不会用工具循环"，正式 RLOO 是"分类准确率"。
+- 两个阶段瓶颈完全不同：smoke 是"不会用工具循环"（工具调用能力 ≠ agent-loop 能力，基模先验仅有 tool-call syntax），正式 RLOO 是"分类准确率"；
+- 链路（chat template / tool parsing / tool execution）经三模型对照（基模/w300/step232，见 `docs/rloo-chat-template-verify-2026-08-29.md`）——目前无证据表明是主要根因，已从主排查方向降级。
 - 详见 `docs/rloo-smoke-bad-cases-2026-08-28.md`。
