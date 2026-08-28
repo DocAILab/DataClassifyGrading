@@ -416,11 +416,11 @@ def main(argv: list[str] | None = None) -> int:
 
     # greedy, fixed decoding settings (identical for base and SFT), model loaded once
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForImageTextToText, AutoTokenizer
 
     torch.manual_seed(args.seed)
     tokenizer = AutoTokenizer.from_pretrained(args.model_path)
-    model = AutoModelForCausalLM.from_pretrained(
+    model = AutoModelForImageTextToText.from_pretrained(
         args.model_path, torch_dtype=torch.bfloat16, device_map="auto"
     )
     if tokenizer.pad_token_id is None:

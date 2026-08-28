@@ -110,7 +110,7 @@ def main(argv: list[str] | None = None) -> int:
 
     import torch
     from peft import LoraConfig, PeftModel
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModelForImageTextToText, AutoProcessor, AutoTokenizer
 
     state_dict = torch.load(model_file, map_location="cpu", weights_only=False)
     if not isinstance(state_dict, Mapping):
@@ -130,7 +130,7 @@ def main(argv: list[str] | None = None) -> int:
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.merge-", dir=output.parent))
     try:
         print(f"[merge] targets={targets} r={rank} alpha={alpha} keys={len(state_dict)}")
-        base = AutoModelForCausalLM.from_pretrained(
+        base = AutoModelForImageTextToText.from_pretrained(
             base_path, torch_dtype=torch.bfloat16, local_files_only=True
         )
         config = LoraConfig(
@@ -157,6 +157,15 @@ def main(argv: list[str] | None = None) -> int:
         merged.save_pretrained(staging)
         tokenizer = AutoTokenizer.from_pretrained(base_path, local_files_only=True)
         tokenizer.save_pretrained(staging)
+        processor = AutoProcessor.from_pretrained(base_path, local_files_only=True)
+        processor.save_pretrained(staging)
+        # vLLM resolves the image/video processors from their standalone
+        # preprocessor config files even for text-only requests.  Preserve
+        # these base-model files alongside the merged weights.
+        for processor_file in ("preprocessor_config.json", "video_preprocessor_config.json"):
+            source = base_path / processor_file
+            if source.is_file():
+                shutil.copy2(source, staging / processor_file)
         (staging / "merge_report.json").write_text(
             json.dumps(
                 {
@@ -182,11 +191,12 @@ def main(argv: list[str] | None = None) -> int:
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-        verified_model = AutoModelForCausalLM.from_pretrained(
+        verified_model = AutoModelForImageTextToText.from_pretrained(
             staging, torch_dtype=torch.bfloat16, local_files_only=True
         )
         verified_tokenizer = AutoTokenizer.from_pretrained(staging, local_files_only=True)
-        del verified_model, verified_tokenizer
+        verified_processor = AutoProcessor.from_pretrained(staging, local_files_only=True)
+        del verified_model, verified_tokenizer, verified_processor, processor
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
