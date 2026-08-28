@@ -1,8 +1,10 @@
 import numpy as np
 import pytest
 import inspect
+import inspect
 
 from method.retrieval import bge_m3
+from method.retrieval import char_ngram
 from method.retrieval.bge_m3 import dense_scores
 from method.retrieval.char_ngram import char_ngram_scores
 
@@ -19,6 +21,11 @@ def test_char_ngram_prefers_overlapping_chinese_label_text():
     scores = char_ngram_scores(["设备编号"], ["标签名称：设备基本资料", "标签名称：车辆信息"])
     assert scores.shape == (1, 2)
     assert scores[0, 0] > scores[0, 1]
+
+
+def test_char_ngram_does_not_depend_on_optional_dpo_package():
+    source = inspect.getsource(char_ngram)
+    assert "method.dpo" not in source
 
 
 def test_bge_encoder_uses_existing_transformers_without_optional_flagembedding():

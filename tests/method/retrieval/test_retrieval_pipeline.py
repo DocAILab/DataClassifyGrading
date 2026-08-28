@@ -15,6 +15,20 @@ def test_cli_has_no_split_or_test_option():
     assert {"input_dir", "registry", "model", "output_dir", "batch_size", "limit"} <= options
 
 
+def test_cli_exposes_hybrid_fusion_weights():
+    options = {action.dest for action in build_parser()._actions}
+    assert {"lexical_weight", "dense_weight", "index_weight"} <= options
+
+
+def test_ablation_grid_covers_index_dominant_weight_variants_without_test_split():
+    grid = ROOT / "src" / "method" / "retrieval" / "script" / "run_hybrid_ablation_grid.sh"
+    source = grid.read_text(encoding="utf-8")
+    assert "index_dominant" in source
+    assert "index_bge" in source
+    assert "index_char" in source
+    assert "test.json" not in source
+
+
 def test_pipeline_runs_real_smoke_before_full_and_never_names_test_split():
     launcher = PIPELINE.read_text(encoding="utf-8")
     assert "--limit 16" in launcher

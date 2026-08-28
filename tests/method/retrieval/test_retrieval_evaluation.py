@@ -33,15 +33,20 @@ def test_evaluator_reads_only_val_and_writes_consistent_reports(tmp_path):
         {"id": "one", "metadata": {"field_name": "field0", "value": "secret"}, "classification": {"level_4": "A"}},
         {"id": "two", "metadata": {"field_name": "field1"}, "classification": {"level_4": "B"}},
     ]
+    (tmp_path / "train.json").write_text(json.dumps(rows), encoding="utf-8")
     (tmp_path / "val.json").write_text(json.dumps(rows), encoding="utf-8")
 
     report = evaluate_stage1(tmp_path, _registry(), tmp_path / "out", encoder=FakeEncoder())
 
-    assert report["requested_splits"] == ["val"]
+    assert report["requested_splits"] == ["train", "val"]
     assert report["real_test_split_read"] is False
     assert report["metadata_fields"] == ["field_name"]
     assert report["rows"] == 2
     assert report["bge_m3"]["recall_at_1"] == 1.0
+    assert "train_index" in report
+    assert "hybrid" in report
+    assert report["candidate_source_split"] == "train"
+    assert report["evaluation_split"] == "val"
     assert report["runtime"]["gpu_peak_memory_bytes"] >= 0
     predictions = [json.loads(line) for line in (tmp_path / "out" / "bge_m3" / "predictions.jsonl").read_text(encoding="utf-8").splitlines()]
     assert len(predictions) == 2
@@ -52,6 +57,41 @@ def test_evaluator_reads_only_val_and_writes_consistent_reports(tmp_path):
 
 def test_evaluator_rejects_duplicate_source_ids(tmp_path):
     row = {"id": "one", "metadata": {"field_name": "field0"}, "classification": {"level_4": "A"}}
+    (tmp_path / "train.json").write_text(json.dumps([row]), encoding="utf-8")
     (tmp_path / "val.json").write_text(json.dumps([row, row]), encoding="utf-8")
     with pytest.raises(ValueError, match="unique"):
         evaluate_stage1(tmp_path, _registry(), tmp_path / "out", encoder=FakeEncoder())
+
+
+def test_hybrid_report_records_fusion_weights_and_train_only_index(tmp_path):
+    train = [
+        {"id": "train-1", "metadata": {"field_name": "field0"}, "classification": {"level_4": "A"}},
+    ]
+    val = [
+        {"id": "val-1", "metadata": {"field_name": "field0", "value": "hidden"}, "classification": {"level_4": "A"}},
+    ]
+    (tmp_path / "train.json").write_text(json.dumps(train), encoding="utf-8")
+    (tmp_path / "val.json").write_text(json.dumps(val), encoding="utf-8")
+
+    report = evaluate_stage1(
+        tmp_path,
+        _registry(),
+        tmp_path / "out",
+        encoder=FakeEncoder(),
+        lexical_weight=0.2,
+        dense_weight=0.5,
+        index_weight=0.3,
+    )
+
+    assert report["hybrid_weights"] == {
+        "lexical": 0.2,
+        "dense": 0.5,
+        "train_index": 0.3,
+    }
+    assert report["train_index_rows"] == 1
+    hybrid_rows = [
+        json.loads(line)
+        for line in (tmp_path / "out" / "hybrid" / "predictions.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert hybrid_rows[0]["top5"][0] == "A"
+    assert "hidden" not in json.dumps(hybrid_rows)

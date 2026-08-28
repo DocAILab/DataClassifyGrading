@@ -35,6 +35,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--lexical-weight", type=float, default=0.20)
+    parser.add_argument("--dense-weight", type=float, default=0.50)
+    parser.add_argument("--index-weight", type=float, default=0.30)
     return parser
 
 
@@ -48,6 +51,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         args.output_dir,
         encoder=encoder,
         limit=args.limit,
+        lexical_weight=args.lexical_weight,
+        dense_weight=args.dense_weight,
+        index_weight=args.index_weight,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0

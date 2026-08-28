@@ -4,7 +4,7 @@ set -euo pipefail
 WORKTREE="${WORKTREE:-/root/autodl-tmp/worktrees/DataClassifyGrading-stage1-bge-m3}"
 RUN_ROOT="${RUN_ROOT:-/root/autodl-tmp/artifacts/shougang/stage1-bge-m3-v1}"
 DATA_DIR="${DATA_DIR:-/root/autodl-tmp/datasets/shougang}"
-REGISTRY="${REGISTRY:-/root/autodl-tmp/artifacts/shougang/orpo-v1/registry.json}"
+REGISTRY="${REGISTRY:-$DATA_DIR/registry.json}"
 MODEL="${MODEL:-/root/autodl-tmp/models/bge-m3}"
 PYTHON="${PYTHON:-/root/autodl-tmp/envs/verl-official-sft/bin/python}"
 

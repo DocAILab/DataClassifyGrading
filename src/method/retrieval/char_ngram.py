@@ -6,7 +6,7 @@ from typing import Sequence
 
 import numpy as np
 
-from method.dpo.label_scoring import _cosine, _features
+from .hybrid import _cosine, _features
 
 
 def char_ngram_scores(queries: Sequence[str], documents: Sequence[str]) -> np.ndarray:
