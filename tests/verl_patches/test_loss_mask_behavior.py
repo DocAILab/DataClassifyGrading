@@ -5,7 +5,7 @@ than copying the patched implementation into the repository.  They are skipped
 locally when that runtime is unavailable and should be run in the server's CPU
 venv with::
 
-    /root/autodl-tmp/envs/verl-qwen35/bin/python -m pytest \
+    <SERVER_VENV>/bin/python -m pytest \
         tests/verl_patches/test_loss_mask_behavior.py -q
 
 No model, tokenizer files, CUDA device, or GPU is required: the dataset test
@@ -29,7 +29,7 @@ except importlib.metadata.PackageNotFoundError:
 
 _SKIP_REASON = (
     "requires installed verl==0.9.0 (run in the CPU-capable server venv: "
-    "/root/autodl-tmp/envs/verl-qwen35/bin/python -m pytest "
+    "<SERVER_VENV>/bin/python -m pytest "
     "tests/verl_patches/test_loss_mask_behavior.py -q)"
 )
 

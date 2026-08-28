@@ -250,7 +250,7 @@ requires_verl = pytest.mark.skipif(
     not HAS_VERL,
     reason=(
         "requires verl==0.9.0 + torch (run on the server venv: "
-        "PYTHONPATH=... /root/autodl-tmp/envs/verl-qwen35/bin/python -m pytest "
+        "PYTHONPATH=... <SERVER_VENV>/bin/python -m pytest "
         "tests/verl_patches -q)"
     ),
 )

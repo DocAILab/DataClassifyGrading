@@ -1,6 +1,6 @@
 # verl-0.9.0 AmberFalcon runtime patches (tracked bundle, plan A)
 
-Source: live server venv `/root/autodl-tmp/envs/verl-qwen35` vs official wheel
+Source: live server venv `<SERVER_VENV>` vs official wheel
 `verl-0.9.0-py3-none-any.whl` (forensics: full 420-file byte comparison;
 416 identical / 4 patched / 0 missing; evidence
 `tmp/phase-a1-cfgdump/verl-patches.diff.txt`,
@@ -90,7 +90,7 @@ rollout; CPU validation uses a temporary module overlay and never mutates it.
 ```bash
 # fresh venv replay (apply required patches; optional DEBUG excluded by default)
 bash script/verl/common/patches/apply_verl_patches.sh \
-  /root/autodl-tmp/envs/<venv>/lib/python3.12/site-packages
+  <SERVER_VENV>/lib/python3.12/site-packages
 
 # include the DEBUG patch (not recommended for formal runs)
 INCLUDE_DEBUG=1 bash script/verl/common/patches/apply_verl_patches.sh <site-packages>
