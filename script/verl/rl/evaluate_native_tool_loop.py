@@ -75,6 +75,10 @@ class _EpisodeResult:
     reward: float = 0.0
     terminal_answer_valid: bool = False
     terminal_exact_match: bool = False
+    gt_cat: str = ""
+    gt_level: str = ""
+    pred_cat: str = ""
+    pred_level: str = ""
     num_turns: int = 0
     response_tokens: int = 0
     tool_calls: int = 0
@@ -89,6 +93,10 @@ class _EpisodeResult:
             "reward": self.reward,
             "terminal_answer_valid": self.terminal_answer_valid,
             "terminal_exact_match": self.terminal_exact_match,
+            "gt_cat": self.gt_cat,
+            "gt_level": self.gt_level,
+            "pred_cat": self.pred_cat,
+            "pred_level": self.pred_level,
             "num_turns": self.num_turns,
             "response_tokens": self.response_tokens,
             "tool_calls": self.tool_calls,
@@ -237,6 +245,28 @@ def normalize_episode_row(row: Mapping[str, Any]) -> NativeEpisode:
         extra_info=extra,
         reward_model=reward_model,
     )
+
+
+def _macro_f1(truths: Sequence[str], preds: Sequence[str]) -> float:
+    """Macro-averaged F1 over the full set of ground-truth labels.
+
+    Every distinct ground-truth label participates in the denominator; a
+    label with zero true/false positives (and non-zero false negatives)
+    contributes F1=0. Empty predictions are treated as a mismatch.
+    """
+    labels = set(truths)
+    scores = []
+    for label in labels:
+        tp = sum(t == label and p == label for t, p in zip(truths, preds))
+        fp = sum(t != label and p == label for t, p in zip(truths, preds))
+        fn = sum(t == label and p != label for t, p in zip(truths, preds))
+        prec = tp / (tp + fp) if tp + fp else 0.0
+        rec = tp / (tp + fn) if tp + fn else 0.0
+        if prec + rec:
+            scores.append(2 * prec * rec / (prec + rec))
+        else:
+            scores.append(0.0)  # all-missed label contributes F1=0
+    return sum(scores) / len(scores) if scores else 0.0
 
 
 def aggregate_gate(results: Sequence[Mapping[str, Any] | int | float | bool]) -> dict[str, Any]:
@@ -576,10 +606,18 @@ async def _run_episodes(
         "skip_special_tokens": False,
     }
     results: list[dict[str, Any]] = []
+    from agent.task import LeafRegistry
+    from agent.task.grading_manifest import DatasetGradingManifest
+    from agent.training.rl.native_tools import parse_final_tool_answer
+
+    registry = LeafRegistry.from_path(registry_path)
+    grading = DatasetGradingManifest.from_path(grading_manifest_path).config_for("shougang")
     for index, episode in enumerate(episodes):
         tracker = _EpisodeTracker()
         token = _CURRENT_TRACKER.set(tracker)
         result = _EpisodeResult(source_id=episode.source_id)
+        result.gt_cat = str(episode.reward_model.get("ground_truth", ""))
+        result.gt_level = str(episode.extra_info.get("ground_truth_level", ""))
         try:
             output = await agent_loop.run(
                 dict(sampling_params),
@@ -594,6 +632,23 @@ async def _run_episodes(
             result.terminal_exact_match = bool(
                 output.extra_fields.get("terminal_exact_match", False)
             )
+            try:
+                from script.verl.rl.cascade_agent_loop import final_policy_token_ids
+
+                final_ids = final_policy_token_ids(
+                    output.response_ids, output.response_mask
+                )
+                final_text = tokenizer.decode(
+                    list(final_ids), skip_special_tokens=True
+                ).strip()
+                ans = parse_final_tool_answer(
+                    final_text, registry=registry, grading=grading
+                )
+                result.pred_cat = ans.category_id
+                result.pred_level = ans.level
+            except Exception:
+                result.pred_cat = ""
+                result.pred_level = ""
             result.num_turns = int(output.num_turns)
             result.response_tokens = len(output.response_ids)
             rewards = output.extra_fields.get("tool_rewards", [])
@@ -814,6 +869,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                 int(result["generation_calls"]) for result in started
             ),
             "episode_failures": len(errors),
+            "macro_f1_cat": _macro_f1(
+                [str(result["gt_cat"]) for result in started],
+                [str(result["pred_cat"]) for result in started],
+            ),
+            "macro_f1_level": _macro_f1(
+                [str(result["gt_level"]) for result in started],
+                [str(result["pred_level"]) for result in started],
+            ),
         }
         runtime: dict[str, Any] = {
             "python": sys.executable,
