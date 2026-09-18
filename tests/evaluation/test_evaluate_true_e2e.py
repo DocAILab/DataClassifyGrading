@@ -19,10 +19,34 @@ import json
 import pytest
 
 from agent.task.contracts import CorpusCategory, GradedTaskContext, GradingConfig, LeafRegistry, TaskConfig
-from script.verl.sft.evaluate_true_e2e import aggregate_true_e2e, run_one
+from script.verl.sft.evaluate_true_e2e import (
+    _render_generation_prompt,
+    aggregate_true_e2e,
+    run_one,
+)
 
 # ---- synthetic registry/corpus: 8 categories -> choice ids "1".."8" ----
 REG_IDS = [f"reg:{i}" for i in range(1, 9)]
+
+
+def test_generation_prompt_disables_qwen_thinking_for_strict_json() -> None:
+    class RecordingTokenizer:
+        def __init__(self) -> None:
+            self.kwargs = None
+
+        def apply_chat_template(self, messages, **kwargs):
+            self.kwargs = kwargs
+            return "rendered"
+
+    tokenizer = RecordingTokenizer()
+    messages = [{"role": "user", "content": "return strict JSON"}]
+
+    assert _render_generation_prompt(tokenizer, messages) == "rendered"
+    assert tokenizer.kwargs == {
+        "tokenize": False,
+        "add_generation_prompt": True,
+        "enable_thinking": False,
+    }
 
 
 def make_registry() -> LeafRegistry:

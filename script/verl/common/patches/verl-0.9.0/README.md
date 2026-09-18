@@ -17,7 +17,7 @@ rollout; CPU validation uses a temporary module overlay and never mutates it.
 | patch | target (relative to site-packages) | applied sha256 (installed) | source mtime (unix) | lines | status |
 |---|---|---|---|---|---|
 | `agent_loop-debug.patch` | `verl/experimental/agent_loop/agent_loop.py` | `902cc8c4007b944974d77c54bc1ce227df49de4390e5b3a0fc831f5cf0a4a801` | 1787775452.5897617 | +15 | **DEBUG ONLY — optional, P2 cleanup; do not apply for formal runs** |
-| `chat_template-system-first.patch` | `verl/utils/tokenizer/chat_template.py` | `58031af7a001a1208129b271f110e9cf94a3978874fadc5da43db9eec0322578` | 1787758027.2868876 | +16 | required |
+| `chat_template-system-first.patch` | `verl/utils/tokenizer/chat_template.py` | `a33c1e6adfb819ec61f8bc4bca4da937224936801626935445d29d67247e145b` | bundle fix | +33 | required |
 | `multiturn_sft_dataset-prefix-diff-answer-mask.patch` | `verl/utils/dataset/multiturn_sft_dataset.py` | `ce7486288a68a85a0777d9e587688501e09603533703e57d91e4f2c85139ecd9` | bundle fix | +225 | required |
 | `losses-scheme-c.patch` | `verl/workers/utils/losses.py` | `f107371e5c77b8f81800d3676d85894a64ad6646ea78f83ecb59d768ebc09a5c` | bundle fix | +18 | required |
 
@@ -26,7 +26,7 @@ rollout; CPU validation uses a temporary module overlay and never mutates it.
 | file | sha256 |
 |---|---|
 | `agent_loop-debug.patch` | `b257a87a7c6aaa2ddbfba94fc4efefbfb860e5679eda4410ca6ba71a6cdb61ed` |
-| `chat_template-system-first.patch` | `1e493510dc41ddf455587555d1f223d2c3479e570ca94d7ecf6ac91db1975d36` |
+| `chat_template-system-first.patch` | `adb6fb8c445656901c6c98ad023b3c88d50519debb42bbca036e68f9769c694e` |
 | `multiturn_sft_dataset-prefix-diff-answer-mask.patch` | `245165c9117b14ab5acfd5255b02dd8ea323e1f1d2b2c6bcc176cfb00054e4ad` |
 | `losses-scheme-c.patch` | `6463eab23787286907f3ffbd5dc9850e26fa241b8b75e84322cfb32d4d633829` |
 
@@ -39,7 +39,8 @@ rollout; CPU validation uses a temporary module overlay and never mutates it.
 2. **`chat_template-system-first.patch`** — Qwen3.5 chat template requires the
    leading system message to stay first; VeRL's internal `dummy_user_message`
    stitching previously prepended before the whole list. Patch inserts the
-   dummy user after the system message instead.
+   dummy user after the system message and removes that injected turn at its
+   anchored position, preserving the complete system prefix.
 3. **`multiturn_sft_dataset-prefix-diff-answer-mask.patch`** —
    - Qwen3.5 templates cannot render standalone messages (thinking structure +
      system-first constraint): render the full prefix up to the current

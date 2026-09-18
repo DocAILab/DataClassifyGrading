@@ -1,12 +1,32 @@
 --- a/verl/utils/tokenizer/chat_template.py
 +++ b/verl/utils/tokenizer/chat_template.py
-@@ -184,6 +184,12 @@
+@@ -174,38 +174,71 @@
+         )
+     except Exception:
+         # Qwen3.5 apply_chat_template needs messages with at least one user message
+         dummy_user_message = [{"role": "user", "content": [{"type": "text", "text": ""}]}]
+         dummy_user_prefix = processor.apply_chat_template(
+             dummy_user_message,
+             tokenize=tokenize,
+             add_generation_prompt=False,
+             tools=tools,
+             return_dict=return_dict,
              **kwargs,
          )
-+        # A leading system message must stay first (Qwen3.5 template constraint);
-+        # insert the dummy user query after it instead of before the whole list.
++        system_dummy_prefix = None
++        # A leading system message must stay first (Qwen3.5 template constraint).
++        # Anchor the injected user after it and remember the complete
++        # [system, dummy-user] prefix so the dummy can be removed in place.
 +        if messages and messages[0].get("role") == "system":
 +            stitched = [messages[0], *dummy_user_message, *messages[1:]]
++            system_dummy_prefix = processor.apply_chat_template(
++                stitched[:2],
++                tokenize=tokenize,
++                add_generation_prompt=False,
++                tools=tools,
++                return_dict=return_dict,
++                **kwargs,
++            )
 +        else:
 +            stitched = dummy_user_message + messages
          output = processor.apply_chat_template(
@@ -14,3 +34,46 @@
 +            stitched,
              tokenize=tokenize,
              add_generation_prompt=add_generation_prompt,
+             tools=tools,
+             return_dict=return_dict,
+             **kwargs,
+         )
+ 
+         if not tokenize:  # tokenize=False
++            if system_dummy_prefix is not None:
++                keep = len(system_dummy_prefix) - len(dummy_user_prefix)
++                return output[:keep] + output[len(system_dummy_prefix) :]
+             return output[len(dummy_user_prefix) :]
+         elif not return_dict:  # tokenize=True and return_dict=False
+             if isinstance(output[0], list):  # transformers>=5
+                 assert len(output) == 1, "output must be a list[int] or list[list[int]]"
+                 dummy_user_prefix = dummy_user_prefix[0]
++                if system_dummy_prefix is not None:
++                    system_dummy_prefix = system_dummy_prefix[0]
+                 output = output[0]
++            if system_dummy_prefix is not None:
++                keep = len(system_dummy_prefix) - len(dummy_user_prefix)
++                return output[:keep] + output[len(system_dummy_prefix) :]
+             return output[len(dummy_user_prefix) :]
+         else:  # tokenize=True and return_dict=True and return_tensors="pt"
+             dummy_user_prefix = dict(dummy_user_prefix)
+             output = dict(output)
+             prefix_len = dummy_user_prefix["input_ids"].shape[1]
+-            output["input_ids"] = output["input_ids"][:, prefix_len:]
+-            output["attention_mask"] = output["attention_mask"][:, prefix_len:]
+-            if "mm_token_type_ids" in output:
+-                output["mm_token_type_ids"] = output["mm_token_type_ids"][:, prefix_len:]
++            if system_dummy_prefix is not None:
++                system_dummy_prefix = dict(system_dummy_prefix)
++                anchor_len = system_dummy_prefix["input_ids"].shape[1]
++                keep = anchor_len - prefix_len
++                for key in ("input_ids", "attention_mask", "mm_token_type_ids"):
++                    if key in output:
++                        indices = list(range(keep)) + list(range(anchor_len, output[key].shape[1]))
++                        output[key] = output[key][:, indices]
++            else:
++                output["input_ids"] = output["input_ids"][:, prefix_len:]
++                output["attention_mask"] = output["attention_mask"][:, prefix_len:]
++                if "mm_token_type_ids" in output:
++                    output["mm_token_type_ids"] = output["mm_token_type_ids"][:, prefix_len:]
+             return output

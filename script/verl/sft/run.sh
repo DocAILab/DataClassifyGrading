@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Thin single-node VeRL 0.8 SFT launcher. Hydra overrides remain an argv array.
+# Thin single-node VeRL SFT launcher. Hydra overrides remain an argv array.
 set -euo pipefail
 
 PYTHON_BIN="${PYTHON_BIN:-python}"

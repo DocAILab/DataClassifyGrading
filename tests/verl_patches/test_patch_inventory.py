@@ -13,10 +13,12 @@ are marked ``skip-unless-verl`` and documented in the module docstring /
 README; run them on the server venv with pytest.
 """
 import hashlib
+import importlib.util
 import re
 import subprocess
 import sys
 import tempfile
+import types
 from pathlib import Path
 
 import pytest
@@ -29,7 +31,7 @@ BUNDLE = {
     "agent_loop.py": ("agent_loop-debug.patch",
                       "902cc8c4007b944974d77c54bc1ce227df49de4390e5b3a0fc831f5cf0a4a801"),
     "chat_template.py": ("chat_template-system-first.patch",
-                         "58031af7a001a1208129b271f110e9cf94a3978874fadc5da43db9eec0322578"),
+                         "a33c1e6adfb819ec61f8bc4bca4da937224936801626935445d29d67247e145b"),
     "multiturn_sft_dataset.py": ("multiturn_sft_dataset-prefix-diff-answer-mask.patch",
                                  "ce7486288a68a85a0777d9e587688501e09603533703e57d91e4f2c85139ecd9"),
     "losses.py": ("losses-scheme-c.patch",
@@ -117,6 +119,62 @@ def test_apply_reproduces_installed_sha256() -> None:
             assert got == expected, (
                 f"{fixture_name}: post-apply sha256 {got} != installed {expected}"
             )
+
+
+def test_system_first_fallback_preserves_system_tokens() -> None:
+    """The Qwen3.5 fallback must remove the injected user turn in place.
+
+    A system-only prefix is exactly the case that enters this fallback while
+    MultiTurnSFTDataset renders prefixes.  Removing ``len(dummy)`` tokens from
+    the beginning would discard the system header and retain the dummy user.
+    """
+
+    with tempfile.TemporaryDirectory() as tmp:
+        work = Path(tmp)
+        target = work / REL_PATHS["chat_template.py"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((FIXTURES / "chat_template.py").read_bytes())
+        proc = subprocess.run(
+            [BASH, "-lc", f"cd '{_bash_path(work)}' && patch -p1 -i '{_bash_path(PATCH_DIR / 'chat_template-system-first.patch')}'"],
+            capture_output=True,
+            text=True,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+        package = "patch_behavior"
+        transformers = types.ModuleType("transformers")
+        transformers.PreTrainedTokenizerBase = object
+        transformers.ProcessorMixin = object
+        normalize_module = types.ModuleType(f"{package}.utils.tokenizer.tokenizer")
+        normalize_module.normalize_token_ids = lambda value: value
+        sys.modules["transformers"] = transformers
+        sys.modules[f"{package}.utils.tokenizer.tokenizer"] = normalize_module
+
+        spec = importlib.util.spec_from_file_location(
+            f"{package}.utils.tokenizer.chat_template", target
+        )
+        assert spec and spec.loader
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        class SystemFirstProcessor:
+            @staticmethod
+            def apply_chat_template(messages, *, tokenize, return_dict, **kwargs):
+                if not any(message["role"] == "user" for message in messages):
+                    raise ValueError("Qwen3.5 requires a user message")
+                role_tokens = {"system": [10, 11], "user": [20, 21], "assistant": [30, 31]}
+                tokens = [token for message in messages for token in role_tokens[message["role"]]]
+                assert tokenize and not return_dict
+                return tokens
+
+        actual = module.apply_chat_template(
+            SystemFirstProcessor(),
+            [{"role": "system", "content": "policy"}],
+            tokenize=True,
+            add_generation_prompt=False,
+            return_dict=False,
+        )
+        assert actual == [10, 11]
 
 
 def test_patch_paths_match_readme_and_scripts() -> None:

@@ -33,7 +33,7 @@ OPTIONAL_DEBUG="agent_loop-debug.patch"
 
 # target relative path -> expected sha256 after applying (installed values)
 declare -A EXPECTED=(
-  ["verl/utils/tokenizer/chat_template.py"]="58031af7a001a1208129b271f110e9cf94a3978874fadc5da43db9eec0322578"
+  ["verl/utils/tokenizer/chat_template.py"]="a33c1e6adfb819ec61f8bc4bca4da937224936801626935445d29d67247e145b"
   ["verl/utils/dataset/multiturn_sft_dataset.py"]="ce7486288a68a85a0777d9e587688501e09603533703e57d91e4f2c85139ecd9"
   ["verl/workers/utils/losses.py"]="f107371e5c77b8f81800d3676d85894a64ad6646ea78f83ecb59d768ebc09a5c"
   ["verl/experimental/agent_loop/agent_loop.py"]="902cc8c4007b944974d77c54bc1ce227df49de4390e5b3a0fc831f5cf0a4a801"

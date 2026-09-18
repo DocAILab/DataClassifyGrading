@@ -47,6 +47,16 @@ Split = tuple[str, str, str]  # (system, user, -) placeholder for typing simplic
 GenerateFn = Callable[[list[dict[str, str]]], str]
 
 
+def _render_generation_prompt(tokenizer: Any, messages: list[dict[str, str]]) -> str:
+    """Render a strict-JSON prompt without Qwen's free-form thinking preamble."""
+    return tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False,
+    )
+
+
 @dataclass(frozen=True)
 class E2EOutcome:
     """One source's TRUE end-to-end result (choice decode already applied)."""
@@ -428,9 +438,7 @@ def main(argv: list[str] | None = None) -> int:
     model.eval()
 
     def hf_generate(messages: list[dict[str, str]]) -> str:
-        text = tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
-        )
+        text = _render_generation_prompt(tokenizer, messages)
         inputs = tokenizer(text, return_tensors="pt").to(model.device)
         with torch.inference_mode():
             output = model.generate(
