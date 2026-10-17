@@ -2,7 +2,7 @@
 
 ## CPU tests
 
-Run each independent stage in a separate process from its own directory (module names such as gate/io_utils are intentionally local):
+Run stages in separate processes from their own directories; names such as `gate` and `io_utils` are intentionally local:
 
 ```powershell
 cd nontraining
@@ -15,27 +15,32 @@ cd ..
 python -B -m unittest discover -s publication_tests -v
 ```
 
-Python3.11+ is expected; publication checks ran Python3.13 with Torch2.9 CPU operations. The actual9B run used Torch2.9/Transformers5.10.4/PEFT0.21/Accelerate1.15. GPU execution and model imports require the matching environment; no dependency or model download occurs from these CPU tests.
+Python 3.11+ is expected. The original publication checks used Python 3.13 with Torch 2.9 CPU operations. The actual 9B experiment used Torch 2.9 / Transformers 5.10.4 / PEFT 0.21 / Accelerate 1.15. These CPU tests do not download models or start GPU or teacher API work. The result update does not alter the original experiment code or its synthetic fixtures.
 
-The synthetic evaluation/data/study.json contains a fictional field/category. It is **not Val80**. The private-data initial-prompt integration test is not exported. Adapter inventory fixtures contain architecture/configuration only; the local base path is replaced with a placeholder. Copied source files and remaining tests retain their original behavior.
+`evaluation/data/study.json` is a fictional field/category fixture, **not the real Val422 dataset**. The private-data prompt integration test and private transport/deployment/download helpers are excluded. Adapter fixtures contain architecture/configuration only, with a placeholder base path.
 
-## Real experiment
+## Full financial Val422 results
 
-Full numerical reproduction requires controlled teacher final selection/reviews/traces, planner200.jsonl, exact label-free study/Registry/fixed Val IDs, local-only gold, model revision and accepted LoRA. These are not public. SFT200 uses Program+EOS-only/no truncation; generated Skill text and future labels are not supervision.
+The current [aggregate result](results/evidence-summary.json) covers all 422 unique sources and 844 formal trajectories, comparing an untrained Planner and the accepted first SFT A under the same F66 Program/Skill interface. Both arms call Skills; `base` is not a direct-answer Base-LLM. Model Skills always use the original base without adapter; only the SFT Planner enables the accepted LoRA.
 
-Source entry points: nontraining/batch_runner.py and batch_audit.py; sft/export_dataset.py, token_audit.py, train_student.py and pipeline.py; evaluation/evaluate.py, replay.py, watch.py and verify_training.py. The teacher extractor expects a controlled sibling delivery layout; its known digest/path is provenance, not a public download mechanism.
+The already verified subset was reused byte-for-byte and all remaining sources were run once under the same frozen protocol. Original smoke trajectories are excluded from formal metrics. The source union is exact and disjoint; failures and nontermination remain in each fixed 422 denominator. Labels were used only locally after generation and replay, never uploaded or inserted into model messages. Separate generation-stage walls are recorded, not represented as one full-run wall measurement.
 
-A real run needs a new locally owned configuration/manifest and authorized input SHA/GPU UUID/shared-lock gate. Private transport/deploy/download helpers are excluded. No actual deployment manifest is shipped. Do not reuse an old immutable run directory, silently change labels/budgets or execute GPU/API work as part of inspecting this branch.
+All remote stages, controller/tokenizer/routing replay and archive steps exited successfully. On Windows the original and supplementary archives were safely extracted and all listed member hashes rechecked; full controller replay ran from each extracted root. The local replay does not claim a local real tokenizer: it is bound to the same-SHA remote real-tokenizer proof. All 844 formal trace hashes, per-ID metrics, paired counts and Macro-F1 were independently rechecked before publication.
 
-## Trajectories
+Full numerical reproduction requires controlled input study/registry, exact source partition and order, local-only gold, full raw traces, original model revision and accepted first LoRA. These are not public. The `evaluation/` directory retains the original evaluation/replay code snapshot; it is not a self-contained launcher with private full-dataset orchestration or production data. The public JSON and trajectory views are a result release, not a replacement deployment bundle.
 
-440 lossy public projections are provided: teacher200, historical nontraining80, same-interface base80 and SFT80. Sequential public IDs replace source IDs; the three Val files align on the same public row order. No private ID mapping is published. Original trace SHA is a pointer to controlled evidence, not the SHA of the redacted row.
+For controlled real execution, create a new owned configuration/manifest with authorized assets and the prescribed resource/identity checks. Do not overwrite immutable runs, silently change budgets/labels or infer permission for GPU/API work from this publication.
 
-Planner Program structure, attempt/execution statuses and final result are preserved. Prompt messages, source metadata, raw reasoning and semantic observation values are omitted. Four same-interface base traces contain literal arguments that are explicitly redacted and flagged. Other public Program parameters remain exact. Invalid unparseable replies retain status and digest but not their raw text. No failed sample is removed.
+## Teacher and student trajectories
 
-These views must **not** be used as training data or full replay input. They do not independently establish semantic correctness. The full original controller replay was performed on private evidence before publication. Redaction code and regression tests are included; summary digests allow integrity checks of the public views.
+The current release contains **1,044 lossy projections**: unchanged teacher 200, matched full-validation base 422 and SFT 422. The teacher is **Bailian `qwen3.8-2.4t-a95b`**, not a locally trained 9B teacher. The first student uses 200 teacher-selected sources for Planner-only Program+EOS SFT; Skill output text and evaluation labels are not supervision.
+
+Both student files align on public IDs `val-0001` through `val-0422`. No private source-ID mapping is published. The original trace SHA identifies controlled evidence; it is not the SHA of the redacted row. [trajectory-export.json](results/trajectory-export.json) records public-file sizes, row counts and SHA values, including the unchanged teacher file.
+
+Actual Program structure, attempts, execution statuses and final classification/grade are retained. Prompts, raw reasoning, source metadata and semantic observation values are omitted. Literal arguments are replaced by `[REDACTED]` and flagged; unparseable replies retain status/digest, not raw text. No failed row is removed. This format cannot independently establish semantic correctness and must not be used as training data or full replay input.
+
+The prior partial-validation result tables and standalone partial trajectory files are no longer part of the current branch tree. Original raw evidence and its cryptographic provenance remain preserved privately; the first SFT weights, teacher trajectories and experiment source code are unchanged.
 
 ## Interpretation
 
-Historical P14/single-EOS nontraining results and matched grounded F66/dual-EOS base/SFT results are separate protocols. Only the latter supports the stated paired deltas. Val80 is a development set with8-of-12 class support, one seed and correlated sources; not held-out Test. Accuracy denominators remain80 even for nonterminal results.
-
+Val422 is a development set with eight supported classes out of twelve, one seed and potentially correlated table sources. It is not held-out Test or independent generalization. Supported-class and fixed-twelve-class Macro-F1 are reported separately; legal termination is not business correctness. Historical non-training interfaces are not interchangeable with this matched F66 comparison.

@@ -1,30 +1,6 @@
 {
-  "total_trajectories": 440,
+  "total_trajectories": 1044,
   "files": [
-    {
-      "path": "trajectories/nontraining_val80.redacted.jsonl",
-      "rows": 80,
-      "terminated": 69,
-      "bytes": 361304,
-      "sha256": "6f7b26a85075e8f864a18255a50003055b86c7b8e451d3426f7e6a1073e76548",
-      "literal_argument_redacted_rows": 0
-    },
-    {
-      "path": "trajectories/student_val80_base.redacted.jsonl",
-      "rows": 80,
-      "terminated": 36,
-      "bytes": 393166,
-      "sha256": "2ccce3d903bfd4cdbf84acfd38c27316af0eb0709da71ecc9c92981e9be06c8e",
-      "literal_argument_redacted_rows": 4
-    },
-    {
-      "path": "trajectories/student_val80_sft.redacted.jsonl",
-      "rows": 80,
-      "terminated": 80,
-      "bytes": 245806,
-      "sha256": "bed656013707fa749091f378b9432a320c4482cfd5eca5cb43713e3b0b5700eb",
-      "literal_argument_redacted_rows": 0
-    },
     {
       "path": "trajectories/teacher200.redacted.jsonl",
       "rows": 200,
@@ -32,10 +8,28 @@
       "bytes": 615925,
       "sha256": "fd683095b8e65b48b05e47287f916bfe0e86fe392ac3515154c2b7276ec14697",
       "literal_argument_redacted_rows": 0
+    },
+    {
+      "path": "trajectories/student_val422_base.redacted.jsonl",
+      "rows": 422,
+      "terminated": 191,
+      "bytes": 2099616,
+      "sha256": "3400bd9bcc112ec7b86215e9b48bee283c2789856dbc6f5043de96accd23c23c",
+      "literal_argument_redacted_rows": 33
+    },
+    {
+      "path": "trajectories/student_val422_sft.redacted.jsonl",
+      "rows": 422,
+      "terminated": 420,
+      "bytes": 1304372,
+      "sha256": "e97b08d795d389f505dbc8776c6cc5324fe93bbc47632a0bff0c193826abb3b2",
+      "literal_argument_redacted_rows": 1
     }
   ],
   "raw_source_ids_or_metadata_exported": false,
   "raw_call_prompts_and_reasoning_exported": false,
   "fixed_denominators_preserved": true,
-  "teacher_programs_match_original_sft_targets": true
+  "teacher_programs_match_original_sft_targets": true,
+  "student_public_ids_pair_across_conditions": true,
+  "teacher200_unchanged": true
 }

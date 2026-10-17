@@ -1,5 +1,5 @@
 {
-  "scope": "non-training and first Planner SFT only",
+  "scope": "non-training code, teacher and first Planner SFT with full Val422 results",
   "teacher": {
     "training_sources": 200,
     "reserve_not_trained": 14,
@@ -25,126 +25,146 @@
   },
   "same_interface_evaluation": {
     "evaluation_complete": true,
-    "formal_denominator_per_arm": 80,
-    "formal_trajectories": 160,
-    "smoke_not_counted": 4,
+    "dataset": "financial development Val422",
+    "formal_denominator_per_arm": 422,
+    "formal_trajectories": 844,
+    "missing_per_arm": {
+      "base": 0,
+      "sft": 0
+    },
     "metrics": {
       "base": {
-        "denominator": 80,
+        "denominator": 422,
         "missing": 0,
-        "terminated": 36,
-        "category_correct": 16,
-        "grading_correct": 26,
-        "joint_correct": 16,
-        "top5_first_hit": 33,
-        "top5_final_hit": 33,
-        "top5_any_hit": 33,
-        "category_accuracy": 0.2,
-        "grading_accuracy": 0.325,
-        "joint_accuracy": 0.2,
-        "termination_rate": 0.45,
-        "macro_f1_supported": 0.19642857142857142,
-        "macro_f1_fixed12": 0.13095238095238096
+        "terminated": 191,
+        "category_correct": 79,
+        "grading_correct": 111,
+        "joint_correct": 79,
+        "top5_first_hit": 177,
+        "top5_final_hit": 177,
+        "top5_any_hit": 177,
+        "category_accuracy": 0.1872037914691943,
+        "grading_accuracy": 0.26303317535545023,
+        "joint_accuracy": 0.1872037914691943,
+        "termination_rate": 0.45260663507109006,
+        "macro_f1_supported": 0.1884504159655828,
+        "macro_f1_fixed12": 0.12563361064372186
       },
       "sft": {
-        "denominator": 80,
+        "denominator": 422,
         "missing": 0,
-        "terminated": 80,
-        "category_correct": 36,
-        "grading_correct": 47,
-        "joint_correct": 36,
-        "top5_first_hit": 47,
-        "top5_final_hit": 47,
-        "top5_any_hit": 47,
-        "category_accuracy": 0.45,
-        "grading_accuracy": 0.5875,
-        "joint_accuracy": 0.45,
-        "termination_rate": 1.0,
-        "macro_f1_supported": 0.4132899468417761,
-        "macro_f1_fixed12": 0.27552663122785076
+        "terminated": 420,
+        "category_correct": 171,
+        "grading_correct": 230,
+        "joint_correct": 171,
+        "top5_first_hit": 251,
+        "top5_final_hit": 251,
+        "top5_any_hit": 251,
+        "category_accuracy": 0.4052132701421801,
+        "grading_accuracy": 0.5450236966824644,
+        "joint_accuracy": 0.4052132701421801,
+        "termination_rate": 0.995260663507109,
+        "macro_f1_supported": 0.32218355321677017,
+        "macro_f1_fixed12": 0.21478903547784678
       }
     },
     "paired_counts": {
       "terminated": {
-        "improved": 44,
+        "improved": 229,
         "regressed": 0,
-        "delta": 44
+        "delta": 229
       },
       "category_correct": {
-        "improved": 21,
-        "regressed": 1,
-        "delta": 20
+        "improved": 99,
+        "regressed": 7,
+        "delta": 92
       },
       "grading_correct": {
-        "improved": 22,
-        "regressed": 1,
-        "delta": 21
+        "improved": 125,
+        "regressed": 6,
+        "delta": 119
       },
       "joint_correct": {
-        "improved": 21,
-        "regressed": 1,
-        "delta": 20
+        "improved": 99,
+        "regressed": 7,
+        "delta": 92
       },
       "top5_first_hit": {
-        "improved": 16,
-        "regressed": 2,
-        "delta": 14
+        "improved": 88,
+        "regressed": 14,
+        "delta": 74
       },
       "top5_final_hit": {
-        "improved": 16,
-        "regressed": 2,
-        "delta": 14
+        "improved": 88,
+        "regressed": 14,
+        "delta": 74
       },
       "top5_any_hit": {
-        "improved": 16,
-        "regressed": 2,
-        "delta": 14
+        "improved": 88,
+        "regressed": 14,
+        "delta": 74
       }
     },
     "resources": {
       "base": {
-        "calls": 552,
-        "input_tokens": 5629680,
-        "output_tokens": 59551,
-        "generation_seconds": 2657.8683705604635,
-        "source_execution_seconds": 2667.470152908936,
+        "calls": 2897,
+        "input_tokens": 30563818,
+        "output_tokens": 319905,
+        "generation_seconds": 14310.49921307899,
+        "source_execution_seconds": 14360.428800236434,
         "planner_adapter_calls": 0,
         "backend_errors": 0
       },
       "sft": {
-        "calls": 320,
-        "input_tokens": 2082528,
-        "output_tokens": 17570,
-        "generation_seconds": 873.0271860905923,
-        "source_execution_seconds": 879.5156777696684,
-        "planner_adapter_calls": 80,
+        "calls": 1695,
+        "input_tokens": 11128130,
+        "output_tokens": 93618,
+        "generation_seconds": 4621.461905120872,
+        "source_execution_seconds": 4656.313296827022,
+        "planner_adapter_calls": 428,
         "backend_errors": 0
       }
     },
-    "evaluation_archive_sha256": "3c093681b1e2e406e33799609a4955d1b4d0d7c8a01649d83471e7c67dcda1be",
-    "manifest_sha256": "ff9882ae30893ee623f1528e17510c4bb1bd441733c6fc7083246fdb5efa7711",
-    "model_skill_roles": "original local base; Planner adapter only for sft condition",
+    "separate_stage_wall_seconds": {
+      "reused_val80_wall_seconds": 3571.0814893231727,
+      "supplement342_wall_seconds": 15495.703902690206,
+      "these_are_separate_stages_not_one_wall_measurement": true
+    },
+    "provenance": {
+      "parent_archive_sha256": "3c093681b1e2e406e33799609a4955d1b4d0d7c8a01649d83471e7c67dcda1be",
+      "parent_members_sha256": "7afa9c442110818c1dfe0ce90e1b5beb0c7f4617dd3422a73483563f82cdd58d",
+      "parent_manifest_sha256": "ff9882ae30893ee623f1528e17510c4bb1bd441733c6fc7083246fdb5efa7711",
+      "parent_anchor_sha256": "ce2ec61e1021814dd7da6fd9039e76ca8d5e18bbb41434068013cc5e00f27113",
+      "new_archive_sha256": "d1404a270b5729e5f31ff976e4c594d521919baac641373226c49edbfee4b646",
+      "new_members_sha256": "33b8498969a9854ce75d5174b7d45890ebb47f729e3fe79bf9a0e6f7b4c8e23f",
+      "new_manifest_sha256": "19b52b23d68d72fa309e28132f8c5fa49a364090b65e68348f2b30e18b4df950",
+      "frozen_reuse_proof_sha256": "85ac0441d342ee9bed004d9b0b4e2fd2b0f7ec10fa30c1955ddb9b8595aad5fd",
+      "parent_all_members_independently_rechecked": true,
+      "new_all_members_independently_rechecked": true
+    },
+    "private_result_summary_sha256": "85d0dd6a449d30c639b7cad6c19ecd5a113e5f6387079446f30616a3f291212a",
+    "private_independent_audit_sha256": "3552242063f429e84ecf03d0ba480bcc28be2e1bc977db7819337c044b969cdf",
+    "independent_audit_passed": true,
+    "all_full_controller_replays_exit0": true,
+    "actual_tokenizer_route_proof_bound": true,
+    "model_skill_roles": "Original local base for all model Skills; first A adapter only for SFT Planner.",
+    "base_condition_is_not_direct_answer_base_llm": true,
+    "nonterminated_reasons": {
+      "base": {
+        "program_budget_exhausted": 182,
+        "planner_budget_exhausted": 47,
+        "skill_budget_exhausted": 2
+      },
+      "sft": {
+        "program_budget_exhausted": 2
+      }
+    },
     "limits": [
-      "Single seed, previously used development Val80; not held-out Test or an independent generalization estimate.",
-      "Only 8 of 12 classes represented; correlated sources and rare-class coverage remain limited.",
-      "Current grounded training interface and matched dual-EOS baseline; not a strict comparison to historical interfaces.",
-      "Training loss is not classification accuracy; no automatic outcome-based retraining."
+      "Development Val422, single seed; not held-out Test or independent generalization.",
+      "Only eight of twelve classes represented; sources may share tables.",
+      "All failures retained in each fixed 422 denominator; engineering smoke excluded.",
+      "No additional training or outcome-based tuning as part of this publication."
     ]
-  },
-  "historical_nontraining": {
-    "date": "2026-10-11",
-    "skill_pool": "P14",
-    "denominator": 80,
-    "terminated": 69,
-    "category_correct": 21,
-    "grading_correct": 38,
-    "joint_correct": 21,
-    "top5_first_final_any": 49,
-    "macro_f1_supported": 0.317683,
-    "macro_f1_fixed12": 0.211789,
-    "model_calls": 603,
-    "not_strict_sft_baseline": true,
-    "reason": "Historical P14/single-EOS interface differs from the grounded F66/dual-EOS matched comparison."
   },
   "private_data_not_published": true,
   "public_trajectories_are_lossy_not_training_or_replay_inputs": true
