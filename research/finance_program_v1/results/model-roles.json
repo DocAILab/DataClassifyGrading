@@ -1,0 +1,25 @@
+{
+  "teacher": {
+    "provider": "Bailian",
+    "model_id": "qwen3.8-2.4t-a95b",
+    "selected_unique_sources": 200,
+    "actual_selected_source_http_requests": 806,
+    "all_806_request_body_models_verified": true,
+    "weights_fine_tuned": false
+  },
+  "student": {
+    "model_id": "Qwen/Qwen3.5-9B",
+    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "teacher_generated_supervision": true,
+    "self_generated_supervision": false,
+    "training_sources": 200,
+    "reserve_sources_not_trained": 14,
+    "optimizer_updates": 13,
+    "epoch": 1,
+    "supervised_tokens": "actual Planner Program JSON + EOS only",
+    "data_sha256": "f93ffa2dd9ff8aae06c3872a1e4c0a6c532b7e733c485912ec0740e052cd0afa",
+    "adapter_sha256": "81b18e85c5ce9ceb9585cf069a87d389567a2be47198c35a0d79d73f850a2abc"
+  },
+  "public_trajectory_count": 440,
+  "raw_business_data_or_credentials_published": false
+}
