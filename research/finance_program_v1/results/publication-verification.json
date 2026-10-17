@@ -1,0 +1,46 @@
+{
+  "publication_scope": "historical non-training + Bailian qwen3.8-2.4t-a95b teacher code/trajectories + first Qwen3.5-9B student SFT/evaluation only",
+  "CPU_tests": {
+    "nontraining": {
+      "runner": "pytest",
+      "passed": 157,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 85.24
+    },
+    "teacher": {
+      "runner": "pytest",
+      "passed": 29,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 0.38
+    },
+    "sft": {
+      "runner": "unittest",
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0
+    },
+    "evaluation": {
+      "runner": "unittest",
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0
+    },
+    "privacy_redaction": {
+      "runner": "unittest",
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "red_before_implementation": true
+    }
+  },
+  "total_passed": 240,
+  "no_GPU_or_API_experiments_launched_by_publication": true,
+  "code_behavior_changes_to_original_experiments": false,
+  "privacy_projection_new_and_TDD_verified": true,
+  "full_real_data_replay_not_reproducible_from_redacted_public_views": true,
+  "private_initial_prompt_integration_test_not_exported": true,
+  "fixture_shape_config_paths_sanitized": true,
+  "local_unrelated_changes_preserved": true
+}

@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.safetensors
+*.bin
+*.pt
+*.tar.gz
+.env*
+runs/
+formal/
+trial/
+exports/
+manifest.json
+data/planner200.jsonl
+data/train-labels.json
+

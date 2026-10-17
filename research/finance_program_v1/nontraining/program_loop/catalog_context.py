@@ -1,0 +1,17 @@
+"""Complete P14 contracts and snapshots containing only acquired public state."""
+from copy import deepcopy
+from . import _vendor
+from pool_catalog import purpose
+from .planning_contracts import planning_contract
+
+
+def skill_library(catalog, loader):
+    return [{"name": spec.name, "purpose": purpose(spec.name), "role": spec.role,
+             "required_inputs": list(spec.required_inputs), "optional_inputs": list(spec.optional_inputs),
+             "produces": list(spec.produces), "terminal": spec.terminal,
+             "contract": loader.load(spec.name).body,
+             "planning": planning_contract(spec, catalog)} for spec in catalog.values()]
+
+
+def public_state(record, state):
+    return {"input": {"domain": record.domain, "field_name": record.field_name}, "named_state": deepcopy(state)}
