@@ -1,0 +1,4 @@
+# Preserve exact publication bytes for SHA verification on every platform.
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Frozen upstream includes three existing extra EOF blank lines; retain hashes.
+code/upstream/** whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof

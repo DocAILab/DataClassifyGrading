@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "path": "trajectories/val397.redacted.jsonl",
+      "rows": 397,
+      "bytes": 1277255,
+      "sha256": "0cc031e9bbad74d43e2fd362d89327193a260aeae2b997402d02e57428a9ce1d"
+    }
+  ],
+  "full_replay_supported": false,
+  "training_data": false,
+  "gold_included": false,
+  "arguments_included": false,
+  "source_metadata_included": false,
+  "private_source_id_mapping_included": false,
+  "aliases_resolvable_to_standard_labels": false
+}

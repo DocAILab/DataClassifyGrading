@@ -1,0 +1,39 @@
+{
+  "publication_date": "2026-10-19",
+  "code_tests": {
+    "passed": 55,
+    "failed": 0
+  },
+  "upstream_tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "publication_tests": {
+    "passed": 5,
+    "failed": 0
+  },
+  "total_tests_passed": 68,
+  "network_or_model_calls_for_publication_tests": 0,
+  "credentials_read_for_publication": false,
+  "privacy_scan": {
+    "pass": true,
+    "checked_private_values": 741,
+    "full_real_source_ids_checked": 397,
+    "raw_metadata_values_minimum_length": 8,
+    "all_free_text_omitted_by_schema": true,
+    "credentials_read": false,
+    "findings": [],
+    "substring_matches_in_byte_identical_preexisting_public_upstream": [
+      "code/upstream/runtime/runtime_identity.py",
+      "code/upstream/runtime/vendor/grounded_semantics.py"
+    ]
+  },
+  "historical_full_controller_replay": {
+    "completed_sources": 380,
+    "passed": true,
+    "backend_error_receipts_preserved": 17
+  },
+  "historical_independent_scoring_and_ledger_reconciliation": "pass",
+  "public_semantic_accuracy_independently_reproducible_without_private_gold": false,
+  "git_byte_preservation": ".gitattributes -text"
+}
