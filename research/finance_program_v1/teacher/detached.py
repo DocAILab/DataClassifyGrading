@@ -12,7 +12,12 @@ import tarfile
 import time
 
 ROOT = Path(__file__).resolve().parent
-sys.path[:0] = [str(ROOT/'lib'), str(ROOT/'runtime')]
+# Controlled historical snapshots own runtime/; the public layout shares the
+# exact F66 snapshot already shipped under evaluation/runtime, not a new copy.
+RUNTIME = ROOT/'runtime'
+if not RUNTIME.is_dir():
+    RUNTIME = ROOT.parent/'evaluation/runtime'
+sys.path[:0] = [str(ROOT/'lib'), str(RUNTIME)]
 from campaign_budget import PersistentBudget, RunBudget
 from teacher_api import TeacherBackend, save
 from retry_backend import RetryBackend

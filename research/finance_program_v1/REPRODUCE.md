@@ -44,3 +44,32 @@ The prior partial-validation result tables and standalone partial trajectory fil
 ## Interpretation
 
 Val422 is a development set with eight supported classes out of twelve, one seed and potentially correlated table sources. It is not held-out Test or independent generalization. Supported-class and fixed-twelve-class Macro-F1 are reported separately; legal termination is not business correctness. Historical non-training interfaces are not interchangeable with this matched F66 comparison.
+
+## Publication dependency repair (2026-10-19)
+
+The public nontraining audit now includes `reviews/independent_audit_01.py`, its exact historical source SHA inventory, the public official-model file-hash inventory, and the two omitted source files needed by that inventory. This preserves the historical 121-file/109-core-file signature; it does not fabricate a historical run or ship model weights. `batch_audit.py` imports and a real-controller recorded-I/O replay with synthetic source data are covered by fresh isolated-process tests, including tampered-request rejection.
+
+Additional restored code: `teacher/pilot_audit.py` contains only the recorded retry/I-O replay helpers used by `detached.py`, not the private-gold historical quality aggregator. The public teacher runtime resolves to the already included `evaluation/runtime` when no controlled local `teacher/runtime` is present. `evaluation/legacy/tools/freeze_revision.py` restores the original pure SHA inventory helper, not the private revision manifests or a new deployment authorization. Legacy environment-identity functions still require their controlled snapshot layout; this code snapshot is not a turnkey historical deployment.
+
+### Import paths and CPU checks
+
+From `research/finance_program_v1/nontraining`:
+
+```powershell
+python -B -c "import batch_audit; import program_loop; import pool_metadata; print(pool_metadata.__file__)"
+```
+
+If using only the standalone metadata helper in your own Python program, add the explicit snapshot directory before importing it:
+
+```python
+import sys
+from pathlib import Path
+snapshot = Path("research/finance_program_v1/nontraining").resolve()
+sys.path.insert(0, str(snapshot / "vendor"))
+from pool_metadata import PoolMetadata
+```
+
+Do not copy files between different historical snapshots or rely on another checkout's PYTHONPATH. Run the teacher synthetic suite from `teacher/` with `python -B -m pytest tests -q -p no:cacheprovider`. Run the publication checks from this directory with `python -B -m unittest discover -s publication_tests -v`; dependency checks use `-I` fresh processes so private/local import paths cannot mask missing modules.
+
+`python -B -m reviews.independent_audit_01 --help` and `python -B batch_audit.py --help` are safe CPU-only entrypoint checks. Actual audit commands need complete, authorized, unredacted recorded runs and the matching study/model manifests; redacted public trajectories cannot substitute for them. Cloning/importing/testing does not authorize or start new model downloads, API calls, training, or GPU work.
+

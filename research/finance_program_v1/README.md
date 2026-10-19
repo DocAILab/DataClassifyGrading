@@ -58,3 +58,12 @@
 这是开发验证集、单 seed，仅 8/12 类有支持，且来源可能共享表；不是独立 Test 或跨领域泛化结论。教育与钢铁数据集不在本轮结果内。该更新只替换结果展示和学生公开轨迹，不修改实验代码、权重或训练设置。
 
 真实数据集、gold、权重、凭证和实验服务器地址均不上传。clone/import 不会启动任何训练、GPU 或 API 作业。复现说明见 [REPRODUCE.md](REPRODUCE.md)。
+
+## 发布依赖修复（2026-10-19）
+
+补回历史批次审计模块与源代码/官方模型哈希清单、教师录制调用回放助手，以及评估旧后端的SHA清单工具。未改变模型、实验协议、训练参数、结果数字或公开轨迹。
+
+`pool_metadata.py` 位于 `nontraining/vendor/` 和 `evaluation/runtime/vendor/`，不是仓库根目录模块。通过 `program_loop` 导入时会初始化对应的vendor路径；若只使用该工具，请按 [REPRODUCE.md](REPRODUCE.md) 设置明确的导入路径。新增隔离进程回归覆盖批次入口、完整合成回放和请求篡改拒绝。
+
+**代码依赖补齐不等于发布了私有数据/历史执行目录。** 历史 `teacher/collect.py`、`teacher/detached.py`、评估watcher/legacy环境身份仍要求经授权的原始配置、manifest、ledger或数据；不得直接运行它们来启动付费请求/GPU。公开CPU测试不需要这些私有资产。
+
