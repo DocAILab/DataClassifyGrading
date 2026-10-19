@@ -1,0 +1,35 @@
+{
+  "total_trajectories": 1044,
+  "files": [
+    {
+      "path": "trajectories/teacher200.redacted.jsonl",
+      "rows": 200,
+      "terminated": 200,
+      "bytes": 615925,
+      "sha256": "fd683095b8e65b48b05e47287f916bfe0e86fe392ac3515154c2b7276ec14697",
+      "literal_argument_redacted_rows": 0
+    },
+    {
+      "path": "trajectories/student_val422_base.redacted.jsonl",
+      "rows": 422,
+      "terminated": 191,
+      "bytes": 2099616,
+      "sha256": "3400bd9bcc112ec7b86215e9b48bee283c2789856dbc6f5043de96accd23c23c",
+      "literal_argument_redacted_rows": 33
+    },
+    {
+      "path": "trajectories/student_val422_sft.redacted.jsonl",
+      "rows": 422,
+      "terminated": 420,
+      "bytes": 1304372,
+      "sha256": "e97b08d795d389f505dbc8776c6cc5324fe93bbc47632a0bff0c193826abb3b2",
+      "literal_argument_redacted_rows": 1
+    }
+  ],
+  "raw_source_ids_or_metadata_exported": false,
+  "raw_call_prompts_and_reasoning_exported": false,
+  "fixed_denominators_preserved": true,
+  "teacher_programs_match_original_sft_targets": true,
+  "student_public_ids_pair_across_conditions": true,
+  "teacher200_unchanged": true
+}

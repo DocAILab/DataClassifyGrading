@@ -1,0 +1,565 @@
+{
+  "tensors": 80,
+  "rows": [
+    {
+      "name": "base_model.model.model.language_model.layers.0.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.0.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.1.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.1.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.10.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.10.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.11.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.11.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.11.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.11.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.12.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.12.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.13.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.13.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.14.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.14.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.15.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.15.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.15.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.15.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.16.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.16.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.17.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.17.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.18.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.18.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.19.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.19.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.19.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.19.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.2.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.2.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.20.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.20.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.21.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.21.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.22.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.22.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.23.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.23.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.23.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.23.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.24.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.24.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.25.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.25.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.26.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.26.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.27.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.27.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.27.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.27.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.28.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.28.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.29.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.29.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.3.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.3.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.3.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.3.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.30.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.30.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.31.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.31.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.31.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.31.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.4.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.4.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.5.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.5.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.6.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.6.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.7.self_attn.q_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.7.self_attn.q_proj.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.7.self_attn.v_proj.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.7.self_attn.v_proj.lora_B.weight",
+      "shape": [
+        1024,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.8.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.8.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.9.linear_attn.in_proj_qkv.lora_A.weight",
+      "shape": [
+        8,
+        4096
+      ]
+    },
+    {
+      "name": "base_model.model.model.language_model.layers.9.linear_attn.in_proj_qkv.lora_B.weight",
+      "shape": [
+        8192,
+        8
+      ]
+    }
+  ]
+}

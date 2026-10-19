@@ -1,0 +1,171 @@
+{
+  "scope": "non-training code, teacher and first Planner SFT with full Val422 results",
+  "teacher": {
+    "training_sources": 200,
+    "reserve_not_trained": 14,
+    "basic_review_not_expert_truth": true
+  },
+  "sft_training": {
+    "training_complete": true,
+    "download_all_member_sha_verified": true,
+    "archive_sha256": "69ccfc99b77ad3c2356b22ffc02b7bf73c3c8acf38dc599e8436f7b026b93cca",
+    "members": 67,
+    "global_step": 13,
+    "epoch": 1.0,
+    "sources": 200,
+    "adapter_sha256": "81b18e85c5ce9ceb9585cf069a87d389567a2be47198c35a0d79d73f850a2abc",
+    "wall_seconds": 9975.783376216888,
+    "training_metrics": {
+      "train_runtime": 9954.2184,
+      "train_samples_per_second": 0.02,
+      "train_steps_per_second": 0.001,
+      "train_loss": 0.14791815470044428,
+      "epoch": 1.0
+    }
+  },
+  "same_interface_evaluation": {
+    "evaluation_complete": true,
+    "dataset": "financial development Val422",
+    "formal_denominator_per_arm": 422,
+    "formal_trajectories": 844,
+    "missing_per_arm": {
+      "base": 0,
+      "sft": 0
+    },
+    "metrics": {
+      "base": {
+        "denominator": 422,
+        "missing": 0,
+        "terminated": 191,
+        "category_correct": 79,
+        "grading_correct": 111,
+        "joint_correct": 79,
+        "top5_first_hit": 177,
+        "top5_final_hit": 177,
+        "top5_any_hit": 177,
+        "category_accuracy": 0.1872037914691943,
+        "grading_accuracy": 0.26303317535545023,
+        "joint_accuracy": 0.1872037914691943,
+        "termination_rate": 0.45260663507109006,
+        "macro_f1_supported": 0.1884504159655828,
+        "macro_f1_fixed12": 0.12563361064372186
+      },
+      "sft": {
+        "denominator": 422,
+        "missing": 0,
+        "terminated": 420,
+        "category_correct": 171,
+        "grading_correct": 230,
+        "joint_correct": 171,
+        "top5_first_hit": 251,
+        "top5_final_hit": 251,
+        "top5_any_hit": 251,
+        "category_accuracy": 0.4052132701421801,
+        "grading_accuracy": 0.5450236966824644,
+        "joint_accuracy": 0.4052132701421801,
+        "termination_rate": 0.995260663507109,
+        "macro_f1_supported": 0.32218355321677017,
+        "macro_f1_fixed12": 0.21478903547784678
+      }
+    },
+    "paired_counts": {
+      "terminated": {
+        "improved": 229,
+        "regressed": 0,
+        "delta": 229
+      },
+      "category_correct": {
+        "improved": 99,
+        "regressed": 7,
+        "delta": 92
+      },
+      "grading_correct": {
+        "improved": 125,
+        "regressed": 6,
+        "delta": 119
+      },
+      "joint_correct": {
+        "improved": 99,
+        "regressed": 7,
+        "delta": 92
+      },
+      "top5_first_hit": {
+        "improved": 88,
+        "regressed": 14,
+        "delta": 74
+      },
+      "top5_final_hit": {
+        "improved": 88,
+        "regressed": 14,
+        "delta": 74
+      },
+      "top5_any_hit": {
+        "improved": 88,
+        "regressed": 14,
+        "delta": 74
+      }
+    },
+    "resources": {
+      "base": {
+        "calls": 2897,
+        "input_tokens": 30563818,
+        "output_tokens": 319905,
+        "generation_seconds": 14310.49921307899,
+        "source_execution_seconds": 14360.428800236434,
+        "planner_adapter_calls": 0,
+        "backend_errors": 0
+      },
+      "sft": {
+        "calls": 1695,
+        "input_tokens": 11128130,
+        "output_tokens": 93618,
+        "generation_seconds": 4621.461905120872,
+        "source_execution_seconds": 4656.313296827022,
+        "planner_adapter_calls": 428,
+        "backend_errors": 0
+      }
+    },
+    "separate_stage_wall_seconds": {
+      "reused_val80_wall_seconds": 3571.0814893231727,
+      "supplement342_wall_seconds": 15495.703902690206,
+      "these_are_separate_stages_not_one_wall_measurement": true
+    },
+    "provenance": {
+      "parent_archive_sha256": "3c093681b1e2e406e33799609a4955d1b4d0d7c8a01649d83471e7c67dcda1be",
+      "parent_members_sha256": "7afa9c442110818c1dfe0ce90e1b5beb0c7f4617dd3422a73483563f82cdd58d",
+      "parent_manifest_sha256": "ff9882ae30893ee623f1528e17510c4bb1bd441733c6fc7083246fdb5efa7711",
+      "parent_anchor_sha256": "ce2ec61e1021814dd7da6fd9039e76ca8d5e18bbb41434068013cc5e00f27113",
+      "new_archive_sha256": "d1404a270b5729e5f31ff976e4c594d521919baac641373226c49edbfee4b646",
+      "new_members_sha256": "33b8498969a9854ce75d5174b7d45890ebb47f729e3fe79bf9a0e6f7b4c8e23f",
+      "new_manifest_sha256": "19b52b23d68d72fa309e28132f8c5fa49a364090b65e68348f2b30e18b4df950",
+      "frozen_reuse_proof_sha256": "85ac0441d342ee9bed004d9b0b4e2fd2b0f7ec10fa30c1955ddb9b8595aad5fd",
+      "parent_all_members_independently_rechecked": true,
+      "new_all_members_independently_rechecked": true
+    },
+    "private_result_summary_sha256": "85d0dd6a449d30c639b7cad6c19ecd5a113e5f6387079446f30616a3f291212a",
+    "private_independent_audit_sha256": "3552242063f429e84ecf03d0ba480bcc28be2e1bc977db7819337c044b969cdf",
+    "independent_audit_passed": true,
+    "all_full_controller_replays_exit0": true,
+    "actual_tokenizer_route_proof_bound": true,
+    "model_skill_roles": "Original local base for all model Skills; first A adapter only for SFT Planner.",
+    "base_condition_is_not_direct_answer_base_llm": true,
+    "nonterminated_reasons": {
+      "base": {
+        "program_budget_exhausted": 182,
+        "planner_budget_exhausted": 47,
+        "skill_budget_exhausted": 2
+      },
+      "sft": {
+        "program_budget_exhausted": 2
+      }
+    },
+    "limits": [
+      "Development Val422, single seed; not held-out Test or independent generalization.",
+      "Only eight of twelve classes represented; sources may share tables.",
+      "All failures retained in each fixed 422 denominator; engineering smoke excluded.",
+      "No additional training or outcome-based tuning as part of this publication."
+    ]
+  },
+  "private_data_not_published": true,
+  "public_trajectories_are_lossy_not_training_or_replay_inputs": true
+}

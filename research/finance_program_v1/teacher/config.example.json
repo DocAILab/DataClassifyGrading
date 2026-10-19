@@ -1,0 +1,10 @@
+{
+  "model": "qwen3.8-2.4t-a95b",
+  "endpoint": "https://YOUR_AUTHORIZED_ENDPOINT/compatible-mode/v1",
+  "thinking_budget": 2048,
+  "max_tokens": 8192,
+  "timeout_seconds": 180,
+  "request_cap": 320,
+  "total_token_cap": 2500000,
+  "notice": "Example only. Credentials are supplied in memory, never persisted. Do not run API calls from tests or reuse a historical safety ledger as a new allowance."
+}

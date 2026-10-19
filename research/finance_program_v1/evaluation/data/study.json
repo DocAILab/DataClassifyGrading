@@ -1,0 +1,36 @@
+{
+  "synthetic_fixture": true,
+  "registry": {
+    "finance:synthetic/example": {
+      "grading_level": "L1",
+      "description": "Synthetic CPU-only test category; not an experimental label"
+    }
+  },
+  "budget": {
+    "max_programs": 3,
+    "max_program_steps": 10,
+    "max_skill_steps": 12,
+    "max_planner_attempts": 4,
+    "max_identical_calls": 1
+  },
+  "rows": [
+    {
+      "id": "synthetic-field-001",
+      "domain": "finance",
+      "metadata": {
+        "field_name": "EXAMPLE_FIELD",
+        "field_description": "Synthetic example field, not business data"
+      }
+    }
+  ],
+  "cohorts": {
+    "train": [
+      "synthetic-field-001"
+    ],
+    "smoke": [],
+    "val80": []
+  },
+  "source_split": "synthetic CPU test fixture only",
+  "labels_in_input": false,
+  "skill_pool": "F66"
+}
