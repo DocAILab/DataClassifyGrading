@@ -1,0 +1,50 @@
+{
+  "planner": {
+    "model": "Qwen/Qwen3.5-9B",
+    "provider": "SiliconFlow",
+    "adapter": null
+  },
+  "model_skills": {
+    "model": "Qwen/Qwen3.5-9B",
+    "provider": "SiliconFlow",
+    "adapter": null
+  },
+  "hosted_revision": "not_exposed",
+  "hosted_precision": "not_verified",
+  "provider_seed": "not_requested; unsupported",
+  "decoding": {
+    "temperature": 0,
+    "enable_thinking": false,
+    "max_output_tokens": 512,
+    "context_cap": 32768
+  },
+  "budget": {
+    "max_programs": 3,
+    "max_program_steps": 10,
+    "max_skill_steps": 12,
+    "max_planner_attempts": 4,
+    "max_identical_calls": 1
+  },
+  "scheduler": {
+    "workers": 2,
+    "tokens_per_minute": 72000,
+    "requests_per_minute": 900,
+    "token_margin": 128,
+    "window_seconds": 60.0,
+    "window_guard_seconds": 0.1
+  },
+  "initial_fields": [
+    "domain",
+    "field_name"
+  ],
+  "tool_metadata_allowlist": [
+    "field_name",
+    "field_description"
+  ],
+  "candidate_unit": "standard_entry",
+  "stop_limits": {
+    "estimated_total_cny": 70,
+    "original_wall_hours": 14
+  },
+  "reference_tokenizer_revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a"
+}

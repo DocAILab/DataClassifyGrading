@@ -1,0 +1,96 @@
+{
+  "experiment": "vehicle NONT-D / ProgSkill",
+  "data_repository": "DocAILab/DCG",
+  "data_revision": "84a9a462dcb828332f980ef121f40e1281ce1794",
+  "scope": "development Val397; all failures retained; not blind Test395",
+  "metrics": {
+    "denominator": 397,
+    "missing_or_failed_traces": 17,
+    "terminated": 115,
+    "category_correct": 33,
+    "grading_correct": 53,
+    "joint_correct": 26,
+    "top5_first_hit": 208,
+    "top5_final_hit": 208,
+    "top5_any_hit": 214,
+    "top5_compatible_entry_any_hit": 104,
+    "category_accuracy": 0.08312342569269521,
+    "grading_accuracy": 0.13350125944584382,
+    "joint_accuracy": 0.0654911838790932,
+    "termination_rate": 0.28967254408060455,
+    "macro_f1_supported": 0.21236454577082495,
+    "macro_f1_all_leaf_paths": 0.06757053729071703,
+    "supported_leaf_paths": 14,
+    "registry_leaf_paths": 44,
+    "complete": true,
+    "run_manifest_sha256": "a2d51f64c9403b67078e7d3e0e5bfc7120d616ff2a43ae1ef9680cce238d2cf3"
+  },
+  "receipt_statuses": {
+    "completed": 380,
+    "backend_error": 17
+  },
+  "stop_counts": {
+    "completed:validated_terminal": 115,
+    "backend_error:planner_budget_exhausted": 16,
+    "completed:program_budget_exhausted": 219,
+    "completed:planner_budget_exhausted": 46,
+    "backend_error:program_budget_exhausted": 1
+  },
+  "resources": {
+    "model_entrypoints_recorded": 2582,
+    "known_usage_input_tokens": 29999427,
+    "known_usage_output_tokens": 271045,
+    "continuation_http_attempts": 2536,
+    "continuation_http_states": {
+      "response_received": 2524,
+      "transport_or_json_error": 10,
+      "http_503": 2
+    },
+    "continuation_known_usage_cny": "47.5121280",
+    "continuation_uncertain_reserve_cny": "0.654336",
+    "carried_pilot_usage_and_uncertainty_cny": "0.9031365",
+    "total_accounted_cny": "49.0696005",
+    "invoice": false,
+    "original_wall_start": "2026-10-19T00:50:48.906294+08:00",
+    "generation_completed": "2026-10-19T10:18:33.008919+08:00",
+    "wall_elapsed_seconds": 34064.10262489319
+  },
+  "provenance": {
+    "pilot_sources_preserved": 9,
+    "remaining_sources_generated": 388,
+    "resumed_after_preserved_sources": 332,
+    "resumed_sources": 65,
+    "old_332_receipts_unchanged": true,
+    "old_2095_requests_unchanged": true,
+    "infrastructure_recovery": "v7 to v8: cooldown reconstruction only; no reroll, budget or clock reset"
+  },
+  "private_evidence_sha256": {
+    "plan.json": "384b40af8a6dc1831d336fc5176e73c85ca09783433357b2cdfbd1c2106351a4",
+    "run/run.json": "a2d51f64c9403b67078e7d3e0e5bfc7120d616ff2a43ae1ef9680cce238d2cf3",
+    "run/night-status.json": "006ee674b7d1247d64ac336729619e1b94f3025cbc1159968d992d834a199389",
+    "run/backend/api-budget.json": "51c697d2dab97083cc552e0339bb7e01ab1b60df657d824a1d12e4cc3dac6a1b",
+    "score.json": "b58489e9f9134f83a7201da0c9b05eb59ceb0fc9620f2669aef4f9ccc63cedcc",
+    "replay.json": "572e0d7731bc4a397006dbd6ae63249531d2dba955cd4206671f9f52ff0496e9",
+    "supervisor.json": "2ea1311f344cabf628f113a465f1b093350af4325dcd5623c8d09606ff4c1c6f"
+  },
+  "validation": {
+    "receipt_file_integrity": "397 verified",
+    "independent_primary_scoring": "pass",
+    "controller_replay": {
+      "completed_sources_replayed": 380,
+      "receipt_count": 397,
+      "expected_count": 397,
+      "model_calls": 0,
+      "pass": true
+    },
+    "ledger_reconciliation": "2536 attempts verified",
+    "worker_exit_code": 0,
+    "worker_and_supervisor_exited": true
+  },
+  "limitations": [
+    "Hosted weight precision/revision not exposed; no local FP16 equivalence claim",
+    "9 pilots used earlier service scheduling profiles; all results retained",
+    "59 standard entries / 44 leaf paths: Top5 entries are not necessarily five distinct categories",
+    "A/B/C cross-method alignment pending; no SFT/RL result in this release"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "scope": "397 final; descriptive diagnosis, no new model requests",
+  "raw_source_gold_and_metadata_mapping_verified": true,
+  "source_counts": {
+    "metadata_acquired": 379,
+    "terminated": 115,
+    "top5_any_hit": 214,
+    "no_match": 176,
+    "duplicate_blocked": 148,
+    "repeat_no_match_blocked": 142,
+    "budget_stop_including_backend": 282,
+    "no_match_despite_gold_candidate": 51,
+    "category_correct": 33,
+    "top5_compatible_entry_any_hit": 104,
+    "description_interpreted": 94,
+    "unavailable_type_attempted": 98,
+    "joint_correct": 26,
+    "output_length": 10,
+    "truncation_flag": 10
+  },
+  "events": {
+    "comparison_success": 100,
+    "finish_stop": 2553,
+    "comparison_error": 259,
+    "no_match": 232,
+    "comparison_blocked": 216,
+    "repeat_no_match_blocked": 210,
+    "finish_None": 17,
+    "no_match_despite_gold_candidate": 60,
+    "finish_length": 12
+  },
+  "no_match_stop_reasons": {
+    "planner_budget_exhausted": 9,
+    "validated_terminal": 18,
+    "program_budget_exhausted": 149
+  },
+  "intersections": {
+    "compatible_candidate_but_no_legal_terminal": 46,
+    "compatible_candidate_and_legal_terminal": 58,
+    "compatible_candidate_but_not_joint_correct": 78,
+    "joint_correct_without_compatible_top5": 0,
+    "no_match_then_legal_terminal": 18,
+    "no_match_then_joint_correct": 2,
+    "gold_compatible_no_match_without_legal_terminal": 44
+  },
+  "retrieval_groups": 412,
+  "distinct_leafs_in_five_entry_candidates": {
+    "5": 221,
+    "3": 84,
+    "4": 96,
+    "2": 11
+  },
+  "distinct_leaf_grade_pairs_in_five_entry_candidates": {
+    "5": 248,
+    "4": 103,
+    "2": 11,
+    "3": 50
+  },
+  "mean_distinct_leafs_per_five": 4.279126213592233,
+  "mean_model_entrypoints_per_source": 6.503778337531486,
+  "input_ambiguity": {
+    "exact_metadata_groups": 396,
+    "conflicting_joint_groups": 1,
+    "sources_in_conflicting_joint_groups": 2,
+    "max_consistent_joint_labels_by_exact_metadata": 396
+  },
+  "service_error_best_case_joint_bound": 0.10831234256926953,
+  "joint_excluding_17_backend_errors": 0.06842105263157895,
+  "legal_conditioned_joint": 0.22608695652173913,
+  "finance_published_legal_conditioned_joint": 0.41361256544502617
+}

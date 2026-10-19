@@ -1,0 +1,380 @@
+{
+  "COMPARE_STANDARD_CANDIDATES": {
+    "required": "standard_candidates, semantic_evidence",
+    "output": "输出候选类别的排序、关键支持/反对依据及仍需区分的歧义点。",
+    "optional": "无",
+    "purpose": "Compares competing standard candidates based on accumulated semantic evidence."
+  },
+  "GET_FIELD_DESCRIPTION": {
+    "required": "table_name, field_name",
+    "output": "输出获取到的字段描述及自然语言摘要；若不存在，应明确说明未获得该信息。",
+    "optional": "无",
+    "purpose": "Retrieves the description of the target field from the available database metadata."
+  },
+  "GET_TABLE_DESCRIPTION": {
+    "required": "table_name",
+    "output": "输出表描述及自然语言摘要；不存在时明确说明。",
+    "optional": "无",
+    "purpose": "Retrieves and summarizes the description of the current table."
+  },
+  "GET_DATABASE_DESCRIPTION": {
+    "required": "database_name",
+    "output": "输出数据库描述及自然语言摘要；不存在时明确说明。",
+    "optional": "无",
+    "purpose": "Retrieves and summarizes the description of the current database."
+  },
+  "INTERPRET_FIELD_DESCRIPTION": {
+    "required": "field_description",
+    "output": "输出字段描述中最关键的数据对象、属性或业务语义，以及其与 field_name 的一致或冲突之处。",
+    "optional": "field_name, domain",
+    "purpose": "Extracts and interprets explicit semantic information from the field description."
+  },
+  "SUMMARIZE_STANDARD_EVIDENCE": {
+    "required": "aligned_standard_candidates",
+    "output": "输出自然语言总结：当前标准证据主要支持哪些类别、哪些类别已被排除、还存在哪些冲突。",
+    "optional": "无",
+    "purpose": "Summarizes multiple standard-search and alignment results into a unified standard-evidence state."
+  },
+  "GET_TABLE_FIELDS": {
+    "required": "table_name",
+    "output": "输出同表字段名称列表的自然语言摘要，突出可能与目标字段相关的字段；不臆造不存在字段。",
+    "optional": "无",
+    "purpose": "Retrieves other fields from the current table to provide local schema context."
+  },
+  "FUSE_CONTEXT_EVIDENCE": {
+    "required": "context_field_evidence",
+    "output": "输出自然语言总结上下文字段共同指向的业务场景及其对目标字段的支持。",
+    "optional": "无",
+    "purpose": "Integrates semantic evidence from selected contextual fields."
+  },
+  "ALIGN_DESCRIPTION_TO_STANDARD": {
+    "required": "field_description_semantics, standard_candidates",
+    "output": "输出字段描述与各标准候选的语义匹配理由，显式描述通常可作为较强证据。",
+    "optional": "无",
+    "purpose": "Aligns field-description semantics with standard category descriptions."
+  },
+  "GET_COMPLETE_TABLE_CONTEXT": {
+    "required": "table_name",
+    "output": "输出当前表完整可用元数据的自然语言摘要，并明确哪些属性缺失。",
+    "optional": "无",
+    "purpose": "Retrieves the complete available metadata context of the current table."
+  },
+  "RESEARCH_STANDARD": {
+    "required": "refined_semantic_query",
+    "output": "输出新一轮标准候选、与上一轮相比新增或变化的证据，以及是否更有区分度。",
+    "optional": "无",
+    "purpose": "Performs a subsequent standard search after semantic refinement."
+  },
+  "SEARCH_STANDARD_BY_TABLE": {
+    "required": "table_semantics",
+    "output": "输出表级语义相关的标准候选及其描述摘要。",
+    "optional": "无",
+    "purpose": "Retrieves candidate standard categories using table-level semantics."
+  },
+  "EXPAND_TABLE_ABBREVIATION": {
+    "required": "table_name",
+    "output": "输出表名缩写的候选展开，以及它可能表示的数据主题或业务对象。",
+    "optional": "domain, table_description",
+    "purpose": "Expands an abbreviated table name into plausible business meanings."
+  },
+  "DISAMBIGUATE_FIELD_SEMANTICS": {
+    "required": "candidate_field_semantics, available_semantic_context",
+    "output": "输出候选解释之间的比较、保留/排除依据，以及当前更可信的字段语义。",
+    "optional": "无",
+    "purpose": "Disambiguates competing interpretations of the target field using available semantic context."
+  },
+  "IDENTIFY_MISSING_EVIDENCE": {
+    "required": "current_evidence, candidate_categories",
+    "output": "输出自然语言说明缺少哪类证据（字段描述、表字段、上下文字段语义、表描述、数据库描述、标准描述等）及其必要性。",
+    "optional": "无",
+    "purpose": "Identifies the most important missing evidence needed to discriminate among candidate categories."
+  },
+  "EXPAND_SELECTED_CONTEXT": {
+    "required": "selected_context_fields",
+    "output": "输出自然语言上下文摘要，保持字段名与其可用描述/类型/值之间的对应关系。",
+    "optional": "无",
+    "purpose": "Organizes selected contextual metadata into a usable state for subsequent semantic interpretation."
+  },
+  "GET_CONTEXT_FIELD_VALUES": {
+    "required": "table_name, context_fields",
+    "output": "输出样例值模式的自然语言摘要；避免输出不必要的敏感原始值，重点描述模式和语义。",
+    "optional": "无",
+    "purpose": "Retrieves available values of contextual fields and summarizes their semantic patterns."
+  },
+  "ACQUIRE_MISSING_METADATA": {
+    "required": "missing_metadata_type, current_metadata",
+    "output": "输出尝试获取的元数据类型、实际获得的信息及其自然语言摘要；若无法获取，明确失败原因。",
+    "optional": "无",
+    "purpose": "Acquires a specific type of missing metadata requested by the current reasoning state."
+  },
+  "INTERPRET_DATABASE_DESCRIPTION": {
+    "required": "database_description",
+    "output": "输出数据库描述的自然语言摘要，并说明其对字段判断的约束。",
+    "optional": "database_name, domain",
+    "purpose": "Interprets the semantic scope expressed by the database description."
+  },
+  "VERIFY_CATEGORY_WITH_STANDARD": {
+    "required": "candidate_category, standard_evidence, metadata_evidence",
+    "output": "输出自然语言验证结论，明确标准描述与元数据语义是否一致。",
+    "optional": "无",
+    "purpose": "Verifies whether a candidate category is jointly supported by metadata and standard evidence."
+  },
+  "SEARCH_STANDARD_BY_FIELD": {
+    "required": "field_semantics",
+    "output": "输出字段语义最相关的标准候选及匹配依据。",
+    "optional": "无",
+    "purpose": "Retrieves standard categories relevant to the target-field semantics."
+  },
+  "GET_CONTEXT_FIELD_TYPES": {
+    "required": "table_name, context_fields",
+    "output": "输出上下文字段类型的自然语言摘要，说明类型能提供的有限辅助信息。",
+    "optional": "无",
+    "purpose": "Retrieves data types of selected contextual fields as supporting evidence."
+  },
+  "CHECK_METADATA_AVAILABILITY": {
+    "required": "current_record",
+    "output": "输出自然语言可用性摘要，列出当前可直接使用和缺失的元数据类型，并指出可行的下一步信息获取方向。",
+    "optional": "无",
+    "purpose": "Identifies which metadata attributes are currently available or missing."
+  },
+  "RESOLVE_METADATA_CONFLICT": {
+    "required": "conflicting_metadata_evidence",
+    "output": "输出自然语言冲突消解结论和依据。",
+    "optional": "无",
+    "purpose": "Resolves conflicting semantic evidence across metadata granularities."
+  },
+  "VERIFY_CLASSIFICATION_GRADING_CONSISTENCY": {
+    "required": "category_candidate, grading_level_candidate, current_evidence",
+    "output": "输出自然语言一致性检查结论及可能的矛盾点。",
+    "optional": "无",
+    "purpose": "Checks semantic consistency between the predicted category and Grading-level."
+  },
+  "RESOLVE_FIELD_CONTEXT_CONFLICT": {
+    "required": "field_evidence, context_evidence",
+    "output": "输出冲突点、比较依据、保留的解释以及仍需补充的信息。",
+    "optional": "无",
+    "purpose": "Resolves conflicts between target-field evidence and contextual-field evidence."
+  },
+  "FINALIZE_CLASSIFICATION": {
+    "required": "final_evidence_state",
+    "output": "最终输出结构化结果：category 与 grading_level；可附一段简短 final_reasoning，但不再继续获取新证据。",
+    "optional": "无",
+    "purpose": "Terminates the reasoning program and produces the final classification and grading prediction."
+  },
+  "GET_CONTEXT_FIELD_DESCRIPTIONS": {
+    "required": "table_name, context_fields",
+    "output": "输出所选上下文字段的描述及自然语言摘要；缺失描述需明确标记。",
+    "optional": "无",
+    "purpose": "Retrieves descriptions for selected contextual fields."
+  },
+  "SELECT_CONTEXT_FIELDS": {
+    "required": "target_field, table_fields",
+    "output": "输出自然语言说明选择了哪些上下文字段、为什么它们更有信息价值，以及哪些字段被忽略。",
+    "optional": "current_semantic_state",
+    "purpose": "Selects the most informative contextual fields for the target field."
+  },
+  "FUSE_FIELD_EVIDENCE": {
+    "required": "available_field_evidence",
+    "output": "输出字段级统一自然语言证据状态，区分直接证据、辅助证据和歧义。",
+    "optional": "无",
+    "purpose": "Integrates all available evidence directly associated with the target field."
+  },
+  "INTERPRET_TABLE_DESCRIPTION": {
+    "required": "table_description",
+    "output": "输出表描述的自然语言摘要，并说明其对目标字段语义理解的辅助作用。",
+    "optional": "table_name, domain",
+    "purpose": "Extracts and summarizes the semantic content of a table description."
+  },
+  "FUSE_TABLE_EVIDENCE": {
+    "required": "available_table_evidence",
+    "output": "输出统一表级自然语言证据状态。",
+    "optional": "无",
+    "purpose": "Integrates all available table-level semantic evidence."
+  },
+  "INFER_GRADING_LEVEL": {
+    "required": "aligned_category, aligned_standard_entry",
+    "output": "输出自然语言说明最终 category 对齐到哪个标准条目，以及该条目明确给出的 grading_level。",
+    "optional": "无",
+    "purpose": "Determines the Grading-level from the grading_level associated with the aligned standard category."
+  },
+  "INTERPRET_FIELD_NAME": {
+    "required": "field_name",
+    "output": "输出对字段名整体语义的自然语言解释，包括主要候选含义与简要依据。",
+    "optional": "domain",
+    "purpose": "Interprets the overall semantic meaning of a field name."
+  },
+  "DECIDE_NEXT_EVIDENCE_SOURCE": {
+    "required": "current_evidence_state, available_metadata",
+    "output": "输出自然语言下一步建议，例如解释字段、获取同表字段、解释表/库、查询/重查标准或停止；不得调用超出可用信息范围的数据源。",
+    "optional": "无",
+    "purpose": "Determines which available evidence source should be explored next."
+  },
+  "ALIGN_CONTEXT_TO_STANDARD": {
+    "required": "context_semantics, standard_candidates",
+    "output": "输出上下文语义对候选标准类别的支持、反对或弱相关关系。",
+    "optional": "无",
+    "purpose": "Aligns contextual semantic evidence with candidate standard categories."
+  },
+  "WEIGH_EVIDENCE": {
+    "required": "evidence_set",
+    "output": "输出自然语言说明哪些证据更强、哪些只是辅助，以及原因；不输出未经依据的数值权重。",
+    "optional": "无",
+    "purpose": "Assesses the relative reliability and importance of available evidence."
+  },
+  "FUSE_METADATA_EVIDENCE": {
+    "required": "available_metadata_evidence",
+    "output": "输出统一 metadata evidence state，并指出不同粒度证据的一致与冲突。",
+    "optional": "无",
+    "purpose": "Integrates multi-granularity metadata evidence into a unified semantic state."
+  },
+  "SYNTHESIZE_METADATA_SEMANTICS": {
+    "required": "field_semantics",
+    "output": "输出一段紧凑但信息充分的自然语言 semantic state，区分强证据、辅助证据和仍存在的歧义。",
+    "optional": "domain_semantics, table_semantics, database_semantics, context_field_semantics, field_description_semantics, field_type_semantics, value_semantics",
+    "purpose": "Synthesizes all available metadata interpretations into a unified natural-language semantic state."
+  },
+  "EXPAND_DATABASE_ABBREVIATION": {
+    "required": "database_name",
+    "output": "输出数据库/系统缩写的自然语言展开及可能的业务范围。",
+    "optional": "domain, database_description",
+    "purpose": "Expands an abbreviated database or system name into its likely semantic meaning."
+  },
+  "SEARCH_STANDARD_BY_CONTEXT": {
+    "required": "context_semantics",
+    "output": "输出上下文语义最相关的标准候选，并说明其对目标字段的辅助意义。",
+    "optional": "无",
+    "purpose": "Retrieves standard categories using contextual-field semantics."
+  },
+  "INTERPRET_CONTEXT_FIELDS": {
+    "required": "context_fields",
+    "output": "输出各上下文字段的简要语义及它们共同指向的业务场景；不直接替目标字段做最终分类。",
+    "optional": "domain, table_name",
+    "purpose": "Interprets neighboring fields and summarizes the business context jointly implied by them."
+  },
+  "FUSE_DATABASE_EVIDENCE": {
+    "required": "available_database_evidence",
+    "output": "输出数据库级自然语言背景及其对目标字段的高层约束。",
+    "optional": "无",
+    "purpose": "Integrates database-level semantic evidence."
+  },
+  "ALIGN_VALUE_TO_STANDARD": {
+    "required": "value_semantics, standard_candidates",
+    "output": "输出字段值模式对标准候选的支持程度；强调值证据通常是辅助证据。",
+    "optional": "无",
+    "purpose": "Aligns value-derived semantics with candidate standard categories."
+  },
+  "COMPARE_CATEGORY_HYPOTHESES": {
+    "required": "candidate_categories, evidence",
+    "output": "输出候选类别的自然语言排序与关键区分依据。",
+    "optional": "无",
+    "purpose": "Compares competing standard-category hypotheses."
+  },
+  "INTERPRET_DOMAIN": {
+    "required": "domain",
+    "output": "输出一段自然语言，说明该领域通常涉及的数据对象、术语语境，以及它对当前元数据解释可提供的约束；不直接给出最终分类。",
+    "optional": "无",
+    "purpose": "Interprets the domain context and provides domain-specific semantic background for subsequent metadata understanding."
+  },
+  "REFINE_STANDARD_QUERY": {
+    "required": "previous_standard_results, current_semantic_state",
+    "output": "输出一段更聚焦的自然语言查询表达，并说明为何这样改写能区分当前候选。",
+    "optional": "无",
+    "purpose": "Refines the standard-search query using previous retrieval results and the current semantic state."
+  },
+  "SEARCH_STANDARD": {
+    "required": "semantic_query",
+    "output": "输出最相关的若干标准类别标签及其描述的自然语言摘要，说明为何相关；不额外引入标准库不存在的字段。",
+    "optional": "无",
+    "purpose": "Searches the standard corpus using the current semantic representation."
+  },
+  "ASSESS_CATEGORY_SUPPORT": {
+    "required": "candidate_category, evidence",
+    "output": "输出自然语言支持评估：支持证据、反对证据、薄弱点和总体判断。",
+    "optional": "无",
+    "purpose": "Assesses how strongly the current evidence supports a candidate category."
+  },
+  "INTERPRET_FIELD_TYPE": {
+    "required": "field_type",
+    "output": "输出字段类型可提供的约束性自然语言判断；不得仅凭类型强行确定具体类别。",
+    "optional": "field_name, field_description",
+    "purpose": "Uses the field data type as supporting semantic evidence."
+  },
+  "RESOLVE_STANDARD_CONFLICT": {
+    "required": "conflicting_standard_alignments",
+    "output": "输出哪个标准候选更可信、为什么，以及仍存在的歧义。",
+    "optional": "无",
+    "purpose": "Resolves conflicts among competing standard alignments."
+  },
+  "SEARCH_STANDARD_BY_DATABASE": {
+    "required": "database_semantics",
+    "output": "输出数据库级语义可能支持的标准类别范围和依据。",
+    "optional": "无",
+    "purpose": "Uses database-level semantics to retrieve or constrain candidate standard categories."
+  },
+  "GET_COMPLETE_DATABASE_CONTEXT": {
+    "required": "database_name",
+    "output": "输出数据库级自然语言背景摘要，不引入跨库信息。",
+    "optional": "无",
+    "purpose": "Retrieves the available high-level metadata context of the current database."
+  },
+  "INTERPRET_TABLE_NAME": {
+    "required": "table_name",
+    "output": "输出表级自然语言语义，强调该表可能描述什么业务数据。",
+    "optional": "domain, table_description",
+    "purpose": "Interprets the business semantics represented by a table name."
+  },
+  "ALIGN_FIELD_TO_STANDARD": {
+    "required": "field_semantics, standard_candidates",
+    "output": "输出字段语义与各候选标准描述的匹配/不匹配理由，以及当前更优候选。",
+    "optional": "无",
+    "purpose": "Aligns the target-field semantics with candidate standard categories."
+  },
+  "INTERPRET_DATABASE_NAME": {
+    "required": "database_name",
+    "output": "输出数据库级自然语言语义，作为当前字段的高层背景。",
+    "optional": "domain, database_description",
+    "purpose": "Interprets the domain and semantic scope implied by the database name."
+  },
+  "EXPAND_FIELD_ABBREVIATION": {
+    "required": "field_name",
+    "output": "输出字段缩写的候选展开及依据；如果存在歧义，应保留多个候选并说明不确定来源。",
+    "optional": "domain",
+    "purpose": "Expands an abbreviated field name into one or more plausible natural-language meanings."
+  },
+  "CHECK_EVIDENCE_SUFFICIENCY": {
+    "required": "current_evidence",
+    "output": "输出自然语言说明“足够/不足”的依据；不足时明确建议继续获取哪类既有信息。",
+    "optional": "无",
+    "purpose": "Determines whether the current evidence is sufficient for reliable classification."
+  },
+  "INTERPRET_FIELD_VALUE": {
+    "required": "value",
+    "output": "输出值模式的自然语言描述、可能对应的数据含义，以及这种证据的可靠性边界。",
+    "optional": "field_name, field_type, domain",
+    "purpose": "Infers possible semantics from the observed value pattern and content."
+  },
+  "INFER_CATEGORY": {
+    "required": "candidate_standard_categories, all_available_evidence",
+    "output": "输出自然语言说明为何选择某一 category_label 作为 category；此处仍可保留解释文本，最终结构化由 FINALIZE 完成。",
+    "optional": "无",
+    "purpose": "Infers the final Category category from candidate standard categories and accumulated evidence."
+  },
+  "FUSE_STANDARD_EVIDENCE": {
+    "required": "standard_alignment_evidence",
+    "output": "输出统一标准证据状态，明确主要支持类别和弱支持类别。",
+    "optional": "无",
+    "purpose": "Integrates multiple standard-alignment results into a unified standard-evidence state."
+  },
+  "ALIGN_TABLE_TO_STANDARD": {
+    "purpose": "Aligns table-level semantics with candidate standard categories.",
+    "required": "table_semantics, standard_candidates",
+    "optional": "无",
+    "output": "Explain how table context supports, contradicts or weakly matches each actual standard candidate; context remains auxiliary to target-field evidence."
+  },
+  "ALIGN_DATABASE_TO_STANDARD": {
+    "purpose": "Aligns database-level semantics with candidate standard categories.",
+    "required": "database_semantics, standard_candidates",
+    "optional": "无",
+    "output": "Explain how database context supports, contradicts or weakly matches each actual standard candidate; context remains auxiliary to target-field evidence."
+  }
+}
