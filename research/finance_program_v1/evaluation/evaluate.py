@@ -1,4 +1,5 @@
 """One pair per source, real frozen F66 execution; no labels or scoring."""
+# 同一来源分别执行 base 与 sft 条件，推理阶段只产出轨迹，标签评分由后续离线步骤完成。
 import argparse
 import datetime
 from pathlib import Path

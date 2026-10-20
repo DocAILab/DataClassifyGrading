@@ -1,4 +1,5 @@
 """Post-run local-only labels; all failures retain the fixed denominator."""
+# 评分始终遍历固定评估 ID，缺失或未合法终止的轨迹也计入分母；配对比较要求两组来源完全一致。
 from collections import Counter
 
 
@@ -15,6 +16,7 @@ def macro(golds,preds,labels):
 def score(ids,traces,gold,registry):
     if len(ids)!=len(set(ids)) or not set(traces)<=set(ids) or not set(ids)<=set(gold):raise ValueError('score ID mismatch')
     counts=Counter();details={};golds=[];preds=[]
+    # 遍历固定名单而非现存轨迹，缺失样本不会被静默排除并抬高准确率。
     for i in ids:
         t=traces.get(i) or {};final=t.get('final_result') or {};legal=t.get('terminated') is True
         prediction=final.get('category') if legal else None;grade=final.get('grading_level') if legal else None

@@ -1,4 +1,5 @@
 """Full-context frozen local generation with measured Planner-only LoRA routing."""
+# 两组条件复用相同基座和生成配置，只有 sft 的 Planner 请求启用 LoRA；实际层状态另存路由证据。
 from copy import deepcopy
 from pathlib import Path
 import time
@@ -71,6 +72,7 @@ class RoutedBackend(Backend):
         except Exception as exc:
             x['error']=type(exc).__name__+': '+str(exc);self.failures.append(x['error']);raise
         finally:
+            # 无论生成成功或抛错，都核验适配器已关闭，避免影响后续 Skill 或 base 调用。
             route['restored_disabled']=layer_state(self.model,True)['disabled']
             x['seconds']=time.perf_counter()-started
             self.last_generation_metadata=generation_metadata(x)

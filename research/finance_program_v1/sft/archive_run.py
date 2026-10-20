@@ -1,4 +1,5 @@
 """Immutable complete post-stage evidence snapshot; excludes external base weights."""
+# 阶段写入进程退出后再封存证据，归档成员带哈希；外部基座权重不复制进运行档案。
 from pathlib import Path
 import tarfile
 from runtime_io import digest, put, read, verify_manifest

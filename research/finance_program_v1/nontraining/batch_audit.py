@@ -1,4 +1,5 @@
 """CPU recorded-I/O replay and separate local gold evaluation."""
+# 先用已记录的模型 I/O 重跑控制器并核对完整轨迹，再在独立评分入口读取私有答案。
 import argparse
 from collections import Counter
 import json

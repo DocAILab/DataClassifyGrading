@@ -1,4 +1,5 @@
 """CPU-only detached continuation. Raw trajectories stay pending human review."""
+# 后台批次共享持久预算并保留原始调用记录；采集产物须经过回放与人工复核才能进入训练。
 import argparse
 from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 import datetime

@@ -3,6 +3,7 @@
 The original frozen training verifier remains unchanged and its failed exit is preserved.
 This audit retains all original gates and validates the actual forty expanded layers.
 """
+# 审计 PEFT 序列化后的目标层集合与实际适配器权重，保留原校验器的失败记录供追溯。
 from collections import Counter
 from pathlib import Path
 import argparse

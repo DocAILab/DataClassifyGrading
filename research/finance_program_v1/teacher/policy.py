@@ -1,4 +1,5 @@
 """Explicit protocol variant: transport doesn't inject data or repair outputs."""
+# 此协议变体只追加版本化的证据解释规则；原始消息保留，响应仍由执行器按合约校验。
 from copy import deepcopy
 import re
 

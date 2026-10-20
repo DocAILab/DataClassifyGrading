@@ -1,4 +1,5 @@
 """Export only frozen, actually executed initial Planner supervision; no labels."""
+# 仅导出已复核、实际完成执行的首次 Planner 请求与原始响应，保留来源哈希以追溯监督样本。
 import argparse
 from collections import Counter
 import hashlib
@@ -44,6 +45,7 @@ def extract_example(trace,source_id,trace_sha):
     payload=json.loads(messages[1]['content']);reject_label_keys(payload)
     library=payload.get('skill_library',[]);names=[s['name'] for s in library]
     if len(names)!=66 or len(set(names))!=66:raise ValueError('complete F66 contracts required')
+    # 监督目标直接取原始响应，并与实际执行计划核对，避免重新拼装答案改变训练目标。
     plan=json.loads(response)
     if (set(plan)!= {'program'} or not isinstance(plan['program'],list) or not plan['program']
             or any(set(s)!= {'tool','arguments'} or s['tool'] not in names or not isinstance(s['arguments'],dict) for s in plan['program'])

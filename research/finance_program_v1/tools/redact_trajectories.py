@@ -1,4 +1,5 @@
 """Public, lossy trajectory projection. Never use this output as training/replay data."""
+# 公开投影保留流程结构与原始记录哈希，删除证据值和字面参数；该有损产物不能用于训练或完整回放。
 import hashlib
 import json
 import re

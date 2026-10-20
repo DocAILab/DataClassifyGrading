@@ -1,4 +1,5 @@
 """After writer exit, snapshot all frozen code, logs, inputs, calls, routes and traces."""
+# 运行结束后封存代码、输入、调用、路由与轨迹，成员清单用于核对档案内容及字节身份。
 import tarfile
 from io_utils import ROOT,verify,put,read,sha
 

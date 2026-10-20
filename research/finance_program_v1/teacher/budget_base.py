@@ -1,4 +1,5 @@
 """Append-only cross-process campaign accounting; no secret or response bodies."""
+# 追加日志保存跨进程请求与用量账本；线程锁和文件锁共同保护申领、结算及停止状态。
 from contextlib import contextmanager
 import json
 import os
@@ -67,6 +68,7 @@ class PersistentBudget:
             if state['stopped']:raise RuntimeError('teacher safety budget halted')
             assert getattr(self.local, 'pending', None) is None
             self.local.pending = state['requests'] + 1
+            # 请求发出前持久化占位；进程中断后该次申领仍保留，避免恢复运行时漏记。
             self._append({'type': 'claim', 'id': self.local.pending, 'pid': os.getpid()})
 
     def record(self, result):

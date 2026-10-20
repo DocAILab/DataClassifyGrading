@@ -1,4 +1,5 @@
 """One recorded transport retry, shared atomic request/usage safety counters."""
+# 逻辑调用与 HTTP 尝试分别记账；暂时性传输失败可重试，但失败尝试仍占用共享预算。
 import threading
 import time
 from teacher_api import digest, save

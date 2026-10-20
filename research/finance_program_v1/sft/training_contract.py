@@ -1,4 +1,5 @@
 """Pure gates shared by the full-length trial, training, and monitoring."""
+# 试跑证明须与数据、最长来源和资源配置一致，防止用较短样本或其他运行的结果放行正式训练。
 import math
 
 

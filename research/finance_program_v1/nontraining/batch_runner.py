@@ -1,4 +1,5 @@
 """One exclusive cohort with the frozen Program controller and Backend."""
+# 按固定 cohort 执行真实控制器，并记录每个样本的模型调用区间，供独立回放逐条核对。
 import argparse
 from pathlib import Path
 import time
@@ -32,7 +33,10 @@ def run_batch(model,output,cohort,*,study_path=ROOT/'data/study.json',backend_fa
             row=by_id[entry['id']]; entry.update(status='error',call_start=len(backend.calls))
             controller=None
             try:
+                # 控制器初始只暴露 domain、field_name；完整元数据需由模型选择 Skill 获取。
                 controller=build_program_controller(backend,study['registry'],study['rows'],config)
+                # Planner 生成整段 Program，内部顺序执行；失败回到外层重规划，全程共享预算。
+                # 新证据会使旧选择失效；只有消费已校验终态证据的终止 Skill 才能完成任务。
                 trace=controller.run({'source_id':row['id'],'domain':row['domain'],'field_name':row['metadata']['field_name']})
                 trace.execution_mode=RUN_MODE; trace.write_json(output/'samples'/(row['id']+'.json'))
                 entry.update(status='completed',terminated=trace.terminated,stop_reason=trace.stop_reason,budget=trace.budget)

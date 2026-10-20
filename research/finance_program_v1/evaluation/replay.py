@@ -1,4 +1,5 @@
 """Independent recorded-I/O replay; never loads a GPU or a model."""
+# 使用记录中的响应重跑冻结控制器，同时核对请求、生成参数与 LoRA 路由，回放无需模型或 GPU。
 import argparse
 from collections import Counter
 from pathlib import Path

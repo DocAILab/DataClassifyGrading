@@ -1,4 +1,5 @@
 """Versioned, anchored limit extensions; original accounting and atomic locks reused."""
+# 额度扩展绑定已有日志前缀，保留历史消耗和失败阈值，避免通过重启或扩额重置账本。
 import hashlib
 import json
 
