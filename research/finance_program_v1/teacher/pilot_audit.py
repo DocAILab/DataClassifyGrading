@@ -1,4 +1,5 @@
 """Retry-aware recorded-I/O replay helpers; no private post-hoc gold audit."""
+# 回放按逻辑调用消费对应的 HTTP 尝试，验证重试条件和原始完整轨迹，不访问在线模型。
 import json
 from pathlib import Path
 from teacher_api import api_messages, digest, parse_sse, role, save
@@ -57,6 +58,7 @@ def replay_retry_one(study, row, saved, records, logical, allowed, *, allow_fixt
     backend = Recorded()
     c = build_program_controller(backend, study['registry'], study['rows'], study['budget'], skill_pool='F66')
     actual = c.run({'source_id': row['id'], 'domain': row['domain'], 'field_name': row['metadata']['field_name']}).to_dict()
+    # 响应必须逐个用尽，并复现整条轨迹；仅最终分类相同不足以证明回放一致。
     assert not backend.faults and backend.position == len(logical) and backend.http_position == len(records)
     assert actual == saved, 'full original trace differs'
     return {'full_trace_exact': True, 'all_calls_consumed': True, 'logical_calls': len(logical),

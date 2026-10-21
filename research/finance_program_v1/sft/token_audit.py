@@ -1,4 +1,5 @@
 """Full, untruncated student chat encoding and assistant-only suffix audit."""
+# 完整保留规划上下文，只对响应及 EOS 设置监督；分词边界不一致或超长时直接拒绝样本。
 import argparse
 import hashlib
 import json

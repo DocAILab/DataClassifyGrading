@@ -1,4 +1,5 @@
 """Pure fail-closed evaluation authorization and routing gates."""
+# 评估放行同时绑定训练完成状态、独立审计及适配器身份；路由依据可信 system 消息识别 Planner。
 def training_ready(state, signature):
     complete, proof = state.get('completion') or {}, state.get('cpu_proof') or {}
     return bool(state.get('manifest_sha256') == signature and state.get('writer_live') is False

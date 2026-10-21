@@ -1,4 +1,5 @@
 """Explicit local bridge to the new grounded runtime, old evidence stays immutable."""
+# 连接独立冻结的采集与运行时目录，先校验来源身份，再向模型暴露允许的元数据字段。
 import hashlib
 import importlib.util
 import json

@@ -1,4 +1,5 @@
 """Strict, bounded, credential-free-on-disk Bailian SSE backend."""
+# 一次 HTTP 请求对应一组不可覆盖的请求与流式响应记录，完整性门禁决定响应能否交给执行器。
 import hashlib
 from copy import deepcopy
 import json
@@ -60,6 +61,7 @@ def parse_sse(lines, model, *, state=None):
         json_object = isinstance(json.loads(result['content']), dict)
     except (ValueError, TypeError):
         json_object = False
+    # JSON 可解析仍不足以接收：还需正常停止、流结束、模型身份及完整用量同时成立。
     result['complete'] = bool(result['stream_done'] and result['finish_reason'] == 'stop' and
         result['models'] == [model] and json_object and isinstance(usage, dict) and
         all(type(usage.get(k)) is int and usage[k] >= 0 for k in ('prompt_tokens', 'completion_tokens', 'total_tokens')) and

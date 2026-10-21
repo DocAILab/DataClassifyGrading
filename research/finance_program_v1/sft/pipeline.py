@@ -1,4 +1,5 @@
 """One detached, mutually exclusive trial -> fresh formal training pipeline."""
+# 持有 GPU 互斥锁依次启动 trial 和 formal；正式训练须通过试跑证据门禁，每阶段独立记录退出状态。
 import argparse
 import datetime
 import os
@@ -68,6 +69,7 @@ def run(root):
             PYTHONDONTWRITEBYTECODE='1', TOKENIZERS_PARALLELISM='false',
             PYTHONPATH=c['deps'], OMP_NUM_THREADS='8', MKL_NUM_THREADS='8',
             HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1')
+        # 每阶段启动独立训练进程，formal 重新加载基座，不继承 trial 的权重或优化器。
         for stage in ('trial', 'formal'):
             if stage == 'formal':
                 formal_gate(read(root / 'runs/trial.exit.json'), read(root / 'trial/proof.json'), c)

@@ -1,4 +1,5 @@
 """Fresh-base Planner LoRA: actual longest-source trial, then one full epoch."""
+# 最长样本试跑验证真实前反向与更新；正式阶段重新加载基座，仅训练语言层 LoRA 并核对整轮来源。
 import argparse
 from collections import Counter
 import json
@@ -90,6 +91,7 @@ def main():
     def loss_for(inputs):
         labels = inputs.pop('labels')
         count = int(labels.ne(-100).sum())
+        # 保留完整上下文参与注意力；只缩减输出 logits，并将反向所需张量暂存 CPU。
         with torch.autograd.graph.save_on_cpu(pin_memory=True):
             result = model(**inputs, logits_to_keep=count + 1)
             loss = completion_cross_entropy(result.logits, labels.to(result.logits.device))
@@ -160,6 +162,7 @@ def main():
     # Explicit example-average accumulation: custom loss does not consume num_items_in_batch.
     trainer.model_accepts_loss_kwargs = False
     result = trainer.train()
+    # 来源计数与梯度更新数同时核对，包含最后不足一个累积批次的样本。
     wanted = expected_steps(len(rows), 16)
     if (trainer.state.global_step != wanted or trainer.state.epoch != 1.0
             or Counter(consumed) != Counter(r['source_id'] for r in rows)

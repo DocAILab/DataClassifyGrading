@@ -1,4 +1,5 @@
 """Validate the frozen Val inputs and mechanically separate private gold."""
+# 准备阶段将元数据与私有答案分开保存；后续推理仅使用 study，答案留给离线评分。
 import argparse
 import hashlib
 import json

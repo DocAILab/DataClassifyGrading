@@ -1,4 +1,5 @@
 """Detached CPU watcher; no GPU allocations before completed training acceptance."""
+# 监控器先在 CPU 上核对训练退出状态与审计身份，通过门禁后才检查资源并调度后续评估。
 import argparse
 import datetime
 import os
