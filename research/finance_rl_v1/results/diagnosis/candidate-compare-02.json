@@ -1,0 +1,112 @@
+{
+  "last_candidate_coverage": {
+    "SFT": 323,
+    "GRPO": 327
+  },
+  "changed_last_candidate_transitions": {
+    "worsened": {
+      "(True, True)": 19,
+      "(True, False)": 5
+    },
+    "improved": {
+      "(False, True)": 11,
+      "(True, True)": 9
+    }
+  },
+  "executed_step_errors": {
+    "SFT": [
+      {
+        "tool": "INFER_CATEGORY_FROM_TOPK",
+        "status": "error",
+        "count": 428
+      },
+      {
+        "tool": "SELECT_CATEGORY_TOPK",
+        "status": "blocked",
+        "count": 242
+      },
+      {
+        "tool": "GET_FIELD_METADATA",
+        "status": "blocked",
+        "count": 92
+      },
+      {
+        "tool": "INTERPRET_FIELD_TYPE",
+        "status": "blocked",
+        "count": 82
+      },
+      {
+        "tool": "GET_DATABASE_DESCRIPTION",
+        "status": "unavailable",
+        "count": 59
+      },
+      {
+        "tool": "GET_DATABASE_DESCRIPTION",
+        "status": "blocked",
+        "count": 45
+      },
+      {
+        "tool": "GET_FIELD_DESCRIPTION",
+        "status": "blocked",
+        "count": 4
+      },
+      {
+        "tool": "INTERPRET_FIELD_NAME",
+        "status": "error",
+        "count": 1
+      },
+      {
+        "tool": "FUSE_CONTEXT_EVIDENCE",
+        "status": "error",
+        "count": 1
+      }
+    ],
+    "GRPO": [
+      {
+        "tool": "INFER_CATEGORY_FROM_TOPK",
+        "status": "error",
+        "count": 466
+      },
+      {
+        "tool": "SELECT_CATEGORY_TOPK",
+        "status": "blocked",
+        "count": 353
+      },
+      {
+        "tool": "GET_DATABASE_DESCRIPTION",
+        "status": "unavailable",
+        "count": 59
+      },
+      {
+        "tool": "GET_FIELD_METADATA",
+        "status": "blocked",
+        "count": 29
+      },
+      {
+        "tool": "INTERPRET_FIELD_TYPE",
+        "status": "blocked",
+        "count": 22
+      },
+      {
+        "tool": "GET_DATABASE_DESCRIPTION",
+        "status": "blocked",
+        "count": 18
+      },
+      {
+        "tool": "GET_FIELD_DESCRIPTION",
+        "status": "blocked",
+        "count": 8
+      },
+      {
+        "tool": "INTERPRET_FIELD_NAME",
+        "status": "error",
+        "count": 1
+      },
+      {
+        "tool": "SELECT_CONTEXT_FIELDS",
+        "status": "error",
+        "count": 1
+      }
+    ]
+  }
+}

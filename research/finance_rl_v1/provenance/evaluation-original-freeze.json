@@ -1,0 +1,2785 @@
+{
+  "files": [
+    {
+      "path": "candidate_contract.py",
+      "bytes": 2384,
+      "sha256": "0a8ff043dd889926707ebef5b70c39ffdcc27418bae81c9f25bf64fa090dbaa5"
+    },
+    {
+      "path": "full_policy.py",
+      "bytes": 3694,
+      "sha256": "def0b744463415cd6e0f9b0a85de8cfb4b08e2693937d027b9dc58982e23bbfb"
+    },
+    {
+      "path": "gate.py",
+      "bytes": 923,
+      "sha256": "502d7dc05fb61c3acc116b19e685f9b615947e472d2c2ffe79b1a83e872a8008"
+    },
+    {
+      "path": "live_backend.py",
+      "bytes": 2307,
+      "sha256": "7fac35e0434a419b674badb90e83f8616097f29a187e008dc36527895cd11094"
+    },
+    {
+      "path": "preflight.py",
+      "bytes": 1823,
+      "sha256": "97b746d875a20965c5d86800bfd5db674f5aa9b0302d45a1694b915d4a10b5a2"
+    },
+    {
+      "path": "process_contract.py",
+      "bytes": 174,
+      "sha256": "b3f431a15c02f0c4a77009cd320b8d741104637c106269269c86f19fa4ff20ac"
+    },
+    {
+      "path": "resource_runtime.py",
+      "bytes": 3222,
+      "sha256": "334c3517732e68d5738a0c6d1c7072b70413708f808aac5834f5564b9c27a75f"
+    },
+    {
+      "path": "runner.py",
+      "bytes": 4000,
+      "sha256": "d351ef36dd8af2c1009291b1402da3a298d34f7034b2a5b893b3027438dfca85"
+    },
+    {
+      "path": "runtime.py",
+      "bytes": 2043,
+      "sha256": "b0bd4009ca4e3744ee457b2179366a455a46895309b208b12609e376fbabd9fd"
+    },
+    {
+      "path": "supervisor.py",
+      "bytes": 5988,
+      "sha256": "26a55734c5f0565d8a20cd5ae987d47b74a19d3d5d2c3edc1be3e7e83698a285"
+    },
+    {
+      "path": "support.py",
+      "bytes": 1994,
+      "sha256": "13f7f07875bc47d9f424ff0c410b0999e6a37d0ca0739cebeea1d218b5043f3f"
+    },
+    {
+      "path": "termination.py",
+      "bytes": 208,
+      "sha256": "2354c3a3b9fdad6d7d3362fbd6cd9a6e33eca83ff60dcc0db8ea4eb57cdd72d4"
+    },
+    {
+      "path": "test_candidate_contract.py",
+      "bytes": 2223,
+      "sha256": "b10cc439f1bcc9940ac2d4b3b4f8ff6d1c8950ce2855b608ff6eb7dd8d21f8d4"
+    },
+    {
+      "path": "test_cohort_contract.py",
+      "bytes": 943,
+      "sha256": "68ad21c594c0bd50d3041033545928a596fcfeb0f4de60ab568d2729fb63774a"
+    },
+    {
+      "path": "test_eval_admission.py",
+      "bytes": 1405,
+      "sha256": "cd115de33f37c1cb155005ccdbcc6cb962ba75bb5db9795d6929a03e01b73d69"
+    },
+    {
+      "path": "test_process_contract.py",
+      "bytes": 632,
+      "sha256": "6df465726862781d9fe2052783122977d03e723ede377eb2d4fec847d972767b"
+    },
+    {
+      "path": "selection.json",
+      "bytes": 92612,
+      "sha256": "b29704bf7ae61cf3eca2ab7dd2f410a61084bc5fe0feb1aa2a6bc23e5e9a0284"
+    },
+    {
+      "path": "eval-inputs.json",
+      "bytes": 414370,
+      "sha256": "622d2ef36744835a0cd579a68a7b3d330d4af7d25b2ccfb068878ab1c22842b4"
+    },
+    {
+      "path": "source-scopes.json",
+      "bytes": 167348,
+      "sha256": "30aab62321886050e15f7a85e53800203a256a85a93662326e9fb85f1eb39303"
+    },
+    {
+      "path": "candidate-request.json",
+      "bytes": 220,
+      "sha256": "615aa637e15f9f1bd20214a7f24945d306bf1f105dd8b68368486b346e82bc09"
+    },
+    {
+      "path": "campaign-policy.json",
+      "bytes": 1131,
+      "sha256": "74c4a54a4c92979898a3196173f36a8d71974dca1f720aefee8646acc9559f5e"
+    },
+    {
+      "path": "evaluation-budget.json",
+      "bytes": 207,
+      "sha256": "70cc950c7f7769753e7b7c8efd88cd4cdbffad6bea0a1b7c62b451d1d374dbff"
+    },
+    {
+      "path": "reviews/parent-acceptance.json",
+      "bytes": 315,
+      "sha256": "70c364ada05534659e7d801767f770430b0f851c312a09d91c09c1a6ff2c0fc4"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/backend.py",
+      "bytes": 2399,
+      "sha256": "9abc1662ce0ace99a2ae74050c98d13b5ddcb623193fd02279c48d275fd9a167"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/common.py",
+      "bytes": 1082,
+      "sha256": "6dddd2dda9c0d63e8e0d2eda1fda635e4f9000a4db77b26f0b4849097ac75f24"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/eval_runtime.py",
+      "bytes": 1103,
+      "sha256": "f0a2a474fc4f566afd7a9ad51cd8323d641835e2ddb682900786466d39b86016"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/evidence_delta.py",
+      "bytes": 1817,
+      "sha256": "4055df8082e29099c19d5326af0c5e6c611d67ad7cf80f08d73975850bc94ddf"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/feedback.py",
+      "bytes": 419,
+      "sha256": "7e4ccae343cb4cf3bca3c62ceb05d4ae24710837c44a4bc30710a984f765c253"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/freeze.json",
+      "bytes": 54803,
+      "sha256": "cb77954ee98222f55bc9d8547e6896656d2b0d4683b9abbceaba62f4f7e21dfb"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/interface.py",
+      "bytes": 2943,
+      "sha256": "05043689c91e9669a8e53cd75d936c334f343bf2fed6e9187045ae55e6603a5d"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/policy.py",
+      "bytes": 338,
+      "sha256": "423444ad20d987b02322df8e64d8461b073c223de38d3bcce32f371f8ee89bca"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/preflight.py",
+      "bytes": 3201,
+      "sha256": "5347d18b9e5b786ab02220560bc092dfbaf1bc94eff3e12ac1974dc3bbb3ccbe"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/reviews/design-plan-01.md",
+      "bytes": 5886,
+      "sha256": "9c99a20f23336ed14da1b073f86cb63d1d4413d1168e606ffb0d2e15bc2d9a08"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/reviews/protocol-01.md",
+      "bytes": 3234,
+      "sha256": "2ae915499c53594eaf98b2d8d2f3e67b7022447949d6dc786c0b291e1cc4ffb3"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/runner.py",
+      "bytes": 4300,
+      "sha256": "42276385e4fdd0043c0c8a139352f419ee6bbdd5aeb9be05ddd5b8a262373d10"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/runtime.py",
+      "bytes": 858,
+      "sha256": "d62b82d48f08c048bd1ace6ecd7e93e75fee9d3ccba28d257b0f3bc519fef586"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/scope_binding.py",
+      "bytes": 3163,
+      "sha256": "be991cdf1aec5deb05421576726ed91ebdb3c5fe4a9dfc8ecf33e7d35cf81fcf"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/source_scope.py",
+      "bytes": 443,
+      "sha256": "e66938c1b9a306164496bf97e94806d2e6778f7c36b5262eaeef9397031d3019"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/supervisor.py",
+      "bytes": 5516,
+      "sha256": "0fc58b2fa87d5606b9e5f3ac3095bf74b846f95b8a9d11261c63963d81aedf86"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/tests/test_evidence_delta.py",
+      "bytes": 5103,
+      "sha256": "020718888946d5a0ada03203cf19c84a502686d0fef50ee4acde1644814b1de8"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r10/tests/test_scope_binding.py",
+      "bytes": 5465,
+      "sha256": "a93d0f471609f2274d0437dc2ee69618ff57ffc821fc3e0d578bf6245df1af31"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/backend.py",
+      "bytes": 896,
+      "sha256": "16c58842f45cfa1472812632927b76a6b552b6b94243332c08610f9ba8b4da31"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/common.py",
+      "bytes": 990,
+      "sha256": "6f135ae5b767a7fbc75ecf72840cec30ad897a46307f3e2906efd004cd6c8665"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/eval_runtime.py",
+      "bytes": 678,
+      "sha256": "73cc6ac7fd34f1f98b5233d3c62d3553e75aeb6ceb4d553b09990ee1d688f634"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/evidence_delta.py",
+      "bytes": 345,
+      "sha256": "4e2560a781b295e42fa4ff23312518c4311b31644390c109188695b141fddba6"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/feedback.py",
+      "bytes": 327,
+      "sha256": "7b15450c0bab405bbc6881d95083f8f11be49d017b80d9d3e37f8a9c00bce13e"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/freeze.json",
+      "bytes": 76671,
+      "sha256": "b79a509df1119199cf62b539dcd920fb2eee43043c3ae06d3bff491129210bbc"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/interface.py",
+      "bytes": 2832,
+      "sha256": "82a2ce0acd6f1400d634919f5640e7ec978945f4f2791c2b79614d1a8d7384f5"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/policy.py",
+      "bytes": 373,
+      "sha256": "6a0c11fdffaf7274be95fabdb8e082ba5b1a366bb259534fc03185543643ec4a"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/preflight.py",
+      "bytes": 1420,
+      "sha256": "8c63588589560149731c6db0d1a5ecc34a50d4346f3c26d87d906db7d307d026"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/reviews/protocol-01.md",
+      "bytes": 2558,
+      "sha256": "dda65ca1d18113e5fc264c1a4f4079d893d1bc956b5055cae81a990c41becc78"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/runner.py",
+      "bytes": 374,
+      "sha256": "49371e6af4fee6d13df5d1ec164c0418d975f745e3d9f5bcbdca315ad0a6cfc4"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/runtime.py",
+      "bytes": 349,
+      "sha256": "a6d21b5c3982cc10657ad16a380a982fb71ba4809da98c2d7d26516eb7b0e8b5"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/scope_binding.py",
+      "bytes": 334,
+      "sha256": "b458e932f20d81aa1d0b96b4298705c128f370f5eded5f5a55c38b7b84a299d5"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/source_scope.py",
+      "bytes": 443,
+      "sha256": "e66938c1b9a306164496bf97e94806d2e6778f7c36b5262eaeef9397031d3019"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/supervisor.py",
+      "bytes": 5438,
+      "sha256": "009bb8396ff8744c06747facef6a3a3170757abd7a1af651acc92c87d92fedaa"
+    },
+    {
+      "path": "finance_program_evidence_consumption_20261024_r11/tests/test_selector.py",
+      "bytes": 2734,
+      "sha256": "1952af4cd11b9253dee3d30e99ec817e82d05d6c337d705bb936cf131591a7f2"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261023_r3/feedback.py",
+      "bytes": 5349,
+      "sha256": "9d1e646e15fe06c046199c60bff469e3b751a7c97462168911056a258d09ba91"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261023_r3/interface.py",
+      "bytes": 5339,
+      "sha256": "71f96059ffc65feacd30720a8f7a21cd4eb197c2726f1d1072ef9e6a6e0f368e"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261023_r3/smoke_contract.py",
+      "bytes": 396,
+      "sha256": "04b5e48d39bbff5bbde748b16e3d457fac7f4885f642d4043eb0c8b50e500e31"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/backend.py",
+      "bytes": 2212,
+      "sha256": "0dcf941233db6f4124d55a00623371282407c23b35c27f7f9e4a539405ec8545"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/common.py",
+      "bytes": 881,
+      "sha256": "5c5c22927a9f05207d5c3e5db4ce73f2144c0356b17bc31cfa972dea48a6dc48"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/feedback.py",
+      "bytes": 392,
+      "sha256": "6e1869e529a37ed98f129d62089dc41917637a7f7b2b9c1126a4fac7e556253f"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/freeze.json",
+      "bytes": 2611,
+      "sha256": "12bc099c680dd9981ae0e1ba83246166ea6ded93c85008163efee766dd999958"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/interface.py",
+      "bytes": 471,
+      "sha256": "94ee2444138daacaf05bb8188b60a68e96b6fff00a41614b87d933c5a752cd5b"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/policy.py",
+      "bytes": 1017,
+      "sha256": "39813a17ea4c07adfa0be7ac013fd69e05f97a7c8ac994c47c6cf7a19d757de6"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/preflight.py",
+      "bytes": 1673,
+      "sha256": "80b9c4bf1eb2a6d0d9ed6455126e52016ab4b82533f7e65af0b37d9f1f3e0493"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/runner.py",
+      "bytes": 3833,
+      "sha256": "529df12317bbf098e6e94db882782f950cec05f6eddb5e9faf5c01c8092e9df1"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r4/supervisor.py",
+      "bytes": 4270,
+      "sha256": "d8a9aae8dad5ebd86a1118252fe6de7e15bedacfb6d32d8008fd96a27178d690"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/backend.py",
+      "bytes": 673,
+      "sha256": "a05d5746254849dceb68f982f53061a070fe8c54451797f966fac20159338132"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/campaign.py",
+      "bytes": 517,
+      "sha256": "d16c31a2cbc274654462817a090cf146b056db0919ebe94083a335c5880d9c01"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/common.py",
+      "bytes": 932,
+      "sha256": "a1c1f53f915744a12a093019d9d67f86441fe07d36cfa75bc70e88898cc56854"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/feedback.py",
+      "bytes": 326,
+      "sha256": "0371d086c0bc60aed21823ec3f82963087613e429c9aba4d365c1d8f9b0ca187"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/freeze.json",
+      "bytes": 4644,
+      "sha256": "197484021587201480a0e0489a3b73e3c6295ba9542c5b88fe3e288d21d51df4"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/interface.py",
+      "bytes": 2842,
+      "sha256": "53d8eb46e2336334eb27b8fe06646c80fb089bcacda6a9884f1ce15e2ce1e357"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/policy.py",
+      "bytes": 392,
+      "sha256": "efdd047904d74c42b8003d36817fbafeba27f0836bbfaaea9afbd6202f83133c"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/preflight.py",
+      "bytes": 1185,
+      "sha256": "59827eec5c56c3dbae25f26ddccf7b13fc810365f989ef4f177ee4276a9ed9e2"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/reviews/protocol-01.md",
+      "bytes": 1144,
+      "sha256": "c830e5ae329168ed0a45bfa7e72136a3845b04f826cb0adcd02f28d255985c28"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/runner.py",
+      "bytes": 439,
+      "sha256": "ea93a746ae7a4a846ab854829dcff7d83d51606bff562e513f61c78521512630"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/supervisor.py",
+      "bytes": 4766,
+      "sha256": "7354abbad2bc252f1ff2ae79d2b36e8d3fa1c785c8395fafa4073e20f01857d2"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/tests/test_campaign.py",
+      "bytes": 750,
+      "sha256": "adf70fb446b11ddb2a4bbbddc4a3624ef1edc52be814c89d00e3b9ceac14cdd6"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r5/tests/test_candidate_scope.py",
+      "bytes": 1837,
+      "sha256": "760d0efb7eb131ff4af79b22fccfd056656d4afe74796bab5fc8b514d753bc19"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/backend.py",
+      "bytes": 301,
+      "sha256": "7a61763f921ae7f720307689876b9f2980bb0a7d81708c1ccf414de1aa5d29d5"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/campaign.py",
+      "bytes": 257,
+      "sha256": "3361b12f7f116db09b949295dc2f358f4e418caa9da26fdfe0a20ff5866b3e0b"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/common.py",
+      "bytes": 1001,
+      "sha256": "b040efdb44061fc64db106f72a1f5bd3bf76e6913c91029d7477d6591232b8f9"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/feedback.py",
+      "bytes": 324,
+      "sha256": "195c7cd03332540bf7d7301612d3d05f5903f6aac70455d86be5eba853f29beb"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/freeze.json",
+      "bytes": 21330,
+      "sha256": "750c98d658b866963f122fd01a5d4eb4757a6d21bd9b5d394fc40d7b8501f188"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/interface.py",
+      "bytes": 2906,
+      "sha256": "6bc467c03bd8107b3a186f163d8df2e1c8859154284c2dcc642f4a494482570f"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/policy.py",
+      "bytes": 304,
+      "sha256": "fa960c95259eb15fcdc47ba18d52bcebbe03dc5d10a9de25eb6ff19d211f5a2f"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/preflight.py",
+      "bytes": 1252,
+      "sha256": "87e92c46938362114dae20f3927de395b00477f3aa1d872486696dddf8a616b3"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/reviews/protocol-01.md",
+      "bytes": 1321,
+      "sha256": "0f3a47786474476ed40ed38b94e4799669852caf2f87a9dfabccb248d930e730"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/runner.py",
+      "bytes": 270,
+      "sha256": "35888fa9a91b7d10a1de72921f5e41a13b852a3f0f1bdba8217b358a11b240bd"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/supervisor.py",
+      "bytes": 4677,
+      "sha256": "c00cd9ca5bc26e8dee08c675d8cdedc5172af3b77698985341cb79dbc7c54df8"
+    },
+    {
+      "path": "finance_program_recovery_feedback_20261024_r6/tests/test_source_brief.py",
+      "bytes": 2277,
+      "sha256": "f17a9f12d00382054f42242c164e25cfc1e608bdf213df829ad1dc963f033dfe"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/backend.py",
+      "bytes": 944,
+      "sha256": "0e85cc442e2c4a336ace8427cd5625361428b68a93bcc9d5e79e87e0e6c89844"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/common.py",
+      "bytes": 1027,
+      "sha256": "c054b3d9b03324b796d0dea67b36aa774c720c19b7efa6213d726deb48aadb69"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/eval_runtime.py",
+      "bytes": 1129,
+      "sha256": "a52bc035f21654a6a12d3966168a331220248bcfd44be7f8c8f9dc8e171ad1fb"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/feedback.py",
+      "bytes": 340,
+      "sha256": "ce0f2f210172041384d0843ccacb2a1204616566df4bf00427f65e34f7d18e2e"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/freeze.json",
+      "bytes": 24655,
+      "sha256": "10a774f12bf83eeb3f9d2820ccd74412f9ec6e2c21cbd67ba68c933618ade3d0"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/history.json",
+      "bytes": 951,
+      "sha256": "c88db1206fe66ed555a611f36cd323d8f29d13d1ed9c24c58ed3049783d91662"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/interface.py",
+      "bytes": 415,
+      "sha256": "2d12f98b16ffe8072cf1e62934642aa8a7035c9bb930e301fd7f4a5ba5f06e91"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/policy.py",
+      "bytes": 309,
+      "sha256": "39f1efa304d4aad0d2884f86ae7d533904b8ee564f58ec7a1c50e581c7d20a1a"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/preflight.py",
+      "bytes": 3304,
+      "sha256": "9f6afe43927455d037a8c8d61fc18508c5f8387c55ddb30731ef4a5835bc2a0f"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/reviews/protocol-01.md",
+      "bytes": 2645,
+      "sha256": "817417e64995b31c3d9eb670d6c14bfb309970c67b1ccc5a810b14ec6145c0e4"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/reviews/source-scope-design-01.md",
+      "bytes": 3890,
+      "sha256": "fbdfbf08441773fe6dd8954ede4268772ffc9904456dbf7166d2dda587468f93"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/runner.py",
+      "bytes": 285,
+      "sha256": "ce471e37d78f90ec1de0774dc13042905494ea24a1a0cd59b2d774d89fb6c639"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/runtime.py",
+      "bytes": 1411,
+      "sha256": "e32deb1624e42ed767ec0d6554d166dc816a712fbe2ec2a32a246a9367a9ef2d"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/source-scopes.json",
+      "bytes": 113395,
+      "sha256": "c00d505ac1301441067c53f5c6bd894756bb9ac251257c821729a620d20c3930"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/source_scope.py",
+      "bytes": 2963,
+      "sha256": "02e050a40b24b46419d4561d4bd09b6b2f21ca537975188a1f3cd8a9d2773509"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/supervisor.py",
+      "bytes": 5345,
+      "sha256": "89ab4938d9209ca53d0b5ed42bbedc3f324369a5bd0956ed59c32329f250f0e6"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/tests/test_native_scope.py",
+      "bytes": 2841,
+      "sha256": "5f92b1cc3dd50b5803fd5ed45d252d7bc135fe6e4b72ca2ab4cc8cce571be54a"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r7/tests/test_source_scope.py",
+      "bytes": 3407,
+      "sha256": "9ff69bddf4ee8eb6c8934d46758c0788c40d0ff8b95a8c0ec18e1fef423e8def"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/backend.py",
+      "bytes": 944,
+      "sha256": "0e85cc442e2c4a336ace8427cd5625361428b68a93bcc9d5e79e87e0e6c89844"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/common.py",
+      "bytes": 1027,
+      "sha256": "c054b3d9b03324b796d0dea67b36aa774c720c19b7efa6213d726deb48aadb69"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/eval_runtime.py",
+      "bytes": 1152,
+      "sha256": "62cc6599beb2408d1fb82e600ea666f2ed8b608549711d679fcdf86d2c411bfb"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/feedback.py",
+      "bytes": 340,
+      "sha256": "ce0f2f210172041384d0843ccacb2a1204616566df4bf00427f65e34f7d18e2e"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/freeze.json",
+      "bytes": 28345,
+      "sha256": "c0a3d9a335f2c2b89838becf018442f7783ad1d28d0252b6de2e90556318af28"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/history.json",
+      "bytes": 951,
+      "sha256": "c88db1206fe66ed555a611f36cd323d8f29d13d1ed9c24c58ed3049783d91662"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/interface.py",
+      "bytes": 415,
+      "sha256": "2d12f98b16ffe8072cf1e62934642aa8a7035c9bb930e301fd7f4a5ba5f06e91"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/policy.py",
+      "bytes": 309,
+      "sha256": "39f1efa304d4aad0d2884f86ae7d533904b8ee564f58ec7a1c50e581c7d20a1a"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/preflight.py",
+      "bytes": 3304,
+      "sha256": "9f6afe43927455d037a8c8d61fc18508c5f8387c55ddb30731ef4a5835bc2a0f"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/reviews/protocol-01.md",
+      "bytes": 2645,
+      "sha256": "817417e64995b31c3d9eb670d6c14bfb309970c67b1ccc5a810b14ec6145c0e4"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/reviews/source-scope-design-01.md",
+      "bytes": 3890,
+      "sha256": "fbdfbf08441773fe6dd8954ede4268772ffc9904456dbf7166d2dda587468f93"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/runner.py",
+      "bytes": 285,
+      "sha256": "ce471e37d78f90ec1de0774dc13042905494ea24a1a0cd59b2d774d89fb6c639"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/runtime.py",
+      "bytes": 1411,
+      "sha256": "e32deb1624e42ed767ec0d6554d166dc816a712fbe2ec2a32a246a9367a9ef2d"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/source-scopes.json",
+      "bytes": 113395,
+      "sha256": "c00d505ac1301441067c53f5c6bd894756bb9ac251257c821729a620d20c3930"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/source_scope.py",
+      "bytes": 2963,
+      "sha256": "02e050a40b24b46419d4561d4bd09b6b2f21ca537975188a1f3cd8a9d2773509"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/supervisor.py",
+      "bytes": 5345,
+      "sha256": "89ab4938d9209ca53d0b5ed42bbedc3f324369a5bd0956ed59c32329f250f0e6"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/tests/test_native_scope.py",
+      "bytes": 2841,
+      "sha256": "5f92b1cc3dd50b5803fd5ed45d252d7bc135fe6e4b72ca2ab4cc8cce571be54a"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r8/tests/test_source_scope.py",
+      "bytes": 3407,
+      "sha256": "9ff69bddf4ee8eb6c8934d46758c0788c40d0ff8b95a8c0ec18e1fef423e8def"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/backend.py",
+      "bytes": 2471,
+      "sha256": "b7f8506ca856dff59f6060b5308a88c148b73799ac3cbba284174b61e7a9f046"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/common.py",
+      "bytes": 1086,
+      "sha256": "506dc4af210d7b1ee399416cc59d64cb9e5083ed6404ee81f7a361a1fcc60c2e"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/eval_runtime.py",
+      "bytes": 1152,
+      "sha256": "62cc6599beb2408d1fb82e600ea666f2ed8b608549711d679fcdf86d2c411bfb"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/feedback.py",
+      "bytes": 340,
+      "sha256": "ce0f2f210172041384d0843ccacb2a1204616566df4bf00427f65e34f7d18e2e"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/freeze.json",
+      "bytes": 34914,
+      "sha256": "e415046130c1385293f3d2ee623a403edefd26bec81dc0d04e8e1bb41972ee5e"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/history.json",
+      "bytes": 1062,
+      "sha256": "dac7c927cee97ac7ea374460491d6af2dc94d694791bdf1ece2df6cd9a276f9e"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/interface.py",
+      "bytes": 476,
+      "sha256": "0fced367e044e9126489cfe187df4f8f32321ae11bed5c5dfa36148e5a3d7b6b"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/policy.py",
+      "bytes": 309,
+      "sha256": "39f1efa304d4aad0d2884f86ae7d533904b8ee564f58ec7a1c50e581c7d20a1a"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/preflight.py",
+      "bytes": 3513,
+      "sha256": "47be2e8a4093debfc3fc47fe62e280676be6ced5f118ad9145572979d7367324"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/reviews/protocol-02.md",
+      "bytes": 2750,
+      "sha256": "acc5d878fad22aec234580c755424f4834cb6921a8599bc05160088146d4ded3"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/reviews/source-scope-design-01.md",
+      "bytes": 3890,
+      "sha256": "fbdfbf08441773fe6dd8954ede4268772ffc9904456dbf7166d2dda587468f93"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/runner.py",
+      "bytes": 285,
+      "sha256": "ce471e37d78f90ec1de0774dc13042905494ea24a1a0cd59b2d774d89fb6c639"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/runtime.py",
+      "bytes": 1411,
+      "sha256": "e32deb1624e42ed767ec0d6554d166dc816a712fbe2ec2a32a246a9367a9ef2d"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/source-scopes.json",
+      "bytes": 113395,
+      "sha256": "c00d505ac1301441067c53f5c6bd894756bb9ac251257c821729a620d20c3930"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/source_scope.py",
+      "bytes": 2963,
+      "sha256": "02e050a40b24b46419d4561d4bd09b6b2f21ca537975188a1f3cd8a9d2773509"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/supervisor.py",
+      "bytes": 5827,
+      "sha256": "0d34725ec2e5a8eff71ee99a3d8b7181e58a029a2001823fd87ddb9c0c1029ae"
+    },
+    {
+      "path": "finance_program_recovery_source_scope_20261024_r9/tests/test_ablation.py",
+      "bytes": 2422,
+      "sha256": "92db919752b7ef819b5ba38efcd7b192712a819a23025fbc7e9547222fdfc8c9"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/backend.py",
+      "bytes": 1418,
+      "sha256": "00ad25b9ad5dc0e2018235ee31b7ed0d6eda344eb3ecac81094ee48cc9625be3"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/context_policy.py",
+      "bytes": 1026,
+      "sha256": "9e2d036dae4395def3fcd95b5ed2b9f6d385ad6c5952baeddd4074dcc00692ae"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/freeze.json",
+      "bytes": 12997,
+      "sha256": "88f3511e80bd2ee0d29a11948e074ebe3e0584af15f8b10b2895f573446a6cef"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/inputs.json",
+      "bytes": 2630362,
+      "sha256": "c5c3fdee5d5833fbedbf5694fbf446385cbbfd58025ea7416b8c07282383a45d"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/interface.py",
+      "bytes": 1989,
+      "sha256": "7e5a211972895892f9dcc782ea591c3b51dc6c33f980d5827e6fc2162f18b84b"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/launch_smoke.py",
+      "bytes": 2124,
+      "sha256": "8486c65c8adff71d108bae694538dcf9729ddefaa3c5c870e78441631aa7fbfd"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/native_checks.py",
+      "bytes": 1373,
+      "sha256": "24fd153508c9971862749e9db0df05dd05526db79048de478261d6bf0f2bbc67"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/resource_profile.py",
+      "bytes": 786,
+      "sha256": "b856daa87b174be12315904e0ac3e8e358ca146f84b985c3e46c07cdfaab0a92"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/reviews/remote-preflight-01.json",
+      "bytes": 2413,
+      "sha256": "e73fbeca38b36007d1f68fa6c81658337d81277f86cc96570e7f4979245583f0"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/run_smoke.py",
+      "bytes": 5437,
+      "sha256": "85453bd76467b0dad5e37f73345a48e57f586a31cdf2709f851070f5507a3caa"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/stage.json",
+      "bytes": 164,
+      "sha256": "39583d9822d54fdad0a500d47dd54221790a0a4f032e36016dad6517e723c0aa"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r1/tests/test_repairs.py",
+      "bytes": 4074,
+      "sha256": "fdee381739187d32709ad49d8cbb2314b377308f75ef63d8797aac84a5c970d7"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/backend.py",
+      "bytes": 1615,
+      "sha256": "a1fe57d95c31bc84390dab4f9b7837c5a85cbde89d4c1bb05540b3cec5aa8c04"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/context_policy.py",
+      "bytes": 1026,
+      "sha256": "9e2d036dae4395def3fcd95b5ed2b9f6d385ad6c5952baeddd4074dcc00692ae"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/freeze.json",
+      "bytes": 15982,
+      "sha256": "998f5c94ba3fb439e5c3051f59c8a4940c04c4d6838697a0c8e5fb32259bdd72"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/launch_smoke.py",
+      "bytes": 2619,
+      "sha256": "219c29fa82e3a2e16b3cdb6453bc260f6fff4dc6e2f771ff87a5775fc5ebe185"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/native_checks.py",
+      "bytes": 1373,
+      "sha256": "24fd153508c9971862749e9db0df05dd05526db79048de478261d6bf0f2bbc67"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/reviews/protocol-01.md",
+      "bytes": 1621,
+      "sha256": "46462c7980442309355c9f0e998fdae1261a5622ef4e911016c1622eca30f71b"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/run_smoke.py",
+      "bytes": 5501,
+      "sha256": "58394a6d1847edc5464a3c4b81eb6f985e547d1997049fd10d6fc3b10e0dee0e"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/single_loader.py",
+      "bytes": 1485,
+      "sha256": "72e0248b24cfce86eeac8cb5e4011250b3e143123e530e400767acb201c777f0"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/single_policy.py",
+      "bytes": 1982,
+      "sha256": "f563b2a6e2982193ac81ea17246794dac3932fc536e13f2664b46b93d828c256"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/stage.json",
+      "bytes": 321,
+      "sha256": "88cbb200d4d87f8656555a4a70ad57f1e5310e60128537a0609dbaeb97cef9b6"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r2/tests/test_single_gpu.py",
+      "bytes": 2731,
+      "sha256": "497597135efe72be85b58e44488a3a0b17ab9ec4d0732a2e644a40c382d30d9e"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/backend.py",
+      "bytes": 1615,
+      "sha256": "a1fe57d95c31bc84390dab4f9b7837c5a85cbde89d4c1bb05540b3cec5aa8c04"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/context_policy.py",
+      "bytes": 1026,
+      "sha256": "9e2d036dae4395def3fcd95b5ed2b9f6d385ad6c5952baeddd4074dcc00692ae"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/freeze.json",
+      "bytes": 18172,
+      "sha256": "090ea7672a879f20d9b5dd0bbad696328bd5e52201c9b1d2a346bbf42ce47b85"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/launch_smoke.py",
+      "bytes": 3313,
+      "sha256": "be0f5d316c5793e580ac1e20127ca1fb92be723606a7df0bd15f8fe4ae4c0d8b"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/native_checks.py",
+      "bytes": 1373,
+      "sha256": "24fd153508c9971862749e9db0df05dd05526db79048de478261d6bf0f2bbc67"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/reviews/protocol-01.md",
+      "bytes": 1610,
+      "sha256": "faeaa4be04651d5b6afaaf5c9ebf6843c9215623c11f2451ebea4a3cfa4c0191"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/run_smoke.py",
+      "bytes": 5501,
+      "sha256": "58394a6d1847edc5464a3c4b81eb6f985e547d1997049fd10d6fc3b10e0dee0e"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/single_loader.py",
+      "bytes": 2556,
+      "sha256": "7fb57261349271609375dd132fb3f6cc010a0755ce136f3fa9d13c15fea386e4"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/single_policy.py",
+      "bytes": 1982,
+      "sha256": "f563b2a6e2982193ac81ea17246794dac3932fc536e13f2664b46b93d828c256"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/stage.json",
+      "bytes": 321,
+      "sha256": "88cbb200d4d87f8656555a4a70ad57f1e5310e60128537a0609dbaeb97cef9b6"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/tests/test_peft_map.py",
+      "bytes": 1196,
+      "sha256": "acd810440c79653b812858aba1e818f39ef9d3aed2c39a289862afdf8dd633f6"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r3/tests/test_single_gpu.py",
+      "bytes": 2731,
+      "sha256": "497597135efe72be85b58e44488a3a0b17ab9ec4d0732a2e644a40c382d30d9e"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/backend.py",
+      "bytes": 1418,
+      "sha256": "00ad25b9ad5dc0e2018235ee31b7ed0d6eda344eb3ecac81094ee48cc9625be3"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/context_policy.py",
+      "bytes": 1026,
+      "sha256": "9e2d036dae4395def3fcd95b5ed2b9f6d385ad6c5952baeddd4074dcc00692ae"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/freeze.json",
+      "bytes": 21467,
+      "sha256": "75e1ccefe7c4dbd16368ba397b6cec409192d1bf4a655557d93f7b8df3e026ed"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/launch_smoke.py",
+      "bytes": 2725,
+      "sha256": "ff147587a5c72516a9a6edcd75ee370243eb21ff7390a253328163a1a28ff911"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/native_checks.py",
+      "bytes": 1373,
+      "sha256": "24fd153508c9971862749e9db0df05dd05526db79048de478261d6bf0f2bbc67"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/resource_profile.py",
+      "bytes": 1085,
+      "sha256": "1a9d58684e696646b6544c1c627f64e7c98402aced6d989cc5c3cd101c62ceed"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r4/run_smoke.py",
+      "bytes": 6115,
+      "sha256": "f3976dca1b134d8fcc5f5403c4ccd9a23be2acab298f3d156f6e2b4080b50d04"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/backend.py",
+      "bytes": 1418,
+      "sha256": "00ad25b9ad5dc0e2018235ee31b7ed0d6eda344eb3ecac81094ee48cc9625be3"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/context_policy.py",
+      "bytes": 1026,
+      "sha256": "9e2d036dae4395def3fcd95b5ed2b9f6d385ad6c5952baeddd4074dcc00692ae"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/freeze.json",
+      "bytes": 22215,
+      "sha256": "02e994e7ee017e447614fbe042cec2b524cb4e775c6b162438c2693663ba90f5"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/launch_smoke.py",
+      "bytes": 3194,
+      "sha256": "ac71daf128fcb4494458eded4ded8f6b74bacfb68642229c90a30b1f3d203d12"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/native_checks.py",
+      "bytes": 1373,
+      "sha256": "24fd153508c9971862749e9db0df05dd05526db79048de478261d6bf0f2bbc67"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/resource_profile.py",
+      "bytes": 1087,
+      "sha256": "165692c8335f378b02b62c34cf8b42b1bf480671c10a3575739fce9f763a5ba9"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/reviews/protocol-01.md",
+      "bytes": 1410,
+      "sha256": "674fbbf54db2704c3d5cd1989a1e5b52f02d5e4050595746ff979d9a169edaab"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/run_smoke.py",
+      "bytes": 6115,
+      "sha256": "f3976dca1b134d8fcc5f5403c4ccd9a23be2acab298f3d156f6e2b4080b50d04"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/stage.json",
+      "bytes": 348,
+      "sha256": "269f713c471c54f02d4501f0c9440d4ef576b356a45caf475afb7d514ca4dbd6"
+    },
+    {
+      "path": "finance_program_skill_context_contract_20261021_r5/tests/test_two_gpu.py",
+      "bytes": 1520,
+      "sha256": "23c8b8ade85145dd3e2f5ae9e0c73b9bb74a72cc23cf27dcc4bf4d1fc8c9e58c"
+    },
+    {
+      "path": "finance_program_skill_interface_smoke_20261021_r1/contracts.py",
+      "bytes": 6060,
+      "sha256": "80b6fe1f5312fdd8ad2625ad42ffbfca0e25872bb8ca6ff5eeb6d6efbe28ad8c"
+    },
+    {
+      "path": "finance_program_skill_interface_smoke_20261021_r1/launch_smoke.py",
+      "bytes": 4489,
+      "sha256": "2609508054c174169e92ee1d8c4c54c5b86b631a5806cba5122a0e1d61da7413"
+    },
+    {
+      "path": "finance_program_skill_interface_smoke_20261021_r1/run_smoke.py",
+      "bytes": 5440,
+      "sha256": "7a1e3d7e85747946448a17800b3ecedddefaff16e22f53df6ff8c6287a796629"
+    },
+    {
+      "path": "finance_program_skill_interface_smoke_20261021_r2/launch_smoke.py",
+      "bytes": 1012,
+      "sha256": "8c28b2a6989c08c185f7b3914827ed36bfab8ed27d7e3e367d22b73919e50b5d"
+    },
+    {
+      "path": "finance_program_skill_interface_smoke_20261021_r2/next_contracts.py",
+      "bytes": 8683,
+      "sha256": "9350352803a876b23b252f4573056da09133c5a2bd747c9aa5f4ff9db336b74f"
+    },
+    {
+      "path": "finance_program_skill_interface_smoke_20261021_r2/run_smoke.py",
+      "bytes": 668,
+      "sha256": "0c059ac838f0e33610059bd88169e3676b1a782eb8cf01b7e50588ff7ab4d979"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r1/backend.py",
+      "bytes": 939,
+      "sha256": "8c1e3fe0a7d14bb35fe207f6972ca2dd8dcc960a8813e98c096a48677dc55fed"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r1/interface.py",
+      "bytes": 3053,
+      "sha256": "841198698b2d5b6412abdd4357a902afd641533051a69af8e048f2c16579f190"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r1/launch_smoke.py",
+      "bytes": 1906,
+      "sha256": "e85f6d2ca76e65fc44ee23627b9ed972be9db174308444bb2b318b43ae7854a8"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r1/run_smoke.py",
+      "bytes": 5355,
+      "sha256": "90a79c331d9371b7fcf8ce1669ce44f97890984b0d410d0601cd851a08d94aec"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r1/runtime.py",
+      "bytes": 1199,
+      "sha256": "f9b8b3bf925d1d01aa3630552908afc0f76d90da8742108556471ee626cbbab1"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/backend.py",
+      "bytes": 405,
+      "sha256": "7faeff7ecf4b286df452d8704a94133b365544275a7f37c2a06b480c2f60c404"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/freeze.json",
+      "bytes": 3743,
+      "sha256": "9285fa37f41d4dcf421785c5c43ede0aeea3d3367d4796b0862e874b773fba72"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/interface.py",
+      "bytes": 6812,
+      "sha256": "e0dc2958cf03a48dfb6c13a0af33c855e0106b72609e0c994d520351772db0f9"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/launch_smoke.py",
+      "bytes": 1864,
+      "sha256": "caa00be03329078270515a6212977addd5b9cf6292051ba1e78cd6407557cd48"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/protocol.md",
+      "bytes": 2364,
+      "sha256": "e372960b7ca8b0dfa2e004c62b3f016ba59f63a3261e69382eefe7424218d8b5"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/reviews/tokenizer-measurement-02.json",
+      "bytes": 43965,
+      "sha256": "f8a2f35875306e075ecc9443261f897d1336f6ce71dcf9beef43dd4847eb1342"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/run_smoke.py",
+      "bytes": 723,
+      "sha256": "e00f068ab60165d6732cbc7067ad983b91077a73d91ff302bf235da6feb08094"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/runtime.py",
+      "bytes": 390,
+      "sha256": "70d94bf00baed67feb45421008b31d785e068e64bb1c3af8bfe74b688e32c5b5"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/selection.json",
+      "bytes": 1114,
+      "sha256": "23dcd2013730abfaf514b359edf5fe5488524818e68af964a476312587224268"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/stage.json",
+      "bytes": 208,
+      "sha256": "97b7cf6b42d588993d35c9e99e9269bbdbaaf9479971aa7de3cd4c642f99ee35"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r4/tests/test_interface.py",
+      "bytes": 3022,
+      "sha256": "d03525c8e2aae2841d66796f2f1dd725ac58a425d33edfe83298be3b4fb7b15f"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/backend.py",
+      "bytes": 1436,
+      "sha256": "243f2f4e0047ffd9af8f120a3a671ac3ba58e989fc943f62268ef8f8a2d62453"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/context_policy.py",
+      "bytes": 458,
+      "sha256": "fc295c6d483faab42e724316609434d08de30c7354a45ceb7d1006d3431b629c"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/freeze.json",
+      "bytes": 25876,
+      "sha256": "75784cc25dd715bef2ee990fa52ac87b606dc3b4e8245dd9aeda43e7280c0ed5"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/interface.py",
+      "bytes": 435,
+      "sha256": "5bf74392eac68d1cc53eeb5bb7a471d21f1cdb5206b098347756f2ec06bfdd18"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/launch_smoke.py",
+      "bytes": 2911,
+      "sha256": "56fcdd8b1fb40f802ddfe29418a59349b77954da7e67d66719c2cb79686aeb99"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/resource_profile.py",
+      "bytes": 1846,
+      "sha256": "e69bd091e636d28cca370bde42e5c2e6e5b1ed53d0998303483bb68a53a3a0f5"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/reviews/protocol-01.md",
+      "bytes": 2195,
+      "sha256": "436f134e5d8efe018327c51d8b032c8bba39625da4da68a42602501c1cee2d6f"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/run_smoke.py",
+      "bytes": 4607,
+      "sha256": "54f7c8cd93cc1c0d93ed57d0b516b881c0337787606495be57acb3ec466f17fc"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/runtime.py",
+      "bytes": 440,
+      "sha256": "61c48351af612f303a707295d913e79a7ffc42fc9e952c13b527a90f60d39b0e"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/selection.json",
+      "bytes": 1114,
+      "sha256": "23dcd2013730abfaf514b359edf5fe5488524818e68af964a476312587224268"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/stage.json",
+      "bytes": 194,
+      "sha256": "cf711010dbe596547c5df31b6f91c5e2de413a484f5cf48e7156dd06498c9fc4"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r5/tests/test_resource_profile.py",
+      "bytes": 1738,
+      "sha256": "583d827896409043de8dbcd8ffa0a06acb11f3ffecea732c6e66b04f2df6b071"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/context_policy.py",
+      "bytes": 459,
+      "sha256": "37f98601c03fad211b178dddf7cbe1dc6b1b919d3ebf5e38bca10d1ffc712ede"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/failure_gate.py",
+      "bytes": 1084,
+      "sha256": "5bbcdc574048e81bceaa7fa4c31d0a4c6969e73b61616a43ef4e2f951bb9a365"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/freeze.json",
+      "bytes": 28461,
+      "sha256": "2078121e6a9bd5cf158e3e35cd6bb686f4bfc425f7ecbe7f30a6793a470a3a19"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/guarded_adapter.py",
+      "bytes": 1733,
+      "sha256": "a39d52295a2c0b71db80d45c0e530093ee7e43e5673e99285330f7d342003ce3"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/input.json",
+      "bytes": 8624,
+      "sha256": "f14aacd6a59a0e199fd3a86edb0d90a8fd7a04bd366e841af76af5fc5204ef3c"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/interface.py",
+      "bytes": 1547,
+      "sha256": "9b757e245360db9af0d609bc06d8e0845711549bededef5a45203bd997b72e2f"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/launch_smoke.py",
+      "bytes": 1164,
+      "sha256": "13359e13cd6f9439ae2d8d5926648dc7e24d505f1cbd97e1dd6d4ac6e3b2a5e1"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/resource_profile.py",
+      "bytes": 466,
+      "sha256": "1cf8958e4428605c3956b21a4aa6cd9b58a984d1ece55c6b474b17a3ff984802"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/reviews/target-validation-protocol-01.md",
+      "bytes": 1688,
+      "sha256": "bb0cf44017337ba56862f084cfa5714d7e0d6020ff49133f9e2902ba8dabc0fe"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/run_smoke.py",
+      "bytes": 3272,
+      "sha256": "8488e4cb8649fc60fdbc2d7c77cec6a0f4ac5899bebf5facf48995f054a1faea"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/stage.json",
+      "bytes": 199,
+      "sha256": "4dba614b46facdb5d29a0db5804816c697ed4e88cb363218734f051f3d529915"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r6/tests/test_contract.py",
+      "bytes": 4840,
+      "sha256": "68f314ab452fca44eebd698ddd617526ec64a2ffb8c1c4c84e5dd11fbfb21125"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/context_policy.py",
+      "bytes": 385,
+      "sha256": "10d40f386384a9cc141ad5dd39d9b2da375abc5a561d582ba158afa19e0a014a"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/freeze.json",
+      "bytes": 30616,
+      "sha256": "df17e87062f807868d2d8c7b30096f151a13fb1c5f9543f1bd387c15625f7dd5"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/guarded_adapter.py",
+      "bytes": 375,
+      "sha256": "e4256a17fd62dfab18c3bab342a4d9eccaeada30a63da91c70dc7b9352a74292"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/input.json",
+      "bytes": 8624,
+      "sha256": "f14aacd6a59a0e199fd3a86edb0d90a8fd7a04bd366e841af76af5fc5204ef3c"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/interface.py",
+      "bytes": 351,
+      "sha256": "d5a1e7bd9793b60b6220fb1c2d19eeff7854081aba8e354ffae4ad6710f7518d"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/launch_smoke.py",
+      "bytes": 1130,
+      "sha256": "9bbca069a459419c80aeb7ba4d80582bd7e7e222c082cf021d7e83ff56096426"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/native_skill.py",
+      "bytes": 616,
+      "sha256": "ff2fd528f451efd2ce1917f38171dd4ecfd797b1b90bbfa37b741cbec1bccec9"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/resource_profile.py",
+      "bytes": 385,
+      "sha256": "82f448ea6b8efd241a446c61998b1d9394c98ace002110ae1242a495b431f8f1"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/reviews/target-validation-protocol-01.md",
+      "bytes": 596,
+      "sha256": "ede1dbcd6b11072019acd22fb14a73495e05b6ee54ae42aa0c884724358a8031"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/run_smoke.py",
+      "bytes": 885,
+      "sha256": "295e85f5406a06de47942ea9f2fe4351bdbb1f6a765a5bceb0d5dde4441f62f0"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/stage.json",
+      "bytes": 199,
+      "sha256": "4dba614b46facdb5d29a0db5804816c697ed4e88cb363218734f051f3d529915"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261021_r7/tests/test_native_skill.py",
+      "bytes": 990,
+      "sha256": "4145e599f8a6a436732b1689344362d6daa7db8d35ce0157e4c427f93039d6b4"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/backend.py",
+      "bytes": 644,
+      "sha256": "7fa63d0b92a24cc46b5b4a6bc313170241ae807b25438d2133944ed667ebdc54"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/context_policy.py",
+      "bytes": 377,
+      "sha256": "d3e6cbf672a84db9f9d666bca06795b05cb5898f7b461db2945914d863cf2ff5"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/freeze.json",
+      "bytes": 32781,
+      "sha256": "f5654ee87075e44c0d574caf3c3c306f0e7648c800175e394d2722111e9d8d70"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/interface.py",
+      "bytes": 3354,
+      "sha256": "2cbb4dcb2fcbebdb2db7d49f82a1e21df0cc13126985d3c5f023088b270c7cb0"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/launch_smoke.py",
+      "bytes": 1946,
+      "sha256": "2eaa7cbc059ae190338136662c4974ec90aec3db340b18b7f5a574e1deb1288e"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/resource_profile.py",
+      "bytes": 388,
+      "sha256": "65bbf14183f49dccbeff0d9d62bb1258f646cc884ecc254c4626189b885f014b"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/reviews/protocol-01.md",
+      "bytes": 1735,
+      "sha256": "5b5909fa3ee72eec4381dfc90db9f5e615b447a436cd5767278df9e6a37a4ad3"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/run_smoke.py",
+      "bytes": 713,
+      "sha256": "bdfcbc0d7b3d026e5cc407e784b10d14cf7306713b061decea114e904d2ed155"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/runtime.py",
+      "bytes": 396,
+      "sha256": "bd38e0f46506afa9ca0cbbdf9be47e54e69beda2bcb9f715b18c030d8c3f8946"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/selection.json",
+      "bytes": 1114,
+      "sha256": "23dcd2013730abfaf514b359edf5fe5488524818e68af964a476312587224268"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/stage.json",
+      "bytes": 345,
+      "sha256": "c254a630d5c91ec0c43102a7468f6380a7e6f2df306f104de2923095f025097d"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/success_gate.py",
+      "bytes": 832,
+      "sha256": "e226c579b3b86130a7a8a13f2b95aed06940d50c7b6fe9ba94823d812dc493a4"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/supervisor_entry.py",
+      "bytes": 2039,
+      "sha256": "fc80e7d094a658a8dd5743cdb240ccf209cc0b6c1994bc67a4011639120e0137"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r8/tests/test_task_scope.py",
+      "bytes": 4094,
+      "sha256": "1a62903b34171125844253cfb8bb53e0d52353a0a9888a748c9a03f6877d1077"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/backend.py",
+      "bytes": 629,
+      "sha256": "f76300c58d3d16b1e2e912e995fdf8745848edeb34420484227d0a4a0761e999"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/context_policy.py",
+      "bytes": 366,
+      "sha256": "22a3b93cd038b4b861c1923d6f1f29fe1cfe4edf2ce9e41ca09dbebf99716148"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/freeze.json",
+      "bytes": 34913,
+      "sha256": "13031d706be7ebd89c2c9207ac7895e7e07dda55f7e3f61190c2e69e5ea776c8"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/interface.py",
+      "bytes": 4666,
+      "sha256": "8d1253166bec3917fd0a3366cd6e9284399b41a6030e638c839c9f7a4683e67f"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/launch_smoke.py",
+      "bytes": 1901,
+      "sha256": "9c683dd6afeae15135d1203e9575d0331b4c753d1ccd8526ea46399d54a1dd2c"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/resource_profile.py",
+      "bytes": 379,
+      "sha256": "2e615325e2f422051ae6d8e86fbf1a5b7e39ff6b0902ad619f7bbc7831fe1163"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/reviews/protocol-01.md",
+      "bytes": 1711,
+      "sha256": "c509d5f272aeb236cb07124a46f9eec0b274d3b419122bc0dc93747012c48bff"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/run_smoke.py",
+      "bytes": 668,
+      "sha256": "67c6d66448122081624e036462c7c9378b09c74208ed2231bfcffb175c4c14be"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/runtime.py",
+      "bytes": 376,
+      "sha256": "60504b7bbaffc55551aa9df25b155d350570c15f45e91c45389abad07e862a62"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/selection.json",
+      "bytes": 1114,
+      "sha256": "23dcd2013730abfaf514b359edf5fe5488524818e68af964a476312587224268"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/stage.json",
+      "bytes": 345,
+      "sha256": "1ebbac4ea660247b556d7a59b6472c960d0706f1f0c9d6a6044f25321ce8ab8a"
+    },
+    {
+      "path": "finance_program_skill_recovery20_20261022_r9/tests/test_projection.py",
+      "bytes": 2951,
+      "sha256": "d136cb3ce70596504985d2ef4a55b5fc10a9079c5b31aa2025fbf6010ef457ff"
+    },
+    {
+      "path": "finance_program_student_b80_20261021_r3/io_utils.py",
+      "bytes": 1056,
+      "sha256": "6e00a68763e323fbfa2004f1de738c428867f8ba12358cae62da20b3b94bf958"
+    },
+    {
+      "path": "finance_program_student_b80_20261021_r3/launch_training.py",
+      "bytes": 8726,
+      "sha256": "75e22a0863cb8dcda711b2bc9e4637d7fad7b0645c70c57365dadc805217cccb"
+    },
+    {
+      "path": "finance_program_student_b80_20261021_r3/memory_runtime.py",
+      "bytes": 5894,
+      "sha256": "9704210c2c03c53a674334ab49f87e9da6f43c009d671717aaf9171b744c2086"
+    },
+    {
+      "path": "finance_program_student_b80_20261021_r3/resource_gate.py",
+      "bytes": 4042,
+      "sha256": "3776976cd7634cb6673f50b9805ccac76eca6d86caf30703fadb990e32b976d7"
+    },
+    {
+      "path": "finance_program_student_b80_20261021_r3/train_student.py",
+      "bytes": 19439,
+      "sha256": "c7ecfba0b1866e5730b970200dbfc0adb441722bd85b66f57f44898305a4e990"
+    },
+    {
+      "path": "finance_program_student_b80_20261021_r3/training_contract.py",
+      "bytes": 12961,
+      "sha256": "7af7a6947cd76bb9355afa4c05ec2865cc365efdcee14bf54f23929f8a0169ae"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/eval_backend.py",
+      "bytes": 15164,
+      "sha256": "81616545533908185cb280ef0ce6af150ecff9dc14fc67d9c5e837d2dff4358d"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/io_utils.py",
+      "bytes": 1056,
+      "sha256": "6e00a68763e323fbfa2004f1de738c428867f8ba12358cae62da20b3b94bf958"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/launch_evaluation.py",
+      "bytes": 7265,
+      "sha256": "3a61740faed76522ead13c014cf0c2b61e51c812a37ad3ea17966b32d82801d9"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/launch_training.py",
+      "bytes": 8432,
+      "sha256": "412b27860978e997236ea0d8e616099d374469c4b957bcea3ad9725ca795f44f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/memory_runtime.py",
+      "bytes": 5894,
+      "sha256": "9704210c2c03c53a674334ab49f87e9da6f43c009d671717aaf9171b744c2086"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/model-identity.json",
+      "bytes": 2699,
+      "sha256": "5b0a6b5e607d5305b2d59dd3e04bbd0f8b04af4502c389be3a5d83d01eddc8c9"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/paired_eval.py",
+      "bytes": 16345,
+      "sha256": "90933761c7dba56616d0579deca6b5abac4f80855f2f34e6be40c1da196e16a5"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/prepare_runtime.py",
+      "bytes": 8331,
+      "sha256": "b4d27ad20cd1e153cb30b12eda66797db68f453d9362bbfaf5695dbcc275ff2a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/resource_gate.py",
+      "bytes": 4101,
+      "sha256": "329b8193cbb7928c1fd6b1bdd48c9a1ac1232ba48b37792a5bb984d2afe920e8"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/reviews/evaluation-freeze-01.json",
+      "bytes": 33040,
+      "sha256": "265479972893028b1859895b3a9a6716be2ebcfa2f861b3ff33e8947231cf686"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/reviews/evaluation-stage-brief-01.md",
+      "bytes": 1469,
+      "sha256": "ba149c23eea06f59f39c4a2a210b4565c69dd4ff0567a5e2a59cd7ed316a0612"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/runtime-inputs/inputs.json",
+      "bytes": 5977372,
+      "sha256": "c6eaf618eea38752c59c80d18284c1e3b9245e2c3426d7574b34c786d0767ea1"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/runtime-inputs/manifest.json",
+      "bytes": 40664,
+      "sha256": "feecb2552ed05f161ede1b1e30c8d479e1e60426bb52342c0208d73c1f8fb614"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/training_contract.py",
+      "bytes": 12961,
+      "sha256": "7af7a6947cd76bb9355afa4c05ec2865cc365efdcee14bf54f23929f8a0169ae"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/__init__.py",
+      "bytes": 270,
+      "sha256": "8ebc1b9a3937a1848c199126edf97e5862741ede120a491e87a8473d6c0f7c46"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/__main__.py",
+      "bytes": 48,
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/_vendor.py",
+      "bytes": 305,
+      "sha256": "cfb187e38a0b8acd86e83476ee24f3aa02928c86fd3deb532f752ae8784bbf80"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/catalog_context.py",
+      "bytes": 1803,
+      "sha256": "7e08a466d701eb8b67733629c7af4723f9baf1eedf16ba768a78ba4d6d0e10cb"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/cli.py",
+      "bytes": 4594,
+      "sha256": "82d3841baa287c2d5e0cf519ae2532a4fd5a4d79e89d907e29ad029c17d59335"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/contracts.py",
+      "bytes": 2102,
+      "sha256": "04f584b9acfb033fb1cbd38c8f08595f46bd3d4c57a55495fc282920bd9169a4"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/controller.py",
+      "bytes": 7108,
+      "sha256": "a3a8ad54e30a0fb623cf9524bc766c4ee6d334de84648aaec77addda3f0c93e1"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/execution.py",
+      "bytes": 6654,
+      "sha256": "960800db0c9f49ca7db61c9f20fa3967f6373d2df000da1a7eb253d150efa72e"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/failure_policy.py",
+      "bytes": 2611,
+      "sha256": "92282fb6456a3df91deab50c141964abbad68741e948116ef0e4a3ad8057762f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/planner.py",
+      "bytes": 12173,
+      "sha256": "6edeab5d5164663a6e9f1ac5c31848836469f970b7accbeff937e033dc80e22b"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/planning_contracts.py",
+      "bytes": 2151,
+      "sha256": "b0cd81f6c0aac6c0ef09bf460176522683f9612b908de06f0841abd16958e312"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/prompt_encoding.py",
+      "bytes": 3502,
+      "sha256": "20862c2334a809ac06629058495eaaf4e94a601345dbcdbd5b6d573df07ebebc"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/recovery_context.py",
+      "bytes": 3222,
+      "sha256": "0d67d47e51f55edc4bbffe1164327c7f74d7aff1b629dae6df3e5c9c201af2f7"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/rejection_context.py",
+      "bytes": 1329,
+      "sha256": "fd71ad424ff4a201b01f4db7276f2d958fd94eba7aaf26deb16cc54dbcb9de1f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/program_loop/validation.py",
+      "bytes": 6833,
+      "sha256": "c96220f85cc14375ce6171dc59c2ff5d46389017ca9549cb41ff00cda82b51eb"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/reviews/runtime-manifest.json",
+      "bytes": 20800,
+      "sha256": "e8d9de3b5173384e362799d5149466a5a0060896b685ddfcd6904df091bd4aba"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/runtime_identity.py",
+      "bytes": 1316,
+      "sha256": "a183d837ec5f666ea8bd0c1965ff0004d63be74cd1c369505cd7e6ddcb2dccd1"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/common.py",
+      "bytes": 5142,
+      "sha256": "c79a02e987a169436796f438a415d7c309c0e0cf50bb447e493cd68cb9301fa4"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/comparison_output.py",
+      "bytes": 2126,
+      "sha256": "ed7b3bb552aeaff329ab4531bfa4fbd93772bf560475dc4d3fb848c12bee68e8"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/evidence_roles.py",
+      "bytes": 3823,
+      "sha256": "6b76fbc8696a70d9ed5723a4ba71edc4de540f29e883d5ee5f99d9f806536064"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/grounded_semantics.py",
+      "bytes": 4000,
+      "sha256": "4f2f764e2256ad1dda8716f42277e688fe710fbb607e310cdbe57995e43c254c"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/pool_availability.py",
+      "bytes": 6074,
+      "sha256": "c6fa8e23a678b4451ef78d301efb347507fb0513a9d18bfda76eeefc824d70aa"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/pool_bindings.py",
+      "bytes": 2822,
+      "sha256": "3c0c65e78f7bcdc5bb81003b455fd957dba5c4abdbfdaa20b8fddb3b155e07db"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/pool_catalog.py",
+      "bytes": 7159,
+      "sha256": "bd19db2c908d41120498eae4afc26e30726b60ddf7fbf834e77ca6251e8c8a82"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/pool_metadata.py",
+      "bytes": 5969,
+      "sha256": "0705318048785fd34edd970274145dec359269e5e30756a996eb156e168e3a8a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/pool_runtime.py",
+      "bytes": 38586,
+      "sha256": "ae5f3927e4b4faa5a7808c9ae9975af9ae9ef7d7f2f347fd034f34cadf2e9f45"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/reference_skills_63.json",
+      "bytes": 2232,
+      "sha256": "a63b6ee85f983caf9f55d537fe85d24a283a860ccb0985c8a7fce8b1466e3caf"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/__init__.py",
+      "bytes": 110,
+      "sha256": "c2ee5b379bec6f6381e0651bee6078e38ad6ca294f497d40b6d27e583fd1492e"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/__init__.py",
+      "bytes": 946,
+      "sha256": "64f470fa2d85450ebbd8819a66c63064bcdbf993c829d248c64315285e7aca73"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/agent_loop.py",
+      "bytes": 39927,
+      "sha256": "176bc72eebd17a7d2e45276654c49cbd5b1828306e11d2579faffe143eebcade"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/artifact_projection.py",
+      "bytes": 2952,
+      "sha256": "d71939b3e4b04b83d33f7aedbc3173cd44043b8a55d44c149c46f35d5aa3f7d8"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/catalog.py",
+      "bytes": 5851,
+      "sha256": "66ceb63dd02030cecb3965247a671da64c4d29724ece9a5eb52961a0647c8e6a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/category_catalog.py",
+      "bytes": 4738,
+      "sha256": "baf7b0b234822060b48dded26f00d526654749f1384c3e23f9eb07ddc8fa0a58"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/contracts.py",
+      "bytes": 3654,
+      "sha256": "19ed69938bdc517be14625e0ef886945dc4483faeb6a8260fdfcacaffa83f233"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/metadata_lookup.py",
+      "bytes": 2340,
+      "sha256": "e338e0d804caa20218637074422b08f26b16fdbdd9faff39077a1cb73beb89fc"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/metrics.py",
+      "bytes": 2007,
+      "sha256": "fffb69bd3e8efa149e46e3413b4056457840b9cd8f6798fd5e0871cdb7e3a0b3"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/model_skill_executor.py",
+      "bytes": 40824,
+      "sha256": "6ad63e1de6cb77bbf6d3cc537f907b59e94147b7e58de885d0d0c43bdb31671b"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/planner.py",
+      "bytes": 16361,
+      "sha256": "5be67a873f8fa54c183c9fa381def425b73cc92181fab6079506eb2296fa53d8"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/retrieval.py",
+      "bytes": 12500,
+      "sha256": "fbe140936695f38c6bc6838c5a9a0100ca9e6f98b6e77984e587fdbea28b6bf4"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/runtime.py",
+      "bytes": 7641,
+      "sha256": "887e82115154f043801719b5e292895e3eeef0d25e277748805a0c1dabc39acc"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/skill_loader.py",
+      "bytes": 6180,
+      "sha256": "7528bada337e98b69ef61ccf558574f5940d26fcfc2106530f8c9d0d765964f6"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/table_field_lookup.py",
+      "bytes": 3864,
+      "sha256": "93319c4ee044439f9e25449cec220dfaededa1c6b799816486d19402b569dc22"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/topk_selection.py",
+      "bytes": 3147,
+      "sha256": "a58411d1acb421bd5e5c134f4ceef7ccce76851f684a397446904b7a17b1eb4c"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/agent/orchestration/validator.py",
+      "bytes": 5283,
+      "sha256": "15fd2b9faca5addf49f4fdf5d816eb2ecb3723c6b800da3fd591cda93b0bedcd"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/script/orchestration/__init__.py",
+      "bytes": 72,
+      "sha256": "7c61249a27a9c7ad011f983e9857e3889ae54837d00faf2660fe2f72350b30d6"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/code/script/orchestration/run_agent_loop_batch.py",
+      "bytes": 51611,
+      "sha256": "6605815bf479e8fc50a3041af3c2430b3f121740bf38b8e6d497212d4425616d"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_ASSESS_CATEGORY_SUPPORT.md",
+      "bytes": 880,
+      "sha256": "85ea64633013f69d582707acf4ab1b32201cf5ebbf7e0356041119d6c08c106a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_CHECK_EVIDENCE_SUFFICIENCY.md",
+      "bytes": 572,
+      "sha256": "f879c21470b9daeb773a80a256a07f7a6f43e38e8452347f128eca6391362f4a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_COMPARE_CATEGORY_HYPOTHESES.md",
+      "bytes": 844,
+      "sha256": "3fa31691df6bb353b4171a8c837da229549f8f4eff827bf502f81cb2318432a5"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_DECIDE_NEXT_EVIDENCE_SOURCE.md",
+      "bytes": 990,
+      "sha256": "647a447ae584d92e67c17d2d7040ff48d14cb8d2b5039345d65eb072b5c14fd3"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FINALIZE_CLASSIFICATION.md",
+      "bytes": 637,
+      "sha256": "cd66513c1ca4b6728bd217ae57a7ad7cd96257f61443a7af2ac1edd7e746f937"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_CONTEXT_EVIDENCE.md",
+      "bytes": 867,
+      "sha256": "b0028a313fa3f81350f07093c5389c7ec0447539119e37930f1f05bceec539d1"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_DATABASE_EVIDENCE.md",
+      "bytes": 835,
+      "sha256": "e27e9b2f57b5b1929d5286a10cc15233ab48ba40948fe520fde8853f66bc1e56"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_FIELD_EVIDENCE.md",
+      "bytes": 870,
+      "sha256": "6dfef164297cb75a02f64ebbdafecb3f0519f1a5f1992c3bb9a98157b7a7ee54"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_METADATA_EVIDENCE.md",
+      "bytes": 880,
+      "sha256": "e3a7e0de334bc39836c3a909edc79233075b0b73f7c30e879d4e087bc94aa6f2"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_STANDARD_EVIDENCE.md",
+      "bytes": 880,
+      "sha256": "eddac25de1c3dda0baf876d29a7a32ae4fab980f2ae7ce892def82af3469087a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_TABLE_EVIDENCE.md",
+      "bytes": 801,
+      "sha256": "24c7eb0ea3381b640465e78e41eb2ff43495e7bb3eadcc652e5587c3bd167ab4"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_IDENTIFY_MISSING_EVIDENCE.md",
+      "bytes": 990,
+      "sha256": "237695b8b5d6f9a7105902dc32a120297c364ee5f8d1c27f4ead212df110668f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_INFER_CATEGORY.md",
+      "bytes": 586,
+      "sha256": "032b758517d3a8535c29d20d8391bd8d27a2ad1d5c7e9f62246578076ddb5197"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_INFER_CATEGORY_FROM_TOPK.md",
+      "bytes": 678,
+      "sha256": "7af18e11373d633fe4369338336c653b47238c214cb5f1937e0a5b30041f722f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_INFER_GRADING_LEVEL.md",
+      "bytes": 588,
+      "sha256": "276b5e1a8b080d9aecec762762939372f40e56c8fb4b1eb92964c53073b6d603"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_RESOLVE_FIELD_CONTEXT_CONFLICT.md",
+      "bytes": 908,
+      "sha256": "94e552edccadc03cb55a5ab8e54511a296971363bd4aafb30b3ab1385e5a18f3"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_RESOLVE_METADATA_CONFLICT.md",
+      "bytes": 863,
+      "sha256": "643472dc5b7e7cdb38f3483857acc94d539884efede9b9ed0f4cccc79a037d0b"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_RESOLVE_STANDARD_CONFLICT.md",
+      "bytes": 878,
+      "sha256": "be9b9c9c879b964acf4b5f7317dcf90c68833a1f98f6cb8ab9f8199460066b25"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_VERIFY_CATEGORY_WITH_STANDARD.md",
+      "bytes": 944,
+      "sha256": "deb07baab54b052a9323b475c912d7743115c96dd4b1dd0b7c4a80df3e3d0dfc"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_VERIFY_CLASSIFICATION_GRADING_CONSISTENCY.md",
+      "bytes": 932,
+      "sha256": "ff8ef17c1ce1408496c6634389ecba87f6d282d0264e4ac1ee9a8c2deb12bab1"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/evidence_reasoning_WEIGH_EVIDENCE.md",
+      "bytes": 874,
+      "sha256": "c928a03a7a8f2d8b1a28ffb01c100543000a62e4a388a0e60051a4b6815dd43f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_ACQUIRE_MISSING_METADATA.md",
+      "bytes": 998,
+      "sha256": "cc788f17f7c63e1f7974f220eca3becfb186d3df287a35d814a5387964d20ce3"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_CHECK_METADATA_AVAILABILITY.md",
+      "bytes": 576,
+      "sha256": "fe27b6f518a98be4e88414d6180180954572f222fec37dfc4591e2b72a05ad5a"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_EXPAND_SELECTED_CONTEXT.md",
+      "bytes": 964,
+      "sha256": "323b136804a9db277d6642b71de277ae3fcd7021910645475872b1b018d79a79"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_COMPLETE_DATABASE_CONTEXT.md",
+      "bytes": 913,
+      "sha256": "0008e4dc6b220757208cb656912ebb609c8230aaf62ce56a33f247dc5879f7cd"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_COMPLETE_TABLE_CONTEXT.md",
+      "bytes": 914,
+      "sha256": "09b1f136ca45244c603e98aba0bec6fad8997ca2e618eeaeaf7ac1c1de4fb711"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_CONTEXT_FIELD_DESCRIPTIONS.md",
+      "bytes": 947,
+      "sha256": "0b5f7d9ced8902a3a7157d6781a3b3d6bc9fb9f2d2c55da99f31977ceb5609b8"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_CONTEXT_FIELD_TYPES.md",
+      "bytes": 945,
+      "sha256": "61cfe7efeb0980d22e72c4069e70cb91d1a007c7352b528b600b7efbcfd313e5"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_CONTEXT_FIELD_VALUES.md",
+      "bytes": 983,
+      "sha256": "780305d46253a0ab132f35feee6ba420347f351326827c4be781bd4224349504"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_DATABASE_DESCRIPTION.md",
+      "bytes": 903,
+      "sha256": "37b2146b9cd669e1dc0cb0a54c0f6ee36dc0157ce1e4e753d96be08a6fdada21"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_FIELD_DESCRIPTION.md",
+      "bytes": 951,
+      "sha256": "d545962070cb10fa90ee1693261d48ee08df616cad4d098bfcd98643100fce7b"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_FIELD_METADATA.md",
+      "bytes": 801,
+      "sha256": "372ce861fcca6138cda43b693a8fc32f85c0ec380b0c275c3cfe613dbe25f629"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_TABLE_DESCRIPTION.md",
+      "bytes": 879,
+      "sha256": "912334b76f95c6f468cf4bab840ae0ec3a262639c59e545db63bfce866710ea0"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_GET_TABLE_FIELDS.md",
+      "bytes": 935,
+      "sha256": "99c01c5869b511754feccfd335017c7f4290683fbcc46ed6355b95f775d605b0"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/metadata_acquisition_SELECT_CONTEXT_FIELDS.md",
+      "bytes": 992,
+      "sha256": "aacb11c41507d2c2743e56a7915c9dae9d6b4e2ff3ece6fec6b3d73babeb6683"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_DISAMBIGUATE_FIELD_SEMANTICS.md",
+      "bytes": 626,
+      "sha256": "e497bddaf99da95503677a969926921b507b92ad542055dafaa88ee724a235d0"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_EXPAND_DATABASE_ABBREVIATION.md",
+      "bytes": 927,
+      "sha256": "2338078f06cd5276b326747fa0b80790d3c638ba369f6579e4ddcff84882eb51"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_EXPAND_FIELD_ABBREVIATION.md",
+      "bytes": 1477,
+      "sha256": "fc8d4265d620c57c6d181e395aa08a0f19319f86437739037659b29016e15fad"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_EXPAND_TABLE_ABBREVIATION.md",
+      "bytes": 910,
+      "sha256": "6ce033822d4d4f4ae7babba7bd0b44fa871476353b81fd86ac6742d266b3a426"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_CONTEXT_FIELDS.md",
+      "bytes": 948,
+      "sha256": "297bf09515bbbc0a4b9e6f80fb77c7135b7484c5c428da0868d7a0d0732717cb"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_DATABASE_DESCRIPTION.md",
+      "bytes": 925,
+      "sha256": "acc57509cff6330476522f8fc5a7b286b0ede3e477c9806000b54542f89070dc"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_DATABASE_NAME.md",
+      "bytes": 880,
+      "sha256": "e427e888ac10d742784d390ad2bdce40d0aec7c9a7abd52b5f5497fc83b866fc"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_DOMAIN.md",
+      "bytes": 505,
+      "sha256": "6e1760ff387797cb4c171f404f744b6b6b87445969659bf8b37c8bca66de5375"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_DESCRIPTION.md",
+      "bytes": 1438,
+      "sha256": "fdbd8cf655fdc0ecddafd9ce7a73f4996d7b4698405e87d8a41e134c7d85adac"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_NAME.md",
+      "bytes": 1577,
+      "sha256": "861a87c3342531c281779ac572c118f92a4c4b9e13a43e5af3eb39620e5e1d39"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_TYPE.md",
+      "bytes": 893,
+      "sha256": "93500ee995113eed8ee9d6d8887d6f65f2d4aa6ac52b12697fb8e82982c1b49d"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_VALUE.md",
+      "bytes": 897,
+      "sha256": "c0dad806fde006487b38b9d56fc0b5fde6cc2e367b8a46d13adb5c4171ed19ad"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_TABLE_DESCRIPTION.md",
+      "bytes": 713,
+      "sha256": "901cef9276dd30ff1b2e35fb39bbe9138cf42bb4ded47b37fb3afe83c1945ac2"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_TABLE_NAME.md",
+      "bytes": 857,
+      "sha256": "bfd2506982a98615fa40d2a2760893f7634a270a663f65a84547e4a2ec7a4186"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/semantic_interpretation_SYNTHESIZE_METADATA_SEMANTICS.md",
+      "bytes": 1085,
+      "sha256": "4d64debe0b8657d6c0960eb5e3eebad7aa5125e34e35f66deb38c050f665ec26"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_CONTEXT_TO_STANDARD.md",
+      "bytes": 935,
+      "sha256": "debf2fb145c10526e4952ba7cb322d8a88370ae136d1ae6f0b74b7b9d60734b0"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_DATABASE_TO_STANDARD.md",
+      "bytes": 1007,
+      "sha256": "5bdb03e45720da5ff53297fae7ce476e6fd46f3af6277e8be147a87033917630"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_DESCRIPTION_TO_STANDARD.md",
+      "bytes": 982,
+      "sha256": "ec00677a4433b6110f529eafc28d5c0272746f186121ee563ab86eb8a3a9a6ec"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_FIELD_TO_STANDARD.md",
+      "bytes": 941,
+      "sha256": "19c1e2c28c4df124d9ef56501635c31443552cc3d103d727b927db78891eb53f"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_TABLE_TO_STANDARD.md",
+      "bytes": 986,
+      "sha256": "7fa123b49aca5ec7f2525d3697e0108aaf3d85f61c966eb9492a19b657e2a300"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_VALUE_TO_STANDARD.md",
+      "bytes": 932,
+      "sha256": "d71db5f6adcf269897e8c9b662cc31edc18b7a7727db7a241624e319a390588e"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_COMPARE_STANDARD_CANDIDATES.md",
+      "bytes": 1424,
+      "sha256": "93213f34a0d765acb7a4925097fe6691c1e27aed539baa72893abf94872ec39e"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_REFINE_STANDARD_QUERY.md",
+      "bytes": 980,
+      "sha256": "51c1ead62e9d83c194ac1fc24c8f43b9879497477b79054e03384b6ded980420"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_RESEARCH_STANDARD.md",
+      "bytes": 908,
+      "sha256": "05ccd5f271a060ed497242c494c34d8ce3cac22f03e6349d0d6edfe0a4b303ac"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD.md",
+      "bytes": 550,
+      "sha256": "dcbd3841440dc7bf0ee22c02b9ba1014fff1fa6a68900f270bb8cbb40aa9074c"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_CONTEXT.md",
+      "bytes": 908,
+      "sha256": "6c1c9ad8fd7036ddf2504e30bc4f920d9754c8c3de68f2ff5263f760630d839e"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_DATABASE.md",
+      "bytes": 909,
+      "sha256": "fc38fe4bccc6637de6abe3b8434f7d069d42b6eabf1a8dc29b98cfcdd443a362"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_FIELD.md",
+      "bytes": 875,
+      "sha256": "98862fb615e97f189420455219b484ef990e0f4768f7ba4e49983e237d3998f2"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_TABLE.md",
+      "bytes": 874,
+      "sha256": "ae067ae1570ad6e24e5c43a08aa4057223923b45e2593525255419144847ebd0"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SELECT_CATEGORY_TOPK.md",
+      "bytes": 742,
+      "sha256": "c0dac66df87884c2ecd0e6dbfe2af1027b522a1653972ffa4d79e8a957a9bb74"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/runtime/skills/full_pool/standard_alignment_SUMMARIZE_STANDARD_EVIDENCE.md",
+      "bytes": 996,
+      "sha256": "ea3ee35fa9ddde244353f533a527bf25674ffb711218f74c8960862183bd664b"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/skill_reference.json",
+      "bytes": 20313,
+      "sha256": "752ed72d4ed6e987542197dfff40786ebd4487bcf6b1042cbf769d1fed2392b8"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_student_grpo_20261017_r3/runtime/vendor/study.py",
+      "bytes": 17396,
+      "sha256": "d8c78d387e00b13762fb509d23e147210b0016931879c4af7089c593d6eddbb3"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_evidence_20261020_r1/boundary.py",
+      "bytes": 11205,
+      "sha256": "2052ac1365ba78b11183b8880e0a60300732de459d02ea2b575c3dbb1e39045d"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_evidence_20261020_r1/engine.py",
+      "bytes": 1937,
+      "sha256": "74b10b0d52996aeb60d0e25e31e0816eec9ffb3deea5fb91c07aab93f2d7e4e0"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_evidence_20261020_r2/boundary.py",
+      "bytes": 6659,
+      "sha256": "968c6863ff33b2994df5fdde5a35be3ae85f35bb02a22bcaf8b5d45f8a6c27e1"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_evidence_20261020_r2/engine.py",
+      "bytes": 6114,
+      "sha256": "678b8140dd440f9f5315908c616e2fa3dc73b8f867bfd0f46f16763bc0cef5e5"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_segment_pilot_20261019_r1/engine.py",
+      "bytes": 9950,
+      "sha256": "4131d74a0feb95de69715c456a9a06ed9f45ac006aebdba00d001fb2fb88f8f3"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_state20_20261019_r1/collect20.py",
+      "bytes": 16172,
+      "sha256": "48b92d4d3e6b38bf955145188ba1b3a2e7b6383961ccdb3ae4bce1909bac3c79"
+    },
+    {
+      "path": "finance_program_student_b80_eval_20261021_r2/vendor/finance_program_teacher_widebudget_20261020_r1/engine.py",
+      "bytes": 4087,
+      "sha256": "51e7934af30ac999632e09c5df645c7313d7270109f90a7a126a8df0fba2f814"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/contract.py",
+      "bytes": 2788,
+      "sha256": "295aa40a6f49b26bfa2cd58b7fe2a95b5bfc88f0bb90b5491adc4ab9d8bed6c0"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/data/data-lock.json",
+      "bytes": 64308,
+      "sha256": "f58535e79de0d2e6b751430b2640ae1a315ef648d8bbf67ea8720513426a38b0"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/data/train162.jsonl",
+      "bytes": 22420595,
+      "sha256": "64485902717aa33ce58f5ed0719ed22f49b3c836b8739ef0cf45f42f47761020"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/dataset_contract.py",
+      "bytes": 5580,
+      "sha256": "9ce844778af36796eb1fcbf82fc85b12b6e58e4901875e18ba517963e4a11486"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/deps.py",
+      "bytes": 706,
+      "sha256": "026df3c1a0f715103da3f6ef186d40d5c6ffff093a7be1883642fb4a09391374"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/eval-inputs.json",
+      "bytes": 89861,
+      "sha256": "4adbd5b63eaea2bd32268cab41c1f7183a3ed1f5108c2c56eb6c0c3ee58871b4"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/eval_runtime.py",
+      "bytes": 2280,
+      "sha256": "16aea9c4e0b54a7edbac005a944e01ad3d47d0abbe849d3d62b7ca1be60c2213"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/evaluate.py",
+      "bytes": 3607,
+      "sha256": "f10f60d5b261c9dada5219d50dac2bc9f7b2b38ddbda9d1e4e0b69ee646cd57c"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/freeze.json",
+      "bytes": 75423,
+      "sha256": "f8bebc90b623cdce62720b8ca93a0966cc55a6964a46ba2e51f0328111add5fc"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/model-identity.json",
+      "bytes": 2699,
+      "sha256": "5b0a6b5e607d5305b2d59dd3e04bbd0f8b04af4502c389be3a5d83d01eddc8c9"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/model_backend.py",
+      "bytes": 8946,
+      "sha256": "1294b6fc68c658ddc6bef4af94700f829e4a2b08dfec05581235c2482d4772cd"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/prepare.py",
+      "bytes": 3989,
+      "sha256": "c71b2a361d84c5d7f5509dd44ce3413b9568ae74a423a1d58ae9b707b1d721a6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/recovery_safety.py",
+      "bytes": 4168,
+      "sha256": "66f4266b651a87e7ba09bdd80ff9a21aea9adc6163a60e0e366a2792273fd512"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/resource_profile.py",
+      "bytes": 1175,
+      "sha256": "e290b6907563d2036644b8bb479e85a469122ff245a859a81c28fa748c2b23f0"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/reviews/preflight-local-01.json",
+      "bytes": 113,
+      "sha256": "5263f81d7024dbc868b6661e58d46b55c3c67d60c807e25bf177aaf18c8f02cf"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/reviews/protocol-02.md",
+      "bytes": 2166,
+      "sha256": "8d18085af1009005e7480f323315cace0f0b11ce0ddefd9f37a2ca18c3d562e6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/reviews/protocol-03.md",
+      "bytes": 2275,
+      "sha256": "92337fa201ae2c1abd8d80dcc041ae6618ae7087091631e2ddb7bddbbfab9c84"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/reviews/tokenizer-audit-01.json",
+      "bytes": 25102,
+      "sha256": "bdf8b90ac70e343b46f77db08afd1c172854353efe60c04cf713628be2968aa2"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/runtime_safety.py",
+      "bytes": 1273,
+      "sha256": "060082ca8bf69cb8da074557cd573121df1cbff3c7b4aa9600804641c549e80f"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/selection.json",
+      "bytes": 19137,
+      "sha256": "ebdbc89e604d4b5edce232c3439ace4021412c7d2e385369579c4c4144c5d73b"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/supervisor.py",
+      "bytes": 6637,
+      "sha256": "8a844996540c314ad2936a4fcd4b3ab3ad3a525c3b7f936e0265f8d85b405999"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/tests/test_gpu_pin.py",
+      "bytes": 903,
+      "sha256": "61171cbfec333dc3ad67fe584f435f28f7013b51bf0b018ab3b428f430f1f5a9"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/tests/test_recovery_safety.py",
+      "bytes": 3190,
+      "sha256": "c1f85f1aadeeb1f8076b9e847d8a315989e6f5168ea94d52f96a3f27ea4716e6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/tests/test_runtime_safety.py",
+      "bytes": 1676,
+      "sha256": "b145139f16c3a35aec521568180bc79fae729484d0dd67642297b932b3694c29"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/token_audit.py",
+      "bytes": 1635,
+      "sha256": "d15f76b5cb9b5f2ab3edcda219819151380ced9a8ca1913228388a887bfe5b7a"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r3/train.py",
+      "bytes": 9076,
+      "sha256": "7cf6456c987f250528a6336020bf687d886ab02c85e084e6628703ab2bc06f9f"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/admission.json",
+      "bytes": 1208,
+      "sha256": "065c62cc8971e479683fd763826fa03b23ab829c9d68755169b480dcbf234346"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/contract.py",
+      "bytes": 2788,
+      "sha256": "295aa40a6f49b26bfa2cd58b7fe2a95b5bfc88f0bb90b5491adc4ab9d8bed6c0"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/data/data-lock.json",
+      "bytes": 64308,
+      "sha256": "f58535e79de0d2e6b751430b2640ae1a315ef648d8bbf67ea8720513426a38b0"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/data/train162.jsonl",
+      "bytes": 22420595,
+      "sha256": "64485902717aa33ce58f5ed0719ed22f49b3c836b8739ef0cf45f42f47761020"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/dataset_contract.py",
+      "bytes": 5580,
+      "sha256": "9ce844778af36796eb1fcbf82fc85b12b6e58e4901875e18ba517963e4a11486"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/deps.py",
+      "bytes": 706,
+      "sha256": "026df3c1a0f715103da3f6ef186d40d5c6ffff093a7be1883642fb4a09391374"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/eval-inputs.json",
+      "bytes": 89861,
+      "sha256": "4adbd5b63eaea2bd32268cab41c1f7183a3ed1f5108c2c56eb6c0c3ee58871b4"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/eval_runtime.py",
+      "bytes": 2280,
+      "sha256": "16aea9c4e0b54a7edbac005a944e01ad3d47d0abbe849d3d62b7ca1be60c2213"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/evaluate.py",
+      "bytes": 3607,
+      "sha256": "f10f60d5b261c9dada5219d50dac2bc9f7b2b38ddbda9d1e4e0b69ee646cd57c"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/freeze.json",
+      "bytes": 83853,
+      "sha256": "d4c496aba8eb7acbaae22b37091eaca2273238522fe2b3aa3fb4e863487ab1a0"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/host_cache.py",
+      "bytes": 555,
+      "sha256": "0ff0da4238f0171a5325ffe4b49fe343be890920e74fd5e87cef8fb902ea6da6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/model-identity.json",
+      "bytes": 2699,
+      "sha256": "5b0a6b5e607d5305b2d59dd3e04bbd0f8b04af4502c389be3a5d83d01eddc8c9"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/model_backend.py",
+      "bytes": 8946,
+      "sha256": "1294b6fc68c658ddc6bef4af94700f829e4a2b08dfec05581235c2482d4772cd"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/prepare.py",
+      "bytes": 3989,
+      "sha256": "c71b2a361d84c5d7f5509dd44ce3413b9568ae74a423a1d58ae9b707b1d721a6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/recovery_safety.py",
+      "bytes": 4168,
+      "sha256": "66f4266b651a87e7ba09bdd80ff9a21aea9adc6163a60e0e366a2792273fd512"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/resource_profile.py",
+      "bytes": 1104,
+      "sha256": "34ba6c8c83c81fe117862eafd4d67feb58cc50a8b6945799c239861360a6b22f"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/resume_contract.py",
+      "bytes": 2049,
+      "sha256": "2d3cc82e0e72b9cf3cbbb119e1c89f194b70334449e4ab8b6973218f70a75d97"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/cache-validation-01.json",
+      "bytes": 392,
+      "sha256": "ae8b176904d59bba16b82f5bf37f82146a0895cfdcfab7480b4e3ecbe9e3117c"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/final-01/extract/runs/training/completion.json",
+      "bytes": 55481,
+      "sha256": "68c6d069b40cf68d65165a5a63966cd0b85762a1d244a0cfa30f1639c25cd091"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/final-01/extract/runs/training/final-adapter/adapter_config.json",
+      "bytes": 1163,
+      "sha256": "2f69a266884562c3a4e962d3cdf9fe1f999c1055fc09b2d48d794cbb38bffbcb"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/final-01/extract/runs/training/final-adapter/adapter_model.safetensors",
+      "bytes": 13905776,
+      "sha256": "6d78e440ab0c9749427e002d54fd94cca06dea77c31b63ae3628b48fdbec4e64"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/host-cache-native-green.json",
+      "bytes": 1882,
+      "sha256": "1d6ac89a1e02a77577b8504646532c0676d337fb65ed0d4f24de5aa7b6a8abc7"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/host-cache-native-red.json",
+      "bytes": 195,
+      "sha256": "00fa2ee9f7f9f7ad9ef752d5a2ecb6d8ea673d481965da2dc59ef61752d5bef5"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/preflight-local-01.json",
+      "bytes": 113,
+      "sha256": "5263f81d7024dbc868b6661e58d46b55c3c67d60c807e25bf177aaf18c8f02cf"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/protocol-01.md",
+      "bytes": 3364,
+      "sha256": "a2a5172b2a60ef36dc7ee9085f6ff81e338c026a93f92b44a639f41369f70d1f"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/reviews/tokenizer-audit-01.json",
+      "bytes": 25102,
+      "sha256": "bdf8b90ac70e343b46f77db08afd1c172854353efe60c04cf713628be2968aa2"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/runs/training/completion.json",
+      "bytes": 55481,
+      "sha256": "68c6d069b40cf68d65165a5a63966cd0b85762a1d244a0cfa30f1639c25cd091"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/runs/training/final-adapter/adapter_config.json",
+      "bytes": 1163,
+      "sha256": "2f69a266884562c3a4e962d3cdf9fe1f999c1055fc09b2d48d794cbb38bffbcb"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/runs/training/final-adapter/adapter_model.safetensors",
+      "bytes": 13905776,
+      "sha256": "6d78e440ab0c9749427e002d54fd94cca06dea77c31b63ae3628b48fdbec4e64"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/runtime_safety.py",
+      "bytes": 1273,
+      "sha256": "060082ca8bf69cb8da074557cd573121df1cbff3c7b4aa9600804641c549e80f"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/selection.json",
+      "bytes": 19137,
+      "sha256": "ebdbc89e604d4b5edce232c3439ace4021412c7d2e385369579c4c4144c5d73b"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/supervisor.py",
+      "bytes": 7665,
+      "sha256": "b789828413a824e7330e866a790b73f846d5d0be6aaf2e71e8241931dee5aa83"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/tests/test_recovery_safety.py",
+      "bytes": 3190,
+      "sha256": "c1f85f1aadeeb1f8076b9e847d8a315989e6f5168ea94d52f96a3f27ea4716e6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/tests/test_resume_contract.py",
+      "bytes": 2647,
+      "sha256": "28f86718c59f46ec213ff5f84c7eec4bebe5315f34ef5eee9ab644aeec8b2567"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/tests/test_runtime_safety.py",
+      "bytes": 1943,
+      "sha256": "7bfcb1d4521db9cffba3b8a523d8f4a7c4c231294f9c2a3192e73f270dac23c6"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/token_audit.py",
+      "bytes": 1635,
+      "sha256": "d15f76b5cb9b5f2ab3edcda219819151380ced9a8ca1913228388a887bfe5b7a"
+    },
+    {
+      "path": "finance_program_student_fresh162_20261022_r5/train.py",
+      "bytes": 11768,
+      "sha256": "b486e6793a07354db85ea8778d986ad43adb94c06473a44533ca9e94f23cfb5f"
+    },
+    {
+      "path": "finance_program_student_merge162_local_20261022_r1/dataset_contract.py",
+      "bytes": 5580,
+      "sha256": "9ce844778af36796eb1fcbf82fc85b12b6e58e4901875e18ba517963e4a11486"
+    },
+    {
+      "path": "finance_program_student_merge162_local_20261022_r1/prepare.py",
+      "bytes": 8412,
+      "sha256": "71964e3a64ec67977fcd14d3f188b841db53dfc6087d386fbdc55a7c44a75c7f"
+    },
+    {
+      "path": "finance_program_student_merge162_local_20261022_r1/verify_local.py",
+      "bytes": 3008,
+      "sha256": "18a4f6532302bf1498b842a60302329f810b627ae2dd8474dba376317dcce0e5"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/backend.py",
+      "bytes": 1212,
+      "sha256": "5756d29ee054a402294d340a1ecf01711e4005b42cd2953f0b62f2ea9e87318b"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/common.py",
+      "bytes": 1045,
+      "sha256": "770a879bc13d18018213f49ce06a3f29974939e218f6ca9fbb2857a45f6b39ae"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/eval-inputs.json",
+      "bytes": 131484,
+      "sha256": "b904298b54def35b35cbdeb7ff1032d8fb5478b2be6ae119556c48fddf16aca4"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/eval_runtime.py",
+      "bytes": 1456,
+      "sha256": "7736727cd86e8f58454f2fb939a72d81871c9006623317128cbe2760acf052c8"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/evidence_delta.py",
+      "bytes": 351,
+      "sha256": "6a409b6d689684d8d2232089cbfd22bd8f17d6a4dd4acaec8dcacd7efd222c3d"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/feedback.py",
+      "bytes": 327,
+      "sha256": "f37cb35ce7cd458009d9237bdadb9064e9a74da9e128510cfea1e7bfaaa3f56d"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/freeze.json",
+      "bytes": 181874,
+      "sha256": "5871c9ea283b90d09fd10081ef2c4a108839c95d846a0a1cd3a74a4a2835d3ce"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/initial_identity.py",
+      "bytes": 308,
+      "sha256": "ddc5479590e59b944ff3e4636781822a27f1969ed16bd001b8e47f6cf0e0d295"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/interface.py",
+      "bytes": 407,
+      "sha256": "974b4dd89c1affca656324446535dfcdef7c15a46a4ade4155b9fdc01b4a0e98"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/preflight.py",
+      "bytes": 1745,
+      "sha256": "8068f825a8f6d53e4fd55a7c67269107d47f517877505b534d4b0daf513beebc"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/prepare.py",
+      "bytes": 2646,
+      "sha256": "b39dab59d198248abec2b1e43083e5b292e296c9968e866fd1e979c3d95e054e"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/reuse-lock.json",
+      "bytes": 64906,
+      "sha256": "171da620d0cbeca294443df5375e8a1a1e487641bc973046916da4680bb6d9fc"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/reuse-proof.json",
+      "bytes": 490,
+      "sha256": "d4c2d09113b0b02c47ce252f9386ae3f93ea6eff9fdf1163f06df260fcaa3716"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/reviews/protocol-01.md",
+      "bytes": 4431,
+      "sha256": "8841f9afb87926653d089fa1bb03ecdfb6800b0a08a5095773fc066e59b4a417"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/run_policy.py",
+      "bytes": 635,
+      "sha256": "7fbc7ff784debd0325d191f9ac944cb5ce6704a67ea1159f566c619235ed043f"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/runner.py",
+      "bytes": 3756,
+      "sha256": "0fefdc4cda69a53575872661d33a5aa57293accf3321278658cbeaf3d50feec3"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/runtime.py",
+      "bytes": 346,
+      "sha256": "e17029985f1b311ff483139bbd1599a7d4aad34719a1240af14696193063b868"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/scope_binding.py",
+      "bytes": 337,
+      "sha256": "a6ffd5418ba7eea3715aba522fe3a60fa277a913e2a01defe4707489ff0f45cd"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/selection.json",
+      "bytes": 20084,
+      "sha256": "28ac829d6d3efa1cc033321dfab67e861845a26c90e6f33fc6378e0aa9a9fe1d"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/selection_policy.py",
+      "bytes": 1998,
+      "sha256": "3d94f0627259aa2fdd5150c78a1e6b0138e46934657723477e6eb09c01c4a502"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/source_scope.py",
+      "bytes": 361,
+      "sha256": "0df18bb70401660602c9e6770797b70752c9b1745435ab231ce301954f874e25"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/supervisor.py",
+      "bytes": 4796,
+      "sha256": "569b9bf914b91045242ff9cc6a0f5ea4b361e0b87fc316d27093e60bb770024d"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/tests/test_initial_order.py",
+      "bytes": 1049,
+      "sha256": "566cdb1043bebc76f9e15f36bbabd48e433d72d77bebbdaefdb2e233c20c958f"
+    },
+    {
+      "path": "finance_program_student_n100_20261024_r2/tests/test_selection.py",
+      "bytes": 2169,
+      "sha256": "e65c183ef5d6d2f409764c7ddc915138e08f7b7a6c1ee3bb7139bf6daac95ae8"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/archive.py",
+      "bytes": 1779,
+      "sha256": "414aa5ed3dd32bcde07ccce8f1faa1b9c080d638c9fe054362bb74a378334492"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/backend.py",
+      "bytes": 5187,
+      "sha256": "1e4b369300a9d73fd9f89afb94ec16f5f8ce3be96a90e7f324fbbd4efd23ac85"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/data/study.json",
+      "bytes": 215459,
+      "sha256": "3f920bb7af482e7aca43fa012cc987c785bb9c4cfd42c75bcd78f6700c3a1364"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/evaluate.py",
+      "bytes": 2728,
+      "sha256": "7158e52169300e59ae74dad459917f80fd43e38106d70739b58986dc4db046ca"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/full_results.py",
+      "bytes": 10677,
+      "sha256": "7039761d229b927630869cd8a7d6a20e14714b3398f7780c9e4955e8ad87be8c"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/full_validation.py",
+      "bytes": 6339,
+      "sha256": "089c2d4317131e1196511b3fe7d9f5330959f68a52e630106403132777c3d820"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/gate.py",
+      "bytes": 4751,
+      "sha256": "ab95ad74acaa10c8a8ef7630b38aac9807da2df5deb56b2b0dd19ceb60e34402"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/historical.py",
+      "bytes": 2032,
+      "sha256": "f54571fe55e25733903e6b7626125aa989bc8b7191e51ee21ef3352677c6e867"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/io_utils.py",
+      "bytes": 1056,
+      "sha256": "6e00a68763e323fbfa2004f1de738c428867f8ba12358cae62da20b3b94bf958"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/metrics.py",
+      "bytes": 3131,
+      "sha256": "b1ff00ad81f9f639005d77c1ac90d78ee249bef59a0acfb367bd2e93c90d4423"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/package.py",
+      "bytes": 5192,
+      "sha256": "e99ae64fbb3f6f571d775f6717a3d06eb5e7ebf3d1af7b34eca47bc8fe77dfe0"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/parent_acceptance.py",
+      "bytes": 8207,
+      "sha256": "dcb78008d19954d2e460bfe6c4d51b1767c0b9b92650f3029d4556136b0b3e64"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/preflight.py",
+      "bytes": 2294,
+      "sha256": "3e7e6edba96a328ab211565eb1cfa560e7e73d0b44e0d754f85fc306344cb5e5"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/replay.py",
+      "bytes": 5588,
+      "sha256": "23c9fd20ea8051290219f7a9a51097f500e2d3cf945d871444e9b008954b7c9f"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/verify_training.py",
+      "bytes": 5735,
+      "sha256": "4697a61673e13c4db696d3abce874a7472eeac1faa8b6cc7af468d7f4ade27d3"
+    },
+    {
+      "path": "finance_program_student_val422_eval_20261017_r1/watch.py",
+      "bytes": 8508,
+      "sha256": "6c93e4350d15186530a92aeed504c4e19a25a72bace5d6ffb90bc25f311a5d41"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/freeze.json",
+      "bytes": 184327,
+      "sha256": "40907147a12e653ba8eea5ed5d0479627e41348a7bd2bec92b835aac9dab3ea4"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/live_backend.py",
+      "bytes": 2524,
+      "sha256": "fa8a20751f06cfeba436885276d917135ee7b2abd65fb7041ba7afee27e55877"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/offline_replay.py",
+      "bytes": 4575,
+      "sha256": "60f77bd94def9acf513a6fed2e8784985d39a56f572807f17efc8cdda07e7a91"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/preflight.py",
+      "bytes": 2153,
+      "sha256": "20e6bd888d883aff2335fc51611fda5654e2debf486f9727e0173386229d2258"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/runner.py",
+      "bytes": 4858,
+      "sha256": "b6ec03ed018da7c5d453a1c02035172f697a0369f65b3ef916296292ca4885e7"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/runtime.py",
+      "bytes": 1529,
+      "sha256": "43cdc411d15386af1208985acae4fa3ebcf21fd2d1666a51717be152354f5839"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/selection.json",
+      "bytes": 30156,
+      "sha256": "dbe6d696fcd137e8e2d968ee47241a6bf60489fdee6c8700b72ddd37147e7158"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/supervisor.py",
+      "bytes": 4551,
+      "sha256": "1194033d9580886f5e4e5e8e2c6535ac0ae5a77b55806bfe7f1e18a746e8b487"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/support.py",
+      "bytes": 1652,
+      "sha256": "9369e3416f7d93e327ad0d8350743640f076d27d39576a74206f769b0c2f8131"
+    },
+    {
+      "path": "finance_program_termination_first_20261025_r2/termination.py",
+      "bytes": 4619,
+      "sha256": "9e6febe858891ba248c158272ed8b6b16cb2acaa4a9642966fabae1868402f31"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/eval-inputs.json",
+      "bytes": 414370,
+      "sha256": "622d2ef36744835a0cd579a68a7b3d330d4af7d25b2ccfb068878ab1c22842b4"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/freeze.json",
+      "bytes": 187215,
+      "sha256": "e3959df6e8c4dea83513ee4e24312babd0078014e08d9cf063ec246c278b26fd"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/full_policy.py",
+      "bytes": 3694,
+      "sha256": "def0b744463415cd6e0f9b0a85de8cfb4b08e2693937d027b9dc58982e23bbfb"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/gate.py",
+      "bytes": 923,
+      "sha256": "502d7dc05fb61c3acc116b19e685f9b615947e472d2c2ffe79b1a83e872a8008"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/live_backend.py",
+      "bytes": 480,
+      "sha256": "d6bd9907ffd75a690172c4575e29f8fe56af2cc2b4e43732b94656c5507bb4b4"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/preflight.py",
+      "bytes": 1733,
+      "sha256": "fbbd96092f790e6f189b237665e9935252a6e359713ce9d33989c16a8cfd7e95"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/prepare.py",
+      "bytes": 1150,
+      "sha256": "21c35268cbd4b0e457e9906f10405b6231e972d2df1c1c30346089d240342b29"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/reviews/stop100-proof.json",
+      "bytes": 691,
+      "sha256": "870009c0c17b6d7386f7188378e37c847197e621c52ed5f700d114c608993f44"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/runner.py",
+      "bytes": 4180,
+      "sha256": "cec9e9c403e98d1549794c8ea68176f55730684db72b2f3905005ccc16fff05b"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/runtime.py",
+      "bytes": 2011,
+      "sha256": "3ce541e95837d8c8062682bbd26d3ad4b09af95414765acc4d40e1a0f5f8c49d"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/selection.json",
+      "bytes": 92612,
+      "sha256": "b29704bf7ae61cf3eca2ab7dd2f410a61084bc5fe0feb1aa2a6bc23e5e9a0284"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/source-scopes.json",
+      "bytes": 167348,
+      "sha256": "30aab62321886050e15f7a85e53800203a256a85a93662326e9fb85f1eb39303"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/supervisor.py",
+      "bytes": 4463,
+      "sha256": "971f70bbb42a6624560baa72c94138385f7c60a920171eec4a415c0c24d2cfce"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/support.py",
+      "bytes": 1897,
+      "sha256": "41d4e0a1378e1c464281bf4e19d75a6cf1b926c9effd1526b0229bb2c1d29b90"
+    },
+    {
+      "path": "finance_program_termination_val422_20261025_r2/termination.py",
+      "bytes": 208,
+      "sha256": "2354c3a3b9fdad6d7d3362fbd6cd9a6e33eca83ff60dcc0db8ea4eb57cdd72d4"
+    }
+  ],
+  "targets": 422,
+  "episodes": 422,
+  "maximum_optimizer_updates": 0,
+  "private_labels_staged": false
+}

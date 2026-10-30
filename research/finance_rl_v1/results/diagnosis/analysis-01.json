@@ -1,0 +1,1098 @@
+{
+  "input_shas": {
+    "new": "9be102b866ffd73ae67859a94093b562af557c8e90ba954b04f3b9435a6f2a06",
+    "old": "790bb0fcecdd6dec9f7948838f77435f33fde8fc37324907684c81c6b7779fe1",
+    "training_completion": "32ca7498395c02333461b54f6844b178ede91199bae4558ac5cf978567b108ec",
+    "gold": "8f7a871e8cd347cadb710d543d14c0191b8b024f2dea581c12788550aeb5cfd8"
+  },
+  "cohort": 422,
+  "paired_by_reference_category": {
+    "股票数据": {
+      "total": 30,
+      "old_correct": 2,
+      "new_correct": 2,
+      "improved": 1,
+      "worsened": 1
+    },
+    "财务数据": {
+      "total": 44,
+      "old_correct": 31,
+      "new_correct": 27,
+      "improved": 1,
+      "worsened": 5
+    },
+    "债券数据": {
+      "total": 100,
+      "old_correct": 35,
+      "new_correct": 31,
+      "improved": 4,
+      "worsened": 8
+    },
+    "机构用户交易数据": {
+      "total": 90,
+      "old_correct": 38,
+      "new_correct": 33,
+      "improved": 1,
+      "worsened": 6
+    },
+    "网络设备和信息系统的配置数据": {
+      "total": 60,
+      "old_correct": 0,
+      "new_correct": 0,
+      "improved": 0,
+      "worsened": 0
+    },
+    "日志数据": {
+      "total": 63,
+      "old_correct": 32,
+      "new_correct": 41,
+      "improved": 13,
+      "worsened": 4
+    },
+    "人力资源数据": {
+      "total": 22,
+      "old_correct": 0,
+      "new_correct": 0,
+      "improved": 0,
+      "worsened": 0
+    },
+    "理财数据": {
+      "total": 13,
+      "old_correct": 0,
+      "new_correct": 0,
+      "improved": 0,
+      "worsened": 0
+    }
+  },
+  "largest_error_confusions": [
+    {
+      "reference": "网络设备和信息系统的配置数据",
+      "predicted": "个人用户基本信息",
+      "count": 47
+    },
+    {
+      "reference": "债券数据",
+      "predicted": "日志数据",
+      "count": 46
+    },
+    {
+      "reference": "机构用户交易数据",
+      "predicted": "其他经营管理数据",
+      "count": 29
+    },
+    {
+      "reference": "股票数据",
+      "predicted": "债券数据",
+      "count": 26
+    },
+    {
+      "reference": "债券数据",
+      "predicted": "财务数据",
+      "count": 21
+    },
+    {
+      "reference": "机构用户交易数据",
+      "predicted": "财务数据",
+      "count": 17
+    },
+    {
+      "reference": "财务数据",
+      "predicted": "其他经营管理数据",
+      "count": 16
+    },
+    {
+      "reference": "人力资源数据",
+      "predicted": "个人用户基本信息",
+      "count": 16
+    },
+    {
+      "reference": "网络设备和信息系统的配置数据",
+      "predicted": "人力资源数据",
+      "count": 8
+    },
+    {
+      "reference": "日志数据",
+      "predicted": "债券数据",
+      "count": 8
+    },
+    {
+      "reference": "理财数据",
+      "predicted": "日志数据",
+      "count": 7
+    },
+    {
+      "reference": "日志数据",
+      "predicted": "财务数据",
+      "count": 6
+    },
+    {
+      "reference": "人力资源数据",
+      "predicted": "机构用户基本信息",
+      "count": 6
+    },
+    {
+      "reference": "机构用户交易数据",
+      "predicted": "个人用户基本信息",
+      "count": 5
+    },
+    {
+      "reference": "理财数据",
+      "predicted": "其他经营管理数据",
+      "count": 5
+    },
+    {
+      "reference": "日志数据",
+      "predicted": "无预测",
+      "count": 4
+    },
+    {
+      "reference": "网络设备和信息系统的配置数据",
+      "predicted": "机构用户基本信息",
+      "count": 4
+    },
+    {
+      "reference": "机构用户交易数据",
+      "predicted": "债券数据",
+      "count": 3
+    }
+  ],
+  "candidate_last_state_audit": {
+    "wrong_total": 288,
+    "no_prediction": 5,
+    "wrong_pred_reference_in_final_candidates": 192,
+    "wrong_pred_reference_not_in_final_candidates": 91
+  },
+  "candidate_coverage_by_reference": {
+    "股票数据": {
+      "support": 30,
+      "reference_in_final_candidates": 29
+    },
+    "财务数据": {
+      "support": 44,
+      "reference_in_final_candidates": 44
+    },
+    "债券数据": {
+      "support": 100,
+      "reference_in_final_candidates": 98
+    },
+    "机构用户交易数据": {
+      "support": 90,
+      "reference_in_final_candidates": 80
+    },
+    "网络设备和信息系统的配置数据": {
+      "support": 60,
+      "reference_in_final_candidates": 3
+    },
+    "日志数据": {
+      "support": 63,
+      "reference_in_final_candidates": 43
+    },
+    "人力资源数据": {
+      "support": 22,
+      "reference_in_final_candidates": 20
+    },
+    "理财数据": {
+      "support": 13,
+      "reference_in_final_candidates": 10
+    }
+  },
+  "changed_outcomes": {
+    "both_wrong": {
+      "best_effort_terminal": 93,
+      "validated_terminal": 166,
+      "abstained_terminal": 4,
+      "unresolved_no_new_business_evidence": 1
+    },
+    "worsened": {
+      "validated_terminal": 14,
+      "best_effort_terminal": 10
+    },
+    "both_correct": {
+      "validated_terminal": 64,
+      "best_effort_terminal": 50
+    },
+    "improved": {
+      "best_effort_terminal": 16,
+      "validated_terminal": 4
+    }
+  },
+  "outcome_transitions": [
+    {
+      "sft": "validated_terminal",
+      "grpo": "validated_terminal",
+      "count": 221
+    },
+    {
+      "sft": "best_effort_terminal",
+      "grpo": "best_effort_terminal",
+      "count": 124
+    },
+    {
+      "sft": "validated_terminal",
+      "grpo": "best_effort_terminal",
+      "count": 35
+    },
+    {
+      "sft": "best_effort_terminal",
+      "grpo": "validated_terminal",
+      "count": 26
+    },
+    {
+      "sft": "abstained_terminal",
+      "grpo": "best_effort_terminal",
+      "count": 9
+    },
+    {
+      "sft": "abstained_terminal",
+      "grpo": "abstained_terminal",
+      "count": 4
+    },
+    {
+      "sft": "unresolved_no_new_business_evidence",
+      "grpo": "best_effort_terminal",
+      "count": 1
+    },
+    {
+      "sft": "best_effort_terminal",
+      "grpo": "unresolved_no_new_business_evidence",
+      "count": 1
+    },
+    {
+      "sft": "abstained_terminal",
+      "grpo": "validated_terminal",
+      "count": 1
+    }
+  ],
+  "training": {
+    "source_outcome_success_counts": {
+      "4": 19,
+      "1": 12,
+      "3": 7,
+      "2": 4,
+      "0": 6
+    },
+    "batches": [
+      {
+        "batch": 1,
+        "legal": 32,
+        "correct": 24,
+        "mixed_sources": 4,
+        "sources": 8
+      },
+      {
+        "batch": 2,
+        "legal": 31,
+        "correct": 23,
+        "mixed_sources": 5,
+        "sources": 8
+      },
+      {
+        "batch": 3,
+        "legal": 30,
+        "correct": 20,
+        "mixed_sources": 4,
+        "sources": 8
+      },
+      {
+        "batch": 4,
+        "legal": 30,
+        "correct": 13,
+        "mixed_sources": 5,
+        "sources": 8
+      },
+      {
+        "batch": 5,
+        "legal": 32,
+        "correct": 18,
+        "mixed_sources": 2,
+        "sources": 8
+      },
+      {
+        "batch": 6,
+        "legal": 31,
+        "correct": 19,
+        "mixed_sources": 3,
+        "sources": 8
+      }
+    ],
+    "updates": [
+      {
+        "version": 1,
+        "turns": 63,
+        "tokens": 5284,
+        "grad_norm": 0.1686725867863161,
+        "update_norm": 0.009241588953215297,
+        "minimum_ess": 0.9985150098800659,
+        "maximum_cap_fraction": 0.0,
+        "old_current_max": 0.0
+      },
+      {
+        "version": 2,
+        "turns": 81,
+        "tokens": 6652,
+        "grad_norm": 0.19807611943037268,
+        "update_norm": 0.006239521108912507,
+        "minimum_ess": 0.9991927146911621,
+        "maximum_cap_fraction": 0.0,
+        "old_current_max": 0.0
+      },
+      {
+        "version": 3,
+        "turns": 60,
+        "tokens": 5090,
+        "grad_norm": 0.2069390627087766,
+        "update_norm": 0.005290335975808123,
+        "minimum_ess": 0.9950653314590454,
+        "maximum_cap_fraction": 0.0,
+        "old_current_max": 0.0
+      },
+      {
+        "version": 4,
+        "turns": 83,
+        "tokens": 7178,
+        "grad_norm": 0.1747989718265064,
+        "update_norm": 0.004717222039030808,
+        "minimum_ess": 0.9980385899543762,
+        "maximum_cap_fraction": 0.0,
+        "old_current_max": 0.0
+      },
+      {
+        "version": 5,
+        "turns": 14,
+        "tokens": 1256,
+        "grad_norm": 0.25596626931483285,
+        "update_norm": 0.004437361958610658,
+        "minimum_ess": 0.9993767738342285,
+        "maximum_cap_fraction": 0.0,
+        "old_current_max": 0.0
+      },
+      {
+        "version": 6,
+        "turns": 38,
+        "tokens": 2914,
+        "grad_norm": 0.3568556641531176,
+        "update_norm": 0.0041832503177005945,
+        "minimum_ess": 0.994721531867981,
+        "maximum_cap_fraction": 0.0,
+        "old_current_max": 0.0
+      }
+    ]
+  },
+  "changed_rows": [
+    {
+      "source_id": "dd87fd6c-c5ab-5b8f-8f9f-3218a24aad3c",
+      "new_slot": "002-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/经营管理数据/财务数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "9c48199c-162d-5baa-a8b8-64fcbb321259",
+      "new_slot": "033-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "1b1a7f7a-076c-5797-acb6-27af57127801",
+      "new_slot": "034-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "5405ff67-4ef3-5e69-adc7-e59c2cee85c3",
+      "new_slot": "037-N",
+      "transition": "improved",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "4baec43f-3c14-509f-91b0-fc6960f7c49b",
+      "new_slot": "040-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/经营管理数据/财务数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "42dfbf09-00bf-5c54-b423-c576ee2c148d",
+      "new_slot": "042-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/经营管理数据/财务数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "0f5d45f9-4656-5308-a46d-a9365c640a7b",
+      "new_slot": "063-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "1421bc0c-9c85-5b72-8329-32ebb3a4c13b",
+      "new_slot": "075-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "917dd171-470b-5ef9-acc5-2da3b7829543",
+      "new_slot": "077-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": false
+    },
+    {
+      "source_id": "dccd3662-ea8c-5c3b-abd0-ce46ee43924b",
+      "new_slot": "086-N",
+      "transition": "improved",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "33814e50-c070-53e5-a647-6a34c0dcb78b",
+      "new_slot": "108-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/经营管理数据/财务数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "359c138e-031b-5848-a67f-bd081b487ecd",
+      "new_slot": "125-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "ceedaf1e-5e32-5c2d-bfcf-dc7cdaac41a5",
+      "new_slot": "140-N",
+      "transition": "worsened",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "6bfbec31-93a6-5461-9733-cb4753193842",
+      "new_slot": "141-N",
+      "transition": "worsened",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "4f1372ef-14f3-555b-ac04-97e303cb0ad7",
+      "new_slot": "151-N",
+      "transition": "improved",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "e87e09c4-e4db-50f3-9194-c97c2a36f0dc",
+      "new_slot": "155-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "2901c45e-1cf3-5826-ae07-f72a25ba5d40",
+      "new_slot": "157-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/股票数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/股票数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "acfd3b46-bc4a-5e27-bc09-a35463bde475",
+      "new_slot": "158-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "e5a8c01b-afc6-5078-8b0a-11c79c6cb302",
+      "new_slot": "172-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:用户数据/个人用户数据/个人用户基本信息",
+        "grading_level": "L3"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "267ae830-d121-5e1e-9285-01685788fc13",
+      "new_slot": "173-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "b5e26534-90c4-5c13-b986-dcae0f867664",
+      "new_slot": "174-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "f3116a0a-325c-542d-924f-65c80bb6b2e9",
+      "new_slot": "206-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/人力资源数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "f3baf176-9fd2-532b-bdc0-de574a265fe3",
+      "new_slot": "207-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "0f481c00-eb5d-5503-ba18-ec4870a8497f",
+      "new_slot": "223-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "8f4d444e-3b72-591d-b4fe-59e52ffcd39c",
+      "new_slot": "238-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "f30cd06a-e221-5175-b3b4-79f8856144ef",
+      "new_slot": "243-N",
+      "transition": "worsened",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": false
+    },
+    {
+      "source_id": "a8488683-2918-5558-bda1-8128dcbe1c51",
+      "new_slot": "253-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "032d23f2-0746-5b33-8705-e762226c51a8",
+      "new_slot": "269-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "eb70aff9-d363-5115-8fd5-c8184c287be1",
+      "new_slot": "274-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "2daca4fa-b75f-535e-bc0e-0301ade36b88",
+      "new_slot": "288-N",
+      "transition": "worsened",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": false
+    },
+    {
+      "source_id": "c923bf55-25c5-500d-8af6-7b26ccb44331",
+      "new_slot": "297-N",
+      "transition": "improved",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "unresolved_no_new_business_evidence",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "dedc6d93-7980-58b7-b660-527be11831d4",
+      "new_slot": "308-N",
+      "transition": "improved",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "7fb702c0-1929-5f2a-983a-ee2f98e89924",
+      "new_slot": "329-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "765a74e6-226c-5a20-a80f-e75d2cb6e8f1",
+      "new_slot": "334-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": false
+    },
+    {
+      "source_id": "057e38d7-ec7b-56e6-80ef-13f7ebd5236e",
+      "new_slot": "339-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户基本信息",
+        "grading_level": "L3"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "4e8f0ad3-2285-5a7b-8af9-21415cb22114",
+      "new_slot": "350-N",
+      "transition": "worsened",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "d5d76cad-cc00-5634-ac6a-e0aa46fbaed1",
+      "new_slot": "365-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "4c3c97c9-7505-5fc4-9901-8135e7e773f7",
+      "new_slot": "367-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/经营管理数据/财务数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "7a62ff0b-b7b3-5c53-82c2-07afa42d3ab2",
+      "new_slot": "371-N",
+      "transition": "worsened",
+      "reference_category": "finance:企业数据/经营管理数据/财务数据",
+      "sft_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "445a273a-a5c6-5dc6-aa09-57ac2d600a23",
+      "new_slot": "375-N",
+      "transition": "worsened",
+      "reference_category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "sft_prediction": {
+        "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+        "grading_level": "L3"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": false
+    },
+    {
+      "source_id": "89afcb0b-4118-5c01-9c8d-81b0712749de",
+      "new_slot": "379-N",
+      "transition": "worsened",
+      "reference_category": "finance:业务数据/金融市场数据/债券数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/经营管理数据/财务数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "validated_terminal",
+      "grpo_outcome": "validated_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "fc2d78a0-3abf-5ef9-81f9-4e06c94392d8",
+      "new_slot": "391-N",
+      "transition": "improved",
+      "reference_category": "finance:业务数据/金融市场数据/股票数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:业务数据/金融市场数据/股票数据",
+        "grading_level": "L1"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "db8bec08-aee4-52aa-baff-fa548c3ae8c3",
+      "new_slot": "408-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {
+        "category": "finance:业务数据/金融市场数据/债券数据",
+        "grading_level": "L1"
+      },
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "best_effort_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    },
+    {
+      "source_id": "2888cf9f-c6f4-5ff5-8d7f-bdea804c8208",
+      "new_slot": "420-N",
+      "transition": "improved",
+      "reference_category": "finance:企业数据/系统运维数据/日志数据",
+      "sft_prediction": {},
+      "grpo_prediction": {
+        "category": "finance:企业数据/系统运维数据/日志数据",
+        "grading_level": "L2"
+      },
+      "sft_outcome": "abstained_terminal",
+      "grpo_outcome": "best_effort_terminal",
+      "reference_in_final_candidates": true
+    }
+  ]
+}
