@@ -1,4 +1,4 @@
-# DataClassifyGrading (DCG)
+# Data Classify-Grading (DCG)
 
 **An Agentic Framework for Automated Data Classification and Sensitivity Grading of Database Fields**
 
@@ -14,10 +14,7 @@ DCG is an LLM-agent-based system that automatically determines the **data catego
 - [Method](#method)
 - [Datasets](#datasets)
 - [Experiments](#experiments)
-- [Repository Structure](#repository-structure)
-- [Getting Started](#getting-started)
-- [Citation](#citation)
-- [License](#license)
+
 
 ---
 
