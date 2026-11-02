@@ -1,0 +1,1 @@
+{"GRPO_joint_correct":134,"SFT_joint_correct":138,"checkpoint_sha256":"1d626f9a725058466a65d8bb5c71239385b81e750f355159d0775016844cd7cd","comparison":{"both_correct":114,"both_wrong":264,"improved":20,"worsened":24},"completed":true,"evaluation":"GRPO_only_Val422","fresh_test":false,"targets":422,"time_unix":1793195155.6728332}

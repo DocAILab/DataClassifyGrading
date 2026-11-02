@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env*
+*.safetensors
+*.pt
+*.bin
+runs/
+campaign/
+attempts/

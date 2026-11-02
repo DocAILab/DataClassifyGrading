@@ -1,0 +1,42 @@
+{
+  "training": {
+    "targets": 48,
+    "episodes": 192,
+    "actual_optimizer_updates": 6,
+    "legal_predictions": 186,
+    "joint_correct": 117,
+    "technical_failures": 3,
+    "reward": "A1",
+    "probability_correction": "token_TIS_cap2"
+  },
+  "evaluation": {
+    "targets": 422,
+    "joint_correct": 134,
+    "category_correct": 134,
+    "grade_correct": 213,
+    "legal_predictions": 417,
+    "abstentions": 4,
+    "generation_failures": 1,
+    "model_calls": 3395,
+    "native_replays": 422,
+    "macro_f1_12": 0.16664829472954854
+  },
+  "historical_sft": {
+    "targets": 422,
+    "joint_correct": 138,
+    "category_correct": 138,
+    "grade_correct": 217,
+    "legal_predictions": 407,
+    "abstentions": 14
+  },
+  "paired": {
+    "improved": 20,
+    "worsened": 24,
+    "both_correct": 114,
+    "both_wrong": 264
+  },
+  "fresh_test": false,
+  "fully_equivalent_execution_conditions": false,
+  "business_semantic_review_complete": false,
+  "new_training_or_inference_performed_for_publication": false
+}
