@@ -1,4 +1,5 @@
 """Run limits and JSON trace; the accepted Program is immutable."""
+
 from dataclasses import asdict, dataclass, field
 import json
 import math
@@ -43,7 +44,9 @@ class ProgramTrace:
     planner_attempts: list = field(default_factory=list)
     programs: list = field(default_factory=list)
     state: dict = field(default_factory=dict)
-    budget: dict = field(default_factory=lambda: {"programs": 0, "planner_attempts": 0, "skill_steps": 0})
+    budget: dict = field(
+        default_factory=lambda: {"programs": 0, "planner_attempts": 0, "skill_steps": 0}
+    )
     terminated: bool = False
     final_result: dict | None = None
     stop_reason: str = "running"
@@ -54,7 +57,9 @@ class ProgramTrace:
         return json_snapshot(asdict(self))
 
     def write_json(self, path):
-        serialized = json.dumps(self.to_dict(), ensure_ascii=False, indent=2, allow_nan=False)
+        serialized = json.dumps(
+            self.to_dict(), ensure_ascii=False, indent=2, allow_nan=False
+        )
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("x", encoding="utf-8") as stream:

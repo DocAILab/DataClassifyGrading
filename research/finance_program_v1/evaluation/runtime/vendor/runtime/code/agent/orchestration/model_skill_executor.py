@@ -25,11 +25,18 @@ from .runtime import KnowledgeBase, Observation
 from .provider_protocol import output_schema, output_rule, expected_keys
 from .skill_loader import SkillContract, SkillLoader
 from .validator import resolve_reference
-from .topk_selection import SELECTION_POLICY, aggregate_rankings, balanced_options, ranking_scores
+from .topk_selection import (
+    SELECTION_POLICY,
+    aggregate_rankings,
+    balanced_options,
+    ranking_scores,
+)
 
 
 TextGenerator = Callable[[list[dict[str, str]]], str]
-DeterministicHandler = Callable[[ToolCall, MetadataRecord, Mapping[str, Any]], Observation]
+DeterministicHandler = Callable[
+    [ToolCall, MetadataRecord, Mapping[str, Any]], Observation
+]
 
 
 def _generation_metadata(generate: TextGenerator) -> dict[str, Any]:
@@ -48,13 +55,19 @@ def _attempt_metadata(attempts: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "raw_response": last.get("raw_response"),
     }
     generations = [item.get("generation", {}) for item in attempts]
-    usages = [item.get("token_usage") for item in generations if isinstance(item, Mapping)]
+    usages = [
+        item.get("token_usage") for item in generations if isinstance(item, Mapping)
+    ]
     if any(isinstance(item, Mapping) for item in usages):
         metadata["token_usage"] = {
-            key: sum(int(item.get(key) or 0) for item in usages if isinstance(item, Mapping))
+            key: sum(
+                int(item.get(key) or 0) for item in usages if isinstance(item, Mapping)
+            )
             for key in ("prompt_tokens", "completion_tokens", "total_tokens")
         }
-    elapsed = [item.get("elapsed_seconds") for item in generations if isinstance(item, Mapping)]
+    elapsed = [
+        item.get("elapsed_seconds") for item in generations if isinstance(item, Mapping)
+    ]
     if any(isinstance(item, (int, float)) for item in elapsed):
         metadata["elapsed_seconds"] = sum(
             float(item) for item in elapsed if isinstance(item, (int, float))
@@ -65,7 +78,9 @@ def _attempt_metadata(attempts: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
 class SkillExecutionError(ValueError):
     """Raised when a Skill cannot produce one valid Observation."""
 
-    def __init__(self, message: str, *, metadata: Mapping[str, Any] | None = None) -> None:
+    def __init__(
+        self, message: str, *, metadata: Mapping[str, Any] | None = None
+    ) -> None:
         super().__init__(message)
         self.metadata = dict(metadata or {})
 
@@ -184,7 +199,9 @@ def parse_skill_observation(text: str, spec: SkillSpec) -> Observation:
 
     payload = _decode_observation_object(text)
     if set(payload) != {"summary", "data"}:
-        raise SkillExecutionError("Skill response must contain exactly summary and data")
+        raise SkillExecutionError(
+            "Skill response must contain exactly summary and data"
+        )
     summary = payload.get("summary")
     data = payload.get("data")
     if not isinstance(summary, str) or not summary.strip():
@@ -200,9 +217,7 @@ def parse_skill_observation(text: str, spec: SkillSpec) -> Observation:
     if extra:
         raise SkillExecutionError(f"unexpected produced keys: {extra}")
     empty = sorted(
-        key
-        for key in expected
-        if data.get(key) is None or data.get(key) == ""
+        key for key in expected if data.get(key) is None or data.get(key) == ""
     )
     if empty:
         raise SkillExecutionError(f"produced keys must be non-empty: {empty}")
@@ -220,14 +235,22 @@ def load_few_shot_messages(path: str | Path) -> tuple[dict[str, str], ...]:
     forbidden = ("ground_truth", "ground truth", "source_id", "source id")
     for index, item in enumerate(payload):
         if not isinstance(item, Mapping) or set(item) != {"role", "content"}:
-            raise ValueError(f"few-shot message {index} must contain exactly role and content")
+            raise ValueError(
+                f"few-shot message {index} must contain exactly role and content"
+            )
         role = item.get("role")
         content = item.get("content")
-        if role not in {"user", "assistant"} or not isinstance(content, str) or not content:
+        if (
+            role not in {"user", "assistant"}
+            or not isinstance(content, str)
+            or not content
+        ):
             raise ValueError(f"few-shot message {index} has an invalid role or content")
         lowered = content.lower()
         if any(marker in lowered for marker in forbidden):
-            raise ValueError("few-shot examples must not contain ground-truth or source identifiers")
+            raise ValueError(
+                "few-shot examples must not contain ground-truth or source identifiers"
+            )
         messages.append({"role": role, "content": content})
     return tuple(messages)
 
@@ -308,7 +331,10 @@ class ModelLoopPolicy:
                             "$state.field_metadata to SELECT_CATEGORY_TOPK and pass "
                             "$state.field_metadata to INFER_CATEGORY_FROM_TOPK."
                         )
-            if "GET_TABLE_FIELDS" in callable_skills and "table_fields" not in state.named_state:
+            if (
+                "GET_TABLE_FIELDS" in callable_skills
+                and "table_fields" not in state.named_state
+            ):
                 messages[0]["content"] += (
                     " If the current field and table metadata leave the business "
                     "category ambiguous, you may call GET_TABLE_FIELDS with "
@@ -323,9 +349,9 @@ class ModelLoopPolicy:
                     "INFER_CATEGORY_FROM_TOPK."
                 )
             if self.metadata_guidance:
-                messages[0]["content"] += (
-                    " Finish grading and finalization without repeating diagnostic Skills."
-                )
+                messages[0][
+                    "content"
+                ] += " Finish grading and finalization without repeating diagnostic Skills."
             if self.description_skills and "field_metadata" in state.named_state:
                 messages[0]["content"] += (
                     " Real descriptions in field_metadata may be interpreted through "
@@ -338,14 +364,14 @@ class ModelLoopPolicy:
                 )
         elif self.metadata_guidance:
             messages[0]["content"] += (
-                    "\nIf GET_FIELD_METADATA is callable and field_metadata is absent, "
-                    "call GET_FIELD_METADATA before semantic interpretation or retrieval. "
-                    "When real field_metadata has been obtained and standard_candidates "
-                    "are absent, call SEARCH_STANDARD with "
-                    "{\"semantic_query\":\"$state.field_metadata\"}; do not search only "
-                    "the guessed field_semantics. Once candidates are available, "
-                    "proceed toward category, level, and finalization without "
-                    "repeating diagnostic Skills."
+                "\nIf GET_FIELD_METADATA is callable and field_metadata is absent, "
+                "call GET_FIELD_METADATA before semantic interpretation or retrieval. "
+                "When real field_metadata has been obtained and standard_candidates "
+                "are absent, call SEARCH_STANDARD with "
+                '{"semantic_query":"$state.field_metadata"}; do not search only '
+                "the guessed field_semantics. Once candidates are available, "
+                "proceed toward category, level, and finalization without "
+                "repeating diagnostic Skills."
             )
         if self.few_shot_messages:
             messages[1:1] = [dict(message) for message in self.few_shot_messages]
@@ -353,16 +379,23 @@ class ModelLoopPolicy:
             raw = self.generate(messages)
         except Exception as exc:  # pragma: no cover - backend-specific
             error = ActionError(f"policy generator failed: {exc}")
-            error.metadata = {"messages": messages, "raw_response": None,
-                              "error": str(exc), "generation": _generation_metadata(self.generate)}
+            error.metadata = {
+                "messages": messages,
+                "raw_response": None,
+                "error": str(exc),
+                "generation": _generation_metadata(self.generate),
+            }
             raise error from exc
         if not isinstance(raw, str):
             raise ActionError("policy generator must return a string")
         try:
             parsed = parse_policy_action(raw)
         except ActionError as exc:
-            exc.metadata = {"messages": messages, "raw_response": raw,
-                            "generation": _generation_metadata(self.generate)}
+            exc.metadata = {
+                "messages": messages,
+                "raw_response": raw,
+                "generation": _generation_metadata(self.generate),
+            }
             raise
         return PolicyDecision(
             call=parsed,
@@ -393,7 +426,7 @@ class ModelSkillExecutor:
         include_comparison_explanation: bool = True,
     ) -> None:
         if type(include_comparison_explanation) is not bool:
-            raise ValueError('include_comparison_explanation must be bool')
+            raise ValueError("include_comparison_explanation must be bool")
         self.include_comparison_explanation = include_comparison_explanation
         if top1_evidence_mode not in {"all", "raw"}:
             raise ValueError("top1_evidence_mode must be all or raw")
@@ -436,7 +469,9 @@ class ModelSkillExecutor:
         return resolved
 
     @staticmethod
-    def _messages(contract: SkillContract, resolved: Mapping[str, Any]) -> list[dict[str, str]]:
+    def _messages(
+        contract: SkillContract, resolved: Mapping[str, Any]
+    ) -> list[dict[str, str]]:
         system = (
             f"Execute only the selected Skill {contract.name}.\n"
             f"DSL: {contract.dsl}\n"
@@ -453,11 +488,16 @@ class ModelSkillExecutor:
         }
         return [
             {"role": "system", "content": system},
-            {"role": "user", "content": json.dumps(payload, ensure_ascii=False, indent=2)},
+            {
+                "role": "user",
+                "content": json.dumps(payload, ensure_ascii=False, indent=2),
+            },
         ]
 
     @staticmethod
-    def _validate_deterministic(observation: Observation, spec: SkillSpec) -> Observation:
+    def _validate_deterministic(
+        observation: Observation, spec: SkillSpec
+    ) -> Observation:
         if observation.skill != spec.name:
             raise SkillExecutionError(
                 f"deterministic handler returned Skill {observation.skill!r}, expected {spec.name!r}"
@@ -489,8 +529,10 @@ class ModelSkillExecutor:
                 return self._execute_two_stage(call, record, resolved, state, contract)
             except SkillExecutionError as exc:
                 if call.tool == "INFER_CATEGORY_FROM_TOPK":
-                    exc.metadata.update(top1_selection_mode=self.top1_selection_mode,
-                                        top1_evidence_mode=self.top1_evidence_mode)
+                    exc.metadata.update(
+                        top1_selection_mode=self.top1_selection_mode,
+                        top1_evidence_mode=self.top1_evidence_mode,
+                    )
                 raise
         if call.tool == "FINALIZE_CLASSIFICATION" and self.guard_two_stage_evidence:
             return self._finalize_guarded_two_stage(call, resolved, state)
@@ -502,16 +544,25 @@ class ModelSkillExecutor:
         try:
             raw = self.generate(messages)
         except Exception as exc:  # pragma: no cover - backend-specific
-            raise SkillExecutionError(f"Skill generator failed: {exc}", metadata={
-                "messages": messages, "raw_response": None, "error": str(exc),
-                "generation": _generation_metadata(self.generate)}) from exc
+            raise SkillExecutionError(
+                f"Skill generator failed: {exc}",
+                metadata={
+                    "messages": messages,
+                    "raw_response": None,
+                    "error": str(exc),
+                    "generation": _generation_metadata(self.generate),
+                },
+            ) from exc
         if not isinstance(raw, str):
             raise SkillExecutionError("Skill generator must return a string")
         try:
             observation = parse_skill_observation(raw, spec)
         except SkillExecutionError as exc:
-            exc.metadata = {"messages": messages, "raw_response": raw,
-                            "generation": _generation_metadata(self.generate)}
+            exc.metadata = {
+                "messages": messages,
+                "raw_response": raw,
+                "generation": _generation_metadata(self.generate),
+            }
             raise
         return replace(
             observation,
@@ -531,16 +582,24 @@ class ModelSkillExecutor:
         if self.category_catalog is None:
             raise SkillExecutionError("two-stage category catalog is not configured")
         evidence = resolved.get("final_evidence_state")
-        if not isinstance(evidence, Mapping) or evidence != state.get("final_evidence_state"):
-            raise SkillExecutionError("finalizer must consume the frozen final evidence state")
+        if not isinstance(evidence, Mapping) or evidence != state.get(
+            "final_evidence_state"
+        ):
+            raise SkillExecutionError(
+                "finalizer must consume the frozen final evidence state"
+            )
         category = evidence.get("category")
         level = evidence.get("grading_level")
         aligned = evidence.get("aligned_standard_entry")
         candidates = evidence.get("standard_candidates")
         if not isinstance(category, str) or not isinstance(level, str):
-            raise SkillExecutionError("final evidence is missing category or grading level")
+            raise SkillExecutionError(
+                "final evidence is missing category or grading level"
+            )
         if category != state.get("category") or level != state.get("grading_level"):
-            raise SkillExecutionError("final evidence differs from the selected category or level")
+            raise SkillExecutionError(
+                "final evidence differs from the selected category or level"
+            )
         if (
             not isinstance(aligned, Mapping)
             or (aligned.get("category") or aligned.get("category_id")) != category
@@ -592,12 +651,16 @@ class ModelSkillExecutor:
                 elif self.topk_evidence_mode == "raw-flat":
                     semantic_query = {
                         **state["field_metadata"],
-                        "domain": record.domain, "field_name": record.field_name,
+                        "domain": record.domain,
+                        "field_name": record.field_name,
                     }
             else:
                 semantic_query = resolved["semantic_query"]
             prompt_input = {
-                "record_input": {"domain": record.domain, "field_name": record.field_name},
+                "record_input": {
+                    "domain": record.domain,
+                    "field_name": record.field_name,
+                },
                 "semantic_query": semantic_query,
                 "top_k": self.top_k,
                 "category_options": self.category_catalog.selection_options(),
@@ -605,14 +668,22 @@ class ModelSkillExecutor:
             if self.evidence_assembly is not None:
                 # Opt-in pool callers preserve the selected native query and share the
                 # same validated publication/final evidence boundary.
-                prompt_input["available_evidence"] = self.evidence_assembly(record, state)
+                prompt_input["available_evidence"] = self.evidence_assembly(
+                    record, state
+                )
         else:
             prior = state.get("standard_candidates")
             supplied = resolved.get("candidate_standard_categories")
             if not isinstance(prior, list) or supplied != prior:
-                raise SkillExecutionError("Top-1 must consume the actual prior Top-K observation")
-            if len(prior) != self.top_k or any(not isinstance(item, Mapping) for item in prior):
-                raise SkillExecutionError("Top-1 requires exactly top_k candidate objects")
+                raise SkillExecutionError(
+                    "Top-1 must consume the actual prior Top-K observation"
+                )
+            if len(prior) != self.top_k or any(
+                not isinstance(item, Mapping) for item in prior
+            ):
+                raise SkillExecutionError(
+                    "Top-1 requires exactly top_k candidate objects"
+                )
             ids = [item.get("category") for item in prior if isinstance(item, Mapping)]
             try:
                 self.category_catalog.validate_top_k(ids, self.top_k)
@@ -621,42 +692,84 @@ class ModelSkillExecutor:
                 raise SkillExecutionError(str(exc)) from exc
             if self.top1_selection_mode == "first":
                 category = ids[0]
-                return Observation(call.tool, "success", "Selected actual first frozen candidate",
-                    {"category": category, "aligned_standard_entry": self.category_catalog.frozen_entry(category)},
-                    metadata={"top1_selection_mode": "first", "top1_evidence_mode": self.top1_evidence_mode,
-                              "controller_bound_selection": True, "model_call_count": 0, "attempts": []})
+                return Observation(
+                    call.tool,
+                    "success",
+                    "Selected actual first frozen candidate",
+                    {
+                        "category": category,
+                        "aligned_standard_entry": self.category_catalog.frozen_entry(
+                            category
+                        ),
+                    },
+                    metadata={
+                        "top1_selection_mode": "first",
+                        "top1_evidence_mode": self.top1_evidence_mode,
+                        "controller_bound_selection": True,
+                        "model_call_count": 0,
+                        "attempts": [],
+                    },
+                )
             evidence = resolved["all_available_evidence"]
             if self.top1_evidence_mode == "raw":
-                evidence = {"domain": record.domain, "field_name": record.field_name,
-                    "observations": {"field_metadata": dict(state["field_metadata"])}
-                    if isinstance(state.get("field_metadata"), Mapping) else {}}
+                evidence = {
+                    "domain": record.domain,
+                    "field_name": record.field_name,
+                    "observations": (
+                        {"field_metadata": dict(state["field_metadata"])}
+                        if isinstance(state.get("field_metadata"), Mapping)
+                        else {}
+                    ),
+                }
             prompt_input = {
                 "all_available_evidence": evidence,
                 "candidate_details": details,
             }
             if self.evidence_assembly is not None:
-                prompt_input["available_evidence"] = self.evidence_assembly(record, state)
+                prompt_input["available_evidence"] = self.evidence_assembly(
+                    record, state
+                )
             if not self.include_comparison_explanation:
                 from evidence_roles import project_top1_evidence
-                for key in ('all_available_evidence', 'available_evidence'):
+
+                for key in ("all_available_evidence", "available_evidence"):
                     if key in prompt_input:
-                        prompt_input[key] = project_top1_evidence(prompt_input[key], state.get('standard_comparison'))
+                        prompt_input[key] = project_top1_evidence(
+                            prompt_input[key], state.get("standard_comparison")
+                        )
         prompt_input["output_schema"] = output_schema(call.tool, self.top_k)
         provider_rule = output_rule(call.tool, self.top_k)
         messages = [
-            {"role": "system", "content": f"Execute only the selected Skill {contract.name}.\n{contract.body}\n{provider_rule}"},
-            {"role": "user", "content": json.dumps(prompt_input, ensure_ascii=False, indent=2)},
+            {
+                "role": "system",
+                "content": f"Execute only the selected Skill {contract.name}.\n{contract.body}\n{provider_rule}",
+            },
+            {
+                "role": "user",
+                "content": json.dumps(prompt_input, ensure_ascii=False, indent=2),
+            },
         ]
-        if call.tool == "SELECT_CATEGORY_TOPK" and self.topk_selection_mode == "balanced-vote":
-            return self._execute_balanced_topk(record, prompt_input, messages[0], evidence_assembled)
+        if (
+            call.tool == "SELECT_CATEGORY_TOPK"
+            and self.topk_selection_mode == "balanced-vote"
+        ):
+            return self._execute_balanced_topk(
+                record, prompt_input, messages[0], evidence_assembled
+            )
         attempts: list[dict[str, Any]] = []
         max_attempts = 2
         for attempt_index in range(max_attempts):
             try:
                 raw = self.generate(messages)
             except Exception as exc:
-                attempts.append({"messages": messages, "raw_response": None, "error": str(exc),
-                                 "generation": _generation_metadata(self.generate)})
+                attempts.append(
+                    {
+                        "messages": messages,
+                        "raw_response": None,
+                        "error": str(exc),
+                        "generation": _generation_metadata(self.generate),
+                    }
+                )
                 raise SkillExecutionError(
                     f"two-stage Skill generator failed: {exc}",
                     metadata=_attempt_metadata(attempts),
@@ -666,35 +779,75 @@ class ModelSkillExecutor:
                 payload = _decode_observation_object(raw)
                 summary = payload.get("summary")
                 if not isinstance(summary, str) or not summary.strip():
-                    raise SkillExecutionError("two-stage Skill requires a nonempty summary")
+                    raise SkillExecutionError(
+                        "two-stage Skill requires a nonempty summary"
+                    )
                 if call.tool == "SELECT_CATEGORY_TOPK":
                     if set(payload) != expected_keys(call.tool):
-                        raise SkillExecutionError("Top-K response must contain option_ids and summary only")
+                        raise SkillExecutionError(
+                            "Top-K response must contain option_ids and summary only"
+                        )
                     canonical_ids = self.category_catalog.resolve_option_ids(
                         payload["option_ids"], self.top_k
                     )
-                    label_map = {item["category"]: item for item in self.category_catalog.labels()}
-                    data = {"standard_candidates": [label_map[item] for item in canonical_ids]}
+                    label_map = {
+                        item["category"]: item
+                        for item in self.category_catalog.labels()
+                    }
+                    data = {
+                        "standard_candidates": [
+                            label_map[item] for item in canonical_ids
+                        ]
+                    }
                 else:
                     if set(payload) != expected_keys(call.tool):
-                        raise SkillExecutionError("Top-1 response must contain option_id and summary only")
+                        raise SkillExecutionError(
+                            "Top-1 response must contain option_id and summary only"
+                        )
                     if payload["option_id"] is None:
-                        attempts.append({"messages": messages, "raw_response": raw,
-                                         "error": "insufficient_evidence", "generation": generation})
+                        attempts.append(
+                            {
+                                "messages": messages,
+                                "raw_response": raw,
+                                "error": "insufficient_evidence",
+                                "generation": generation,
+                            }
+                        )
                         raise SkillExecutionError(
                             "insufficient_evidence: " + summary.strip(),
-                            metadata={**_attempt_metadata(attempts), "failure_kind": "insufficient_evidence"},
+                            metadata={
+                                **_attempt_metadata(attempts),
+                                "failure_kind": "insufficient_evidence",
+                            },
                         )
-                    category = self.category_catalog.resolve_option_ids([payload["option_id"]], 1)[0]
+                    category = self.category_catalog.resolve_option_ids(
+                        [payload["option_id"]], 1
+                    )[0]
                     if category not in ids:
-                        raise SkillExecutionError("Top-1 category is outside prior Top-K")
-                    data = {"category": category, "aligned_standard_entry": self.category_catalog.frozen_entry(category)}
+                        raise SkillExecutionError(
+                            "Top-1 category is outside prior Top-K"
+                        )
+                    data = {
+                        "category": category,
+                        "aligned_standard_entry": self.category_catalog.frozen_entry(
+                            category
+                        ),
+                    }
             except (SkillExecutionError, ValueError, TypeError, KeyError) as exc:
-                if getattr(exc, "metadata", {}).get("failure_kind") == "insufficient_evidence":
+                if (
+                    getattr(exc, "metadata", {}).get("failure_kind")
+                    == "insufficient_evidence"
+                ):
                     raise
                 error = str(exc)
-                attempts.append({"messages": messages, "raw_response": raw,
-                                 "error": error, "generation": generation})
+                attempts.append(
+                    {
+                        "messages": messages,
+                        "raw_response": raw,
+                        "error": error,
+                        "generation": generation,
+                    }
+                )
                 if attempt_index + 1 < max_attempts:
                     if call.tool == "SELECT_CATEGORY_TOPK":
                         feedback = (
@@ -714,7 +867,10 @@ class ModelSkillExecutor:
                         )
                     messages = [
                         *messages,
-                        {"role": "assistant", "content": raw if isinstance(raw, str) else ""},
+                        {
+                            "role": "assistant",
+                            "content": raw if isinstance(raw, str) else "",
+                        },
                         {"role": "user", "content": feedback},
                     ]
                     continue
@@ -722,22 +878,31 @@ class ModelSkillExecutor:
                     f"invalid two-stage Skill response: {error}",
                     metadata=_attempt_metadata(attempts),
                 ) from exc
-            attempts.append({"messages": messages, "raw_response": raw,
-                             "generation": generation})
+            attempts.append(
+                {"messages": messages, "raw_response": raw, "generation": generation}
+            )
             metadata = _attempt_metadata(attempts)
             if call.tool == "INFER_CATEGORY_FROM_TOPK":
-                metadata.update({"top1_evidence_mode": self.top1_evidence_mode,
-                                 "top1_selection_mode": self.top1_selection_mode})
+                metadata.update(
+                    {
+                        "top1_evidence_mode": self.top1_evidence_mode,
+                        "top1_selection_mode": self.top1_selection_mode,
+                    }
+                )
             if evidence_assembled:
                 metadata["controller_evidence_assembled"] = True
                 metadata["topk_evidence_mode"] = self.topk_evidence_mode
-            return Observation(call.tool, "success", summary.strip(), data,
-                               metadata=metadata)
+            return Observation(
+                call.tool, "success", summary.strip(), data, metadata=metadata
+            )
         raise AssertionError("unreachable")
 
     def _execute_balanced_topk(
-        self, record: MetadataRecord, prompt_input: Mapping[str, Any],
-        system_message: Mapping[str, str], evidence_assembled: bool,
+        self,
+        record: MetadataRecord,
+        prompt_input: Mapping[str, Any],
+        system_message: Mapping[str, str],
+        evidence_assembled: bool,
     ) -> Observation:
         """Make exactly three independent calls, retaining failures without retry."""
         assert self.category_catalog is not None
@@ -745,18 +910,31 @@ class ModelSkillExecutor:
         rankings: list[list[str]] = []
         options = prompt_input["category_options"]
         allowed = [item["option_id"] for item in options]
-        for index, presented in enumerate(balanced_options(
-            options, record.domain, record.field_name, self.topk_selection_seed
-        ), start=1):
-            messages = [dict(system_message), {
-                "role": "user", "content": json.dumps(
-                    {**prompt_input, "category_options": presented}, ensure_ascii=False, indent=2
-                ),
-            }]
+        for index, presented in enumerate(
+            balanced_options(
+                options, record.domain, record.field_name, self.topk_selection_seed
+            ),
+            start=1,
+        ):
+            messages = [
+                dict(system_message),
+                {
+                    "role": "user",
+                    "content": json.dumps(
+                        {**prompt_input, "category_options": presented},
+                        ensure_ascii=False,
+                        indent=2,
+                    ),
+                },
+            ]
             attempt: dict[str, Any] = {
-                "round": index, "presented_option_ids": [item["option_id"] for item in presented],
-                "valid": False, "error": None, "raw_response": None,
-                "messages": messages, "generation": {},
+                "round": index,
+                "presented_option_ids": [item["option_id"] for item in presented],
+                "valid": False,
+                "error": None,
+                "raw_response": None,
+                "messages": messages,
+                "generation": {},
             }
             # Most generators keep a last-call attribute. Clear it before this call
             # so a failing backend cannot be charged for the previous completion.
@@ -780,40 +958,88 @@ class ModelSkillExecutor:
             try:
                 payload = _decode_observation_object(raw)
                 if set(payload) != {"option_ids", "summary"}:
-                    raise SkillExecutionError("Top-K response must contain option_ids and summary only")
-                if not isinstance(payload["summary"], str) or not payload["summary"].strip():
-                    raise SkillExecutionError("two-stage Skill requires a nonempty summary")
-                self.category_catalog.resolve_option_ids(payload["option_ids"], self.top_k)
+                    raise SkillExecutionError(
+                        "Top-K response must contain option_ids and summary only"
+                    )
+                if (
+                    not isinstance(payload["summary"], str)
+                    or not payload["summary"].strip()
+                ):
+                    raise SkillExecutionError(
+                        "two-stage Skill requires a nonempty summary"
+                    )
+                self.category_catalog.resolve_option_ids(
+                    payload["option_ids"], self.top_k
+                )
                 ranking = list(payload["option_ids"])
                 rankings.append(ranking)
-                attempt.update({"valid": True, "option_ids": ranking, "votes": [
-                    {"option_id": item, "vote": 1, "reciprocal_rank_score": f"1/{rank}"}
-                    for rank, item in enumerate(ranking, start=1)
-                ]})
+                attempt.update(
+                    {
+                        "valid": True,
+                        "option_ids": ranking,
+                        "votes": [
+                            {
+                                "option_id": item,
+                                "vote": 1,
+                                "reciprocal_rank_score": f"1/{rank}",
+                            }
+                            for rank, item in enumerate(ranking, start=1)
+                        ],
+                    }
+                )
             except (SkillExecutionError, ValueError, TypeError, KeyError) as exc:
                 attempt["error"] = str(exc)
             attempts.append(attempt)
         metadata = _attempt_metadata(attempts)
         metadata["format_retry_count"] = 0
         selection = {
-            "mode": "balanced-vote", "policy": SELECTION_POLICY,
-            "seed": self.topk_selection_seed, "rounds": 3, "quorum": 2,
-            "valid_rounds": len(rankings), "selected_option_ids": [], "scores": [],
+            "mode": "balanced-vote",
+            "policy": SELECTION_POLICY,
+            "seed": self.topk_selection_seed,
+            "rounds": 3,
+            "quorum": 2,
+            "valid_rounds": len(rankings),
+            "selected_option_ids": [],
+            "scores": [],
         }
         metadata["topk_selection"] = selection
         if evidence_assembled:
-            metadata.update({"controller_evidence_assembled": True, "topk_evidence_mode": self.topk_evidence_mode})
+            metadata.update(
+                {
+                    "controller_evidence_assembled": True,
+                    "topk_evidence_mode": self.topk_evidence_mode,
+                }
+            )
         if len(rankings) < 2:
-            raise SkillExecutionError("balanced-vote requires at least two valid rankings", metadata=metadata)
-        selected = aggregate_rankings(rankings, allowed, record.domain, record.field_name,
-                                      self.topk_selection_seed, self.top_k)
+            raise SkillExecutionError(
+                "balanced-vote requires at least two valid rankings", metadata=metadata
+            )
+        selected = aggregate_rankings(
+            rankings,
+            allowed,
+            record.domain,
+            record.field_name,
+            self.topk_selection_seed,
+            self.top_k,
+        )
         selection["selected_option_ids"] = selected
-        selection["scores"] = ranking_scores(rankings, allowed, record.domain, record.field_name,
-                                             self.topk_selection_seed, self.top_k)
+        selection["scores"] = ranking_scores(
+            rankings,
+            allowed,
+            record.domain,
+            record.field_name,
+            self.topk_selection_seed,
+            self.top_k,
+        )
         canonical = self.category_catalog.resolve_option_ids(selected, self.top_k)
         labels = {item["category"]: item for item in self.category_catalog.labels()}
-        return Observation("SELECT_CATEGORY_TOPK", "success", "Balanced Top-K vote",
-                           {"standard_candidates": [labels[item] for item in canonical]}, metadata=metadata)
+        return Observation(
+            "SELECT_CATEGORY_TOPK",
+            "success",
+            "Balanced Top-K vote",
+            {"standard_candidates": [labels[item] for item in canonical]},
+            metadata=metadata,
+        )
 
 
 __all__ = [

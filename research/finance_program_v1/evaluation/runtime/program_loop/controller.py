@@ -1,4 +1,5 @@
 """Bounded outer feedback loop; no Planner calls within a Program."""
+
 from collections import Counter
 from collections.abc import Mapping
 from copy import deepcopy
@@ -16,34 +17,82 @@ from .validation import parse_program
 from .rejection_context import rejected_program_summary
 from agent.orchestration.contracts import MetadataRecord
 
+
 def _load(value):
-    return json.loads(Path(value).read_text(encoding='utf-8-sig')) if isinstance(value, (str, Path)) else deepcopy(value)
+    return (
+        json.loads(Path(value).read_text(encoding="utf-8-sig"))
+        if isinstance(value, (str, Path))
+        else deepcopy(value)
+    )
+
 
 class ProgramController:
     """Coordinate source-local planning, execution and recorded recovery observations."""
 
-    def __init__(self, generate, registry, metadata, config, *, include_comparison_explanation=True, skill_pool='P14'):
+    def __init__(
+        self,
+        generate,
+        registry,
+        metadata,
+        config,
+        *,
+        include_comparison_explanation=True,
+        skill_pool="P14"
+    ):
         self.generate = generate
         self.config = config
         self.include_comparison_explanation = include_comparison_explanation
         self.skill_pool = skill_pool
-        self.bridge = ExecutionBridge(generate, registry, metadata, config, include_comparison_explanation=include_comparison_explanation, skill_pool=skill_pool)
+        self.bridge = ExecutionBridge(
+            generate,
+            registry,
+            metadata,
+            config,
+            include_comparison_explanation=include_comparison_explanation,
+            skill_pool=skill_pool,
+        )
         self.library = skill_library(self.bridge.catalog, self.bridge.loader)
 
     def remaining(self, trace: ProgramTrace) -> dict[str, int]:
-        return {'programs': max(0, self.config.max_programs - trace.budget['programs']), 'planner_attempts': max(0, self.config.max_planner_attempts - trace.budget['planner_attempts']), 'skill_steps': max(0, self.config.max_skill_steps - trace.budget['skill_steps']), 'program_steps': min(self.config.max_program_steps, max(0, self.config.max_skill_steps - trace.budget['skill_steps']))}
+        return {
+            "programs": max(0, self.config.max_programs - trace.budget["programs"]),
+            "planner_attempts": max(
+                0, self.config.max_planner_attempts - trace.budget["planner_attempts"]
+            ),
+            "skill_steps": max(
+                0, self.config.max_skill_steps - trace.budget["skill_steps"]
+            ),
+            "program_steps": min(
+                self.config.max_program_steps,
+                max(0, self.config.max_skill_steps - trace.budget["skill_steps"]),
+            ),
+        }
 
     def run(self, record: MetadataRecord | Mapping) -> ProgramTrace:
         """Expose only initial fields, preserve dependency-safe failure boundaries, and honor every hard limit."""
         if isinstance(record, MetadataRecord):
-            record = {'domain': record.domain, 'field_name': record.field_name, 'source_id': record.source_id}
-        visible = MetadataRecord.from_mapping({'domain': record.get('domain'), 'field_name': record.get('field_name') or record.get('metadata', {}).get('field_name'), 'source_id': record.get('source_id')})
-        trace = ProgramTrace({'domain': visible.domain, 'field_name': visible.field_name}, include_comparison_explanation=self.include_comparison_explanation)
+            record = {
+                "domain": record.domain,
+                "field_name": record.field_name,
+                "source_id": record.source_id,
+            }
+        visible = MetadataRecord.from_mapping(
+            {
+                "domain": record.get("domain"),
+                "field_name": record.get("field_name")
+                or record.get("metadata", {}).get("field_name"),
+                "source_id": record.get("source_id"),
+            }
+        )
+        trace = ProgramTrace(
+            {"domain": visible.domain, "field_name": visible.field_name},
+            include_comparison_explanation=self.include_comparison_explanation,
+        )
         state = {}
         self.bridge.begin_source()
         self.bridge.availability.initialize(visible, state)
         counts = Counter()
-        lineage = {'evidence': 0, 'candidates': 0, 'selection': 0}
+        lineage = {"evidence": 0, "candidates": 0, "selection": 0}
         comparison_failures = ComparisonFailureLedger()
         history = FailureHistory()
         progress = ProgressTracker()
@@ -52,78 +101,158 @@ class ProgramController:
         feedback = None
         while not trace.terminated:
             remaining = self.remaining(trace)
-            exhausted = next((key for key in ('skill_steps', 'programs', 'planner_attempts') if remaining[key] == 0), None)
+            exhausted = next(
+                (
+                    key
+                    for key in ("skill_steps", "programs", "planner_attempts")
+                    if remaining[key] == 0
+                ),
+                None,
+            )
             if exhausted:
-                trace.stop_reason = {'skill_steps': 'skill_budget_exhausted', 'programs': 'program_budget_exhausted', 'planner_attempts': 'planner_budget_exhausted'}[exhausted]
+                trace.stop_reason = {
+                    "skill_steps": "skill_budget_exhausted",
+                    "programs": "program_budget_exhausted",
+                    "planner_attempts": "planner_budget_exhausted",
+                }[exhausted]
                 break
-            messages = planner_messages(visible, state, self.library, remaining, feedback, skill_pool=self.skill_pool, failure_history=history.snapshot())
-            trace.budget['planner_attempts'] += 1
-            attempt = {'attempt': trace.budget['planner_attempts'], 'messages': deepcopy(messages), 'raw_response': None, 'status': 'error'}
+            messages = planner_messages(
+                visible,
+                state,
+                self.library,
+                remaining,
+                feedback,
+                skill_pool=self.skill_pool,
+                failure_history=history.snapshot(),
+            )
+            trace.budget["planner_attempts"] += 1
+            attempt = {
+                "attempt": trace.budget["planner_attempts"],
+                "messages": deepcopy(messages),
+                "raw_response": None,
+                "status": "error",
+            }
             trace.planner_attempts.append(attempt)
             try:
                 raw = self.generate(messages)
-                attempt['raw_response'] = json_snapshot(raw)
-                attempt['status'] = 'rejected'
-                plan = parse_program(raw, self.bridge.catalog, state, remaining['program_steps'])
+                attempt["raw_response"] = json_snapshot(raw)
+                attempt["status"] = "rejected"
+                plan = parse_program(
+                    raw, self.bridge.catalog, state, remaining["program_steps"]
+                )
             except Exception as exc:
-                attempt['error'] = str(exc)
-                history.record('Planner', str(exc), fingerprint(messages), 'planner_' + attempt['status'])
-                feedback = {'status': 'planner_' + attempt['status'], 'error': str(exc), 'remaining_budget': self.remaining(trace)}
-                if attempt['status'] == 'rejected':
-                    summary = rejected_program_summary(raw, self.bridge.catalog, self.config.max_program_steps)
+                attempt["error"] = str(exc)
+                history.record(
+                    "Planner",
+                    str(exc),
+                    fingerprint(messages),
+                    "planner_" + attempt["status"],
+                )
+                feedback = {
+                    "status": "planner_" + attempt["status"],
+                    "error": str(exc),
+                    "remaining_budget": self.remaining(trace),
+                }
+                if attempt["status"] == "rejected":
+                    summary = rejected_program_summary(
+                        raw, self.bridge.catalog, self.config.max_program_steps
+                    )
                     if summary is not None:
-                        feedback['rejected_program'] = summary
+                        feedback["rejected_program"] = summary
                 continue
-            attempt['status'] = 'accepted'
-            trace.budget['programs'] += 1
-            observation = {'program_index': trace.budget['programs'], 'plan': plan.to_dict(), 'steps': [], 'status': 'completed', 'failure_index': None, 'terminated': False, 'invalidations': []}
+            attempt["status"] = "accepted"
+            trace.budget["programs"] += 1
+            observation = {
+                "program_index": trace.budget["programs"],
+                "plan": plan.to_dict(),
+                "steps": [],
+                "status": "completed",
+                "failure_index": None,
+                "terminated": False,
+                "invalidations": [],
+            }
             trace.programs.append(observation)
             for index, call in enumerate(plan.steps):
-                if self.remaining(trace)['skill_steps'] == 0:
-                    observation.update(status='budget_exhausted', failure_index=index)
+                if self.remaining(trace)["skill_steps"] == 0:
+                    observation.update(status="budget_exhausted", failure_index=index)
                     break
-                trace.budget['skill_steps'] += 1
+                trace.budget["skill_steps"] += 1
                 before_state = deepcopy(state)
-                step = self.bridge.step(call, visible, state, counts, lineage, comparison_failures)
+                step = self.bridge.step(
+                    call, visible, state, counts, lineage, comparison_failures
+                )
                 history.observe_step(step, visible, before_state)
-                step['step_index'] = index
-                observation['steps'].append(step)
-                observation['invalidations'].extend(step['invalidations'])
-                if step['status'] != 'success':
-                    observation.update(status='failed', failure_index=index)
+                step["step_index"] = index
+                observation["steps"].append(step)
+                observation["invalidations"].extend(step["invalidations"])
+                if step["status"] != "success":
+                    observation.update(status="failed", failure_index=index)
                     break
                 if self.bridge.catalog[call.tool].terminal:
                     trace.terminated = True
-                    trace.final_result = deepcopy(step['data']['final_result'])
-                    trace.stop_reason = 'validated_terminal'
-                    observation.update(status='terminated', terminated=True)
+                    trace.final_result = deepcopy(step["data"]["final_result"])
+                    trace.stop_reason = "validated_terminal"
+                    observation.update(status="terminated", terminated=True)
                     break
-            observation['remaining_budget'] = self.remaining(trace)
-            observation['lineage'] = dict(lineage)
+            observation["remaining_budget"] = self.remaining(trace)
+            observation["lineage"] = dict(lineage)
             feedback = deepcopy(observation)
             event = progress.observe(state)
-            idle_programs = 0 if event['advanced'] else idle_programs + 1
-            event['consecutive_no_progress_programs'] = idle_programs
+            idle_programs = 0 if event["advanced"] else idle_programs + 1
+            event["consecutive_no_progress_programs"] = idle_programs
             trace.progress_events.append(event)
             if idle_programs >= 3 and (not trace.terminated):
-                trace.stop_reason = 'no_progress'
+                trace.stop_reason = "no_progress"
                 break
         trace.failure_history = history.snapshot()
         trace.state = deepcopy(state)
         return trace
 
-def build_program_controller(generate, registry_entries, metadata_rows, config=None, *, include_comparison_explanation=True, skill_pool='P14'):
+
+def build_program_controller(
+    generate,
+    registry_entries,
+    metadata_rows,
+    config=None,
+    *,
+    include_comparison_explanation=True,
+    skill_pool="P14"
+):
     if not callable(generate):
-        raise TypeError('generate must be callable')
-    if skill_pool not in ('P14', 'F66'):
-        raise ValueError('skill_pool must be P14 or F66')
+        raise TypeError("generate must be callable")
+    if skill_pool not in ("P14", "F66"):
+        raise ValueError("skill_pool must be P14 or F66")
     registry = _load(registry_entries)
-    if isinstance(registry, Mapping) and 'categories' in registry:
-        registry = {item['category_id']: {k: v for k, v in item.items() if k not in ('category', 'category_id')} for item in registry['categories']}
+    if isinstance(registry, Mapping) and "categories" in registry:
+        registry = {
+            item["category_id"]: {
+                k: v for k, v in item.items() if k not in ("category", "category_id")
+            }
+            for item in registry["categories"]
+        }
     if not isinstance(registry, Mapping) or not registry:
-        raise ValueError('nonempty frozen Registry mapping is required')
+        raise ValueError("nonempty frozen Registry mapping is required")
     for category, entry in registry.items():
-        if not isinstance(category, str) or not category or (not isinstance(entry, Mapping)) or (not isinstance(entry.get('grading_level'), str)) or (not entry['grading_level']):
-            raise ValueError('Registry entries require category and frozen grading_level')
-    config = ProgramConfig(**config) if isinstance(config, Mapping) else config or ProgramConfig()
-    return ProgramController(generate, registry, _load(metadata_rows), config, include_comparison_explanation=include_comparison_explanation, skill_pool=skill_pool)
+        if (
+            not isinstance(category, str)
+            or not category
+            or (not isinstance(entry, Mapping))
+            or (not isinstance(entry.get("grading_level"), str))
+            or (not entry["grading_level"])
+        ):
+            raise ValueError(
+                "Registry entries require category and frozen grading_level"
+            )
+    config = (
+        ProgramConfig(**config)
+        if isinstance(config, Mapping)
+        else config or ProgramConfig()
+    )
+    return ProgramController(
+        generate,
+        registry,
+        _load(metadata_rows),
+        config,
+        include_comparison_explanation=include_comparison_explanation,
+        skill_pool=skill_pool,
+    )
