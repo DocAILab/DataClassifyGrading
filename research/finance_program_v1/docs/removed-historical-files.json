@@ -1,0 +1,641 @@
+{
+  "source_commit": "b6fde9b80802593ad8ab30bdfae66fc28483a849",
+  "reason": "P14 standalone history is outside the matched F66 financial mainline; preserved in Git history",
+  "files": [
+    {
+      "path": "research/finance_program_v1/nontraining/batch_audit.py",
+      "git_blob": "36902ae83a1dae89e2bb3295d03b8e414a6c94ab",
+      "sha256": "a8440f1e3d723dfb7d69af7819e8b7398e441d2a0b86d37e30f543b4e7f89dbf"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/batch_runner.py",
+      "git_blob": "56856b2ff3790a45c60586ec4e6ab498892931e5",
+      "sha256": "10ed285b65779ce24b2d66584b01f81c285fd7ca4c705857b076d2d0b1d950d4"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/download_model.py",
+      "git_blob": "f1183720f230347f9ab7521bea3d321e7b8ec6cf",
+      "sha256": "8b0e3d2fad6b72737daa9f8c7d29f7d74660e7e9334e3ff170e646ad815c0f3e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/local_smoke.py",
+      "git_blob": "3285fb1f41a4664bf5471b9b8985d5723abe76e9",
+      "sha256": "5bef9eba9ad014681600586a59e42f6c0e912187aebfd6a26ff886300e103876"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/prepare_batch.py",
+      "git_blob": "45812bf0070af4c255755820a4009f1764c4c13b",
+      "sha256": "c9e7f7cdf291589f9463222ee5f4fabd09e772c0a21645a57a6f2ebaa3b6e34c"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/__init__.py",
+      "git_blob": "44a7fe39d9048eee9e29fc7edca9f8a5cf06aa37",
+      "sha256": "8ebc1b9a3937a1848c199126edf97e5862741ede120a491e87a8473d6c0f7c46"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/__main__.py",
+      "git_blob": "eb53e2f31b2f703ad32ef64b8a41faa3e7d18e08",
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/_vendor.py",
+      "git_blob": "6222f14c990d6424ae2fc4f7b972cc9959d5b035",
+      "sha256": "cfb187e38a0b8acd86e83476ee24f3aa02928c86fd3deb532f752ae8784bbf80"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/catalog_context.py",
+      "git_blob": "9fe8b2855406e97bf9d54e5e7e3117b9d4f62a74",
+      "sha256": "d59a7d3636fa7cb92ba5fff2126a9aee2b6a2166970b20ec4a834abdd3235409"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/cli.py",
+      "git_blob": "bf13728d254b3f049f5daebd795458f7a2a694c9",
+      "sha256": "82d3841baa287c2d5e0cf519ae2532a4fd5a4d79e89d907e29ad029c17d59335"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/contracts.py",
+      "git_blob": "b7d715cd54a1863c5b29b6e50479929d6143c69a",
+      "sha256": "884a776db1a44475943a5b08370bad9d6107cfcbe7f40380622515e85713cb51"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/controller.py",
+      "git_blob": "e854784a88de8bebba7b80d1b4433ba04a605d03",
+      "sha256": "1cfc63e72086d382e476443a098389570605d58cfa4a2cb0de5efd8fd8c37dfd"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/execution.py",
+      "git_blob": "5e8630489b7c0dc5a4fd889393d26ed44da6612a",
+      "sha256": "f9f61e8a3e62d827ff0ceccc57f1d08c27b63c017ca3f1506c2955433d5b5bea"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/planner.py",
+      "git_blob": "41f4f905946b295242b68048cdbb524b36997c7c",
+      "sha256": "966e630a9f3a66ddfe725a61c35e004a39a255f6e9209535c2f1b2ef9e5200f2"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/planning_contracts.py",
+      "git_blob": "68fd55f4e9c49c86d9cca56a319681a724b70cf7",
+      "sha256": "90d671bb998814249379db93c887ece2df70476d12a4e8bbc15dd6ccd78f6845"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/recovery_context.py",
+      "git_blob": "bbb0aa2aabb9594a960a6cce98591031528ca1fa",
+      "sha256": "a6660c91d3e77804146b12ce1b77fb0974977bb75fd98cf81c6225f02ae48013"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/rejection_context.py",
+      "git_blob": "a75322b032e411c26b4692ed9cb89a669fd2021e",
+      "sha256": "fd71ad424ff4a201b01f4db7276f2d958fd94eba7aaf26deb16cc54dbcb9de1f"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/program_loop/validation.py",
+      "git_blob": "6fc4e49d0ea91ca1c46b4151582d2adb7194b8e5",
+      "sha256": "8ac6c4bfa272c60fb0149eab43b73c9b9b5e210859940eef316dfa00e4723e23"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/reviews/__init__.py",
+      "git_blob": "e45a911031dbb1284c8840a89fbde3e041b829b3",
+      "sha256": "ad269634e577d94a5c8ba5df37e88e8614e08a424c848e5d256d97ea16ccd04a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/reviews/independent_audit_01.py",
+      "git_blob": "9afdf2f2c1a7132b39eafa8ef4a854a1c6f3b186",
+      "sha256": "d88449c928b14e62477256ed1f62da10a75c715754a61ee6f24d2341ab9e64eb"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/reviews/source-manifest-01.json",
+      "git_blob": "83fac3dc5596b6aeaec32b37f6da0e6b8e7f9ba4",
+      "sha256": "055e2e89dba5e43be29782dd597f5867b4914ff8d9bd3875e51380981fd06935"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/reviews/trusted-model-manifest-01.json",
+      "git_blob": "fac39da79ac263168f340ddeea7887e3ec2c58f8",
+      "sha256": "5b0a6b5e607d5305b2d59dd3e04bbd0f8b04af4502c389be3a5d83d01eddc8c9"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_9b_identity.py",
+      "git_blob": "2cee3ef5a7e790ebc9862315911c3c050af3e200",
+      "sha256": "d350a177fc710dadf08121abe09bd0b89e2a14785e203535ea611a1bff102b5c"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_dynamic_references.py",
+      "git_blob": "e63bca651ac6199434685ac501b6c2f004c0d5af",
+      "sha256": "588688f185f721c742e78f336ab5b42b7f7a695c87a0b8640208412372edc30e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_local_smoke.py",
+      "git_blob": "06f820e02fd4451932bcc2780a473f4cf8802878",
+      "sha256": "dfdc361c3a7243c5ee78645d1d2d7bb449927633d061bfd76986fb081e6be601"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_planning_contracts.py",
+      "git_blob": "747eb7c13f9e82b46862089ee71d451163750eae",
+      "sha256": "992da01d882c51a288b298db790705589e0cf16f92e9ecd4e611746c96504560"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_program_loop.py",
+      "git_blob": "0c66c3d3e22eba74154399c6f88fdafca045e4de",
+      "sha256": "18d251a2781b0bc89e9ff50fe53afe364a9e7a35fb48f19f610af987582a14fd"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_recovery_context.py",
+      "git_blob": "36365070bb9c6b1c0b770fd5cce953a31605575e",
+      "sha256": "ba4e725f74a216831466b56f3b93616ca82dd36d0d77d690185f2e13d14de08e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_rejection_context.py",
+      "git_blob": "3bf7cca78ff453810cd5e70c74358558524f4ba8",
+      "sha256": "48024ea991eceb98c0eb2cc9d292f9092ded253d995cbc4398b3a1dfed9bdce3"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_source_integrity.py",
+      "git_blob": "faab8a2c43f00d4da348922e37d3b68639f311df",
+      "sha256": "8141193bf6771e3c0a2bedbf5bb7999ba32bbaa6f74adc77fa1a18d941ea37ea"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tests/test_task_level_prompt.py",
+      "git_blob": "52bf4e4b0cf4a5908b58c0950614a0add8ce3fc6",
+      "sha256": "165fe55de77344c81d97de30eb532b7aadd326ce3f91a502025d5ab571ac4fc5"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tools/check_local_gpu.py",
+      "git_blob": "ccbf06f9cc58a1d952427d9227537d47791357c3",
+      "sha256": "4b28ea500f7573dedc1801a8b73c8ddaa4b26d8f87e9a6624682a3aa2d8ac7f3"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/tools/verify_source.py",
+      "git_blob": "b6d8016149e1ec9a1a26e6d5f74575262a138dbf",
+      "sha256": "c1d14bc3f5641a725d9c8d0be05391215bf696d850f3adf7e1239fbec5f02294"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/common.py",
+      "git_blob": "16542c7889e1651e490c5467e7721884f43d87f2",
+      "sha256": "c79a02e987a169436796f438a415d7c309c0e0cf50bb447e493cd68cb9301fa4"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/pool_availability.py",
+      "git_blob": "74c15b85d16bbd3c3d76d39979b6f35c122ff7e7",
+      "sha256": "c6fa8e23a678b4451ef78d301efb347507fb0513a9d18bfda76eeefc824d70aa"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/pool_bindings.py",
+      "git_blob": "18359c0e086bb9d567069495383817ac6cf4ffa6",
+      "sha256": "3c0c65e78f7bcdc5bb81003b455fd957dba5c4abdbfdaa20b8fddb3b155e07db"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/pool_catalog.py",
+      "git_blob": "4fd6b2d1f271bd600311528895daf777944ba247",
+      "sha256": "bd19db2c908d41120498eae4afc26e30726b60ddf7fbf834e77ca6251e8c8a82"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/pool_metadata.py",
+      "git_blob": "a7bc2d9aec53d8ad336754cfcc5a10bbd31c5f49",
+      "sha256": "0705318048785fd34edd970274145dec359269e5e30756a996eb156e168e3a8a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/pool_runtime.py",
+      "git_blob": "edc95559eef22aa7f1ff1b7c489037413db4181d",
+      "sha256": "506f2b605a32b0a1cf1431cdd4b92f5ccf821909d20726f8aacdd672ab0a893d"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/reference_skills_63.json",
+      "git_blob": "211165d7e680f34637741f74f0ceb5aef9d91b3c",
+      "sha256": "a63b6ee85f983caf9f55d537fe85d24a283a860ccb0985c8a7fce8b1466e3caf"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/__init__.py",
+      "git_blob": "a06fbeb46d8c95cba0d302be72b06014512a17e7",
+      "sha256": "c2ee5b379bec6f6381e0651bee6078e38ad6ca294f497d40b6d27e583fd1492e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/__init__.py",
+      "git_blob": "8157f3d3aa4944f07ff3f7ec8c07a5ca8d6ad925",
+      "sha256": "64f470fa2d85450ebbd8819a66c63064bcdbf993c829d248c64315285e7aca73"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/agent_loop.py",
+      "git_blob": "026352426fa7f0c339f63e621bddf475a3ad773f",
+      "sha256": "176bc72eebd17a7d2e45276654c49cbd5b1828306e11d2579faffe143eebcade"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/artifact_projection.py",
+      "git_blob": "e2b125051fec30049135ccbf3b22444df2f51555",
+      "sha256": "d71939b3e4b04b83d33f7aedbc3173cd44043b8a55d44c149c46f35d5aa3f7d8"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/catalog.py",
+      "git_blob": "da77ce43f98517efddab8706f88ba5f10fd61d09",
+      "sha256": "66ceb63dd02030cecb3965247a671da64c4d29724ece9a5eb52961a0647c8e6a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/category_catalog.py",
+      "git_blob": "9696dd40655c0cebda965f2d03bf34063c48bb00",
+      "sha256": "baf7b0b234822060b48dded26f00d526654749f1384c3e23f9eb07ddc8fa0a58"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/contracts.py",
+      "git_blob": "d7634aeffd00bef814721b933034731ed9d1d1fd",
+      "sha256": "19ed69938bdc517be14625e0ef886945dc4483faeb6a8260fdfcacaffa83f233"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/metadata_lookup.py",
+      "git_blob": "7de1ab437f4823a02bc815f313519b09c1cf60d2",
+      "sha256": "e338e0d804caa20218637074422b08f26b16fdbdd9faff39077a1cb73beb89fc"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/metrics.py",
+      "git_blob": "d3ba05bbeb3b860864802754461c0f013ec6b960",
+      "sha256": "fffb69bd3e8efa149e46e3413b4056457840b9cd8f6798fd5e0871cdb7e3a0b3"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/model_skill_executor.py",
+      "git_blob": "8df1c1d3d65407a4650e091a7b4d7835f8377038",
+      "sha256": "03a90c6c58ffad2dddc9fa5c8982045eb2a73a804f521c2c679f61e14e17f3b0"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/planner.py",
+      "git_blob": "9987d1de6758d1ba7c430069310864b574a46f47",
+      "sha256": "5be67a873f8fa54c183c9fa381def425b73cc92181fab6079506eb2296fa53d8"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/retrieval.py",
+      "git_blob": "df3e67872c5215049647afc760a9d24b4c4e3419",
+      "sha256": "fbe140936695f38c6bc6838c5a9a0100ca9e6f98b6e77984e587fdbea28b6bf4"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/runtime.py",
+      "git_blob": "e90f1209dc15d92d9ac7bac0528afe9af626efdd",
+      "sha256": "887e82115154f043801719b5e292895e3eeef0d25e277748805a0c1dabc39acc"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/skill_loader.py",
+      "git_blob": "cb43a6a27dbbb0749b16ca4f6405e34eba624081",
+      "sha256": "7528bada337e98b69ef61ccf558574f5940d26fcfc2106530f8c9d0d765964f6"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/table_field_lookup.py",
+      "git_blob": "29350867ceba5f292855fc1f72d602a96da309ea",
+      "sha256": "93319c4ee044439f9e25449cec220dfaededa1c6b799816486d19402b569dc22"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/topk_selection.py",
+      "git_blob": "0a9891970019bab0f6b60aa10e1466eee7c1cb32",
+      "sha256": "a58411d1acb421bd5e5c134f4ceef7ccce76851f684a397446904b7a17b1eb4c"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/agent/orchestration/validator.py",
+      "git_blob": "8c30690e0560b008f53f4ba4cf5b1d208c6b663a",
+      "sha256": "15fd2b9faca5addf49f4fdf5d816eb2ecb3723c6b800da3fd591cda93b0bedcd"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/script/orchestration/__init__.py",
+      "git_blob": "09f258a62a62517806bf9aed9f9573ee91a1e948",
+      "sha256": "7c61249a27a9c7ad011f983e9857e3889ae54837d00faf2660fe2f72350b30d6"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/code/script/orchestration/run_agent_loop_batch.py",
+      "git_blob": "c8c6963e462345e0ff5e2449d54554df0354eed3",
+      "sha256": "6605815bf479e8fc50a3041af3c2430b3f121740bf38b8e6d497212d4425616d"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_ASSESS_CATEGORY_SUPPORT.md",
+      "git_blob": "06244148eb3509652f2a92f96abed60bed221056",
+      "sha256": "85ea64633013f69d582707acf4ab1b32201cf5ebbf7e0356041119d6c08c106a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_CHECK_EVIDENCE_SUFFICIENCY.md",
+      "git_blob": "cb91800959e91ee85ff9b7aee1c3013435719e30",
+      "sha256": "f879c21470b9daeb773a80a256a07f7a6f43e38e8452347f128eca6391362f4a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_COMPARE_CATEGORY_HYPOTHESES.md",
+      "git_blob": "b69eaafd74f2ae953ce7ae0e2c4b7a045f864a1f",
+      "sha256": "3fa31691df6bb353b4171a8c837da229549f8f4eff827bf502f81cb2318432a5"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_DECIDE_NEXT_EVIDENCE_SOURCE.md",
+      "git_blob": "92d385f0d33d95c3b4cd91242704ab0659cc6d65",
+      "sha256": "647a447ae584d92e67c17d2d7040ff48d14cb8d2b5039345d65eb072b5c14fd3"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FINALIZE_CLASSIFICATION.md",
+      "git_blob": "5e49b985869558b60b5a505a8332afe80cafa858",
+      "sha256": "cd66513c1ca4b6728bd217ae57a7ad7cd96257f61443a7af2ac1edd7e746f937"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_CONTEXT_EVIDENCE.md",
+      "git_blob": "bd49f0358db240c97dfd421fd85932a07deed9cb",
+      "sha256": "b0028a313fa3f81350f07093c5389c7ec0447539119e37930f1f05bceec539d1"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_DATABASE_EVIDENCE.md",
+      "git_blob": "9546a0b05c8259c96d3cb699b6996631ef36371a",
+      "sha256": "e27e9b2f57b5b1929d5286a10cc15233ab48ba40948fe520fde8853f66bc1e56"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_FIELD_EVIDENCE.md",
+      "git_blob": "97908d1aff91e162d2ab74a2147781d81bf4a043",
+      "sha256": "6dfef164297cb75a02f64ebbdafecb3f0519f1a5f1992c3bb9a98157b7a7ee54"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_METADATA_EVIDENCE.md",
+      "git_blob": "f17c5480f0ebb4d4a1c9c12b72c62137b2245abd",
+      "sha256": "e3a7e0de334bc39836c3a909edc79233075b0b73f7c30e879d4e087bc94aa6f2"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_STANDARD_EVIDENCE.md",
+      "git_blob": "4f74a10262fbb47497172b9e5fd6754b6a672ff6",
+      "sha256": "eddac25de1c3dda0baf876d29a7a32ae4fab980f2ae7ce892def82af3469087a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_FUSE_TABLE_EVIDENCE.md",
+      "git_blob": "9cb0a5f7e746fc3fa4b4d7ff1a5b8bc32426e0a0",
+      "sha256": "24c7eb0ea3381b640465e78e41eb2ff43495e7bb3eadcc652e5587c3bd167ab4"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_IDENTIFY_MISSING_EVIDENCE.md",
+      "git_blob": "b36a14cb2fb268b21ef1d860b4cc07f3b3db69ee",
+      "sha256": "237695b8b5d6f9a7105902dc32a120297c364ee5f8d1c27f4ead212df110668f"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_INFER_CATEGORY.md",
+      "git_blob": "265b235d02eb024a77d9333f30021d742f127c74",
+      "sha256": "032b758517d3a8535c29d20d8391bd8d27a2ad1d5c7e9f62246578076ddb5197"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_INFER_CATEGORY_FROM_TOPK.md",
+      "git_blob": "96a115599af1b29d410edd79241876854baa4e32",
+      "sha256": "7af18e11373d633fe4369338336c653b47238c214cb5f1937e0a5b30041f722f"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_INFER_GRADING_LEVEL.md",
+      "git_blob": "0f61b63032a95d5580f039aed198463963b00b87",
+      "sha256": "276b5e1a8b080d9aecec762762939372f40e56c8fb4b1eb92964c53073b6d603"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_RESOLVE_FIELD_CONTEXT_CONFLICT.md",
+      "git_blob": "746a767b3f9961c0eb7087294ec2b3d123a7348c",
+      "sha256": "94e552edccadc03cb55a5ab8e54511a296971363bd4aafb30b3ab1385e5a18f3"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_RESOLVE_METADATA_CONFLICT.md",
+      "git_blob": "3593ec1399de32df0fa1a23c8db0625ae93ec127",
+      "sha256": "643472dc5b7e7cdb38f3483857acc94d539884efede9b9ed0f4cccc79a037d0b"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_RESOLVE_STANDARD_CONFLICT.md",
+      "git_blob": "54927962cee880dc386d0729c53ce43afac53e54",
+      "sha256": "be9b9c9c879b964acf4b5f7317dcf90c68833a1f98f6cb8ab9f8199460066b25"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_VERIFY_CATEGORY_WITH_STANDARD.md",
+      "git_blob": "de3852fde506013f6e31dcd0de2bc6620f8ce12d",
+      "sha256": "deb07baab54b052a9323b475c912d7743115c96dd4b1dd0b7c4a80df3e3d0dfc"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_VERIFY_CLASSIFICATION_GRADING_CONSISTENCY.md",
+      "git_blob": "482763bc68f1d201040481d6e4270ff5f5ff9a7f",
+      "sha256": "ff8ef17c1ce1408496c6634389ecba87f6d282d0264e4ac1ee9a8c2deb12bab1"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/evidence_reasoning_WEIGH_EVIDENCE.md",
+      "git_blob": "c9649caa84f6b759f77b15395dfc54e3266cecdb",
+      "sha256": "c928a03a7a8f2d8b1a28ffb01c100543000a62e4a388a0e60051a4b6815dd43f"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_ACQUIRE_MISSING_METADATA.md",
+      "git_blob": "a8256f1ad77417528ddaa9ec4ca435e8e40ee008",
+      "sha256": "cc788f17f7c63e1f7974f220eca3becfb186d3df287a35d814a5387964d20ce3"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_CHECK_METADATA_AVAILABILITY.md",
+      "git_blob": "99385a6f4858b01ed4ea405c4906031d9c1aa50c",
+      "sha256": "fe27b6f518a98be4e88414d6180180954572f222fec37dfc4591e2b72a05ad5a"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_EXPAND_SELECTED_CONTEXT.md",
+      "git_blob": "d6d910518df6838d61cc8809e70a4e53e1d7b3ed",
+      "sha256": "323b136804a9db277d6642b71de277ae3fcd7021910645475872b1b018d79a79"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_COMPLETE_DATABASE_CONTEXT.md",
+      "git_blob": "c1190482159fff30b6cdefb0eb44d1802e121b2b",
+      "sha256": "0008e4dc6b220757208cb656912ebb609c8230aaf62ce56a33f247dc5879f7cd"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_COMPLETE_TABLE_CONTEXT.md",
+      "git_blob": "0838b6e0d6ae1e9c92a7f312364f239e197cbd2c",
+      "sha256": "09b1f136ca45244c603e98aba0bec6fad8997ca2e618eeaeaf7ac1c1de4fb711"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_CONTEXT_FIELD_DESCRIPTIONS.md",
+      "git_blob": "c6afadf5de6e5452909f7c1c999659a7644810ec",
+      "sha256": "0b5f7d9ced8902a3a7157d6781a3b3d6bc9fb9f2d2c55da99f31977ceb5609b8"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_CONTEXT_FIELD_TYPES.md",
+      "git_blob": "1515c037a70cc54dc39a3cbddcf1a5aaf2b25260",
+      "sha256": "61cfe7efeb0980d22e72c4069e70cb91d1a007c7352b528b600b7efbcfd313e5"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_CONTEXT_FIELD_VALUES.md",
+      "git_blob": "3566bb5236124e0b470a02ae9f02d6143fd73a43",
+      "sha256": "780305d46253a0ab132f35feee6ba420347f351326827c4be781bd4224349504"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_DATABASE_DESCRIPTION.md",
+      "git_blob": "a39482956299b781dde5d5c92356afe78930bd0f",
+      "sha256": "37b2146b9cd669e1dc0cb0a54c0f6ee36dc0157ce1e4e753d96be08a6fdada21"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_FIELD_DESCRIPTION.md",
+      "git_blob": "2015e2c65512c00d12228828dcf30dbe985f2111",
+      "sha256": "d545962070cb10fa90ee1693261d48ee08df616cad4d098bfcd98643100fce7b"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_FIELD_METADATA.md",
+      "git_blob": "f8504a3598191f48d7ff1809d20770d16031aa18",
+      "sha256": "372ce861fcca6138cda43b693a8fc32f85c0ec380b0c275c3cfe613dbe25f629"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_TABLE_DESCRIPTION.md",
+      "git_blob": "2bf068980530891c4d235ca5b4885eb4cff1f6a5",
+      "sha256": "912334b76f95c6f468cf4bab840ae0ec3a262639c59e545db63bfce866710ea0"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_GET_TABLE_FIELDS.md",
+      "git_blob": "c1779ba7a91ca38938d97d851350079059a7553d",
+      "sha256": "99c01c5869b511754feccfd335017c7f4290683fbcc46ed6355b95f775d605b0"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/metadata_acquisition_SELECT_CONTEXT_FIELDS.md",
+      "git_blob": "ca0decc7d3ccc4e766efde0f46806a3e35f2e870",
+      "sha256": "aacb11c41507d2c2743e56a7915c9dae9d6b4e2ff3ece6fec6b3d73babeb6683"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_DISAMBIGUATE_FIELD_SEMANTICS.md",
+      "git_blob": "1fc67c7ad68bd31d0cf66ba6800197b4927e9c9e",
+      "sha256": "e497bddaf99da95503677a969926921b507b92ad542055dafaa88ee724a235d0"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_EXPAND_DATABASE_ABBREVIATION.md",
+      "git_blob": "76258c8533023973cb0daa0f8e598cde4d022b41",
+      "sha256": "2338078f06cd5276b326747fa0b80790d3c638ba369f6579e4ddcff84882eb51"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_EXPAND_FIELD_ABBREVIATION.md",
+      "git_blob": "d6a7524483d0230171374c4f8ebc4da5f05a455b",
+      "sha256": "6b84b95768e4cc77d193b31871f3b75ab17ff86f526c4000bccd6f8c423cb2a7"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_EXPAND_TABLE_ABBREVIATION.md",
+      "git_blob": "1340fa2b42774fe6685fb158604592dd237073e9",
+      "sha256": "6ce033822d4d4f4ae7babba7bd0b44fa871476353b81fd86ac6742d266b3a426"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_CONTEXT_FIELDS.md",
+      "git_blob": "c5a536ab79bcacc615e0bb25f8b7f0033942f69f",
+      "sha256": "297bf09515bbbc0a4b9e6f80fb77c7135b7484c5c428da0868d7a0d0732717cb"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_DATABASE_DESCRIPTION.md",
+      "git_blob": "46c8b95b8ea8a34a3730b97d970f09fe2870f389",
+      "sha256": "acc57509cff6330476522f8fc5a7b286b0ede3e477c9806000b54542f89070dc"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_DATABASE_NAME.md",
+      "git_blob": "a1fdeb0a8e6b36256513e4cd50321ae6c4bb2a18",
+      "sha256": "e427e888ac10d742784d390ad2bdce40d0aec7c9a7abd52b5f5497fc83b866fc"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_DOMAIN.md",
+      "git_blob": "23b3e93b15ec1ef985704a32d61e173f20c038dc",
+      "sha256": "6e1760ff387797cb4c171f404f744b6b6b87445969659bf8b37c8bca66de5375"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_DESCRIPTION.md",
+      "git_blob": "5809752abf2247fc86677d2b9d11037018407cb5",
+      "sha256": "a833b94c6c7afd5e740d67674662178e9b2f9cef6e0019dd9af8bbf62b324335"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_NAME.md",
+      "git_blob": "fd91c53ce05d5232ee57220c281e1ae5f641a605",
+      "sha256": "99934fabad8007d155624a475b1600b5b8139152efde2a9154cd7035e42ba56e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_TYPE.md",
+      "git_blob": "f7faeb407d358407caee86ff5821445b9188ace4",
+      "sha256": "93500ee995113eed8ee9d6d8887d6f65f2d4aa6ac52b12697fb8e82982c1b49d"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_FIELD_VALUE.md",
+      "git_blob": "8fd47479355c1f4b63aef8c8da099364c5be8bb9",
+      "sha256": "c0dad806fde006487b38b9d56fc0b5fde6cc2e367b8a46d13adb5c4171ed19ad"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_TABLE_DESCRIPTION.md",
+      "git_blob": "31d9fd8f60f246e3f8b6b6beff2b313921a5cd0d",
+      "sha256": "901cef9276dd30ff1b2e35fb39bbe9138cf42bb4ded47b37fb3afe83c1945ac2"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_INTERPRET_TABLE_NAME.md",
+      "git_blob": "799e31b92c1c6516783210d5fe4accfbacb5cd50",
+      "sha256": "bfd2506982a98615fa40d2a2760893f7634a270a663f65a84547e4a2ec7a4186"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/semantic_interpretation_SYNTHESIZE_METADATA_SEMANTICS.md",
+      "git_blob": "18c218cb9b4b4547d75a0e18446db496b8a8b327",
+      "sha256": "4d64debe0b8657d6c0960eb5e3eebad7aa5125e34e35f66deb38c050f665ec26"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_CONTEXT_TO_STANDARD.md",
+      "git_blob": "dc5dae5b7b31f7018bd2f169c25ea2034e36ec4e",
+      "sha256": "debf2fb145c10526e4952ba7cb322d8a88370ae136d1ae6f0b74b7b9d60734b0"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_DATABASE_TO_STANDARD.md",
+      "git_blob": "c303142a4bad1eb113302694dcb6e0cf2e5da7af",
+      "sha256": "5bdb03e45720da5ff53297fae7ce476e6fd46f3af6277e8be147a87033917630"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_DESCRIPTION_TO_STANDARD.md",
+      "git_blob": "cda05f1a7d916b347c1552eb1f5cd382ffa7bc58",
+      "sha256": "ec00677a4433b6110f529eafc28d5c0272746f186121ee563ab86eb8a3a9a6ec"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_FIELD_TO_STANDARD.md",
+      "git_blob": "0dde182941ec01971aa65a8b83564c4af02019ae",
+      "sha256": "19c1e2c28c4df124d9ef56501635c31443552cc3d103d727b927db78891eb53f"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_TABLE_TO_STANDARD.md",
+      "git_blob": "f20ed54d042a31fd0432e5ca5dd7654b7a4ac197",
+      "sha256": "7fa123b49aca5ec7f2525d3697e0108aaf3d85f61c966eb9492a19b657e2a300"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_ALIGN_VALUE_TO_STANDARD.md",
+      "git_blob": "43a354f874f735b9546fe1d55df67ba3952fa5b8",
+      "sha256": "d71db5f6adcf269897e8c9b662cc31edc18b7a7727db7a241624e319a390588e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_COMPARE_STANDARD_CANDIDATES.md",
+      "git_blob": "1654fc55d693178807c4b7007db66aac56be0494",
+      "sha256": "d5e82a8d994155a010de18c15a1923a432e2e039a0aa3016bc1a7689cdfe9fdb"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_REFINE_STANDARD_QUERY.md",
+      "git_blob": "29433fb80a1f610c7b1ac371862aff51a541e11a",
+      "sha256": "51c1ead62e9d83c194ac1fc24c8f43b9879497477b79054e03384b6ded980420"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_RESEARCH_STANDARD.md",
+      "git_blob": "421cda4d2874720ff2345e0e7e44a3a9fbd57237",
+      "sha256": "05ccd5f271a060ed497242c494c34d8ce3cac22f03e6349d0d6edfe0a4b303ac"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD.md",
+      "git_blob": "79a5d12208a3e87ffa74bafba1f5e967720d14e9",
+      "sha256": "dcbd3841440dc7bf0ee22c02b9ba1014fff1fa6a68900f270bb8cbb40aa9074c"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_CONTEXT.md",
+      "git_blob": "20055dfd8e64b1e86a5ab2c28f456e7af929f7a5",
+      "sha256": "6c1c9ad8fd7036ddf2504e30bc4f920d9754c8c3de68f2ff5263f760630d839e"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_DATABASE.md",
+      "git_blob": "97b3bffcb5b776be28a24c8d32b8ea9678e35384",
+      "sha256": "fc38fe4bccc6637de6abe3b8434f7d069d42b6eabf1a8dc29b98cfcdd443a362"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_FIELD.md",
+      "git_blob": "5af62e3d0613278203710eef7c39cbdbc177ae26",
+      "sha256": "98862fb615e97f189420455219b484ef990e0f4768f7ba4e49983e237d3998f2"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SEARCH_STANDARD_BY_TABLE.md",
+      "git_blob": "2ffdd2492743f5f6a984a58007ccb430da942bc1",
+      "sha256": "ae067ae1570ad6e24e5c43a08aa4057223923b45e2593525255419144847ebd0"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SELECT_CATEGORY_TOPK.md",
+      "git_blob": "99684b013db233541e11ba1228c15a7eae919a6d",
+      "sha256": "c0dac66df87884c2ecd0e6dbfe2af1027b522a1653972ffa4d79e8a957a9bb74"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/runtime/skills/full_pool/standard_alignment_SUMMARIZE_STANDARD_EVIDENCE.md",
+      "git_blob": "331807563e54da13cb4ccda8b5dace9c99a20ab5",
+      "sha256": "ea3ee35fa9ddde244353f533a527bf25674ffb711218f74c8960862183bd664b"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/skill_reference.json",
+      "git_blob": "dac74e8222bc584be311b4b7029cc6958f147b62",
+      "sha256": "752ed72d4ed6e987542197dfff40786ebd4487bcf6b1042cbf769d1fed2392b8"
+    },
+    {
+      "path": "research/finance_program_v1/nontraining/vendor/study.py",
+      "git_blob": "82d329c0c0e7fc20c99adf426f1e8e5f8691f520",
+      "sha256": "d8c78d387e00b13762fb509d23e147210b0016931879c4af7089c593d6eddbb3"
+    }
+  ]
+}

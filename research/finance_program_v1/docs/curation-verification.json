@@ -1,0 +1,55 @@
+{
+  "scope": "Original financial Program mainline only",
+  "source_commit": "b6fde9b80802593ad8ab30bdfae66fc28483a849",
+  "CPU_suites": [
+    {
+      "suite": "teacher",
+      "actual_exit": 0,
+      "tests": 29,
+      "seconds": 1.1086134910583496,
+      "stdout_sha256": "2eb00240e726ab0fc4fb05245bfd0d3fa197259774a167badd73489b48dcc10b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "suite": "sft",
+      "actual_exit": 0,
+      "tests": 25,
+      "seconds": 2.5363693237304688,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "bb8f22f8624e2727e60a6f66416aa10d38d1a6b2723c97b0fde3fe67ab99dba3"
+    },
+    {
+      "suite": "evaluation",
+      "actual_exit": 0,
+      "tests": 25,
+      "seconds": 0.46035313606262207,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "9325ed57f4b9f01d13aef1062df45a27d88b0563705de55ba646468662e01f62"
+    },
+    {
+      "suite": "evaluation/runtime",
+      "actual_exit": 0,
+      "tests": 8,
+      "seconds": 1.1792833805084229,
+      "stdout_sha256": "5654d79099bea70a56f845c7bc9232db296bce68cb36e9ee03e910f71594b695",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "suite": "publication",
+      "actual_exit": 0,
+      "tests": 8,
+      "seconds": 1.7081363201141357,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "0fd774540567f54f10069288a5f1e1bb82bb4f8c994b0d6e227a68cd4075ee94"
+    }
+  ],
+  "CPU_test_total": 95,
+  "retained_original_python_AST_checked": 92,
+  "AST_changed": [],
+  "results_trajectories_contracts_and_JSON_changed": [],
+  "broken_document_links": [],
+  "new_model_calls": 0,
+  "new_training": 0,
+  "baseline_note": "Original source: main four suites passed 87 CPU tests. Three of twelve old publication tests failed in historical P14 source-manifest binding; 5 P14 dependency checks removed with that historical snapshot, 1 fresh F66 dependency/budget check added. This is not a repair of the original budgeting behavior.",
+  "passed": true
+}

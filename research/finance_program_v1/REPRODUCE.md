@@ -1,75 +1,38 @@
-# Reproduction and publication boundaries
+# 金融主干运行与复现
 
-## CPU tests
+先读 [实验协议](docs/EXPERIMENT_PROTOCOL.md)。在 `research/finance_program_v1` 工作；Python3.11+。原公开验证环境曾用Python3.13/Torch2.9 CPU。真实9B历史环境为Torch2.9、Transformers5.10.4、PEFT0.21、Accelerate1.15；这里只说明历史环境，不在import/test时安装或下载。
 
-Run stages in separate processes from their own directories; names such as `gate` and `io_utils` are intentionally local:
+## 可直接运行：CPU测试
+
+以下阶段使用合成/录制I/O，分别启动进程，避免同名 `gate`/`io_utils`/`program_loop` 混入另一个阶段：
 
 ```powershell
-cd nontraining
-python -B -m pytest tests -q -p no:cacheprovider
-cd ../sft
+Set-Location teacher
+python -B -m pytest tests -q -p no:cacheprovider --basetemp .test-tmp
+Set-Location ../sft
 python -B -m unittest discover -s tests -v
-cd ../evaluation
+Set-Location ../evaluation
 python -B -m unittest discover -s tests -v
-cd ..
+Set-Location runtime
+python -B -m pytest tests -q -p no:cacheprovider --basetemp .test-tmp
+Set-Location ../..
 python -B -m unittest discover -s publication_tests -v
 ```
 
-Python 3.11+ is expected. The original publication checks used Python 3.13 with Torch 2.9 CPU operations. The actual 9B experiment used Torch 2.9 / Transformers 5.10.4 / PEFT 0.21 / Accelerate 1.15. These CPU tests do not download models or start GPU or teacher API work. The result update does not alter the original experiment code or its synthetic fixtures.
+每次pytest使用独占临时目录或新路径；Windows上系统旧pytest临时符号链接可能产生清理权限错误，不能因此改业务代码。CPU通过只证明契约/路由/回放/监督边界，不是9B语义准确率或GPU显存证据。
 
-`evaluation/data/study.json` is a fictional field/category fixture, **not the real Val422 dataset**. The private-data prompt integration test and private transport/deployment/download helpers are excluded. Adapter fixtures contain architecture/configuration only, with a placeholder base path.
+## 受控真实执行的顺序
 
-## Full financial Val422 results
+1. 准备授权原始metadata、标准Registry、固定来源/分区/顺序、当前源码SHA、模型revision和逐文件身份；labels另存本地评估侧。公开 `study.json` 是合成fixture，不能替代这些资产。
+2. Teacher采集使用 `teacher/collect.py`/`detached.py` 和版本化policy，密钥仅内存由调用方供给。占位config不是历史账本，不能直接复用付费额度。
+3. 用 `sft/export_dataset.py`核200个来源与真实接受的Program；`token_audit.py --data ... --model ... --output ...`核无截断与响应+EOS监督。准备受控manifest、token审计和model identity后，才使用 `train_student.py --mode trial`，proof通过后fresh `--mode formal`。历史pipeline负责资源锁和实际退出；正式训练不会继承trial更新。
+4. 评估使用 `evaluation/evaluate.py --cohort smoke`，然后按新的受控队列执行评估。原公开runner只提供smoke/val80接口；完整历史Val422补充协调器及私有配置未发布，不能把这个命令声称为一键422复现。两个arm均显式F66与相同study预算；只有sft的Planner开adapter。
+5. 停写后运行 `evaluation/replay.py`、训练/路由身份gates，再本地评分、固定分母与独立复核。原run与manifest不可覆盖。
 
-The current [aggregate result](results/evidence-summary.json) covers all 422 unique sources and 844 formal trajectories, comparing an untrained Planner and the accepted first SFT A under the same F66 Program/Skill interface. Both arms call Skills; `base` is not a direct-answer Base-LLM. Model Skills always use the original base without adapter; only the SFT Planner enables the accepted LoRA.
+真实GPU/API命令需要资产和资源门全部满足；本次整理未执行这些步骤。各脚本的 `--help` 说明保留原参数。`pipeline.py`/`watch.py`是受控运行协作者，不能把缺失私有manifest当作公开CPU示例失败。
 
-The already verified subset was reused byte-for-byte and all remaining sources were run once under the same frozen protocol. Original smoke trajectories are excluded from formal metrics. The source union is exact and disjoint; failures and nontermination remain in each fixed 422 denominator. Labels were used only locally after generation and replay, never uploaded or inserted into model messages. Separate generation-stage walls are recorded, not represented as one full-run wall measurement.
+## 结果与可复现程度
 
-All remote stages, controller/tokenizer/routing replay and archive steps exited successfully. On Windows the original and supplementary archives were safely extracted and all listed member hashes rechecked; full controller replay ran from each extracted root. The local replay does not claim a local real tokenizer: it is bound to the same-SHA remote real-tokenizer proof. All 844 formal trace hashes, per-ID metrics, paired counts and Macro-F1 were independently rechecked before publication.
+`results/evidence-summary.json`是原422/844聚合；`results/model-roles.json`绑定teacher/第一版adapter和训练数据；`results/trajectory-export.json`记录1044条公开投影的大小/SHA。原结果文件和轨迹此次字节不变。`results/publication-verification.json`是原历史发布收据，不能当作本次新的测试结果；本次整理验证记录在 `docs/curation-verification.json`。
 
-Full numerical reproduction requires controlled input study/registry, exact source partition and order, local-only gold, full raw traces, original model revision and accepted first LoRA. These are not public. The `evaluation/` directory retains the original evaluation/replay code snapshot; it is not a self-contained launcher with private full-dataset orchestration or production data. The public JSON and trajectory views are a result release, not a replacement deployment bundle.
-
-For controlled real execution, create a new owned configuration/manifest with authorized assets and the prescribed resource/identity checks. Do not overwrite immutable runs, silently change budgets/labels or infer permission for GPU/API work from this publication.
-
-## Teacher and student trajectories
-
-The current release contains **1,044 lossy projections**: unchanged teacher 200, matched full-validation base 422 and SFT 422. The teacher is **Bailian `qwen3.8-2.4t-a95b`**, not a locally trained 9B teacher. The first student uses 200 teacher-selected sources for Planner-only Program+EOS SFT; Skill output text and evaluation labels are not supervision.
-
-Both student files align on public IDs `val-0001` through `val-0422`. No private source-ID mapping is published. The original trace SHA identifies controlled evidence; it is not the SHA of the redacted row. [trajectory-export.json](results/trajectory-export.json) records public-file sizes, row counts and SHA values, including the unchanged teacher file.
-
-Actual Program structure, attempts, execution statuses and final classification/grade are retained. Prompts, raw reasoning, source metadata and semantic observation values are omitted. Literal arguments are replaced by `[REDACTED]` and flagged; unparseable replies retain status/digest, not raw text. No failed row is removed. This format cannot independently establish semantic correctness and must not be used as training data or full replay input.
-
-The prior partial-validation result tables and standalone partial trajectory files are no longer part of the current branch tree. Original raw evidence and its cryptographic provenance remain preserved privately; the first SFT weights, teacher trajectories and experiment source code are unchanged.
-
-## Interpretation
-
-Val422 is a development set with eight supported classes out of twelve, one seed and potentially correlated table sources. It is not held-out Test or independent generalization. Supported-class and fixed-twelve-class Macro-F1 are reported separately; legal termination is not business correctness. Historical non-training interfaces are not interchangeable with this matched F66 comparison.
-
-## Publication dependency repair (2026-10-19)
-
-The public nontraining audit now includes `reviews/independent_audit_01.py`, its exact historical source SHA inventory, the public official-model file-hash inventory, and the two omitted source files needed by that inventory. This preserves the historical 121-file/109-core-file signature; it does not fabricate a historical run or ship model weights. `batch_audit.py` imports and a real-controller recorded-I/O replay with synthetic source data are covered by fresh isolated-process tests, including tampered-request rejection.
-
-Additional restored code: `teacher/pilot_audit.py` contains only the recorded retry/I-O replay helpers used by `detached.py`, not the private-gold historical quality aggregator. The public teacher runtime resolves to the already included `evaluation/runtime` when no controlled local `teacher/runtime` is present. `evaluation/legacy/tools/freeze_revision.py` restores the original pure SHA inventory helper, not the private revision manifests or a new deployment authorization. Legacy environment-identity functions still require their controlled snapshot layout; this code snapshot is not a turnkey historical deployment.
-
-### Import paths and CPU checks
-
-From `research/finance_program_v1/nontraining`:
-
-```powershell
-python -B -c "import batch_audit; import program_loop; import pool_metadata; print(pool_metadata.__file__)"
-```
-
-If using only the standalone metadata helper in your own Python program, add the explicit snapshot directory before importing it:
-
-```python
-import sys
-from pathlib import Path
-snapshot = Path("research/finance_program_v1/nontraining").resolve()
-sys.path.insert(0, str(snapshot / "vendor"))
-from pool_metadata import PoolMetadata
-```
-
-Do not copy files between different historical snapshots or rely on another checkout's PYTHONPATH. Run the teacher synthetic suite from `teacher/` with `python -B -m pytest tests -q -p no:cacheprovider`. Run the publication checks from this directory with `python -B -m unittest discover -s publication_tests -v`; dependency checks use `-I` fresh processes so private/local import paths cannot mask missing modules.
-
-`python -B -m reviews.independent_audit_01 --help` and `python -B batch_audit.py --help` are safe CPU-only entrypoint checks. Actual audit commands need complete, authorized, unredacted recorded runs and the matching study/model manifests; redacted public trajectories cannot substitute for them. Cloning/importing/testing does not authorize or start new model downloads, API calls, training, or GPU work.
-
+公开轨迹隐藏了私有ID/metadata、实际prompt、语义文本及推理，保留状态、Program投影、最终类别/等级和原trace摘要。它们不是模型训练数据，也不足以全轨迹逐字回放。完整数值复现需私有输入与标签、完整原调用及权重，现有公开代码不能独立恢复这些信息。
