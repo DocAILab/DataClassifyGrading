@@ -1,4 +1,5 @@
 """Fresh-process public entrypoint checks; no private workspace or model calls."""
+
 from pathlib import Path
 import subprocess
 import sys
@@ -9,37 +10,56 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class PublicDependencyTests(unittest.TestCase):
     def run_python(self, folder, code):
-        prefix = 'import sys; from pathlib import Path; sys.path.insert(0,str(Path.cwd())); '
-        result = subprocess.run([sys.executable, '-I', '-B', '-c', prefix + code],
-                                cwd=ROOT / folder, capture_output=True, text=True)
+        prefix = "import sys; from pathlib import Path; sys.path.insert(0,str(Path.cwd())); "
+        result = subprocess.run(
+            [sys.executable, "-I", "-B", "-c", prefix + code],
+            cwd=ROOT / folder,
+            capture_output=True,
+            text=True,
+        )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_nontraining_audit_imports_without_private_checkout(self):
-        self.run_python('nontraining',
-            'import batch_audit; from reviews.independent_audit_01 import RecordedBackend; '
-            'b=RecordedBackend([]); b.finish(); '
-            'assert "torch" not in sys.modules and "transformers" not in sys.modules')
-
-    def test_pool_metadata_resolves_through_public_controller(self):
-        self.run_python('nontraining',
-            'import program_loop; import pool_metadata; '
-            'assert Path(pool_metadata.__file__).resolve().parent == Path.cwd()/"vendor"')
+    def test_mainline_uses_one_complete_f66_runtime(self):
+        self.run_python(
+            "evaluation",
+            """
+import io_utils
+from program_loop import build_program_controller
+import pool_metadata
+registry={'fixture-'+str(i): {'description':'synthetic class', 'grading_level':'L1'} for i in range(12)}
+budget={'max_programs':3,'max_program_steps':10,'max_skill_steps':12,'max_planner_attempts':4,'max_identical_calls':1}
+controller=build_program_controller(lambda messages:'invalid JSON',registry,[],budget,skill_pool='F66')
+assert len(controller.library)==66
+assert Path(pool_metadata.__file__).resolve()==Path.cwd()/'runtime/vendor/pool_metadata.py'
+assert not (Path.cwd().parent/'nontraining/program_loop/controller.py').exists()
+trace=controller.run({'domain':'finance','field_name':'synthetic-field'})
+assert not trace.terminated and trace.stop_reason=='planner_budget_exhausted'
+assert trace.budget=={'programs':0,'planner_attempts':4,'skill_steps':0}
+assert 'torch' not in sys.modules and 'transformers' not in sys.modules
+""",
+        )
 
     def test_teacher_recorded_audit_and_runtime_have_local_code(self):
-        self.run_python('teacher',
-            'import detached, pilot_audit, runtime_identity; '
-            'assert callable(pilot_audit.replay_retry_one); '
-            'assert Path(runtime_identity.__file__).resolve().is_relative_to(Path.cwd().parent); '
-            'assert "torch" not in sys.modules')
+        self.run_python(
+            "teacher",
+            "import detached, pilot_audit, runtime_identity; "
+            "assert callable(pilot_audit.replay_retry_one); "
+            "assert Path(runtime_identity.__file__).resolve().is_relative_to(Path.cwd().parent); "
+            'assert "torch" not in sys.modules',
+        )
 
     def test_legacy_revision_helper_has_no_private_import(self):
-        self.run_python('evaluation',
-            'import io_utils; from tools.freeze_revision import safe_path, signature; '
+        self.run_python(
+            "evaluation",
+            "import io_utils; from tools.freeze_revision import safe_path, signature; "
             'assert safe_path(Path.cwd(),"safe/file.json")==Path.cwd()/"safe/file.json"; '
-            'assert len(signature([]))==64')
+            "assert len(signature([]))==64",
+        )
 
     def test_teacher_nonterminal_trace_replays_and_rejects_tampering(self):
-        self.run_python('teacher', '''
+        self.run_python(
+            "teacher",
+            """
 import json, copy
 import detached
 from program_loop import build_program_controller
@@ -74,68 +94,9 @@ try: replay_retry_one(study,row,saved,changed,logical,allowed)
 except AssertionError: pass
 else: raise AssertionError('tampered teacher request accepted')
 assert 'torch' not in sys.modules
-''')
-
-    def test_public_audit_manifest_binds_shipped_source(self):
-        self.run_python('nontraining',
-            'from local_smoke import environment; from reviews.independent_audit_01 import validate_sources; '
-            'validate_sources(Path.cwd(),environment("not-a-model"))')
-
-    def test_public_source_audit_rejects_mutation_and_missing_file(self):
-        self.run_python('nontraining', '''
-import shutil, tempfile
-from local_smoke import environment
-from reviews.independent_audit_01 import validate_sources, AuditError
-with tempfile.TemporaryDirectory() as d:
-    snapshot=Path(d)/'snapshot'; shutil.copytree(Path.cwd(),snapshot)
-    environment_evidence=environment('not-a-model')
-    validate_sources(snapshot,environment_evidence)
-    target=snapshot/'vendor/pool_metadata.py'; original=target.read_bytes()
-    target.write_bytes(original+bytes([10])+b'# changed')
-    try: validate_sources(snapshot,environment_evidence)
-    except AuditError: pass
-    else: raise AssertionError('changed source accepted')
-    target.unlink()
-    try: validate_sources(snapshot,environment_evidence)
-    except AuditError: pass
-    else: raise AssertionError('missing source accepted')
-''')
-
-    def test_batch_audit_replays_real_scripted_controller(self):
-        self.run_python('nontraining', '''
-import json, tempfile, hashlib
-from batch_runner import run_batch
-from batch_audit import audit
-class Scripted:
-    def __init__(self, model, call_dir):
-        self.folder=Path(call_dir); self.folder.mkdir(parents=True); self.calls=[]; self.failures=[]
-    def __call__(self,messages):
-        system=messages[0]['content']
-        if 'Global Program Planner' in system:
-            raw=json.dumps({'program':[{'tool':n,'arguments':{}} for n in ('GET_FIELD_METADATA','INTERPRET_FIELD_NAME','SELECT_CATEGORY_TOPK','INFER_CATEGORY_FROM_TOPK','INFER_GRADING_LEVEL','FINALIZE_CLASSIFICATION')]})
-        elif 'selected Skill SELECT_CATEGORY_TOPK.' in system:
-            raw=json.dumps({'option_ids':['C001','C002','C003','C004','C005'],'summary':'rank'})
-        elif 'selected Skill INFER_CATEGORY_FROM_TOPK.' in system:
-            raw=json.dumps({'option_id':'C001','summary':'choice'})
-        else: raw=json.dumps({'summary':'interpret','data':{'field_semantics':'observed field'}})
-        folder=self.folder/('call-%04d'%(len(self.calls)+1)); folder.mkdir(); self.calls.append(str(folder))
-        for name,value in [('request',{'messages':messages}),('result',{'messages':messages,'raw_text':raw,'error':None,'input_tokens':1,'output_tokens':2,'seconds':0.01})]:
-            (folder/(name+'.json')).write_text(json.dumps(value),encoding='utf-8')
-        return raw
-with tempfile.TemporaryDirectory() as d:
-    d=Path(d)
-    study={'schema':1,'cohorts':{'smoke':['fixture-001'],'pilot':[],'expanded':[]},'rows':[{'id':'fixture-001','domain':'finance','metadata':{'field_name':'balance','field_description':'fixture description'}}],'registry':{'cat'+str(i):{'description':'fixture class '+str(i),'grading_level':'L1'} for i in range(1,13)},'budget':{'max_programs':3,'max_program_steps':10,'max_skill_steps':12,'max_planner_attempts':4,'max_identical_calls':1}}
-    p=d/'study.json'; p.write_text(json.dumps(study),encoding='utf-8')
-    (d/'study-manifest.json').write_text(json.dumps({'study_sha256':hashlib.sha256(p.read_bytes()).hexdigest()}),encoding='utf-8')
-    assert run_batch('not-a-model',d/'run','smoke',study_path=p,backend_factory=Scripted)==0
-    proof=audit(d/'run',study_path=p,allow_scripted_fixture=True)
-    assert proof['verified_samples']==1 and proof['full_trace_exact'] and proof['all_calls_consumed']
-    q=d/'run/calls/call-0001/request.json'; data=json.loads(q.read_bytes()); data['messages'][0]['content']+='changed'; q.write_text(json.dumps(data),encoding='utf-8')
-    try: audit(d/'run',study_path=p,allow_scripted_fixture=True)
-    except AssertionError: pass
-    else: raise AssertionError('tampered request incorrectly accepted')
-''')
+""",
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

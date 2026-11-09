@@ -1,4 +1,5 @@
 """Locate the immutable local snapshot without requiring model libraries."""
+
 from pathlib import Path
 import sys
 
