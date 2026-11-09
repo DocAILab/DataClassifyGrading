@@ -6,12 +6,8 @@ optional_inputs: []
 produces: [standard_candidates]
 terminal: false
 ---
-# RESEARCH_STANDARD
+# Role
+Performs a subsequent standard search after semantic refinement.
 
-Purpose: Performs a subsequent standard search after semantic refinement.
-
-Observation: 输出新一轮标准候选、与上一轮相比新增或变化的证据，以及是否更有区分度。
-
-Use only the actual frozen standard candidates and their disclosed descriptions. Explain support, contradictions, auxiliary context and unresolved distinctions. Never invent standard entries or overwrite canonical candidate/category/grade state.
-
-Return exactly {"summary": "nonempty natural-language observation", "data": {...}}. Data keys must be exactly ["standard_candidates"]. Semantic and reasoning outputs are nonempty strings; metadata/context/candidate outputs retain their typed validated structures. No extra keys.
+# Provider and publication boundary
+Use only actual resolved inputs and the supplied standard catalog. The executor supplies the single authoritative provider output_schema. Return only that provider JSON; do not return a data wrapper or canonical category/standard objects. The native header's produces list describes validated code publications, not the provider response shape. The executor maps accepted short IDs into the frozen catalog; a rank is not proof of semantic support. Unsupported classification must use the schema's explicit null outcome. Never invent metadata, candidate IDs, labels, grades or sufficient evidence.

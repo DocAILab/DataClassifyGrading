@@ -1,10 +1,10 @@
 """Generate one whole Program per outer attempt."""
-
 import json
 from .catalog_context import public_state, pack_library
 from .prompt_encoding import pack_prompt
 from .recovery_context import recovery_context
 from .validation import canonical_reference
+from .input_readiness import input_readiness
 from pool_metadata import present
 
 SYSTEM = """You are the Global Program Planner for a database-field classification task.
@@ -41,23 +41,20 @@ Never invent metadata, candidates, categories, frozen grades, or ground truth.
 For compact planning messages, shared_input_rules applies to every Skill input of the same name; required membership is in each Skill's required_inputs. A {'prompt_ref':'vN'} in current, feedback, or recovery_context means the exact observation in shared_values[vN]; resolve such references recursively. Prompt references are never executable arguments."""
 
 
-def planner_messages(record, state, library, budget, feedback, *, skill_pool="P14"):
+def planner_messages(record, state, library, budget, feedback, *, skill_pool="P14", failure_history=None):
     compact_library, input_rules = pack_library(library)
-    payload = {
-        "task": "Plan the complete remaining classification task using verified evidence and frozen Registry grading, through legal terminal execution.",
-        "current": public_state(record, state),
-        "skill_library": compact_library,
-        "shared_input_rules": input_rules,
-        "remaining_budget": budget,
-        "feedback": feedback,
-        "recovery_context": recovery_context(state, budget, feedback),
-        "availability_rule": "unknown permits acquisition; canonical source observations establish obtained/unavailable; errors remain retryable; omitted batch attributes remain unknown",
-    }
+    payload = {"task": "Plan the complete remaining classification task using verified evidence and frozen Registry grading, through legal terminal execution.",
+               "current": public_state(record, state), "skill_library": compact_library,
+               "shared_input_rules": input_rules,
+               "remaining_budget": budget, "feedback": feedback,
+               "recovery_context": recovery_context(state, budget, feedback),
+               "availability_rule": "unknown permits acquisition; canonical source observations establish obtained/unavailable; errors remain retryable; omitted batch attributes remain unknown"}
+    payload["recovery_context"]["failure_history"] = failure_history if failure_history is not None else []
+    payload["recovery_context"]["input_readiness"] = input_readiness(record, state, input_rules)
     if skill_pool == "F66" and any(
-        failure.get("failure_kind") == "no_match"
-        for entry in state.get("comparison_failure_ledger", [])
-        for failure in entry.get("failures", [])
-    ):
+            failure.get("failure_kind") == "no_match"
+            for entry in state.get("comparison_failure_ledger", [])
+            for failure in entry.get("failures", [])):
         payload["recovery_context"]["comparison_recovery_rule"] = (
             "An observed no_match blocks another comparison with identical effective inputs. "
             "Repeating the same failed comparison cannot advance the task and still consumes the remaining budget. "
@@ -67,51 +64,28 @@ def planner_messages(record, state, library, budget, feedback, *, skill_pool="P1
             "and current verified state. Plan the complete remaining task autonomously within the existing budget, "
             "using genuinely new evidence or changed candidates where available, or another contract-valid path "
             "supported by current observations. Do not reuse a blocked comparison, fabricate alignment, or assume "
-            "that an unexecuted tail must be followed. Only a verified terminal completes classification."
-        )
-    system = (
-        SYSTEM
-        if skill_pool == "P14"
-        else SYSTEM.replace("complete P14 library", "complete F66 library")
-    )
+            "that an unexecuted tail must be followed. Only a verified terminal completes classification.")
+    system = SYSTEM if skill_pool == "P14" else SYSTEM.replace("complete P14 library", "complete F66 library")
     if skill_pool == "F66":
         payload["contract_dependency_facts"] = {
             "category_and_alignment_producers": [
-                {
-                    "name": s["name"],
-                    "required_inputs": s["required_inputs"],
-                    "produces": s["produces"],
-                }
-                for s in library
-                if {"category", "aligned_standard_entry"} <= set(s["produces"])
-            ],
+                {"name": s["name"], "required_inputs": s["required_inputs"], "produces": s["produces"]}
+                for s in library if {"category", "aligned_standard_entry"} <= set(s["produces"])],
             "comparison_dependency_rule": (
                 "Comparison is optional for a Skill whose required inputs do not require a comparison output. "
                 "The listed category producers themselves publish the selected category and its frozen aligned entry "
                 "after a validated choice from actual retrieved candidates. This is a literal contract subset, "
-                "not a selected Program or permission to skip any required input."
-            ),
-        }
+                "not a selected Program or permission to skip any required input.")}
         current_facts = []
         for spec in payload["contract_dependency_facts"]["category_and_alignment_producers"]:
             observed = []
             for key in spec["required_inputs"]:
                 reference = canonical_reference(key, state)
-                if (
-                    reference
-                    and reference.startswith("$state.")
-                    and present(state.get(reference.removeprefix("$state.")))
-                ):
+                if (reference and reference.startswith("$state.") and
+                        present(state.get(reference.removeprefix("$state.")))):
                     observed.append(key)
-            current_facts.append(
-                {
-                    "name": spec["name"],
-                    "observed_required_inputs": observed,
-                    "unobserved_required_inputs": [
-                        key for key in spec["required_inputs"] if key not in observed
-                    ],
-                }
-            )
+            current_facts.append({"name": spec["name"], "observed_required_inputs": observed,
+                "unobserved_required_inputs": [key for key in spec["required_inputs"] if key not in observed]})
         payload["contract_dependency_facts"]["current_category_input_facts"] = current_facts
         system += (
             "\nF66 dependency reminder: consult contract_dependency_facts and the full contracts. "
@@ -119,15 +93,13 @@ def planner_messages(record, state, library, budget, feedback, *, skill_pool="P1
             "Choose the dependency path yourself. For runtime state inputs prefer arguments:{}; "
             "the binder supplies actually available required inputs. Never paste observed metadata or semantic "
             "text into dynamic arguments. A missing semantic dependency needs its actual producer before use; "
-            "a raw table description is not already table_semantics. Observe all original budgets and terminal guards."
-        )
+            "a raw table description is not already table_semantics. Observe all original budgets and terminal guards.")
         system += (
             "\nF66 completion objective: prioritize a complete contract-valid classification path whose required "
             "inputs are already observed. Input presence is factual context, not a guarantee of semantic validity; "
             "execution still verifies all contracts. Optional diagnostics must not become undocumented gating "
             "steps. A no_match observation does not require repeatedly searching until an optional comparison "
-            "agrees. Choose the remaining whole Program yourself from actual evidence and dependencies."
-        )
+            "agrees. Choose the remaining whole Program yourself from actual evidence and dependencies.")
         if feedback and feedback.get("status") == "planner_rejected":
             payload["request_mode"] = "revise_rejected_program"
             payload["revision_request"] = {
@@ -137,29 +109,16 @@ def planner_messages(record, state, library, budget, feedback, *, skill_pool="P1
                 "argument_rule": (
                     "Prefer arguments:{} for required runtime-bound inputs. For explicit state inputs copy the "
                     "exact shared_input_rules canonical_reference; do not substitute a different alias or observed "
-                    "text. Native observed_missing_metadata_type choices remain subject to their actual contract."
-                ),
-            }
+                    "text. Native observed_missing_metadata_type choices remain subject to their actual contract.")}
             payload["task"] = (
                 "Revise the previous unexecuted Program to correct the actual validation error in feedback. "
                 "Return one complete remaining Program, using only exact allowed Skill names and canonical "
                 "arguments from the contracts. The rejected Program produced no observations. Use current "
                 "verified state and the unchanged remaining budget; do not repeat the rejected error or invent "
-                "a new Skill or dependency. Choose the sequence yourself and finish through the validated terminal."
-            )
+                "a new Skill or dependency. Choose the sequence yourself and finish through the validated terminal.")
     encoded = pack_prompt(payload)
     if skill_pool == "F66":
         tail = ("current", "feedback", "recovery_context", "remaining_budget", "task")
-        encoded = {
-            **{key: value for key, value in encoded.items() if key not in tail},
-            **{key: encoded[key] for key in tail},
-        }
-    return [
-        {"role": "system", "content": system},
-        {
-            "role": "user",
-            "content": json.dumps(
-                encoded, ensure_ascii=False, allow_nan=False, separators=(",", ":")
-            ),
-        },
-    ]
+        encoded = {**{key: value for key, value in encoded.items() if key not in tail},
+                   **{key: encoded[key] for key in tail}}
+    return [{"role": "system", "content": system}, {"role": "user", "content": json.dumps(encoded, ensure_ascii=False, allow_nan=False, separators=(",", ":"))}]

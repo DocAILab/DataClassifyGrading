@@ -1,5 +1,4 @@
 """Run limits and JSON trace; the accepted Program is immutable."""
-
 from dataclasses import asdict, dataclass, field
 import json
 import math
@@ -44,12 +43,12 @@ class ProgramTrace:
     planner_attempts: list = field(default_factory=list)
     programs: list = field(default_factory=list)
     state: dict = field(default_factory=dict)
-    budget: dict = field(
-        default_factory=lambda: {"programs": 0, "planner_attempts": 0, "skill_steps": 0}
-    )
+    budget: dict = field(default_factory=lambda: {"programs": 0, "planner_attempts": 0, "skill_steps": 0})
     terminated: bool = False
     final_result: dict | None = None
     stop_reason: str = "running"
+    failure_history: list = field(default_factory=list)
+    progress_events: list = field(default_factory=list)
 
     def to_dict(self):
         return json_snapshot(asdict(self))
