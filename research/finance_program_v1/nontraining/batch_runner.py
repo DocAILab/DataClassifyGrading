@@ -13,9 +13,10 @@ def verify_study_identity(study_path):
     if read(path.with_name('study-manifest.json'))['study_sha256']!=sha(path): raise ValueError('prepared study identity changed')
     return True
 
+#referenced by main(): run_batch(a.model,a.output,a.cohort,study_path=a.study)
 def run_batch(model,output,cohort,*,study_path=ROOT/'data/study.json',backend_factory=Backend):
     verify_study_identity(study_path)
-    study=validate_study(read(study_path))
+    study:dict=validate_study(read(study_path))
     output=reserve_run(output); started=time.perf_counter()
     ids=study['cohorts'][cohort]; by_id={r['id']:r for r in study['rows']}
     summary={'status':'initialization_failure','cohort':cohort,'expected_ids':ids,'expected_count':len(ids),
@@ -69,7 +70,11 @@ def run_batch(model,output,cohort,*,study_path=ROOT/'data/study.json',backend_fa
     return 0 if summary['status']=='completed' else 2
 
 def main(argv=None):
-    p=argparse.ArgumentParser(description=__doc__); p.add_argument('--model',required=True,type=Path); p.add_argument('--output',required=True,type=Path)
-    p.add_argument('--cohort',required=True,choices=('smoke','pilot','expanded')); p.add_argument('--study',type=Path,default=ROOT/'data/study.json')
-    a=p.parse_args(argv); return run_batch(a.model,a.output,a.cohort,study_path=a.study)
+    p=argparse.ArgumentParser(description=__doc__); 
+    p.add_argument('--model',required=True,type=Path); 
+    p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--cohort',required=True,choices=('smoke','pilot','expanded')); 
+    p.add_argument('--study',type=Path,default=ROOT/'data/study.json')
+    a=p.parse_args(argv); 
+    return run_batch(a.model,a.output,a.cohort,study_path=a.study)
 if __name__=='__main__': raise SystemExit(main())

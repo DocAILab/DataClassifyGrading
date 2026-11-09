@@ -50,7 +50,7 @@ P14_ARMS = {
 
 def load_config(root=ROOT):
     path = Path(root)/'variant.json'
-    variant = read_json(path) if path.exists() else VARIANTS['A']
+    variant = read_json(path) if path.exists() else VARIANTS['A'] #var A= 'missing_awareness': False, 'max_turns': 8
     if (not isinstance(variant,dict) or set(variant) != {'variant','missing_awareness','max_turns'}
             or type(variant.get('missing_awareness')) is not bool
             or type(variant.get('max_turns')) is not int

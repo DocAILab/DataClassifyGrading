@@ -8,6 +8,7 @@ import re
 import time
 import urllib.error
 import urllib.request
+from typing import Callable, Any
 
 from artifacts import BUDGET, GENERATION, MODEL_REVISION, fingerprint, put, read, sha
 
@@ -200,7 +201,7 @@ class Budget:
 
 
 class APIBackend:
-    def __init__(self, config, folder, *, key=None, counter=None, transport=http_post,
+    def __init__(self, config, folder, *, key=None, counter=None, transport:Callable[[str, Any, Any, float], Any] =http_post,
                  clock=time.time, sleep=time.sleep, budget=None):
         self.config = config
         self.counter = counter or ReferenceCounter(config['tokenizer_path'])

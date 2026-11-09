@@ -36,7 +36,8 @@ Consider the remaining complete task and actual budget when choosing the next wh
 Never invent metadata, candidates, categories, frozen grades, or ground truth."""
 
 
-def planner_messages(record, state, library, budget, feedback):
+def planner_messages(record, state, library, budget, feedback)->list:
+    """Generate the system and user messages for the planner."""
     payload = {"task": "Plan the complete remaining classification task using verified evidence and frozen Registry grading, through legal terminal execution.",
                "current": public_state(record, state), "skill_library": library,
                "remaining_budget": budget, "feedback": feedback,

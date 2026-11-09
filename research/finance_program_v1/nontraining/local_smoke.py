@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import shutil
 import sys
 import time
 
@@ -26,6 +27,9 @@ class ContextBudgetExceeded(ValueError):
 def reserve_run(path):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    #rm -r path
+    if path.exists():
+        shutil.rmtree(path)
     path.mkdir()  # Atomic directory creation; must precede any CUDA allocation.
     return path
 
@@ -82,7 +86,7 @@ def environment(model_path):
             'packages': packages, 'model_path': str(Path(model_path).resolve()), 'core_source_sha256': sources,
             'seed': SEED, 'context_cap': CONTEXT_CAP, 'max_new_tokens': OUTPUT_CAP, 'per_generate_max_time': 90.0,
             'whole_process_timeout_seconds': 900, 'whole_process_timeout_enforced_by': 'external coordinator',
-            'inference': 'FP16 cuda:0 batch1 greedy enable_thinking=False'}
+            'inference': 'FP16 cuda:1 batch1 greedy enable_thinking=False'}
 
 
 class Backend:
@@ -97,10 +101,11 @@ class Backend:
         self.torch = torch
         if not torch.cuda.is_available():
             raise RuntimeError('CUDA is required; no CPU/offload fallback')
-        torch.cuda.set_device(0)
-        free, total = torch.cuda.mem_get_info(0)
+        cuda_device=1
+        torch.cuda.set_device(cuda_device)
+        free, total = torch.cuda.mem_get_info(cuda_device)
         if free <= 0:
-            raise RuntimeError('cuda:0 has no free device memory')
+            raise RuntimeError(f'cuda:{cuda_device} has no free device memory')
         torch.manual_seed(SEED)
         torch.cuda.manual_seed_all(SEED)
         config = AutoConfig.from_pretrained(str(model_path), **OFFLINE)
@@ -109,17 +114,17 @@ class Backend:
             raise ValueError(f'unsupported official checkpoint config: {config.model_type}')
         self.attention = 'sdpa' if hasattr(torch.nn.functional, 'scaled_dot_product_attention') else 'eager'
         self.model = AutoModelForImageTextToText.from_pretrained(str(model_path), **OFFLINE, dtype=torch.float16,
-                     device_map={'': 'cuda:0'}, attn_implementation=self.attention)
+                     device_map={'': f'cuda:{cuda_device}'}, attn_implementation=self.attention)
         self.model.eval()
         self.parameter_devices = sorted({str(p.device) for p in self.model.parameters()})
         self.parameter_dtypes = sorted({str(p.dtype) for p in self.model.parameters() if p.is_floating_point()})
-        if self.parameter_devices != ['cuda:0'] or self.parameter_dtypes != ['torch.float16']:
-            raise RuntimeError(f'checkpoint must be entirely FP16 cuda:0: {self.parameter_devices}, {self.parameter_dtypes}')
+        if self.parameter_devices != [f'cuda:{cuda_device}'] or self.parameter_dtypes != ['torch.float16']:
+            raise RuntimeError(f'checkpoint must be entirely FP16 cuda:{cuda_device}: {self.parameter_devices}, {self.parameter_dtypes}')
         self.options = generation_options(self.model.generation_config, self.tokenizer)
         write_json(self.call_dir / 'backend.json', {'repo_id': self.identity.get('repo_id'), 'revision': self.identity['revision'],
                    'model_class': type(self.model).__name__, 'config_type': config.model_type,
                    'attention_implementation': self.attention, 'parameter_devices': self.parameter_devices,
-                   'parameter_dtypes': self.parameter_dtypes, 'cuda_device': torch.cuda.get_device_name(0),
+                   'parameter_dtypes': self.parameter_dtypes, 'cuda_device': torch.cuda.get_device_name(cuda_device),
                    'torch_cuda_version': torch.version.cuda, 'free_bytes_before_load': free, 'total_device_bytes': total,
                    'generation': self.options, 'offline_options': OFFLINE})
 
@@ -139,15 +144,15 @@ class Backend:
         try:
             encoded = encode_messages(self.tokenizer, messages)
             result['input_tokens'] = encoded['input_ids'].shape[1]
-            encoded = {key: value.to('cuda:0') for key, value in encoded.items()}
+            encoded = {key: value.to('cuda:1') for key, value in encoded.items()}
             result['input_devices'] = sorted({str(value.device) for value in encoded.values()})
-            if result['input_devices'] != ['cuda:0']:
-                raise RuntimeError(f'input tensors must be on cuda:0: {result["input_devices"]}')
-            self.torch.cuda.reset_peak_memory_stats(0)
-            self.torch.cuda.synchronize(0)
+            if result['input_devices'] != ['cuda:1']:
+                raise RuntimeError(f'input tensors must be on cuda:1: {result["input_devices"]}')
+            self.torch.cuda.reset_peak_memory_stats(1)
+            self.torch.cuda.synchronize(1)
             with self.torch.inference_mode():
                 output = self.model.generate(**encoded, **self.options)
-            self.torch.cuda.synchronize(0)
+            self.torch.cuda.synchronize(1)
             generated = output[0, result['input_tokens']:]
             result['output_tokens'] = len(generated)
             result['truncation_at_budget'] = len(generated) >= OUTPUT_CAP
@@ -165,7 +170,7 @@ class Backend:
             result['telemetry_errors'] = {}
             for name in ('memory_allocated', 'memory_reserved', 'max_memory_allocated'):
                 try:
-                    result['memory'][name] = getattr(self.torch.cuda, name)(0)
+                    result['memory'][name] = getattr(self.torch.cuda, name)(1)
                 except Exception as exc:
                     result['memory'][name] = None
                     result['telemetry_errors'][name] = f'{type(exc).__name__}: {exc}'

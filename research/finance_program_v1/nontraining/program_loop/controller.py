@@ -12,7 +12,7 @@ from .planner import planner_messages
 from .validation import parse_program
 from .rejection_context import rejected_program_summary
 from agent.orchestration.contracts import MetadataRecord
-
+import local_smoke
 
 def _load(value):
     return json.loads(Path(value).read_text(encoding="utf-8-sig")) if isinstance(value, (str, Path)) else deepcopy(value)
@@ -20,12 +20,13 @@ def _load(value):
 
 class ProgramController:
     def __init__(self, generate, registry, metadata, config):
-        self.generate = generate
+        self.generate:local_smoke.Backend = generate
         self.config = config
         self.bridge = ExecutionBridge(generate, registry, metadata, config)
         self.library = skill_library(self.bridge.catalog, self.bridge.loader)
 
-    def remaining(self, trace):
+    def remaining(self, trace): 
+        """可用资源（步数）"""
         return {"programs": max(0, self.config.max_programs - trace.budget["programs"]),
                 "planner_attempts": max(0, self.config.max_planner_attempts - trace.budget["planner_attempts"]),
                 "skill_steps": max(0, self.config.max_skill_steps - trace.budget["skill_steps"]),
@@ -46,12 +47,12 @@ class ProgramController:
             if exhausted:
                 trace.stop_reason = {"skill_steps": "skill_budget_exhausted", "programs": "program_budget_exhausted", "planner_attempts": "planner_budget_exhausted"}[exhausted]
                 break
-            messages = planner_messages(visible, state, self.library, remaining, feedback)
+            messages = planner_messages(visible, state, self.library, remaining, feedback) #sys and user 
             trace.budget["planner_attempts"] += 1
             attempt = {"attempt": trace.budget["planner_attempts"], "messages": deepcopy(messages), "raw_response": None, "status": "error"}
             trace.planner_attempts.append(attempt)
             try:
-                raw = self.generate(messages)
+                raw = self.generate(messages) # here is request
                 attempt["raw_response"] = json_snapshot(raw)
                 attempt["status"] = "rejected"
                 plan = parse_program(raw, self.bridge.catalog, state, self.config.max_program_steps)

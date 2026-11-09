@@ -76,6 +76,9 @@ def advance_available(spec, available):
 
 
 def parse_program(raw, catalog, state, max_steps):
+    """
+    Parse a program from raw JSON text.
+    """
     if not isinstance(raw, str): raise ValueError("Planner must return JSON text")
     value = json.loads(raw, object_pairs_hook=_unique_object, parse_constant=lambda v: (_ for _ in ()).throw(ValueError(f"nonfinite JSON {v}")))
     if not isinstance(value, dict) or set(value) != {"program"}: raise ValueError("Expected exactly one JSON Program object")
@@ -83,7 +86,7 @@ def parse_program(raw, catalog, state, max_steps):
     if not isinstance(steps, list) or not steps: raise ValueError("Program must be nonempty")
     if len(steps) > max_steps: raise ValueError("Program length exceeds max_program_steps")
     available = set(state)
-    calls = []
+    calls:list[ToolCall] = []
     for index, item in enumerate(steps):
         if not isinstance(item, dict) or set(item) != {"tool", "arguments"}: raise ValueError(f"step {index}: expected only tool and arguments")
         name, args = item["tool"], item["arguments"]
