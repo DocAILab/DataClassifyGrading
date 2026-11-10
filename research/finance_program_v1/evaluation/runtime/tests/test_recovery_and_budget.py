@@ -202,3 +202,22 @@ def test_unknown_type_is_never_declared_globally_absent():
         == "unknown"
     )
     assert readiness["new_business_facts"] is False
+
+
+def test_rejected_length_feedback_uses_actual_remaining_program_steps():
+    """A rejected two-step plan must report the one-step remaining cap."""
+
+    provider = SyntheticProvider(
+        [
+            program("GET_FIELD_METADATA", "INTERPRET_FIELD_NAME"),
+            program("INTERPRET_DOMAIN", "INTERPRET_FIELD_NAME"),
+            program("INTERPRET_DOMAIN"),
+        ]
+    )
+    _, trace = run(provider, max_skill_steps=3, max_planner_attempts=3)
+    assert trace.planner_attempts[1]["status"] == "rejected"
+    assert trace.planner_attempts[1]["error"] == "Program length exceeds max_program_steps"
+    observed = provider.planners[2]["feedback"]
+    assert observed["remaining_budget"]["program_steps"] == 1
+    assert observed["rejected_program"]["step_count"] == 2
+    assert observed["rejected_program"]["max_program_steps"] == 1

@@ -155,7 +155,7 @@ class ProgramController:
                 }
                 if attempt["status"] == "rejected":
                     summary = rejected_program_summary(
-                        raw, self.bridge.catalog, self.config.max_program_steps
+                        raw, self.bridge.catalog, remaining["program_steps"]
                     )
                     if summary is not None:
                         feedback["rejected_program"] = summary
