@@ -1,0 +1,3921 @@
+{
+  "split": "VAL",
+  "rows": [
+    {
+      "source_id": "833f95c1-7562-575a-8ee4-ce9520548706",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ISQZ",
+        "field_description": "是否电子签章(0：否 1：是)"
+      }
+    },
+    {
+      "source_id": "119d4ee8-0ed3-5076-8b06-81f198ad29fd",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_TYCBFGZ",
+        "field_description": "停牌一天补发规则"
+      }
+    },
+    {
+      "source_id": "f31e733d-ab4e-546a-a175-c97fbafde7c9",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBCE",
+        "field_description": "原币差额"
+      }
+    },
+    {
+      "source_id": "3d91024d-11c9-5dc4-9a44-fcc2937b203d",
+      "metadata": {
+        "table_name": "TPROJECT_INFO_DETAIL",
+        "table_description": "计划信息详细表",
+        "field_name": "ELEMENT_FIELD",
+        "field_description": "要素字段"
+      }
+    },
+    {
+      "source_id": "6f928445-4ee9-583e-bb35-5d1452152cac",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_D_YWRQ",
+        "field_description": "业务日期"
+      }
+    },
+    {
+      "source_id": "c6454e48-14e6-5b3a-bd87-da3c5508ee0a",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "JSFJFILENO",
+        "field_description": "结算附件ID"
+      }
+    },
+    {
+      "source_id": "f10cd2c2-0ef6-560b-83df-ff3a91eea7a8",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_FNDUSAGEVALUE",
+        "field_description": "资金用途(附言)"
+      }
+    },
+    {
+      "source_id": "2f41438a-d63e-5563-93aa-43194c0487ce",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "YWLX",
+        "field_description": "业务类型"
+      }
+    },
+    {
+      "source_id": "89fbf643-0ed2-5280-ac61-1c1e40b12b83",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "RULE_METHOD",
+        "field_description": "规则方法"
+      }
+    },
+    {
+      "source_id": "763d74c5-6711-5541-b4a3-f047688d9e0b",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_MENO",
+        "field_description": "移动端传输备注"
+      }
+    },
+    {
+      "source_id": "17a08ea4-8ce5-50ca-bb75-b39f693f4914",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "JSFJFILE_NAME",
+        "field_description": "结算附件名称"
+      }
+    },
+    {
+      "source_id": "f68765cd-2dee-5d3f-957b-e32bacf4535d",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "SERIALNO",
+        "field_description": "唯一编号"
+      }
+    },
+    {
+      "source_id": "f7d5261a-eda3-5cdb-a831-cda0b1f3256b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "HANDLING_CHARGE",
+        "field_description": "经手费"
+      }
+    },
+    {
+      "source_id": "bc5f68a1-f155-53e0-980a-cbbd914168ed",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USER_NAME",
+        "field_description": "用户名称"
+      }
+    },
+    {
+      "source_id": "4e8f0ad3-2285-5a7b-8af9-21415cb22114",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCVACCNO",
+        "field_description": "收款方账号"
+      }
+    },
+    {
+      "source_id": "d008c013-2d73-51d3-b14f-426d7dd884cd",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_PATNNAME",
+        "field_description": "项目名称"
+      }
+    },
+    {
+      "source_id": "6c8dd51c-bdc2-5893-904b-5f5f793423ec",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "QFSQMXNO",
+        "field_description": "清分明细单号"
+      }
+    },
+    {
+      "source_id": "b0d4599e-8887-5597-8a07-0abdd3a25b71",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "ZQDM1",
+        "field_description": "证券代码1"
+      }
+    },
+    {
+      "source_id": "f9e978a6-2fe6-52db-a647-2ff4a4bd25f0",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "SETTUSAGE",
+        "field_description": "交易附言"
+      }
+    },
+    {
+      "source_id": "e3699675-a5d6-51ae-8b9d-7b24b3e41393",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "SHAREHOLDER_DM",
+        "field_description": "股东代码"
+      }
+    },
+    {
+      "source_id": "f1d0d4a0-68b3-5705-ae0f-ce61de33ff91",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAYSUBNO",
+        "field_description": "付款方唯一标识"
+      }
+    },
+    {
+      "source_id": "ee7776a1-7e2a-5515-afd0-f3249ecda887",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_AIMSSENDVALUE",
+        "field_description": "推送表示0未推送 1已推送"
+      }
+    },
+    {
+      "source_id": "f6bd4cdf-0224-5d83-9d87-b966cd0c59f6",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_BUSITYPE",
+        "field_description": "业务类型"
+      }
+    },
+    {
+      "source_id": "eb3667c0-673e-59b5-ab85-044269cd115a",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CAREQFLOW_DATE",
+        "field_description": "CA业务申请日期"
+      }
+    },
+    {
+      "source_id": "04e9245e-03ca-5de7-97f7-5d0520d646f2",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CAENDATE",
+        "field_description": "CA失效日期"
+      }
+    },
+    {
+      "source_id": "85ac549a-27ab-525a-b4e0-e4fbe06772ee",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_FNDUSAGE",
+        "field_description": "用途(附言)"
+      }
+    },
+    {
+      "source_id": "8a6c35ba-aaee-55e5-b263-44f64d7feab8",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "LOGIC_PROC_INTERFACE",
+        "field_description": "逻辑处理接口"
+      }
+    },
+    {
+      "source_id": "74c64b8e-028c-5800-9514-0bba20c28476",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "L_ZQLBMX1",
+        "field_description": "证券明细类别"
+      }
+    },
+    {
+      "source_id": "b121dca9-e8af-5026-8d7d-9b554979f33c",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_AIMSMEMO",
+        "field_description": "推送结果"
+      }
+    },
+    {
+      "source_id": "1b1a7f7a-076c-5797-acb6-27af57127801",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TTRANSFER_MOBILE_LOG_C_ID",
+        "field_description": "主键ID"
+      }
+    },
+    {
+      "source_id": "dd87fd6c-c5ab-5b8f-8f9f-3218a24aad3c",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "ACCT_SET_NO",
+        "field_description": "账套编号"
+      }
+    },
+    {
+      "source_id": "7d90a9e1-f245-58ab-bc3c-daf88b6c8fd4",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "D_KSTPRQ",
+        "field_description": "亏损停牌日期"
+      }
+    },
+    {
+      "source_id": "833a4e08-678a-573d-b17d-df27a1cf2496",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "TZZQHLOG_L_ZTBH",
+        "field_description": "账套编号"
+      }
+    },
+    {
+      "source_id": "74ee9354-064a-504b-922c-2bc9b784707d",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_OA_RESULT_CODE",
+        "field_description": "OA返回状态"
+      }
+    },
+    {
+      "source_id": "0563b76d-cdcc-5c2f-aaf6-7c01ae7bfd69",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ONE_DY_SUSP_SUPP_RUL",
+        "field_description": "停牌一天补发规则"
+      }
+    },
+    {
+      "source_id": "543ac9c1-6c26-5187-be74-b2757a453c9b",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ACCOUNT_ID",
+        "field_description": "用户ID"
+      }
+    },
+    {
+      "source_id": "62139017-bdad-55d7-8921-61f7401f8acf",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USER_ORGANIZATIONCODE",
+        "field_description": "所属机构编号"
+      }
+    },
+    {
+      "source_id": "260da40b-979d-50bd-b740-900b2237039b",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "LOGIN_CLT_TYP",
+        "field_description": "登录客户端类型"
+      }
+    },
+    {
+      "source_id": "6fe0d3c5-e769-58a7-acca-e7516a66510e",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "SECONDARY_ENABLED",
+        "field_description": "是否启用二次密码(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "443bd273-6259-5fb5-8673-38f4eb061485",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "NTCMEMO",
+        "field_description": "通知结果"
+      }
+    },
+    {
+      "source_id": "1e0eefbd-d326-5c56-a85c-4b4bfe8cf665",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBGZZZ",
+        "field_description": "原币估值增值"
+      }
+    },
+    {
+      "source_id": "27291ea1-a3c3-5ee2-a006-1fdc9e56947c",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "SEC_CD_1",
+        "field_description": "证券代码1"
+      }
+    },
+    {
+      "source_id": "47fd33a4-12d7-5a8e-b88d-3318cf1ce3e8",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "ZQLB",
+        "field_description": "证券类别"
+      }
+    },
+    {
+      "source_id": "b3aa4e2b-ae7d-5621-ac49-e60e7ca9ae00",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USER_BRANH_CODE",
+        "field_description": "机构编号"
+      }
+    },
+    {
+      "source_id": "2b0435d2-2607-5298-8d72-2452176b5c09",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_PLAT_LSH",
+        "field_description": "平台交易流水号"
+      }
+    },
+    {
+      "source_id": "e8289485-6db5-50ad-ad14-adb852ed28e5",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SEND_CONSTRAINT",
+        "field_description": "发送约束"
+      }
+    },
+    {
+      "source_id": "3f799f65-61aa-576a-809d-40aee562ac82",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "VALUATION_INCREMENT",
+        "field_description": "估值增值"
+      }
+    },
+    {
+      "source_id": "686211ba-1e84-5e1b-8de9-4784a2e8789e",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "MMBZ",
+        "field_description": "买卖标志"
+      }
+    },
+    {
+      "source_id": "ceedaf1e-5e32-5c2d-bfcf-dc7cdaac41a5",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "PAY_STAT_ZT",
+        "field_description": "支付状态"
+      }
+    },
+    {
+      "source_id": "8d9ba51f-72ad-5fa9-804c-8e57e457fba6",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "NOTIFICATION_SJ",
+        "field_description": "通知时间"
+      }
+    },
+    {
+      "source_id": "3518a757-f84a-5031-a094-4c32fad37928",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ACCTG_SUBJ_CD",
+        "field_description": "科目代码"
+      }
+    },
+    {
+      "source_id": "a88b25b7-efa6-5180-9402-32160c053a39",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_JSF",
+        "field_description": "经手费金额"
+      }
+    },
+    {
+      "source_id": "fbc54572-29ea-54ba-bacd-d31cb4b6fece",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_NO",
+        "field_description": "估值编号"
+      }
+    },
+    {
+      "source_id": "d4727dc1-23de-52c5-9b18-7c88df3d4b01",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLENAME",
+        "field_description": "角色名称"
+      }
+    },
+    {
+      "source_id": "cb518e6d-cad4-5548-bc1c-825b9da6815e",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "LOSS_SUSPENSION_RQ",
+        "field_description": "亏损停牌日期"
+      }
+    },
+    {
+      "source_id": "fe916d87-4156-5a76-8f9d-8b327b8150ee",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "TELEPHONE_NO",
+        "field_description": "电话(手机)"
+      }
+    },
+    {
+      "source_id": "cde1c502-04d6-57c7-9881-aa7e68bf14f4",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "SETL_CCY_CD",
+        "field_description": "结算币种"
+      }
+    },
+    {
+      "source_id": "4081a5f3-b35c-54d8-b5c1-0d3148adbd88",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "INITIAL_DATA",
+        "field_description": "初始数据"
+      }
+    },
+    {
+      "source_id": "032d23f2-0746-5b33-8705-e762226c51a8",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "MKT_QT_ZQ_INT_CD",
+        "field_description": "行情证券内码"
+      }
+    },
+    {
+      "source_id": "50968c69-1cff-53a2-bae3-c4ead61e014d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "RCPT_CFM_FLG",
+        "field_description": "签收标志"
+      }
+    },
+    {
+      "source_id": "1ed97625-f3e6-5c72-963b-085828729a1d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "HIERARCHY_CD",
+        "field_description": "层级编码"
+      }
+    },
+    {
+      "source_id": "0e057cd2-afac-5d40-b312-835c57ef45ce",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_CREATED_BY",
+        "field_description": "创建人"
+      }
+    },
+    {
+      "source_id": "f6c2a5f1-8442-5129-a8b3-43fabe888022",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ZQ_PREPARATION",
+        "field_description": "证券筹备"
+      }
+    },
+    {
+      "source_id": "8f9263d3-a70b-55c4-b6b6-fc1980bb62fc",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_VC_GDDM",
+        "field_description": "股东代码"
+      }
+    },
+    {
+      "source_id": "8b972293-054d-55ee-8600-34537710e0e9",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "MKT_QUOTE_FLG",
+        "field_description": "行情标志"
+      }
+    },
+    {
+      "source_id": "8b647e77-f4fe-5a2b-bba0-a54b0cf83a42",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "SERIAL_ID",
+        "field_description": "唯一编号"
+      }
+    },
+    {
+      "source_id": "f19a2a63-53d6-5d5c-b8c3-240fe5e7518b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_REMARK",
+        "field_description": "费用备注"
+      }
+    },
+    {
+      "source_id": "5fad7b9c-a701-5431-8abe-5b5ba60311ed",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_TZLX",
+        "field_description": "投资类型"
+      }
+    },
+    {
+      "source_id": "dda8eaed-e3ad-51d8-8b64-906940b584e8",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVCDNO",
+        "field_description": "证件号码"
+      }
+    },
+    {
+      "source_id": "267ae830-d121-5e1e-9285-01685788fc13",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "D_LAST_SEND_TIME",
+        "field_description": "最后发送时间"
+      }
+    },
+    {
+      "source_id": "e6d150a1-53cc-5c30-9464-8b6b53d26897",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SEND_SUPP_CONTENT",
+        "field_description": "发送补充内容"
+      }
+    },
+    {
+      "source_id": "03834e56-1139-502f-b9fd-80705826377b",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "REMARK",
+        "field_description": "用户备注"
+      }
+    },
+    {
+      "source_id": "564d46c6-80ac-50e4-9f18-a3d0f2efd4e3",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ID_NO",
+        "field_description": "身份证号"
+      }
+    },
+    {
+      "source_id": "44949730-8e9b-510c-bf70-cb2a4ab550dc",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_L_JGHF",
+        "field_description": "机构费用金额"
+      }
+    },
+    {
+      "source_id": "6d9f608d-d00e-59aa-8fde-27f8d5d7dce1",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "LOG_ID",
+        "field_description": "日志编号"
+      }
+    },
+    {
+      "source_id": "f30cd06a-e221-5175-b3b4-79f8856144ef",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_QRYMSG",
+        "field_description": "查询结果"
+      }
+    },
+    {
+      "source_id": "60375bbe-c883-5c5c-b1ad-c3203fdbb801",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "INVST_TYP",
+        "field_description": "投资类型"
+      }
+    },
+    {
+      "source_id": "3a5cada7-3dd8-5807-ae41-7c42999b5350",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "PROCESSING",
+        "field_description": "处理方式"
+      }
+    },
+    {
+      "source_id": "2e9a2b93-4027-5cdb-b462-b0df24266e37",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "JOINT_APPR_RSLT",
+        "field_description": "会签结果"
+      }
+    },
+    {
+      "source_id": "aac38df3-8a95-5574-a835-8f5c373aae49",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "L_HZFS",
+        "field_description": "还债方式"
+      }
+    },
+    {
+      "source_id": "edb61089-b0f4-5fdc-a60c-edd7f5651393",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TRD_SEAT_NO",
+        "field_description": "席位编号"
+      }
+    },
+    {
+      "source_id": "4c300bc7-6c6c-58b2-96cc-800db51cea93",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "ENTERPRISE_TYP",
+        "field_description": "企业类别"
+      }
+    },
+    {
+      "source_id": "2b7ddb9e-06bd-5e19-b882-7a0c5f135a1a",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLE_CD",
+        "field_description": "角色编码"
+      }
+    },
+    {
+      "source_id": "a796a865-0d50-560c-b1a3-0e80c62e7534",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_AIMSSEND",
+        "field_description": "推送表示0未推送 1已推送"
+      }
+    },
+    {
+      "source_id": "8915efed-74fc-5b62-bc14-ac5def5df877",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVCDTP",
+        "field_description": "证件类型"
+      }
+    },
+    {
+      "source_id": "9184faf6-eb43-5fd7-bfc0-f76deb6b5ef7",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_AIMSSEND",
+        "field_description": "推送标志"
+      }
+    },
+    {
+      "source_id": "01ea009b-4882-5ebc-83e9-195f181ece71",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ISISTIPS_FLG",
+        "field_description": "是否接收支付站内信提示(0：不接收；1：接收)"
+      }
+    },
+    {
+      "source_id": "0f5d45f9-4656-5308-a46d-a9365c640a7b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_HQJG",
+        "field_description": "会签结果"
+      }
+    },
+    {
+      "source_id": "7f6ea1e8-8482-5e34-a7b8-3b54fa865e22",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCV_OPENBKCD",
+        "field_description": "开户网点编号"
+      }
+    },
+    {
+      "source_id": "5b1f0647-e330-5d72-b022-87f7f778cd1d",
+      "metadata": {
+        "table_name": "TPROJECT_INFO_DETAIL",
+        "table_description": "计划信息详细表",
+        "field_name": "C_FACTOR_VALUE",
+        "field_description": "要素值"
+      }
+    },
+    {
+      "source_id": "f36ce0c5-90e8-506b-93c3-00481e83ad74",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "OPERATION_METHOD",
+        "field_description": "经营方式"
+      }
+    },
+    {
+      "source_id": "fc2d78a0-3abf-5ef9-81f9-4e06c94392d8",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "PROC",
+        "field_description": "处理方式"
+      }
+    },
+    {
+      "source_id": "41914a56-5f38-51c8-b02a-da3e60bdd852",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_SXF",
+        "field_description": "手续费金额"
+      }
+    },
+    {
+      "source_id": "94307d3e-6665-51a6-b90c-3f7b4dbb5dbc",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "OTHER_FEE",
+        "field_description": "其他费用金额"
+      }
+    },
+    {
+      "source_id": "c78e9d7c-4ea9-5c69-8a92-71aef5647764",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CAREQFLOW_ID",
+        "field_description": "CA业务申请流水"
+      }
+    },
+    {
+      "source_id": "7f17e28b-7520-57a6-bd7b-a6eb01562a01",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_HQZQNM",
+        "field_description": "行情证券内码"
+      }
+    },
+    {
+      "source_id": "2207d746-072f-5e94-9c7b-d4a12535440c",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAY_VACC_ID",
+        "field_description": "付款方资金账号"
+      }
+    },
+    {
+      "source_id": "bd892392-8034-51d3-97e3-d1c3de1ee5db",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_DIFF",
+        "field_description": "原币差额"
+      }
+    },
+    {
+      "source_id": "41bb665b-fab8-59f6-befd-6cd8492399f3",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAY_ACC_NM",
+        "field_description": "付款方户名"
+      }
+    },
+    {
+      "source_id": "8dce1664-beb9-532f-b3fc-78a07962ddbd",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZQYE",
+        "table_description": "业务类型与证券类别表",
+        "field_name": "ZQDM",
+        "field_description": "证券代码"
+      }
+    },
+    {
+      "source_id": "582c3062-b8df-56bc-bd25-5d51c0bb4996",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_ZQCB",
+        "field_description": "证券筹备"
+      }
+    },
+    {
+      "source_id": "d44f6c96-4d74-562e-a2e8-cea6b3534c86",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "IP_ADDR",
+        "field_description": "IP地址"
+      }
+    },
+    {
+      "source_id": "e33bd477-5a21-500c-a3d6-4d1b8264ec77",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "DATE",
+        "field_description": "估值日期"
+      }
+    },
+    {
+      "source_id": "1cb5efc6-df9d-56e7-aad6-678fd95aa2ec",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_FORM_CONTENT",
+        "field_description": "发送补充内容"
+      }
+    },
+    {
+      "source_id": "3b082248-b6d5-54f3-bcdc-9d330aa246f9",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_VC_BZ",
+        "field_description": "费用备注"
+      }
+    },
+    {
+      "source_id": "0906df21-40aa-555f-ad98-3fe1622acc50",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "MKT_DT",
+        "field_description": "行情日期"
+      }
+    },
+    {
+      "source_id": "ba4b5508-2dec-5601-922f-176181c7dda1",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CREATEID",
+        "field_description": "创建人"
+      }
+    },
+    {
+      "source_id": "b00776e0-8e0b-57d1-bed5-244b27336c97",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "JSFJFILE_PATH",
+        "field_description": "结算附件地址"
+      }
+    },
+    {
+      "source_id": "56ee3e8e-ef48-5f22-bbd1-4dbf319f7c83",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_ACCT_LX",
+        "field_description": "用户类型(0:管理员用户,1:普通系统用户)"
+      }
+    },
+    {
+      "source_id": "1a06f758-76b5-5c30-9553-621a1a5f2cc6",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "XT_OPM_ROLE_END_TIME",
+        "field_description": "失效时间"
+      }
+    },
+    {
+      "source_id": "8e47931d-c836-55d1-beb5-0b5ccd0921a2",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_USER_ID",
+        "field_description": "用户ID"
+      }
+    },
+    {
+      "source_id": "15487d1e-6881-5753-8914-527302903642",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "T_CHQS_ZQLBMX1YZQLB_BZ",
+        "field_description": "证券类别备注"
+      }
+    },
+    {
+      "source_id": "19729e33-0580-5dfc-8898-f1ec9ed86f98",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVCRSMK",
+        "field_description": "跨行标示"
+      }
+    },
+    {
+      "source_id": "a8488683-2918-5558-bda1-8128dcbe1c51",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_SEND_BOUND",
+        "field_description": "发送约束"
+      }
+    },
+    {
+      "source_id": "290a4c59-44b5-5761-91b8-7b12afda1d94",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "T_CHQS_ZQLBMX1YZQLB_VC_BZ",
+        "field_description": "证券类别备注"
+      }
+    },
+    {
+      "source_id": "76640032-43a2-5621-be05-87fc03a5aa9c",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLETYPE",
+        "field_description": "角色类型(1运营,2:商户)"
+      }
+    },
+    {
+      "source_id": "29cd5fb2-005a-586f-b8b7-fea4295251bc",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_SCLB",
+        "field_description": "市场类别"
+      }
+    },
+    {
+      "source_id": "cc6a6efb-2ec7-54f4-9d59-e6b424c6844f",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_PASSWORD",
+        "field_description": "登录密码"
+      }
+    },
+    {
+      "source_id": "2daca4fa-b75f-535e-bc0e-0301ade36b88",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "SETTOPENBKCD",
+        "field_description": "银行编号"
+      }
+    },
+    {
+      "source_id": "ccfd7c27-477f-509b-9935-abdf20989370",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "DEBT_REPAYMENT_METHOD",
+        "field_description": "还债方式"
+      }
+    },
+    {
+      "source_id": "ea9dd7e2-d316-55bb-9f6a-5787b7d47fc2",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "TZZQHLOG_RMK",
+        "field_description": "投资期限还款备注"
+      }
+    },
+    {
+      "source_id": "c283e62a-27f3-57b0-bdc5-d1aa3d174bdc",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "JG_CHARGE",
+        "field_description": "机构费用"
+      }
+    },
+    {
+      "source_id": "647ac276-54fc-56a0-905b-fbb14f01f577",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "ZQ_DETAIL_TYP",
+        "field_description": "证券明细类别"
+      }
+    },
+    {
+      "source_id": "c1fb748a-8202-5569-9784-debb27558824",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_SYSTEM",
+        "field_description": "消息来源系统"
+      }
+    },
+    {
+      "source_id": "0185c656-13ce-5d0d-92b3-1f932abd6a8f",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SUB_TRANS_CODE",
+        "field_description": "子事务代码"
+      }
+    },
+    {
+      "source_id": "8e524033-0b51-5d2b-b676-0c052b083619",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_TPBZ",
+        "field_description": "停牌标志"
+      }
+    },
+    {
+      "source_id": "e5681e32-7521-5bcb-b134-379862959c52",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_AMONEY",
+        "field_description": "支付金额"
+      }
+    },
+    {
+      "source_id": "33a3a640-082b-5aa6-b1b0-254f47c94051",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "TZZQHLOG_D_DATE",
+        "field_description": "投资期限还款日期"
+      }
+    },
+    {
+      "source_id": "6bfbec31-93a6-5461-9733-cb4753193842",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "PAY_BILLNO",
+        "field_description": "支付单号"
+      }
+    },
+    {
+      "source_id": "9d7be655-5cf8-5d8d-bb84-f76a4cdb1517",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "BRANH_CODE_ID",
+        "field_description": "机构编号"
+      }
+    },
+    {
+      "source_id": "e6bb130a-79b9-54dd-9c6a-86cd9769b6e5",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "T_SHQS_YWLBYJSMX_BZ",
+        "field_description": "业务类别交易备注"
+      }
+    },
+    {
+      "source_id": "a22fdbcf-1e19-559a-833c-28e6c4510b7a",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CHKSTATE",
+        "field_description": "0:未审核 1:已审核 2:否决 3:驳回"
+      }
+    },
+    {
+      "source_id": "a3b2f898-1bbe-5513-8bf8-9a2578ed6eff",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "BRANH_REFERENCECODE",
+        "field_description": "所属机构"
+      }
+    },
+    {
+      "source_id": "9efb6df0-3040-58e7-bf34-ed949b81e6a5",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "FINAL_CLR_ZT",
+        "field_description": "最终清算状态"
+      }
+    },
+    {
+      "source_id": "c5d9eb28-28a8-5314-9439-a0269fe48390",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "VALUATION_BS",
+        "field_description": "估值标志"
+      }
+    },
+    {
+      "source_id": "e93d64a4-376d-5caa-a161-192a641d52e4",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "LOCK_FLG",
+        "field_description": "锁定标记"
+      }
+    },
+    {
+      "source_id": "2901c45e-1cf3-5826-ae07-f72a25ba5d40",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "DIR",
+        "field_description": "交易方向"
+      }
+    },
+    {
+      "source_id": "916a3911-4a5a-5825-8c46-6e626b1d5c00",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "PWDTYPE",
+        "field_description": "是否强制修改密码,默认0强制修改"
+      }
+    },
+    {
+      "source_id": "fd3bd079-2d6c-5186-bcc5-004316941271",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_HSYBHQ",
+        "field_description": "含税已备回购期限"
+      }
+    },
+    {
+      "source_id": "9f1a644d-cb09-52f5-b83e-bed3089661f4",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_INCR",
+        "field_description": "原币估值增值"
+      }
+    },
+    {
+      "source_id": "46ef9434-423d-5b62-adb3-8ab4f8858023",
+      "metadata": {
+        "table_name": "TPROJECT_INFO_DETAIL",
+        "table_description": "计划信息详细表",
+        "field_name": "MASTER_TABLE_CD",
+        "field_description": "主表code"
+      }
+    },
+    {
+      "source_id": "d34c5a85-091e-57fd-bf78-bfdcca238956",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "LOGIN_CLINT_TYPE",
+        "field_description": "登录客户端类型"
+      }
+    },
+    {
+      "source_id": "bb79e14c-eb8d-5f98-a0f8-840ee31ea207",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YZJJZ",
+        "field_description": "原值计价值"
+      }
+    },
+    {
+      "source_id": "8f4d444e-3b72-591d-b4fe-59e52ffcd39c",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "ACCESS_TIME",
+        "field_description": "访问时间"
+      }
+    },
+    {
+      "source_id": "5b404a72-d128-5bf1-870d-f0dbb7c0ca59",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVACCTP",
+        "field_description": "账户类型"
+      }
+    },
+    {
+      "source_id": "61151435-eb3f-5766-9dc7-1f46deedeb33",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "MALNTC",
+        "field_description": "是否开通邮件通知业务(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "fd72fb27-5412-51b7-ac5e-5d4b3709220f",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "OTHER_CHARGE",
+        "field_description": "其他费用"
+      }
+    },
+    {
+      "source_id": "4f60d62f-7e82-5ea0-98d4-b94c21cc164f",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "LAST_SEND_TM",
+        "field_description": "最后发送时间"
+      }
+    },
+    {
+      "source_id": "00109df4-c4c9-56ab-bd65-183a55a46c56",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "SECURITY_TYPE",
+        "field_description": "证券分类"
+      }
+    },
+    {
+      "source_id": "11260fe5-367d-5c36-b302-4fca1d67ab13",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "ZQ_TYP_DETAIL",
+        "field_description": "证券类别明细"
+      }
+    },
+    {
+      "source_id": "5a03d366-4068-57d7-af9b-bda080fd81ff",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCVSUBNO",
+        "field_description": "收款方唯一标识"
+      }
+    },
+    {
+      "source_id": "e5b48700-db8a-504c-9e80-a9f3eb823a4e",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "PRIMARY_KEY_ID",
+        "field_description": "主键ID"
+      }
+    },
+    {
+      "source_id": "e5569315-2849-5e4c-99b0-4f7cdd564130",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "DFSTAT",
+        "field_description": "兑付状态 0 兑付处理中 1兑付正常"
+      }
+    },
+    {
+      "source_id": "ef300a65-e548-5c02-9de0-da91c4b629f7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_SL",
+        "field_description": "估值数量"
+      }
+    },
+    {
+      "source_id": "5405ff67-4ef3-5e69-adc7-e59c2cee85c3",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBHQ",
+        "field_description": "原币行情"
+      }
+    },
+    {
+      "source_id": "9288075f-862a-558d-86fc-a50d8eb360d7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_ZRCE",
+        "field_description": "转让差额"
+      }
+    },
+    {
+      "source_id": "458a65c0-7442-55b4-be4b-e9c8970cd2ae",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "PASSWORD_TYP",
+        "field_description": "是否强制修改密码,默认0强制修改"
+      }
+    },
+    {
+      "source_id": "16fc7e37-2df5-592c-9a9a-26188cbeae9f",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "INST_FEE",
+        "field_description": "机构费用金额"
+      }
+    },
+    {
+      "source_id": "1d421d94-f903-5f19-aad3-dda71620a689",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "CUR_DY_EXCHANGE_RT",
+        "field_description": "当日汇率"
+      }
+    },
+    {
+      "source_id": "b313a331-1554-5458-8563-ca793a85a71c",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_USER_TYPE",
+        "field_description": "用户类型(0:管理员用户,1:普通系统用户)"
+      }
+    },
+    {
+      "source_id": "acfd3b46-bc4a-5e27-bc09-a35463bde475",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_TASKID",
+        "field_description": "任务编号"
+      }
+    },
+    {
+      "source_id": "8e3d12ff-7339-5d16-b867-1c5ba7f61bff",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVSETTL",
+        "field_description": "收款方结算账户账号"
+      }
+    },
+    {
+      "source_id": "2c4dae3d-3f3a-5d7d-a29e-84516d10b854",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "T_SHQS_YWLBYZGH_L_SCLB",
+        "field_description": "市场类别"
+      }
+    },
+    {
+      "source_id": "ba94282c-4f7e-587b-959e-26fe47043da6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "GHLX",
+        "field_description": "规划类型"
+      }
+    },
+    {
+      "source_id": "eb838251-9372-5fe4-8682-7db32d1b6058",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "SEC_INT_CD",
+        "field_description": "证券内码"
+      }
+    },
+    {
+      "source_id": "cfccff8f-acf9-5714-aee2-164955bb2a7b",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_CREATE_TIME",
+        "field_description": "创建时间"
+      }
+    },
+    {
+      "source_id": "e2f2b653-541c-52ba-a7d4-9520c3bba97c",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_USER_NAME",
+        "field_description": "用户名称"
+      }
+    },
+    {
+      "source_id": "1180f6b6-b196-5a29-ac13-cc93a94f0ce6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_ZQ_PREPARATION",
+        "field_description": "原币证券筹备"
+      }
+    },
+    {
+      "source_id": "359e466c-02c4-5415-92e9-633ba0acd38e",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_RSPCODE",
+        "field_description": "响应码"
+      }
+    },
+    {
+      "source_id": "60afe197-7d87-560d-afb4-0290b964e40e",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "IS_IS_TRIAL_FLG",
+        "field_description": "是否有审核功能：0否 1是"
+      }
+    },
+    {
+      "source_id": "8a035392-786f-54da-9e64-1953ee99c78a",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_VC_BZ",
+        "field_description": "估值备注"
+      }
+    },
+    {
+      "source_id": "2ffe0942-d438-5ffd-9f82-5006227c4a14",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCV_VACC_ID",
+        "field_description": "收款方资金账号"
+      }
+    },
+    {
+      "source_id": "dfbbc970-dc21-559b-a8d2-4b07c2789761",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_YHS",
+        "field_description": "印花税金额"
+      }
+    },
+    {
+      "source_id": "2a4bb85d-b0bc-5bca-b1cb-544df6a94a6c",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCV_ACC_NM",
+        "field_description": "收款方户名"
+      }
+    },
+    {
+      "source_id": "74220213-7453-5567-9463-5624ad50de91",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "TELWRK",
+        "field_description": "是否启用电话(手机)登录(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "c7af7848-9e2a-5d22-bee7-e6fc03f015b8",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "SECONDARY_PASSWORD",
+        "field_description": "二次密码"
+      }
+    },
+    {
+      "source_id": "b74bdcd6-d6c2-5d18-aad5-8e75cda5e3e3",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "ACCSN_TYPE",
+        "field_description": "业务类型"
+      }
+    },
+    {
+      "source_id": "c79caea3-d5fc-563d-95e0-a5d9cef65629",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "T_SHQS_YWLBYJSMX_VC_BZ",
+        "field_description": "业务类别交易备注"
+      }
+    },
+    {
+      "source_id": "492401c8-217a-5951-91e8-41f5300f3ad8",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "MSG_STAT",
+        "field_description": "消息状态"
+      }
+    },
+    {
+      "source_id": "f457563a-fada-5a9a-93e1-dce512d7cbf6",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_FLOWTIME",
+        "field_description": "操作(交易)时间"
+      }
+    },
+    {
+      "source_id": "db8bec08-aee4-52aa-baff-fa548c3ae8c3",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TRANSACTION_DM",
+        "field_description": "事务代码"
+      }
+    },
+    {
+      "source_id": "ab70b50b-2d40-501d-885c-7f69cba8fae8",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "FEEDBACK_DATA",
+        "field_description": "反馈数据"
+      }
+    },
+    {
+      "source_id": "dbcaabf6-434c-5e5e-bcba-6edb25fcaed2",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBYSLX",
+        "field_description": "原币应收利息金额"
+      }
+    },
+    {
+      "source_id": "186a5c3f-3d1d-5f3d-88a2-4ca4a242223f",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "END_TIME",
+        "field_description": "失效时间"
+      }
+    },
+    {
+      "source_id": "9c48199c-162d-5baa-a8b8-64fcbb321259",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_CCFL",
+        "field_description": "持仓分类"
+      }
+    },
+    {
+      "source_id": "4437ad89-a5e2-596e-b4a5-26bf5250427a",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "TELNTC",
+        "field_description": "是否开通短信通知业务(0:否, 1:是, 2:开通处理中)"
+      }
+    },
+    {
+      "source_id": "1421bc0c-9c85-5b72-8329-32ebb3a4c13b",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "ACCESS_DATE",
+        "field_description": "访问日期"
+      }
+    },
+    {
+      "source_id": "58ffb976-68a3-543e-809b-8c9da4a61ef2",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_DRHL",
+        "field_description": "当日汇率"
+      }
+    },
+    {
+      "source_id": "3af39583-ba86-5caa-949f-20964de6595f",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORIGINAL",
+        "field_description": "原值计价值"
+      }
+    },
+    {
+      "source_id": "e9dad630-f158-572b-b8a0-011f70aa0e7d",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SYSTEM_LOG_ACCESS_RQ",
+        "field_description": "访问日期"
+      }
+    },
+    {
+      "source_id": "a3fd6121-3649-5e50-a847-e1726b277cb7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "JLLX",
+        "field_description": "经理类型"
+      }
+    },
+    {
+      "source_id": "cbe8c1cc-5c5e-517f-8b34-c9d655f70e86",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USER_VALID",
+        "field_description": "是否有效(0：无效 1：有效)"
+      }
+    },
+    {
+      "source_id": "45b2d893-6bcc-53be-bc87-11bea8f8d306",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLE_BRANH_CODE",
+        "field_description": "所属机构"
+      }
+    },
+    {
+      "source_id": "765a74e6-226c-5a20-a80f-e75d2cb6e8f1",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "ACTION_TYP",
+        "field_description": "操作类型"
+      }
+    },
+    {
+      "source_id": "102f32ab-d6d5-5fd9-aadf-1ce821a163a9",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SUB_TXN_CD",
+        "field_description": "子事务代码"
+      }
+    },
+    {
+      "source_id": "445a273a-a5c6-5dc6-aa09-57ac2d600a23",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "JSFJFILE_PATH_DZ",
+        "field_description": "结算附件地址"
+      }
+    },
+    {
+      "source_id": "5efb23c8-a1e6-5ad4-af1b-8d91a03076fd",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "PWDSTRONG",
+        "field_description": "登录密码强度(0极弱;1弱;2一般;3高;4极高)"
+      }
+    },
+    {
+      "source_id": "18002cd4-b8aa-5f22-9356-faa330bd17c5",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USER_ORGANCODE",
+        "field_description": "所属机构编号"
+      }
+    },
+    {
+      "source_id": "68858519-b084-5c04-9bdb-d8a84a4d61d9",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ORGANTYPE",
+        "field_description": "所属机构类型(1运营,2:合作方,4-组织机构)"
+      }
+    },
+    {
+      "source_id": "bb1d1337-6745-5931-84ff-4230d25ee2fc",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "XT_FS_QFTRADE_DTL_MODIFIED_BY",
+        "field_description": "修改人"
+      }
+    },
+    {
+      "source_id": "3c473e5e-e7e5-55b4-92e4-e572315aa72f",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_ORGNAME",
+        "field_description": "核心企业名称"
+      }
+    },
+    {
+      "source_id": "2cecdf0e-3a19-5767-aa85-399f256c0ccd",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVBKID",
+        "field_description": "银行编号"
+      }
+    },
+    {
+      "source_id": "889441d4-9e52-512b-a79a-4b0e042bce7e",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "QYLB",
+        "field_description": "企业类别"
+      }
+    },
+    {
+      "source_id": "5ab06a5b-6ebb-5e6f-b83a-83f43da1de72",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "AIMSSEND_FLAG",
+        "field_description": "推送标志"
+      }
+    },
+    {
+      "source_id": "55badd22-f903-5829-b1d0-9c3f19a7d413",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "DEDUCTION_DIRECTION",
+        "field_description": "抵扣方向"
+      }
+    },
+    {
+      "source_id": "2a3cc2db-9f48-54c4-8d73-05d1d1948b1e",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "VC_KMDM",
+        "field_description": "科目代码"
+      }
+    },
+    {
+      "source_id": "f3baf176-9fd2-532b-bdc0-de574a265fe3",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORIGINAL_PX",
+        "field_description": "原值价格"
+      }
+    },
+    {
+      "source_id": "e5a8c01b-afc6-5078-8b0a-11c79c6cb302",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TSYS_LOG_USER_NAME",
+        "field_description": "用户名称"
+      }
+    },
+    {
+      "source_id": "6bcd20e9-cbd8-50f1-8019-c14a6b6151f7",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_QRYCODE",
+        "field_description": "查询码"
+      }
+    },
+    {
+      "source_id": "c051631e-410c-5621-88f1-7e9357c79ec5",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_FLOWDATE",
+        "field_description": "操作(交易)日期"
+      }
+    },
+    {
+      "source_id": "e667e048-270d-5b0c-96b8-7509d6c22a49",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "OPER_CONTENTS",
+        "field_description": "操作内容"
+      }
+    },
+    {
+      "source_id": "4baec43f-3c14-509f-91b0-fc6960f7c49b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "XFER_CHARGE",
+        "field_description": "过户费"
+      }
+    },
+    {
+      "source_id": "9714f034-4a70-5e8a-9d8e-2da8151a59ed",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_L_BH",
+        "field_description": "费用编号"
+      }
+    },
+    {
+      "source_id": "ce075238-4824-500a-812f-9f1114df382f",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAYACCNO",
+        "field_description": "付款方账号"
+      }
+    },
+    {
+      "source_id": "913cb7d7-04dd-50f5-ad1c-a473e1793f42",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "PAYSTAT",
+        "field_description": "支付状态"
+      }
+    },
+    {
+      "source_id": "cf1cbe8f-cff6-5692-bd2d-6b4628573b36",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "XT_FS_QFTRADE_DTL_CREATED_BY",
+        "field_description": "创建人"
+      }
+    },
+    {
+      "source_id": "949c88a1-8113-5dda-9a65-6a29a25a4758",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SEND_TM",
+        "field_description": "发送时间"
+      }
+    },
+    {
+      "source_id": "fd8cb72f-92e7-5e3c-9961-5d65f2f98ed8",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "DIRECTION",
+        "field_description": "交易方向"
+      }
+    },
+    {
+      "source_id": "720a78d8-5c1d-53a9-9e2d-693c683ff5f2",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "REQFLG",
+        "field_description": "数据来源 1PC端"
+      }
+    },
+    {
+      "source_id": "cbb000f8-46ae-5e7e-bf71-6e7f75f3afb7",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "SECDPWD",
+        "field_description": "二次密码"
+      }
+    },
+    {
+      "source_id": "499bf212-7120-5fdb-8c75-398a58a28c97",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_DKFX",
+        "field_description": "抵扣方向"
+      }
+    },
+    {
+      "source_id": "b08d6087-2d27-52e1-beba-bc102c2353ab",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "PHONE_ENABLED",
+        "field_description": "是否启用电话(手机)登录(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "876ad071-6c69-501b-985e-df24183838f0",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_BH",
+        "field_description": "估值编号"
+      }
+    },
+    {
+      "source_id": "f92fa99f-9fb5-50c9-b1cb-11f2bc482121",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "HOST_NAME",
+        "field_description": "主机名称"
+      }
+    },
+    {
+      "source_id": "78f72d02-4cbd-565f-b1f2-96a1c687d9d0",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "MAIL_ADDR",
+        "field_description": "电子邮箱"
+      }
+    },
+    {
+      "source_id": "e72b2fb1-4a70-518f-8064-c64faeb358c3",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_LJZYJ",
+        "field_description": "累积折溢价"
+      }
+    },
+    {
+      "source_id": "745e3cfa-748d-5cbd-953a-601decc47ee6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "UUQQ_COUNT",
+        "field_description": "记录数量"
+      }
+    },
+    {
+      "source_id": "737b0644-2246-533f-b19a-4002a12969c6",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "EML_ENABLED",
+        "field_description": "是否启用邮箱登录(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "45bc9d4c-b474-5870-81f6-7a5fcf1f5a39",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_REMARK",
+        "field_description": "估值备注"
+      }
+    },
+    {
+      "source_id": "63e38f99-1c96-5bd6-a7c7-198d95a37d59",
+      "metadata": {
+        "table_name": "TPROJECT_INFO_DETAIL",
+        "table_description": "计划信息详细表",
+        "field_name": "C_FACTOR_FIELD",
+        "field_description": "要素字段"
+      }
+    },
+    {
+      "source_id": "5e15f99b-6960-5a50-9744-2bf9d7a924fe",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ORGANIZATION_LX",
+        "field_description": "所属机构类型(1运营,2:合作方,4-组织机构)"
+      }
+    },
+    {
+      "source_id": "97944cd4-7896-5580-a9d8-8cc931db0380",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "IND_LOCATION",
+        "field_description": "行业场所"
+      }
+    },
+    {
+      "source_id": "0e0ebd44-e032-512a-b96f-8e9c077d2b2b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "JY_FEE",
+        "field_description": "交易费用金额"
+      }
+    },
+    {
+      "source_id": "10e5cf42-9d2c-5b99-ae4d-de2098a42651",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAY_ACC_NAME",
+        "field_description": "付款方户名"
+      }
+    },
+    {
+      "source_id": "fd69ddae-290c-5a43-a104-0dcde95d4d45",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USERCODE",
+        "field_description": "用户编号"
+      }
+    },
+    {
+      "source_id": "1f35c689-bd74-555d-b4b2-878e67f8d5c7",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAYZHTP",
+        "field_description": "付款账户类型1核心企业资金账户(电子户),2线下结算账户(实体户)"
+      }
+    },
+    {
+      "source_id": "fffc7263-832c-5f9f-944a-4bf1dbc42492",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "SECDWRK",
+        "field_description": "是否启用二次密码(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "41b6a71d-176b-5b9a-94b6-d9201b7a2b27",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "POSITION_ACCTG_ID",
+        "field_description": "持仓核算ID"
+      }
+    },
+    {
+      "source_id": "0f481c00-eb5d-5503-ba18-ec4870a8497f",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "L_FAILCOUNT",
+        "field_description": "失败次数"
+      }
+    },
+    {
+      "source_id": "4267871d-4ced-5535-93b7-657d367b1e8b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_L_ZQNM",
+        "field_description": "证券内码"
+      }
+    },
+    {
+      "source_id": "03ded7dc-128b-5b38-a74e-b753cd29522c",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "LOG_NO",
+        "field_description": "日志编号"
+      }
+    },
+    {
+      "source_id": "14d88412-2ec2-5e91-8cc1-f351bc57fbaf",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVBKNM",
+        "field_description": "银行名称"
+      }
+    },
+    {
+      "source_id": "359c138e-031b-5848-a67f-bd081b487ecd",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_INITDATACLOB",
+        "field_description": "初始数据"
+      }
+    },
+    {
+      "source_id": "1f1af65f-c2a9-5ee4-bf45-e7fcad37dd6c",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CA_SUB_SUBJECT",
+        "field_description": "CA主题"
+      }
+    },
+    {
+      "source_id": "d49e6a1b-496e-5018-a52b-c028102b940b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_ORGNL",
+        "field_description": "原币原值计价值"
+      }
+    },
+    {
+      "source_id": "dccc275f-4726-5c74-b2b8-a11e3aedb6a5",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "ACCRUAL_RATIO",
+        "field_description": "计提比例"
+      }
+    },
+    {
+      "source_id": "52080767-c5c9-51e4-8b0e-1cc1574441ae",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "BNK_ACCT_TYPE",
+        "field_description": "银行账户(卡)类型"
+      }
+    },
+    {
+      "source_id": "749d0bb0-ccdb-5143-b2f7-30c5f576ab28",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "IS_DELETE_STATUS_BS",
+        "field_description": "是否已删除的标志(0：没有删除；1：已经删除)"
+      }
+    },
+    {
+      "source_id": "c92862f3-2135-56ba-9455-8a4bc0507641",
+      "metadata": {
+        "table_name": "TPROJECT_INFO_DETAIL",
+        "table_description": "计划信息详细表",
+        "field_name": "C_MAIN_TABLE_KEY",
+        "field_description": "主表code"
+      }
+    },
+    {
+      "source_id": "98d7d6a2-30d5-5027-87c3-b87952455769",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TXN_CHARGE",
+        "field_description": "交易费用"
+      }
+    },
+    {
+      "source_id": "795a8ca9-e77e-5017-80d0-bb7f1e7f35ea",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_STATUS",
+        "field_description": "消息状态"
+      }
+    },
+    {
+      "source_id": "3cb9cfa4-512b-5bc0-b2b2-0eaf46da6dae",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_ORGCODE",
+        "field_description": "核心企业编号"
+      }
+    },
+    {
+      "source_id": "adce8335-ee14-5df1-8f7d-05b74a3dfad2",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "CDTP_TYPE",
+        "field_description": "证件类型"
+      }
+    },
+    {
+      "source_id": "4a4bde1e-cba7-588f-af13-de98799b33f1",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TTRANSFER_MOBILE_LOG_C_PROJECT_CODE",
+        "field_description": "绑定的项目编号"
+      }
+    },
+    {
+      "source_id": "fe82f443-b680-5da1-8d90-d1e261bd5dc0",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "MSG_SOURCE_SYSTEM",
+        "field_description": "消息来源系统"
+      }
+    },
+    {
+      "source_id": "8f9a6a4c-0bca-564d-a7bb-fc3a7527e752",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "IP_ADD",
+        "field_description": "IP地址"
+      }
+    },
+    {
+      "source_id": "d83d1e48-5687-5d3a-862e-04ffbb495176",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "NTF_RSLT",
+        "field_description": "通知结果"
+      }
+    },
+    {
+      "source_id": "6e9f651b-baf0-573d-82a1-61df7e4fbd37",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_JYFY",
+        "field_description": "交易费用金额"
+      }
+    },
+    {
+      "source_id": "120a4d24-5da3-591c-912c-d11cc98d1008",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TRANS_CODE",
+        "field_description": "事务代码"
+      }
+    },
+    {
+      "source_id": "9f9443b0-1d81-5f83-b59d-109231f19276",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "ORGANIZATION_MC",
+        "field_description": "组织名称"
+      }
+    },
+    {
+      "source_id": "ce1fed0f-6c05-5bf7-8fac-5ae0dead92b2",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "TZZQHLOG_VC_BZ",
+        "field_description": "投资期限还款备注"
+      }
+    },
+    {
+      "source_id": "8eb7eee5-4bc6-5220-a5f7-46b68cad2be9",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLECODE",
+        "field_description": "角色编码"
+      }
+    },
+    {
+      "source_id": "2befa419-42ad-5d5d-a1a4-9fb84bd84f70",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "VC_XWBH",
+        "field_description": "席位编号"
+      }
+    },
+    {
+      "source_id": "90165113-7a4e-50c2-8076-fda4b2a20b67",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_INTERFACE_ID",
+        "field_description": "接口ID"
+      }
+    },
+    {
+      "source_id": "eb70aff9-d363-5115-8fd5-c8184c287be1",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_CE",
+        "field_description": "估值差额"
+      }
+    },
+    {
+      "source_id": "475b372f-1183-5d38-9cc5-a01f10e0155c",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "BOUND_PRJ_NO",
+        "field_description": "绑定的项目编号"
+      }
+    },
+    {
+      "source_id": "3c094354-0b2b-5efd-be81-a1146a2c0327",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "ACTION_CONTENT",
+        "field_description": "操作内容"
+      }
+    },
+    {
+      "source_id": "6dc65143-9b28-5c0d-8898-6dbbcbb2f4b0",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TRANSFER_FEE",
+        "field_description": "过户费金额"
+      }
+    },
+    {
+      "source_id": "f4e03128-4772-5490-aa9a-19971476d0e0",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "WEBSERVICE_INTERACTION_METHOD",
+        "field_description": "webservice交互方式"
+      }
+    },
+    {
+      "source_id": "18156141-9929-57e2-bb50-51c644c90a8d",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "XT_OPM_ROLE_CREATE_TIME",
+        "field_description": "创建时间"
+      }
+    },
+    {
+      "source_id": "5f9950a2-07b7-5b64-a8dd-e26d99ef1648",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_XFER_DIFF",
+        "field_description": "原币转让差额"
+      }
+    },
+    {
+      "source_id": "38dbcd04-c186-55d7-b92c-809c9c455b25",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "TELEPHONE",
+        "field_description": "电话(手机)"
+      }
+    },
+    {
+      "source_id": "de1d526a-d78d-5f8b-b513-65100296df01",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_PLATSERIAL",
+        "field_description": "平台交易流水号"
+      }
+    },
+    {
+      "source_id": "77acc6f7-bd74-59b7-a22b-241f2bb70aac",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "BUS_DT",
+        "field_description": "业务日期"
+      }
+    },
+    {
+      "source_id": "a413e306-6320-5c15-98b4-c4e62c189935",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_ZTBH",
+        "field_description": "账套编号"
+      }
+    },
+    {
+      "source_id": "72805e99-872f-52f8-ad36-add3bbab2857",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBZQCB",
+        "field_description": "原币证券筹备"
+      }
+    },
+    {
+      "source_id": "4d1ddc27-4d18-5148-b639-e22592395df4",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "REQFLAG",
+        "field_description": "数据来源 1PC端"
+      }
+    },
+    {
+      "source_id": "057e38d7-ec7b-56e6-80ef-13f7ebd5236e",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TSYS_LOG_ORG_ID",
+        "field_description": "组织ID"
+      }
+    },
+    {
+      "source_id": "dedc6d93-7980-58b7-b660-527be11831d4",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "QTY",
+        "field_description": "估值数量"
+      }
+    },
+    {
+      "source_id": "196acdca-5ee2-5c19-a473-642868b5d32f",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "XT_OPM_USR_UPDATE_SJ",
+        "field_description": "最近更新时间"
+      }
+    },
+    {
+      "source_id": "f4fe284f-9d13-5045-abf5-e424518f020e",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_JGCJ",
+        "field_description": "监管场景"
+      }
+    },
+    {
+      "source_id": "42eda1cd-3303-500a-941a-ba63ce862cd6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "L_SFJTZZS",
+        "field_description": "是否计提增值税"
+      }
+    },
+    {
+      "source_id": "ba45b642-6eab-5858-a7c8-aac280c58a9d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "STAMP_DUTY",
+        "field_description": "印花税"
+      }
+    },
+    {
+      "source_id": "f935b386-ed25-5418-b3f2-2b72f7102438",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "VAT_ACCRUAL_FLAG",
+        "field_description": "是否计提增值税"
+      }
+    },
+    {
+      "source_id": "b26bb823-4b66-5c14-8289-e65b2c871634",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SYSTEM_LOG_ACCESS_SJ",
+        "field_description": "访问时间"
+      }
+    },
+    {
+      "source_id": "7a5ff5d9-d248-570f-97f3-a30b5c58a785",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "QSBZ",
+        "field_description": "签收标志"
+      }
+    },
+    {
+      "source_id": "5ae740c6-5c42-55ae-82c0-d69b9b6a165a",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "INTERACTION_INTERFACE",
+        "field_description": "交互接口"
+      }
+    },
+    {
+      "source_id": "3b88045a-340d-5572-add6-c8ba805f1953",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_SENDTYPE",
+        "field_description": "webservice交互方式"
+      }
+    },
+    {
+      "source_id": "34639e72-e2a2-5cfc-9252-4bfad961506a",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "RECTIFICATION_CHARGE",
+        "field_description": "整改费"
+      }
+    },
+    {
+      "source_id": "9b8e103a-619c-5909-9ca3-9962f34a78a2",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SYSTEM_LOG_SERVER_ID",
+        "field_description": "服务器编号"
+      }
+    },
+    {
+      "source_id": "c75f45f3-a087-5045-b4f8-d01c34449198",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCV_ACC_NAME",
+        "field_description": "收款方户名"
+      }
+    },
+    {
+      "source_id": "9f96f620-a5d7-5f09-88ab-d4a0f391c949",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SYSTEM_LOG_HOST_MC",
+        "field_description": "主机名称"
+      }
+    },
+    {
+      "source_id": "d43bfb07-0e9a-5007-bd3d-6c1586a9aa9a",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "SERVER_ID",
+        "field_description": "服务器编号"
+      }
+    },
+    {
+      "source_id": "53f694f1-df41-53c7-9d2f-9e95dcd04741",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLE_ISVALIDINDICATOR",
+        "field_description": "是否有效(0无效、1有效)"
+      }
+    },
+    {
+      "source_id": "7eafc994-3cb4-5338-8f69-74abdc95f402",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "POSITION_HOLDING_TYP",
+        "field_description": "持仓分类"
+      }
+    },
+    {
+      "source_id": "9401887f-7556-59d8-83cd-83c0545aed4a",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "C_FINALDATACLOB",
+        "field_description": "反馈数据"
+      }
+    },
+    {
+      "source_id": "beefa85e-f898-5200-b291-59e791be83a2",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "USER_DELETE_STATUS",
+        "field_description": "是否已删除的标志(0：没有删除；1：已经删除)"
+      }
+    },
+    {
+      "source_id": "040746f2-dd5a-5504-84ee-ca0623c7edec",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCVCRDTP",
+        "field_description": "银行账户(卡)类型"
+      }
+    },
+    {
+      "source_id": "68175af7-34e7-55ce-aaff-9d5f96b219ad",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_CCHSID",
+        "field_description": "持仓核算ID"
+      }
+    },
+    {
+      "source_id": "36941717-4e40-593d-9a5f-c4e38897a789",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "TZZQHLOG_DT",
+        "field_description": "投资期限还款日期"
+      }
+    },
+    {
+      "source_id": "228db394-4701-5c9a-b255-03c5d86f9cd2",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_REMARK",
+        "field_description": "用户备注"
+      }
+    },
+    {
+      "source_id": "e160a9af-ed70-56c5-bb2c-56f72c3555e9",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "BILLNO",
+        "field_description": "流水号"
+      }
+    },
+    {
+      "source_id": "f8b4ec64-aaf0-50e2-8c9e-cb48ee00788e",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_CLT_CD",
+        "field_description": "用户编号"
+      }
+    },
+    {
+      "source_id": "f3116a0a-325c-542d-924f-65c80bb6b2e9",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TSYS_LOG_USER_ID",
+        "field_description": "员工编号"
+      }
+    },
+    {
+      "source_id": "cee5a69f-0e42-5270-81d0-1a302d5b959a",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YSLX",
+        "field_description": "应收利息金额"
+      }
+    },
+    {
+      "source_id": "3625bcf3-d615-51f9-8deb-ba90967ba3d6",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ISTIPS",
+        "field_description": "是否接收支付站内信提示(0：不接收；1：接收)"
+      }
+    },
+    {
+      "source_id": "4c6f5504-7116-59dd-a16e-ed0b2c7984ca",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_ACCUMULATED_PREM_DISC",
+        "field_description": "原币累积折溢价"
+      }
+    },
+    {
+      "source_id": "d39f1457-13b4-549f-bc44-764fa8c17e5b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_TQBZ",
+        "field_description": "行情标志"
+      }
+    },
+    {
+      "source_id": "7fb702c0-1929-5f2a-983a-ee2f98e89924",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBLJZYJ",
+        "field_description": "原币累积折溢价"
+      }
+    },
+    {
+      "source_id": "89afcb0b-4118-5c01-9c8d-81b0712749de",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_RCVBL_INT",
+        "field_description": "原币应收利息"
+      }
+    },
+    {
+      "source_id": "3fdb4dc4-1fa4-5539-8497-505c7a25830e",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CATYPE",
+        "field_description": "U盾类型(CFCA1:CFCA一代盾)"
+      }
+    },
+    {
+      "source_id": "a59a4495-e25d-56c0-9352-f3e492248a71",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_SDFLAG",
+        "field_description": "锁定标记"
+      }
+    },
+    {
+      "source_id": "330543e0-80f5-5a4c-8782-fc67c8874975",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_GZBZ",
+        "field_description": "估值标志"
+      }
+    },
+    {
+      "source_id": "6071d9aa-b7e2-5edb-beba-dc8db47d4033",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "T_SHQS_YWLBYZGH_VC_BZ",
+        "field_description": "交易备注"
+      }
+    },
+    {
+      "source_id": "6185a429-08d9-5cc2-91cc-0c949980e8df",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ISISQZ_FLG",
+        "field_description": "是否电子签章(0：否 1：是)"
+      }
+    },
+    {
+      "source_id": "bcb2bc8d-28f7-5531-9462-1888696aefbf",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_EN_HYCS",
+        "field_description": "行业场所"
+      }
+    },
+    {
+      "source_id": "c8c6dc52-7b3f-51af-9bb9-bbc4c419740f",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_FNDUSAGEVALUE",
+        "field_description": "用途(附言)"
+      }
+    },
+    {
+      "source_id": "aa18689c-b060-543b-8d7c-e22d5a3bd35d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "ZQLBMX",
+        "field_description": "证券类别明细"
+      }
+    },
+    {
+      "source_id": "60ce7b9b-a4a9-57c9-a679-4c19bd7adad0",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_SJH",
+        "field_description": "收款方手机号"
+      }
+    },
+    {
+      "source_id": "74dd00ba-3804-51e4-9e33-a57ee369cef1",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CA_STAT",
+        "field_description": "CA绑定状态(0:未绑定CA,1:已绑定CA)"
+      }
+    },
+    {
+      "source_id": "1f8e13af-de33-5bcd-8323-8c152e1a6930",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "NTF_STAT",
+        "field_description": "通知状态"
+      }
+    },
+    {
+      "source_id": "7a62ff0b-b7b3-5c53-82c2-07afa42d3ab2",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "RECTIFICATION_FEE",
+        "field_description": "整改费金额"
+      }
+    },
+    {
+      "source_id": "eb178bbc-d321-5bf8-bfc5-6fb761bda807",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "PASSWORD_STRONG",
+        "field_description": "登录密码强度(0极弱;1弱;2一般;3高;4极高)"
+      }
+    },
+    {
+      "source_id": "5f05d26b-cfa8-5a9d-ad77-f13add39c623",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "VC_ZQFL",
+        "field_description": "证券分类"
+      }
+    },
+    {
+      "source_id": "0e5f68e8-129a-54a2-8387-f30b49b132f7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_ZGF",
+        "field_description": "整改费金额"
+      }
+    },
+    {
+      "source_id": "e78d4649-547b-5eec-a5a3-0fde5331b916",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "UPDATE_TIME",
+        "field_description": "最近更新时间"
+      }
+    },
+    {
+      "source_id": "5a587536-354b-54c1-adb5-2f9cdeec51d9",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_EN_YJ",
+        "field_description": "月结金额"
+      }
+    },
+    {
+      "source_id": "561776d6-568b-5687-a8f3-cc1edc032537",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ACCUMULATED_PREM_DISC",
+        "field_description": "累积折溢价"
+      }
+    },
+    {
+      "source_id": "42dfbf09-00bf-5c54-b423-c576ee2c148d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_NO",
+        "field_description": "费用编号"
+      }
+    },
+    {
+      "source_id": "5dc2982a-64f7-5611-914e-1ef531be301d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "SUSPENDED_FLG",
+        "field_description": "停牌标志"
+      }
+    },
+    {
+      "source_id": "5ff5646e-4b79-5c57-8e10-4d515305f1ec",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "JSFJFILENM",
+        "field_description": "结算附件名称"
+      }
+    },
+    {
+      "source_id": "9687cb82-c84b-5165-a36e-af648945b452",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "RCVBL_INT",
+        "field_description": "应收利息"
+      }
+    },
+    {
+      "source_id": "0027bdaf-9f0b-50ce-a18a-addd393621f4",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_PATNCODE",
+        "field_description": "项目名称"
+      }
+    },
+    {
+      "source_id": "917dd171-470b-5ef9-acc5-2da3b7829543",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "OPER_TYPE",
+        "field_description": "操作类型"
+      }
+    },
+    {
+      "source_id": "0bb31b1e-8ff4-588d-b02e-14b7be125c3c",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_ZZSL",
+        "field_description": "计提比例"
+      }
+    },
+    {
+      "source_id": "99858f3f-ab60-5931-a402-4e0a5900b01e",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_VC_ZQDM",
+        "field_description": "证券代码"
+      }
+    },
+    {
+      "source_id": "13ded3cd-ceab-57f5-b55d-3823f2909990",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_L_ZTBH",
+        "field_description": "账套编号"
+      }
+    },
+    {
+      "source_id": "33814e50-c070-53e5-a647-6a34c0dcb78b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_QTFY",
+        "field_description": "其他费用金额"
+      }
+    },
+    {
+      "source_id": "2f13b92b-aebf-5105-9146-3de9861074f7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_L_ZQNM",
+        "field_description": "证券内码"
+      }
+    },
+    {
+      "source_id": "f27eb94a-e2b6-5e9a-89cb-e69096a06a90",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "JYFS",
+        "field_description": "经营方式"
+      }
+    },
+    {
+      "source_id": "ff59c0f8-7cc4-5a97-a30e-c4e7884dd02e",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "RCV_OPENBKNM",
+        "field_description": "开户网点名称"
+      }
+    },
+    {
+      "source_id": "d0ffe04f-2e8f-5b86-95f7-80e12d8202d6",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "LOGIN_PASSWORD",
+        "field_description": "登录密码"
+      }
+    },
+    {
+      "source_id": "3a3a0f50-5152-543a-91a9-54eab5c89797",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "LOGINNUM",
+        "field_description": "登录失败次数"
+      }
+    },
+    {
+      "source_id": "46f2c546-a3c2-5ca5-a0ee-65c7ef9941e0",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "WITHDRAWAL",
+        "field_description": "撤回价值"
+      }
+    },
+    {
+      "source_id": "8b71b6f2-476d-5ff3-9f4c-c850b0b370d7",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "IDNUM",
+        "field_description": "身份证号"
+      }
+    },
+    {
+      "source_id": "35d9b3e4-285c-5911-a0f7-b6b903dd448d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "TFYMX_L_SCLB",
+        "field_description": "市场类别"
+      }
+    },
+    {
+      "source_id": "52fb21a9-1ec7-5cea-ba07-192da711d70e",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CA_CERT_EXPIRY_RQ",
+        "field_description": "CA失效日期"
+      }
+    },
+    {
+      "source_id": "f44cab44-c39e-520f-bae0-725a8c04b581",
+      "metadata": {
+        "table_name": "TPROJECT_INFO_DETAIL",
+        "table_description": "计划信息详细表",
+        "field_name": "ELEMENT",
+        "field_description": "要素值"
+      }
+    },
+    {
+      "source_id": "4eeaaaba-1ac0-51ab-bda8-479b64ef9b21",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBYZJJZ",
+        "field_description": "原币原值计价值"
+      }
+    },
+    {
+      "source_id": "3a2b4ae2-3b4b-5351-8256-775bb149b16d",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_FLOWTS",
+        "field_description": "操作(交易)时间"
+      }
+    },
+    {
+      "source_id": "71deb4f2-302e-51dd-a856-f40b6787365b",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "NTCTIME",
+        "field_description": "通知时间"
+      }
+    },
+    {
+      "source_id": "e87e09c4-e4db-50f3-9194-c97c2a36f0dc",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "FAILURE_COUNT",
+        "field_description": "失败次数"
+      }
+    },
+    {
+      "source_id": "e123fb18-fc03-5cc8-a1a0-0b9588a93307",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "HANDLING_FEE",
+        "field_description": "经手费金额"
+      }
+    },
+    {
+      "source_id": "40e6ada4-bd49-54bf-9dbf-e7cffca77f27",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "MONTHLY_SETL",
+        "field_description": "月结标识"
+      }
+    },
+    {
+      "source_id": "7b5cec8e-d2e4-5ac2-ad42-be379dc025d1",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZGH",
+        "table_description": "交易明细表",
+        "field_name": "STOCK_CODE",
+        "field_description": "证券代码"
+      }
+    },
+    {
+      "source_id": "a7b04a2d-a1be-581f-bf35-ecb09728ac49",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "NTCSTAT",
+        "field_description": "通知状态"
+      }
+    },
+    {
+      "source_id": "98e1ace9-49ce-50d6-be7e-6c2e433b2fe8",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAY_DT_DT",
+        "field_description": "付款日期"
+      }
+    },
+    {
+      "source_id": "82c7f7f0-cde9-58b6-a2c7-a3deac213275",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_D_RQ",
+        "field_description": "估值日期"
+      }
+    },
+    {
+      "source_id": "d5d76cad-cc00-5634-ac6a-e0aa46fbaed1",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TTRANSFER_MOBILE_LOG_PROCESS_INSTANCE_ID",
+        "field_description": "流程实例ID"
+      }
+    },
+    {
+      "source_id": "542a14ac-0024-5adf-bb3e-f21cb8ccf700",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_CHJZF",
+        "field_description": "撤回价值"
+      }
+    },
+    {
+      "source_id": "7391f7d2-39d2-5c1b-9d43-02c8825371c7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "XFER_DIFFERENCE",
+        "field_description": "转让差额"
+      }
+    },
+    {
+      "source_id": "5248682c-608c-5732-8bdc-039a5ef6d230",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_FNDUSAGE",
+        "field_description": "资金用途(附言)"
+      }
+    },
+    {
+      "source_id": "3beb74f4-e716-568b-94b8-02a80fef13be",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PLATSRL",
+        "field_description": "合作方流水号"
+      }
+    },
+    {
+      "source_id": "b5e26534-90c4-5c13-b986-dcae0f867664",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_GZZZ",
+        "field_description": "估值增值"
+      }
+    },
+    {
+      "source_id": "d46192d7-392c-5333-a60b-40802cb653d8",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YBZRCE",
+        "field_description": "原币转让差额"
+      }
+    },
+    {
+      "source_id": "11a0b43b-fd04-5c84-84d0-e0a4e46d1d91",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "MAIL_NTF",
+        "field_description": "是否开通邮件通知业务(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "c91306a3-af2a-50f8-86b9-007a9a825eee",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_RSPMSG",
+        "field_description": "响应信息"
+      }
+    },
+    {
+      "source_id": "d12f3964-a549-584a-b224-50f6377ba604",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "MANAGER_TYPE",
+        "field_description": "经理类型"
+      }
+    },
+    {
+      "source_id": "119488be-e204-5dec-afdd-6255fce4bf76",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAY_ZHTP_TYPE",
+        "field_description": "付款账户类型1核心企业资金账户(电子户),2线下结算账户(实体户)"
+      }
+    },
+    {
+      "source_id": "bb66d422-5c0e-5fec-baff-a12a1e5818a0",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_END_TIME",
+        "field_description": "失效时间"
+      }
+    },
+    {
+      "source_id": "4f1372ef-14f3-555b-ac04-97e303cb0ad7",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAYER_AMT",
+        "field_description": "付款金额"
+      }
+    },
+    {
+      "source_id": "4a7d9f77-b097-5ad6-a2a6-6bab632f8359",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "MALWRK",
+        "field_description": "是否启用邮箱登录(0:否, 1:是)"
+      }
+    },
+    {
+      "source_id": "42d339ab-7cb9-519f-981e-96a0681cdab5",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TTRANSFER_MOB_LOG_BZ",
+        "field_description": "移动端传输备注"
+      }
+    },
+    {
+      "source_id": "fc64c31f-c492-59e1-b6ae-f791096bc8cb",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "D_LAST_DEAL_TIME",
+        "field_description": "反馈时间"
+      }
+    },
+    {
+      "source_id": "088c1018-4c0c-5579-a241-01f723d521c4",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SZQS_V52_YWLBYSJSDZ",
+        "table_description": "业务类型与证券代码",
+        "field_name": "DZZQDM",
+        "field_description": "对账证券代码"
+      }
+    },
+    {
+      "source_id": "81394ab1-cc30-5eb5-b333-7b4e54d4a13f",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "EN_GHF",
+        "field_description": "过户费金额"
+      }
+    },
+    {
+      "source_id": "23d5589f-71dc-563a-af72-f80c83f2c0cb",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "TASK_NO",
+        "field_description": "任务编号"
+      }
+    },
+    {
+      "source_id": "69853494-cf4c-5ad2-9c17-4cecdd1d64e8",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "OA_RETURN_ZT",
+        "field_description": "OA返回状态"
+      }
+    },
+    {
+      "source_id": "bbde0b47-f55f-56ed-bff6-b74e4ebcc3b6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SZQS_V52_YWLBYSJSDZ",
+        "table_description": "业务类型与证券代码",
+        "field_name": "RECONCILIATION_ZQ_DM",
+        "field_description": "对账证券代码"
+      }
+    },
+    {
+      "source_id": "7af89a14-845b-5220-952b-3b8891c706ff",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_MODIFIED_BY",
+        "field_description": "修改人"
+      }
+    },
+    {
+      "source_id": "f7ef4aeb-8b00-5c7b-9693-143917aaebcd",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_PAYZHTYPE",
+        "field_description": "账户类型"
+      }
+    },
+    {
+      "source_id": "97c068b4-8f0b-5b25-823b-f4e66044fc38",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CA_APPL_DT",
+        "field_description": "CA业务申请日期"
+      }
+    },
+    {
+      "source_id": "e3d2e546-5d5d-5f86-9acc-bd8416bab1d4",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_FLOWDT",
+        "field_description": "操作(交易)日期"
+      }
+    },
+    {
+      "source_id": "c3c0658f-41e5-59a4-b353-a6a186a66df9",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "T_SHQS_YWLBYJSMX_VC_ZQDM",
+        "field_description": "证券代码"
+      }
+    },
+    {
+      "source_id": "039f9fa3-f2c7-501a-91e7-b29c678de280",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ISTRIAL",
+        "field_description": "是否有审核功能：0否 1是"
+      }
+    },
+    {
+      "source_id": "4c3c97c9-7505-5fc4-9901-8135e7e773f7",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "MKT_TYPE",
+        "field_description": "市场类别"
+      }
+    },
+    {
+      "source_id": "858e93d6-81d1-5f5c-8e63-5a988207a0ca",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CAID",
+        "field_description": "CA序列号"
+      }
+    },
+    {
+      "source_id": "e02cb439-e3da-5e69-90bd-8c108ad70996",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "BRANH_NAME",
+        "field_description": "机构名称"
+      }
+    },
+    {
+      "source_id": "6bdc4840-0d0d-5f79-b7e6-abbce2635e0c",
+      "metadata": {
+        "table_name": "XT_OPM_ROLE",
+        "table_description": "角色信息表",
+        "field_name": "ROLE_VALID",
+        "field_description": "是否有效(0无效、1有效)"
+      }
+    },
+    {
+      "source_id": "bc9d6885-5373-5eaa-8ef0-fa29af53f266",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCVMOBNO",
+        "field_description": "收款方手机号"
+      }
+    },
+    {
+      "source_id": "d0df5b2e-5b16-5a54-be4a-96e4806d278f",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TGZLOG_VC_JSBZ",
+        "field_description": "结算币种"
+      }
+    },
+    {
+      "source_id": "a59c334d-133a-5a33-924f-1b951889a2c1",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAYAMT",
+        "field_description": "付款金额"
+      }
+    },
+    {
+      "source_id": "a318a092-41c7-5f70-b99a-859948ac0eeb",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYZQYE",
+        "table_description": "业务类型与证券类别表",
+        "field_name": "BZ",
+        "field_description": "交易币种"
+      }
+    },
+    {
+      "source_id": "e08fe353-9ad6-52cb-b7cf-4cf362cefbc6",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "RCV_FIRM_ID",
+        "field_description": "收款方客户号"
+      }
+    },
+    {
+      "source_id": "2ccaac0d-15e7-53de-8cfa-172e1f9a2687",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "BUY_SELL_FLAG",
+        "field_description": "买卖标志"
+      }
+    },
+    {
+      "source_id": "7ee26c8e-e49e-52c0-a789-7995c6b20226",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PAYTIME",
+        "field_description": "付款日期"
+      }
+    },
+    {
+      "source_id": "38623efc-a1bf-5aa5-982f-cba65ceb7e74",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "CRPAYID",
+        "field_description": "电子债权凭证编号"
+      }
+    },
+    {
+      "source_id": "dbcc8dec-8430-5ebd-9cca-326523e2c8e8",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "ISVAL_ID_FLG",
+        "field_description": "是否有效(0：无效 1：有效)"
+      }
+    },
+    {
+      "source_id": "b33551fc-ef07-5fde-a23d-6a66b0695c43",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "SETTOPENBKNM",
+        "field_description": "银行名称"
+      }
+    },
+    {
+      "source_id": "20a54bc2-806d-59d9-a5f6-bd76b79012fe",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "DTL_RCVZHTYPE",
+        "field_description": "账户类型"
+      }
+    },
+    {
+      "source_id": "409aadef-8047-5405-a080-33793694635d",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_SHQS_YWLBYJSMX",
+        "table_description": "业务类别交易明细表",
+        "field_name": "PLANNING_TYP",
+        "field_description": "规划类型"
+      }
+    },
+    {
+      "source_id": "ae822768-2426-5ead-b138-f7d9ed4d514a",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "JFBJGL_AIMSMEMO",
+        "field_description": "推送结果"
+      }
+    },
+    {
+      "source_id": "67070999-2a54-5c3c-842e-165679451af2",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "DIFFERENCE",
+        "field_description": "估值差额"
+      }
+    },
+    {
+      "source_id": "2888cf9f-c6f4-5ff5-8d7f-bdea804c8208",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "D_START_TIME",
+        "field_description": "发送时间"
+      }
+    },
+    {
+      "source_id": "14071a18-9789-5e3d-b413-2d66aa0fd8d1",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "REGULATORY_SCENARIO",
+        "field_description": "监管场景"
+      }
+    },
+    {
+      "source_id": "dccd3662-ea8c-5c3b-abd0-ce46ee43924b",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "EN_YZJG",
+        "field_description": "原值价格"
+      }
+    },
+    {
+      "source_id": "ab3932f8-6bfd-55fa-b4ab-8d58bdc05908",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TZZQHLOG",
+        "table_description": "投资期限还款日志",
+        "field_name": "L_ZZQHZT",
+        "field_description": "最终清算状态"
+      }
+    },
+    {
+      "source_id": "68ca1f0d-b868-5e5e-beea-06f3c42f77b2",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CASTA",
+        "field_description": "CA绑定状态(0:未绑定CA,1:已绑定CA)"
+      }
+    },
+    {
+      "source_id": "eb5e8a20-f409-5cfb-ba09-681e24ef0c11",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "XT_OPM_USER_UPDATE_SJ",
+        "field_description": "最近更新时间"
+      }
+    },
+    {
+      "source_id": "25c0a34c-1584-516c-9f2d-67ffd9fef812",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "PH_NTF",
+        "field_description": "是否开通短信通知业务(0:否, 1:是, 2:开通处理中)"
+      }
+    },
+    {
+      "source_id": "0d8022f6-df1f-58e8-baee-d216b060ecc6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TFYMX",
+        "table_description": "费用明细表",
+        "field_name": "BUS_TYP_MODEL",
+        "field_description": "业务类别模型"
+      }
+    },
+    {
+      "source_id": "a6fe9188-2815-56d3-98d3-b5fb7849f652",
+      "metadata": {
+        "table_name": "XT_FS_QFTRADE_DTL",
+        "table_description": "清分交易明细表",
+        "field_name": "PMT_AMT",
+        "field_description": "支付金额"
+      }
+    },
+    {
+      "source_id": "1d01eaf2-28e3-5883-b1b3-690b5fd90c6d",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "PRJ_NAME",
+        "field_description": "项目名称"
+      }
+    },
+    {
+      "source_id": "7342b8c6-add3-5e4b-a176-111802b654a6",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "TAX_INCLUDED_RP_TERM",
+        "field_description": "含税已备回购期限"
+      }
+    },
+    {
+      "source_id": "d70f8710-6de8-593a-9c57-63c7bd8f7f7d",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "FEEDBACK_TM",
+        "field_description": "反馈时间"
+      }
+    },
+    {
+      "source_id": "0ca2c9d5-46f9-56ef-9026-fe3a03673f47",
+      "metadata": {
+        "table_name": "XT_FS_JFBJGL",
+        "table_description": "交付管理表",
+        "field_name": "D_FS_TA_T_ZT",
+        "field_description": "兑付状态 0 兑付处理中 1兑付正常"
+      }
+    },
+    {
+      "source_id": "82091222-dff8-5f39-b8a2-4ad966e735e8",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "T_CHQS_ZQLBMX1YZQLB",
+        "table_description": "证券类别关系表",
+        "field_name": "AST_LIABILITY_TYP",
+        "field_description": "资产负债类别"
+      }
+    },
+    {
+      "source_id": "8828c5b9-d338-5531-99d2-45fa29c950c2",
+      "metadata": {
+        "table_name": "XT_OPM_USER",
+        "table_description": "用户信息表",
+        "field_name": "CASUB",
+        "field_description": "CA主题"
+      }
+    },
+    {
+      "source_id": "3a689820-44e1-58e9-a4d3-5eff9cebad04",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "D_HQRQ",
+        "field_description": "行情日期"
+      }
+    },
+    {
+      "source_id": "c69acc63-91d8-5d2f-b9cc-a42ea4a4ddac",
+      "metadata": {
+        "database_name": "TCMP",
+        "field_name": "ORG_NAME",
+        "field_description": "组织名称"
+      }
+    },
+    {
+      "source_id": "8fff55ce-53f5-551b-84e4-9e82001fbe6a",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "L_GZFF",
+        "field_description": "规则方法"
+      }
+    },
+    {
+      "source_id": "c923bf55-25c5-500d-8af6-7b26ccb44331",
+      "metadata": {
+        "database_name": "FA",
+        "table_name": "TGZLOG",
+        "table_description": "估值日志",
+        "field_name": "ORGNL_CCY_MKT_QT",
+        "field_description": "原币行情"
+      }
+    }
+  ]
+}

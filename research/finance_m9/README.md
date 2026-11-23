@@ -4,6 +4,8 @@
 
 同一个 Qwen3.5-9B 基座挂两套 LoRA 权重。**fresh162 负责规划，Scale1169 负责分类。GRPO 只更新规划权重。** 已有两套 SFT 权重时，可以直接评估或开始 RL。
 
+复核实验可直接使用仓库内的 [Val422 输入、参考标签、逐字段评分和 nontraining 运行配置](val422/README.md)。其中也提供了 422 个字段的实际首计划，方便核对固定流程对照的设计。
+
 ## 代码架构
 
 | 环节 | 输入、职责与输出 | 实现 |
@@ -60,7 +62,7 @@ Planner 输入为原始的 `train162.jsonl`，每行有 `id`、`messages` 和 `c
 **3. 评估 SFT 主线。**
 
 ```bash
-python run.py evaluate --model "$MODEL" --planner "$PLANNER" --skill "$SKILL" --data "$VAL_JSON" --references "$VAL_REFS" --output runs/sft-val
+python run.py evaluate --model "$MODEL" --planner "$PLANNER" --skill "$SKILL" --data val422/val422-inputs.json --references val422/val422-references.json --output runs/sft-val
 ```
 
 **4. 训练并评估 RL 规划器。** 默认每个来源采样 4 条轨迹，每 8 个来源形成一个更新批次。每个批次使用当时的规划器采样，只更新一次；全部优势为零时跳过更新。模型调用错误会终止运行，防止半条轨迹进入训练。
