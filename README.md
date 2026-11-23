@@ -2,6 +2,8 @@
 
 **An Agentic Framework for Automated Data Classification and Sensitivity Grading of Database Fields**
 
+**金融分类分级训练主线**采用 fresh162 规划器和 Scale1169 分类器，后续 GRPO 只更新规划器。[代码架构、数据格式与运行命令](research/finance_m9/README.md)
+
 DCG is an LLM-agent-based system that automatically determines the **data category** and **sensitivity level** of a database field. Given a field (which may be expressed in English, *pinyin*, or an abbreviation), its surrounding database/table metadata, and a domain-specific classification-grading standard corpus (e.g., finance, education, automotive), the agent first expands the semantic meaning of the field, then matches it against a multi-level category taxonomy and a sensitivity-level scale.
 
 
