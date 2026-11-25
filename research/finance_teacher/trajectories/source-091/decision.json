@@ -1,12 +1,15 @@
 {
-  "status": "abstained",
+  "status": "classified",
   "stop_reason": "unresolved_no_new_business_evidence",
-  "prediction": null,
-  "suggestion": {
+  "prediction": {
     "category": "finance:用户数据/个人用户数据/个人用户基本信息",
-    "grading_level": "L3",
+    "grading_level": "L3"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "目标字段描述为TA投资人证件类型，同表主体为系统内职工管理，但缺少证据表明TA投资人是个人用户还是机构用户，无法在C010与C012之间作出区分",
+  "review_status": "accepted",
+  "selection_detail": {
     "grade_source": "category_registry",
-    "review_required": true,
     "method": "evidence_comparison",
     "reason": "TA投资人证件类型作为证件类型枚举字段，在基金TA系统中个人投资者占绝大多数，且该字段与同表'客户证件号码'配对使用，更符合个人用户证件体系的典型模式；选C012需额外假设该字段专用于机构投资人，缺乏支撑。",
     "uncertainty": "仍缺证据：1）该字段枚举值是否包含营业执照/统一社会信用代码等机构证件类型；2）表中'用户类型'字段的实际取值分布；3）业务上该表是否同时服务机构投资人。",
@@ -17,8 +20,6 @@
       "observations.table_fields.fields.6.field_description": "TA投资人证件类型"
     }
   },
-  "missing_evidence": "目标字段描述为TA投资人证件类型，同表主体为系统内职工管理，但缺少证据表明TA投资人是个人用户还是机构用户，无法在C010与C012之间作出区分",
-  "review_status": "accepted",
   "review_accounting": {
     "http_calls": 1,
     "estimated_CNY": 0.057132,

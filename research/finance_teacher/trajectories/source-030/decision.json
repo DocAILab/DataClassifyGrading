@@ -5,6 +5,6 @@
     "category": "finance:业务数据/金融市场数据/理财数据",
     "grading_level": "L2"
   },
-  "suggestion": null,
+  "prediction_source": "evidence",
   "missing_evidence": null
 }

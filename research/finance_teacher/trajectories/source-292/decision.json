@@ -1,19 +1,20 @@
 {
-  "status": "abstained",
+  "status": "classified",
   "stop_reason": "unresolved_no_new_business_evidence",
-  "prediction": null,
-  "suggestion": {
+  "prediction": {
     "category": "finance:业务数据/金融市场数据/期货期权",
-    "grading_level": "L2",
+    "grading_level": "L2"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "表名行情日志表及字段证券代码均为泛证券概念，同表含期权价值、股指期等字段但无明确债券或股票专属标识，无法区分C001债券、C002期货期权或C004股票；C005要求系统运维操作事件记录，而该表记录的是行情快照数据而非系统运行日志，但具体证券品种归属仍缺乏决定性证据",
+  "review_status": "incomplete_response",
+  "selection_detail": {
     "method": "retrieval_rank",
     "rank": 1,
     "ranking_skill": "SELECT_CATEGORY_TOPK",
     "ranking_summary": "行情日志含期货期权字段",
-    "grade_source": "category_registry",
-    "review_required": true
+    "grade_source": "category_registry"
   },
-  "missing_evidence": "表名行情日志表及字段证券代码均为泛证券概念，同表含期权价值、股指期等字段但无明确债券或股票专属标识，无法区分C001债券、C002期货期权或C004股票；C005要求系统运维操作事件记录，而该表记录的是行情快照数据而非系统运行日志，但具体证券品种归属仍缺乏决定性证据",
-  "review_status": "incomplete_response",
   "review_accounting": {
     "http_calls": 1,
     "estimated_CNY": 0.20657999999999999,

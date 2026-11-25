@@ -6,18 +6,24 @@ from pathlib import Path
 from smoke import common, read_decision, verify
 
 
-def score_prediction(row, reference):
-    prediction = row["prediction"] or {}
-    check = {"category_match": None, "grade_match": None, "joint_match": None}
+def score_prediction(result, reference):
+    matches = {"category_match": None, "grade_match": None, "joint_match": None}
     if reference is None:
-        return check, "missing_reference"
-    if not row["legal"] or row["stop_reason"] != "validated_terminal":
-        return check, ("insufficient_evidence" if row["stop_reason"] == "unresolved_no_new_business_evidence"
-                       else "no_valid_prediction")
-    check["category_match"] = prediction.get("category") == reference["category"]
-    check["grade_match"] = prediction.get("grading_level") == reference["grading_level"]
-    check["joint_match"] = check["category_match"] and check["grade_match"]
-    return check, "reference_match" if check["joint_match"] else "reference_mismatch"
+        return matches, "missing_reference"
+    if result["status"] != "classified":
+        return matches, "no_valid_prediction"
+    prediction = result["prediction"]
+    matches["category_match"] = prediction["category"] == reference["category"]
+    matches["grade_match"] = prediction["grading_level"] == reference["grading_level"]
+    matches["joint_match"] = matches["category_match"] and matches["grade_match"]
+    return matches, "reference_match" if matches["joint_match"] else "reference_mismatch"
+
+
+def prediction_totals(rows):
+    return {"sources": len(rows), "classified": sum(r["decision_status"] == "classified" for r in rows),
+            "joint_matches": sum(r["joint_match"] is True for r in rows),
+            "best_candidate": sum(r["prediction_source"] == "best_candidate" for r in rows),
+            "sft_candidates": sum(r["eligible_for_sft_review"] for r in rows)}
 
 
 def summarize(directory, reference_file):
@@ -51,35 +57,29 @@ def summarize(directory, reference_file):
     rows = []
     for row, summary, target, passed, result in verified:
         ref = refs.get(row["source_id"])
-        matches, status = score_prediction(row, ref)
+        matches, status = score_prediction(result, ref)
         if not summary["wire_complete_all"] or summary["unknown_usage"]:
             status = "incomplete_transport"
         elif row["stop_reason"] == "campaign_budget_exhausted":
             status = "budget_exhausted"
-        elif summary["raw_JSON_objects"] != summary["actual_model_calls"]:
+        elif result["status"] == "incomplete" and summary["raw_JSON_objects"] != summary["actual_model_calls"]:
             status = "invalid_json"
-        elif not passed:
+        elif result["status"] == "incomplete" and not passed:
             status = "execution_failure"
         trace = target / "runs" / f"source-{row['source_index']:03d}" / "trace.json"
-        suggestion = result["suggestion"]
-        suggestion_match = (all(suggestion[key] == ref[key] for key in ("category", "grading_level"))
-                            if suggestion and ref else None)
-        rows.append({**{k: row[k] for k in ("source_index", "source_id", "legal", "stop_reason", "prediction")},
-                     "decision_status": result["status"],
+        rows.append({**{k: row[k] for k in ("source_index", "source_id", "stop_reason")},
+                     "native_legal": row["legal"], "prediction": result["prediction"],
+                     "decision_status": result["status"], "prediction_source": result["prediction_source"],
                      "review_status": result.get("review_status"),
-                     "suggestion": suggestion, "suggestion_joint_match": suggestion_match,
                      "review_accounting": result.get("review_accounting", {}),
                      "missing_evidence": result["missing_evidence"],
-                     "reference": ref, **matches, "status": status, "eligible_for_sft_review": status == "reference_match",
+                     "reference": ref, **matches, "status": status, "eligible_for_sft_review": passed and status == "reference_match" and result["prediction_source"] == "evidence",
                      "native_replay_exact": row["native_replay_exact"], "wire_complete": summary["wire_complete_all"],
                      "raw_json_objects": summary["raw_JSON_objects"], "unknown_usage": summary["unknown_usage"],
                      "http_calls": summary["actual_model_calls"], "estimated_CNY": summary["conservative_cost_CNY"],
                      "trace": str(trace.relative_to(directory)) if trace.exists() else None})
-    return {"model": plan["model"], "sources": len(rows), "native_replays": sum(r["native_replay_exact"] for r in rows),
-            "legal": sum(r["legal"] for r in rows), "joint_matches": sum(r["joint_match"] is True for r in rows),
-            "suggestions": sum(r["suggestion"] is not None for r in rows),
-            "abstentions": sum(r["decision_status"] == "abstained" for r in rows),
-            "suggestion_joint_matches": sum(r["suggestion_joint_match"] is True for r in rows),
+    return {"model": plan["model"], **prediction_totals(rows),
+            "native_replays": sum(r["native_replay_exact"] for r in rows),
             "review_http_calls": sum(r["review_accounting"].get("http_calls", 0) for r in rows),
             "review_estimated_CNY": round(sum(r["review_accounting"].get("estimated_CNY", 0) for r in rows), 6),
             "http_calls": sum(r["http_calls"] for r in rows),
@@ -94,5 +94,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     result = summarize(args.directory.resolve(), args.references)
     common.put(args.directory / "scores.json", result)
-    print(f"{result['sources']} sources, {result['legal']} classified, {result['joint_matches']} joint matches; "
-          f"{result['suggestions']} review suggestions, {result['suggestion_joint_matches']} suggestion joint matches")
+    print(f"{result['classified']}/{result['sources']} classified; {result['joint_matches']} correct category and grade.")

@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from abstention import decision, verified_abstention
+from abstention import apply_review, decision, verified_abstention
 from role_evidence import project
 from review_abstention import suggestion
 from smoke import common, save_decision
@@ -29,31 +29,41 @@ class DecisionTest(unittest.TestCase):
 
     def test_model_order_and_registry_grade(self):
         result = decision(self.trace, self.registry, True)
-        self.assertEqual(result["status"], "abstained")
-        self.assertIsNone(result["prediction"])
-        self.assertEqual(result["suggestion"]["category"], "cat-b")
-        self.assertEqual(result["suggestion"]["grading_level"], "L3")
+        self.assertEqual(result["status"], "classified")
+        self.assertEqual(result["prediction_source"], "best_candidate")
+        self.assertEqual(result["prediction"]["category"], "cat-b")
+        self.assertEqual(result["prediction"]["grading_level"], "L3")
         self.assertEqual(result["missing_evidence"], "unknown owner")
+
+    def test_review_replaces_only_a_best_candidate_prediction(self):
+        original = decision(self.trace, self.registry, True)
+        report = {"wire_complete": True, "suggestion": None, "http_calls": 1, "estimated_CNY": 0.01, "unknown_usage": 0}
+        self.assertEqual(apply_review(original, report)["prediction"], original["prediction"])
+        report["suggestion"] = {"category": "cat-a", "grading_level": "L1", "method": "evidence_comparison"}
+        reviewed = apply_review(original, report)
+        self.assertEqual(reviewed["prediction"], {"category": "cat-a", "grading_level": "L1"})
+        self.assertEqual(reviewed["selection_detail"]["method"], "evidence_comparison")
+        self.assertEqual(reviewed["status"], "classified")
 
     def test_no_stale_or_reordered_candidate(self):
         self.step["lineage"]["candidates"] = 0
-        self.assertEqual(decision(self.trace, self.registry, True)["suggestion"]["method"], "catalog_tie")
+        self.assertEqual(decision(self.trace, self.registry, True)["selection_detail"]["method"], "catalog_tie")
         self.step["lineage"]["candidates"] = 1
         self.step["metadata"]["raw_response"] = json.dumps({"option_ids": ["01", "02"]})
-        self.assertEqual(decision(self.trace, self.registry, True)["suggestion"]["method"], "catalog_tie")
+        self.assertEqual(decision(self.trace, self.registry, True)["selection_detail"]["method"], "catalog_tie")
 
     def test_abstention_without_rank_uses_observed_text_then_explicit_ties(self):
         self.trace["state"] = {"field_description": "债券利率"}
         self.registry["cat-b"]["description"] = "债券发行票面利率"
         result = decision(self.trace, self.registry, True)
-        self.assertEqual(result["suggestion"]["category"], "cat-b")
-        self.assertEqual(result["suggestion"]["method"], "catalog_text")
-        self.assertIsNone(result["prediction"])
+        self.assertEqual(result["prediction"]["category"], "cat-b")
+        self.assertEqual(result["selection_detail"]["method"], "catalog_text")
+        self.assertEqual(result["prediction_source"], "best_candidate")
         self.trace["state"] = {}
-        fallback = decision(self.trace, dict(reversed(list(self.registry.items()))), True)["suggestion"]
+        fallback = decision(self.trace, dict(reversed(list(self.registry.items()))), True)["selection_detail"]
         self.assertEqual(fallback["method"], "catalog_tie")
         self.assertEqual(fallback["tied_candidates"], ["cat-a", "cat-b"])
-        self.assertTrue(fallback["review_required"])
+        self.assertNotIn("review_required", fallback)
 
     def test_closed_abstention_can_survive_an_earlier_malformed_reply(self):
         self.trace["source_id"] = "same-source"
@@ -88,14 +98,14 @@ class DecisionTest(unittest.TestCase):
         self.assertIsNone(parse({**answer, "fact_ids": ["F02"]}))
 
     def test_technical_failure_and_normal_classification(self):
-        self.assertIsNone(decision(self.trace, self.registry, False)["suggestion"])
+        self.assertIsNone(decision(self.trace, self.registry, False)["prediction"])
         self.trace["stop_reason"] = "campaign_budget_exhausted"
         self.assertEqual(decision(self.trace, self.registry, True)["status"], "incomplete")
         prediction = {"category": "cat-b", "grading_level": "L3"}
         self.trace.update(stop_reason="validated_terminal", terminated=True, final_result=prediction)
         result = decision(self.trace, self.registry, True)
         self.assertEqual(result["prediction"], prediction)
-        self.assertIsNone(result["suggestion"])
+        self.assertEqual(result["prediction_source"], "evidence")
 
     def test_projection_uses_only_observed_same_qualifier(self):
         def fact(value):

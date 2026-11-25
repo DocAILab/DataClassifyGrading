@@ -1,4 +1,4 @@
-"""Expose a model-ranked review candidate alongside a verified abstention."""
+"""Produce one final category and grade for each verified business outcome."""
 import json
 import re
 
@@ -69,24 +69,45 @@ def catalog_choice(trace, registry):
             "reason": reason}
 
 
+def select_candidate(result, candidate):
+    """Promote the best available choice and retain its rationale for audit."""
+    prediction = {key: candidate[key] for key in ("category", "grading_level")}
+    return {**result, "status": "classified", "prediction": prediction, "prediction_source": "best_candidate",
+            "selection_detail": {k: v for k, v in candidate.items() if k not in {"category", "grading_level", "review_required"}}}
+
+
+def review_status(report):
+    if report["suggestion"]:
+        return "accepted"
+    return "invalid_suggestion" if report["wire_complete"] else "incomplete_response"
+
+
+def apply_review(result, review):
+    if result["prediction_source"] != "best_candidate":
+        raise ValueError("Only an evidence-limited classification can use a candidate review")
+    if review["suggestion"] is not None:
+        result = select_candidate(result, review["suggestion"])
+    return {**result, "review_status": review_status(review),
+            "review_accounting": {k: review[k] for k in ("http_calls", "estimated_CNY", "unknown_usage")}}
+
+
 def decision(trace, registry, verified):
     reason = trace.get("stop_reason")
     result = {"status": "incomplete", "stop_reason": reason, "prediction": None,
-              "suggestion": None, "missing_evidence": None}
+              "prediction_source": None, "missing_evidence": None}
     if not verified:
         return result
     if reason == "validated_terminal" and trace.get("terminated") and trace.get("final_result"):
-        return {**result, "status": "classified", "prediction": trace["final_result"]}
+        return {**result, "status": "classified", "prediction": trace["final_result"], "prediction_source": "evidence"}
     if reason != STOP or trace.get("terminated"):
         return result
 
-    result["status"] = "abstained"
     result["review_status"] = "not_run"
     gaps = trace.get("gap_ledger", [])
     if gaps:
         result["missing_evidence"] = gaps[-1].get("missing_evidence")
-    result["suggestion"] = ranked_choice(trace, registry) or catalog_choice(trace, registry)
-    return result
+    candidate = ranked_choice(trace, registry) or catalog_choice(trace, registry)
+    return select_candidate(result, candidate)
 
 
 def ranked_choice(trace, registry):

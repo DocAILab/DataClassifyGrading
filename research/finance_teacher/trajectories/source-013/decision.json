@@ -5,6 +5,6 @@
     "category": "finance:企业数据/经营管理数据/其他经营管理数据",
     "grading_level": "L2"
   },
-  "suggestion": null,
+  "prediction_source": "evidence",
   "missing_evidence": null
 }

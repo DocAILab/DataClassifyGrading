@@ -6,15 +6,11 @@ from pathlib import Path
 import sys
 import time
 
+from abstention import review_status
+
 
 class ReviewUnavailable(ValueError):
     """The verified trace has no evidence-bearing classifier call to compare."""
-
-
-def review_status(report):
-    if report["suggestion"]:
-        return "accepted"
-    return "invalid_suggestion" if report["wire_complete"] else "incomplete_response"
 
 
 def prepare(target):
@@ -164,7 +160,7 @@ def run(target, output, remaining_cost, timeout, *, reserved_directory=False):
 
 
 if __name__ == "__main__":
-    from smoke import common, read_decision, verify
+    from smoke import apply_review, common, read_decision, verify
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("source", type=Path)
     cli.add_argument("output", type=Path)
@@ -172,15 +168,13 @@ if __name__ == "__main__":
     source, output = args.source.resolve(), args.output.resolve()
     passed = verify(source)
     result = read_decision(source, passed)
-    if not os.environ.get("DASHSCOPE_API_KEY") or result["status"] != "abstained":
+    if not os.environ.get("DASHSCOPE_API_KEY") or result["prediction_source"] != "best_candidate":
         cli.error("A complete verified source and a Bailian credential are required")
     output.mkdir(parents=True, exist_ok=False)
     common.put(output / "decision.json", result)
     report = run(source, output, 1.0, 180, reserved_directory=True)
     if report:
-        result["review_status"] = review_status(report)
-        result["suggestion"] = report["suggestion"] or result["suggestion"]
-        result["review_accounting"] = {k: report[k] for k in ("http_calls", "estimated_CNY", "unknown_usage")}
+        result = apply_review(result, report)
         staged = output / "decision.reviewed.partial"
         common.put(staged, result)
         os.replace(staged, output / "decision.json")

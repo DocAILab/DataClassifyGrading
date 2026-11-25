@@ -394,7 +394,8 @@
       "accepted": 16,
       "rejected": 1
     },
-    "classified": 2,
+    "classified": 5,
+    "evidence_classified": 2,
     "citations": 9,
     "classified_all_quotes_verbatim": 2,
     "classified_with_eligible_quote": 2,
@@ -5437,7 +5438,8 @@
       "accepted": 76,
       "rejected": 2
     },
-    "classified": 15,
+    "classified": 25,
+    "evidence_classified": 15,
     "citations": 86,
     "classified_all_quotes_verbatim": 15,
     "classified_with_eligible_quote": 15,
@@ -7297,6 +7299,7 @@
       "accepted": 26
     },
     "classified": 13,
+    "evidence_classified": 13,
     "citations": 75,
     "classified_all_quotes_verbatim": 13,
     "classified_with_eligible_quote": 13,
@@ -7315,7 +7318,7 @@
       "field": "席位类型",
       "table": null,
       "database": "FA",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -7543,7 +7546,8 @@
         "rejected": 1
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 53,
@@ -7699,7 +7703,8 @@
           "C009": "企业数据 > 经营管理数据 > 财务数据",
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 54,
@@ -7707,7 +7712,7 @@
       "field": "股东名称",
       "table": null,
       "database": "FA",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -7921,7 +7926,8 @@
         "accepted": 7
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 8,
@@ -8056,7 +8062,8 @@
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 10,
@@ -8191,7 +8198,8 @@
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 13,
@@ -8319,7 +8327,8 @@
           "C008": "企业数据 > 经营管理数据 > 其他经营管理数据",
           "C009": "企业数据 > 经营管理数据 > 财务数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 18,
@@ -8475,7 +8484,8 @@
           "C008": "企业数据 > 经营管理数据 > 其他经营管理数据",
           "C009": "企业数据 > 经营管理数据 > 财务数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 30,
@@ -8645,7 +8655,8 @@
           "C008": "企业数据 > 经营管理数据 > 其他经营管理数据",
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 33,
@@ -8653,7 +8664,7 @@
       "field": "付款银行ID",
       "table": "XT_FS_JFBJSQ",
       "database": null,
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -8759,7 +8770,8 @@
         "accepted": 3
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 35,
@@ -8915,7 +8927,8 @@
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 46,
@@ -9043,7 +9056,8 @@
           "C010": "用户数据 > 个人用户数据 > 个人用户基本信息",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 56,
@@ -9178,7 +9192,8 @@
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 60,
@@ -9341,7 +9356,8 @@
           "C008": "企业数据 > 经营管理数据 > 其他经营管理数据",
           "C009": "企业数据 > 经营管理数据 > 财务数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 80,
@@ -9462,7 +9478,8 @@
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 83,
@@ -9470,7 +9487,7 @@
       "field": "收益权类型",
       "table": "TPROJECT_INFO",
       "database": "AIMS",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -9627,7 +9644,8 @@
         "accepted": 4
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 203,
@@ -9635,7 +9653,7 @@
       "field": "资金托管方名称",
       "table": "XT_FS_MNYCHGFLOW",
       "database": null,
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -9741,7 +9759,8 @@
         "accepted": 3
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 207,
@@ -9869,7 +9888,8 @@
           "C011": "用户数据 > 机构用户数据 > 机构用户交易数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 209,
@@ -10018,7 +10038,8 @@
           "C009": "企业数据 > 经营管理数据 > 财务数据",
           "C012": "用户数据 > 机构用户数据 > 机构用户基本信息"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 214,
@@ -10026,7 +10047,7 @@
       "field": "套期标志",
       "table": "T_H_QSK",
       "database": "FA",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -10251,7 +10272,8 @@
         "accepted": 6
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 292,
@@ -10259,7 +10281,7 @@
       "field": "数据来源",
       "table": "THQLOG",
       "database": "FA",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -10385,7 +10407,8 @@
         "accepted": 4
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 86,
@@ -10393,7 +10416,7 @@
       "field": "银联交易记录金额",
       "table": "UUQQ",
       "database": "FA",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -10557,7 +10580,8 @@
         "accepted": 4
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 94,
@@ -10699,7 +10723,8 @@
           "C008": "企业数据 > 经营管理数据 > 其他经营管理数据",
           "C009": "企业数据 > 经营管理数据 > 财务数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 249,
@@ -10707,7 +10732,7 @@
       "field": "货币业务类别",
       "table": "T_BJSQS_YWLBYNQHB",
       "database": "FA",
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -10825,7 +10850,8 @@
         "accepted": 4
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     },
     {
       "source_index": 255,
@@ -10960,7 +10986,8 @@
           "C008": "企业数据 > 经营管理数据 > 其他经营管理数据",
           "C009": "企业数据 > 经营管理数据 > 财务数据"
         }
-      }
+      },
+      "prediction_source": "evidence"
     },
     {
       "source_index": 91,
@@ -10968,7 +10995,7 @@
       "field": "TA投资人证件类型",
       "table": "TSYS_USER",
       "database": null,
-      "decision": "abstained",
+      "decision": "classified",
       "eligible_for_sft_review": false,
       "raw_path": [
         "GET_FIELD_METADATA",
@@ -11099,7 +11126,8 @@
         "rejected": 1
       },
       "blocked_classifications": 1,
-      "classifier_support": null
+      "classifier_support": null,
+      "prediction_source": "best_candidate"
     }
   ]
 }

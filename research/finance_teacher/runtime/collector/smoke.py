@@ -42,7 +42,7 @@ from release_inputs import use_catalog
 import table_recovery
 import row_evidence
 import field_roles
-from abstention import decision, verified_abstention
+from abstention import apply_review, decision, verified_abstention
 
 
 def verify_inputs():
@@ -133,12 +133,9 @@ def read_decision(target, verified, receipt="verification.json"):
         verified = verified_abstention(trace, common.read(target / receipt))
     registry = common.read(target / "program-inputs.json")["study"]["registry"] if verified else {}
     result = decision(trace, registry, verified)
-    if result["status"] == "abstained" and (target / "review" / "result.json").exists():
+    if result["prediction_source"] == "best_candidate" and (target / "review" / "result.json").exists():
         review = review_abstention.verify_review(target, target / "review")
-        result["review_status"] = review_abstention.review_status(review)
-        result["review_accounting"] = {k: review[k] for k in ("http_calls", "estimated_CNY", "unknown_usage")}
-        if review["suggestion"]:
-            result["suggestion"] = review["suggestion"]
+        result = apply_review(result, review)
     return result
 
 
@@ -146,7 +143,7 @@ def save_decision(target, passed):
     result = read_decision(target, passed)
     # Persist the local answer before an optional paid call can fail or be interrupted.
     common.put(target / "decision.json", result)
-    if result["status"] == "abstained":
+    if result["prediction_source"] == "best_candidate":
         ledger = common.read(target / "completion.json")["budget"]
         remaining = min(180, ledger["deadline"] - time.time())
         if ledger["claims"] < ledger["request_cap"] and remaining >= 1:
@@ -171,7 +168,7 @@ def main():
         passed = verify(target)
         result = read_decision(target, passed)
         print(json.dumps(result, ensure_ascii=True))
-        return 0 if result["status"] in {"classified", "abstained"} else 1
+        return 0 if result["status"] == "classified" else 1
     if args.mode == "worker":
         with wire.isolation.lease(ROOT / "active-worker.lock"):
             return worker(target)

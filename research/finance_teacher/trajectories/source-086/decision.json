@@ -1,12 +1,15 @@
 {
-  "status": "abstained",
+  "status": "classified",
   "stop_reason": "unresolved_no_new_business_evidence",
-  "prediction": null,
-  "suggestion": {
+  "prediction": {
     "category": "finance:用户数据/机构用户数据/机构用户交易数据",
-    "grading_level": "L3",
+    "grading_level": "L3"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "表描述为银联交易记录，同表字段含投资合约、投资用途、利率、存款账号、还款账号等，但无法确定这些交易属于债券、理财产品还是机构用户交易，也无法证明是金融信息服务企业自身财务或经营管理数据。缺少区分产品品种或主体归属的决定性证据。",
+  "review_status": "accepted",
+  "selection_detail": {
     "grade_source": "category_registry",
-    "review_required": true,
     "method": "evidence_comparison",
     "reason": "表中含客户代码、交易对手编号、投资合约、投资用途、存款账号、还款账号等字段，表明记录的是某机构客户通过银联渠道进行的金融资产交易（含投资、存款、还款等），最符合机构用户交易数据的定义。相比C001（债券）和C003（理财），缺少债券代码、产品净值等专属字段；相比C009（企业自身财务），表中客户代码和交易对手编号指向外部用户而非企业自身。",
     "uncertainty": "无法确认该表所属系统是否服务于机构用户（而非零售个人客户），也缺少明确的产品类型字段来排除债券或理财子类的可能性。",
@@ -17,8 +20,6 @@
       "observations.table_fields.fields.13.field_description": "交易对手编号"
     }
   },
-  "missing_evidence": "表描述为银联交易记录，同表字段含投资合约、投资用途、利率、存款账号、还款账号等，但无法确定这些交易属于债券、理财产品还是机构用户交易，也无法证明是金融信息服务企业自身财务或经营管理数据。缺少区分产品品种或主体归属的决定性证据。",
-  "review_status": "accepted",
   "review_accounting": {
     "http_calls": 1,
     "estimated_CNY": 0.043464,

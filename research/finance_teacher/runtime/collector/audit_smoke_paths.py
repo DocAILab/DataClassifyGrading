@@ -103,11 +103,15 @@ def inspect_row(directory, row):
     if programs and programs[0] == [{"tool": "GET_FIELD_METADATA", "arguments": {}}]:
         programs = programs[1:]
     support = classifier_citations(trace_file.parent, trace)
-    if row["decision_status"] == "classified" and not support:
+    # Historical score files marked the best-candidate cases as abstained.
+    source = row.get("prediction_source")
+    if "prediction_source" not in row and row["decision_status"] == "classified":
+        source = "evidence"
+    if source == "evidence" and not support:
         raise ValueError(f"Missing classifier evidence in {trace_file}")
     return {"source_index": row["source_index"], "source_id": row["source_id"], "field": meta["field_description"],
             "table": observed.get("table_name"), "database": observed.get("database_name"),
-            "decision": row["decision_status"],
+            "decision": row["decision_status"], "prediction_source": source,
             "eligible_for_sft_review": row["eligible_for_sft_review"], "raw_path": path,
             "family_path": list(map(family, path)), "core_path": core_path(path), "lookups": lookups,
             "accepted_programs_after_start": programs,
@@ -145,14 +149,15 @@ def summarize(rows):
         scopes[relation] = {"pairs": len(subset), "identical": sum(p["edits"] == 0 for p in subset),
                             "at_least_80pct": sum(p["at_least_80pct"] for p in subset)}
     lookups = [s for r in rows for s in r["lookups"]]
-    supports = [r["classifier_support"] for r in rows if r["decision"] == "classified"]
+    classified = [r for r in rows if r["decision"] == "classified"]
+    cited = [r for r in classified if r.get("prediction_source", "evidence") == "evidence"]
+    supports = [r["classifier_support"] for r in cited]
     checked = [s["citations"] for s in supports]
     targets = defaultdict(list)
     for r in rows:
         for program in r["accepted_programs_after_start"]:
             targets[json.dumps(program, sort_keys=True, ensure_ascii=False)].append(r["source_index"])
     shared = [ids for ids in targets.values() if len(set(ids)) > 1]
-    cited = [r for r in rows if r["decision"] == "classified"]
     citation_pairs = []
     for a, b in combinations(cited, 2):
         x, y = a["classifier_support"], b["classifier_support"]
@@ -175,7 +180,7 @@ def summarize(rows):
                                                               for s in lookups),
             "blocked_classifications": sum(r["blocked_classifications"] for r in rows),
             "planner_attempts": dict(sum((Counter(r["planner_statuses"]) for r in rows), Counter())),
-            "classified": len(supports), "citations": sum(map(len, checked)),
+            "classified": len(classified), "evidence_classified": len(supports), "citations": sum(map(len, checked)),
             "classified_all_quotes_verbatim": sum(bool(c) and all(q["verbatim"] for q in c) for c in checked),
             "classified_with_eligible_quote": sum(any(q["eligible"] and q["verbatim"] for q in c) for c in checked),
             "classified_citing_field_description": sum(any(q["id"] == "metadata.field_description" and q["verbatim"]

@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "runtime/collector"))
 import smoke
 from release_inputs import verify_files
+from score_smoke import prediction_totals, score_prediction
 
 
 def read(path):
@@ -65,11 +66,7 @@ def replay(row, data, case, rt, campaign):
     if archive != reproduced or backend.position != len(calls) or archive["source_id"] != row["source_id"]:
         raise ValueError(f"Native execution differs: {path}")
     native = smoke.decision(reproduced, data["study"]["registry"], True)
-    if (native["status"] != decisions["status"] or native["prediction"] != decisions["prediction"]
-            or native["stop_reason"] != decisions["stop_reason"]):
-        raise ValueError(f"Decision differs from native termination: {path}")
     review_path = path.parent / "review.json"
-    suggestion = native["suggestion"]
     if review_path.is_file():
         review = read(review_path)
         gap = reproduced["gap_ledger"][-1]
@@ -83,14 +80,16 @@ def replay(row, data, case, rt, campaign):
         proposed = smoke.review_abstention.suggestion(review["content"], mapping, registry, facts)
         if proposed != review["receipt"]["suggestion"]:
             raise ValueError(f"Independent review result differs: {path}")
-        suggestion = proposed or suggestion
-    if (decisions["prediction"] != (row["prediction"] or None) or decisions["suggestion"] != row["suggestion"]
-            or decisions["suggestion"] != suggestion or decisions["status"] != row["decision_status"]):
-        raise ValueError(f"Scoring and decision records disagree: {path}")
-    answer = decisions["prediction"] or suggestion
-    displayed = bool(answer and all(answer[k] == row["reference"][k] for k in ("category", "grading_level")))
-    if row["displayed_joint_match"] != displayed or row["strict_joint_match"] != (displayed and native["status"] == "classified"):
+        native = smoke.apply_review(native, review["receipt"])
+    if (decisions != native or row["prediction"] != native["prediction"]
+            or row["decision_status"] != native["status"] or row["prediction_source"] != native["prediction_source"]):
+        raise ValueError(f"Final classification differs: {path}")
+    matches, status = score_prediction(native, row["reference"])
+    if status != row["status"] or any(row[k] != v for k, v in matches.items()):
         raise ValueError(f"Field score differs: {path}")
+    eligible = native["prediction_source"] == "evidence" and matches["joint_match"] is True
+    if row["eligible_for_sft_review"] != eligible:
+        raise ValueError(f"SFT review eligibility differs: {path}")
     return len(calls)
 
 
@@ -105,14 +104,22 @@ def main():
         cli.error("Choose indices from the 25 published TRAIN fields")
     rt = smoke.science.runtime()
     campaign = smoke.common.load("release_replay_campaign", smoke.common.R9 / "campaign.py")
-    rows = read(ROOT / "scores.json")["rows"]
+    scores = read(ROOT / "scores.json")
+    rows = scores["rows"]
+    refs = read(ROOT / "inputs/references.json")["labels"]
+    if any(row["reference"] != refs[row["source_id"]] for row in rows):
+        raise ValueError("Published references disagree")
+    if scores["combined25"] != prediction_totals(rows):
+        raise ValueError("Aggregate score differs")
     if {r["source_index"] for r in rows} != by_index.keys() or len(rows) != len(by_index):
         raise ValueError("Published score and input cohorts differ")
     selected = [r for r in rows if not args.sources or r["source_index"] in args.sources]
     total = 0
     for row in selected:
         total += replay(row, data, by_index[row["source_index"]], rt, campaign)
-    print(f"{len(selected)} native traces and {total} model calls matched; 0 network requests.")
+    correct = sum(r["joint_match"] for r in selected)
+    print(f"{len(selected)} traces and {total} model calls matched. "
+          f"{correct}/{len(selected)} final classifications correct. 0 network requests.")
 
 
 if __name__ == "__main__":
