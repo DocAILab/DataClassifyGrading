@@ -1,0 +1,21 @@
+{
+  "status": "abstained",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": null,
+  "suggestion": {
+    "category": "finance:业务数据/金融市场数据/期货期权",
+    "grading_level": "L2",
+    "method": "retrieval_rank",
+    "rank": 1,
+    "ranking_skill": "SEARCH_STANDARD_BY_FIELD",
+    "ranking_summary": "席位类型偏期货期权",
+    "grade_source": "category_registry",
+    "review_required": true
+  },
+  "missing_evidence": "席位类型是跨市场通用属性，无法区分债券、期货期权或股票市场语境，缺少表描述或同表字段用途来确定具体产品范围",
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.028092,
+    "unknown_usage": 0
+  }
+}

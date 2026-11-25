@@ -1,0 +1,10 @@
+{
+  "status": "classified",
+  "stop_reason": "validated_terminal",
+  "prediction": {
+    "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+    "grading_level": "L2"
+  },
+  "suggestion": null,
+  "missing_evidence": null
+}

@@ -1,0 +1,28 @@
+{
+  "model": "qwen3.8-2.4t-a95b",
+  "endpoint": null,
+  "temperature": 0,
+  "max_tokens": 8192,
+  "thinking_budget": 2048,
+  "timeout_seconds": 180,
+  "concurrency": 1,
+  "transport_retries": 0,
+  "enable_search": false,
+  "pricing_CNY_per_million_input": 12,
+  "pricing_CNY_per_million_output": 36,
+  "response_format_mode": "json_object",
+  "consecutive_format_failure_circuit_breaker": 3,
+  "protocol": "authorized_raw200_original75_then125_metadata_scope406",
+  "full_program_concurrency": 1,
+  "rollout_policy": {
+    "max_skill_calls": null,
+    "max_executed_steps": null,
+    "max_planner_calls": null,
+    "native_evidence_guards_unchanged": true
+  },
+  "finite_phase_HTTP_cap": 1800,
+  "finite_phase_CNY_cap": 300.0,
+  "finite_phase_wall_seconds": 43200,
+  "no_new_scientific_hypothesis": true,
+  "training_ready": false
+}

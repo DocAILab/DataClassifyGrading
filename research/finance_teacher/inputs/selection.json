@@ -1,0 +1,57 @@
+{
+  "previous_unique": 20,
+  "rule": "Unused named TRAIN tables first. Exclude all prior local Bailian admissions and R14 runs. Sort by frequency of this database/table in the original 20, then by source index. First distinct 5 tables. Use public metadata only.",
+  "first_pass_review_trigger": "Inspect all misses. Revise and repeat the five if fewer than three formal joint hits, or fewer than four displayed joint hits.",
+  "rows": [
+    {
+      "source_index": 86,
+      "source_id": "775baf5e-da88-519b-b30e-916f7103ebc3",
+      "database": "FA",
+      "table": "UUQQ",
+      "table_description": "银联交易记录",
+      "field": "MONETARY_JE",
+      "description": "银联交易记录金额",
+      "past_table_count": 0
+    },
+    {
+      "source_index": 94,
+      "source_id": "bb1c5fc6-a157-5c3e-a9ee-23cca557500f",
+      "database": "FA",
+      "table": "TZZSCGTZ",
+      "table_description": "增值税台账明细",
+      "field": "EN_SFYE_SR",
+      "description": "上日税费余额",
+      "past_table_count": 0
+    },
+    {
+      "source_index": 249,
+      "source_id": "b372b854-a154-55e0-b8ce-218a916c1990",
+      "database": "FA",
+      "table": "T_BJSQS_YWLBYNQHB",
+      "table_description": "交易明细表",
+      "field": "HBYWLB",
+      "description": "货币业务类别",
+      "past_table_count": 0
+    },
+    {
+      "source_index": 255,
+      "source_id": "46b52344-363c-581c-a192-7fd320c768e5",
+      "database": "TA",
+      "table": "TSYSINFO_TODOLIST",
+      "table_description": "系统信息待办列表",
+      "field": "TSYSINFO_TODOLIST_C_ID",
+      "description": "待办表序列号",
+      "past_table_count": 0
+    },
+    {
+      "source_index": 91,
+      "source_id": "c67e3b25-6ccf-59d1-856c-7111fbb24131",
+      "database": "",
+      "table": "TSYS_USER",
+      "table_description": "系统用户表",
+      "field": "TA_INV_ID_DOC_LX",
+      "description": "TA投资人证件类型",
+      "past_table_count": 1
+    }
+  ]
+}

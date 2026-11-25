@@ -1,0 +1,27 @@
+{
+  "status": "abstained",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": null,
+  "suggestion": {
+    "category": "finance:业务数据/金融市场数据/期货期权",
+    "grading_level": "L2",
+    "grade_source": "category_registry",
+    "review_required": true,
+    "method": "evidence_comparison",
+    "reason": "'套期标志'是期货期权业务中最典型的专属标记字段，期货交易所对套期保值头寸有专门的审批与标识机制；虽然清算款及买卖金额等字段为通用结算要素，但'套期'一词在中文金融语境下与期货期权的关联最强，选择该类别所需额外假设最少。",
+    "uncertainty": "仍缺该表关联的产品代码、交易所代码或合约类型字段，无法排除该清算款实际对应债券或股票的套期保值场景；若有具体品种或市场标识字段即可确认。",
+    "citations": {
+      "metadata.table_description": "清算款",
+      "metadata.field_description": "套期标志",
+      "observations.table_fields.fields.0.field_description": "买入金额",
+      "observations.table_fields.fields.13.field_description": "卖出净值标志"
+    }
+  },
+  "missing_evidence": "套期标志是跨产品属性，表描述清算款及同表字段均为通用买卖结算要素，无法区分该清算款属于债券、期货期权、股票还是其他产品类别",
+  "review_status": "accepted",
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.043728,
+    "unknown_usage": 0
+  }
+}

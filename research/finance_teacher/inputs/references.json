@@ -1,0 +1,104 @@
+{
+  "labels": {
+    "7d85e251-2a1d-5579-b5ab-eb8a0b04f5fd": {
+      "category": "finance:业务数据/金融市场数据/股票数据",
+      "grading_level": "L1"
+    },
+    "cbca944e-5a6a-59d6-a73d-0fc64b8c2554": {
+      "category": "finance:业务数据/金融市场数据/理财数据",
+      "grading_level": "L2"
+    },
+    "dc032d8c-2ab8-5b97-b84f-9b45e496f60e": {
+      "category": "finance:业务数据/金融市场数据/股票数据",
+      "grading_level": "L1"
+    },
+    "e95ada42-c3f2-5ab6-b818-b8fa715015c8": {
+      "category": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "grading_level": "L3"
+    },
+    "d06db1a1-efaf-55e6-9fa1-4c12d0524ae8": {
+      "category": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "grading_level": "L3"
+    },
+    "d01d6809-ca0c-5ff5-a184-dda63bcdbacb": {
+      "category": "finance:企业数据/经营管理数据/其他经营管理数据",
+      "grading_level": "L2"
+    },
+    "09b188ef-1c56-5742-ba76-fa5d58bbe502": {
+      "category": "finance:业务数据/金融市场数据/理财数据",
+      "grading_level": "L2"
+    },
+    "8a184a9a-5637-5ecf-873a-2e3baf07f3f8": {
+      "category": "finance:业务数据/金融市场数据/理财数据",
+      "grading_level": "L2"
+    },
+    "8c52bd41-ad96-54d4-a254-edfc5023f952": {
+      "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "grading_level": "L3"
+    },
+    "36fbf83c-c004-56ff-978b-c0778f7abe65": {
+      "category": "finance:业务数据/金融市场数据/理财数据",
+      "grading_level": "L2"
+    },
+    "4d305950-db27-5a97-b389-618473b62c30": {
+      "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+      "grading_level": "L2"
+    },
+    "a3ad12da-aa28-5c55-a1ec-7f383b94026b": {
+      "category": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "grading_level": "L3"
+    },
+    "54334e58-8c87-58e2-8797-fde15c1a5b5b": {
+      "category": "finance:业务数据/金融市场数据/理财数据",
+      "grading_level": "L2"
+    },
+    "8fa35e5b-ba56-5c1a-afc5-55bb506c1d31": {
+      "category": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "grading_level": "L3"
+    },
+    "96f08c54-e80a-5b62-b237-de2694e812f3": {
+      "category": "finance:业务数据/金融市场数据/理财数据",
+      "grading_level": "L2"
+    },
+    "b8adbda1-10b2-57d5-a8ab-dd3fe701c328": {
+      "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "grading_level": "L3"
+    },
+    "517fd040-c903-56db-89c6-0a66c45e9f87": {
+      "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "grading_level": "L3"
+    },
+    "ec818bca-f6d4-5af9-9319-f3328feac175": {
+      "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "grading_level": "L3"
+    },
+    "8332695c-33e7-5e2d-a397-52c780e38faa": {
+      "category": "finance:业务数据/金融市场数据/股票数据",
+      "grading_level": "L1"
+    },
+    "6837878d-eab5-5d0a-be0d-74281d8eda4c": {
+      "category": "finance:业务数据/金融市场数据/债券数据",
+      "grading_level": "L1"
+    },
+    "775baf5e-da88-519b-b30e-916f7103ebc3": {
+      "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "grading_level": "L3"
+    },
+    "bb1c5fc6-a157-5c3e-a9ee-23cca557500f": {
+      "category": "finance:企业数据/经营管理数据/财务数据",
+      "grading_level": "L2"
+    },
+    "b372b854-a154-55e0-b8ce-218a916c1990": {
+      "category": "finance:业务数据/金融市场数据/债券数据",
+      "grading_level": "L1"
+    },
+    "46b52344-363c-581c-a192-7fd320c768e5": {
+      "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+      "grading_level": "L2"
+    },
+    "c67e3b25-6ccf-59d1-856c-7111fbb24131": {
+      "category": "finance:用户数据/个人用户数据/个人用户基本信息",
+      "grading_level": "L3"
+    }
+  }
+}

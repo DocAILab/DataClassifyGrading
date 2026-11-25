@@ -1,0 +1,147 @@
+{
+  "before": {
+    "n": 5,
+    "formal": 2,
+    "formal_joint": 1,
+    "abstained": 3,
+    "suggestions": 3,
+    "suggestion_joint": 2,
+    "displayed_joint": 3,
+    "sft_candidates": 1,
+    "replayed": 5
+  },
+  "after": {
+    "n": 5,
+    "formal": 2,
+    "formal_joint": 2,
+    "abstained": 3,
+    "suggestions": 3,
+    "suggestion_joint": 3,
+    "displayed_joint": 5,
+    "sft_candidates": 2,
+    "replayed": 5
+  },
+  "sources": [
+    {
+      "source_index": 86,
+      "baseline": {
+        "decision_status": "abstained",
+        "prediction": {},
+        "suggestion": {
+          "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+          "grading_level": "L3",
+          "grade_source": "category_registry",
+          "review_required": true,
+          "method": "evidence_comparison",
+          "reason": "表描述为银联交易记录，含客户代码、交易对手编号、外部账号、存款账号等字段，表明该行记录的是某个客户（机构用户）通过银联进行的资金交易，目标字段MONETARY_JE记录的是该笔交易的金额，属于机构用户交易数据。相比C009（企业自身财务数据），该表以客户代码为主键维度、含交易对手和外部账号，更符合记录用户交易行为而非企业自身财务报表的特征。",
+          "uncertainty": "缺少明确的表归属说明（该表是银行核心系统记录客户交易还是企业自身账务），无法排除该表为金融机构内部记账（对应C009）的可能性；若客户代码实际指代企业自身账户而非外部用户，则应归入财务数据。",
+          "citations": {
+            "metadata.table_description": "银联交易记录",
+            "observations.table_fields.fields.12.field_description": "银联交易记录金额",
+            "observations.table_fields.fields.14.field_description": "客户代码",
+            "observations.table_fields.fields.13.field_description": "交易对手编号"
+          }
+        },
+        "reference": {
+          "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+          "grading_level": "L3"
+        },
+        "joint_match": null,
+        "suggestion_joint_match": true
+      },
+      "final_decision_file": "trajectories/source-086/decision.json"
+    },
+    {
+      "source_index": 94,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:企业数据/经营管理数据/财务数据",
+          "grading_level": "L2"
+        },
+        "suggestion": null,
+        "reference": {
+          "category": "finance:企业数据/经营管理数据/财务数据",
+          "grading_level": "L2"
+        },
+        "joint_match": true,
+        "suggestion_joint_match": null
+      },
+      "final_decision_file": "trajectories/source-094/decision.json"
+    },
+    {
+      "source_index": 249,
+      "baseline": {
+        "decision_status": "abstained",
+        "prediction": {},
+        "suggestion": {
+          "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+          "grading_level": "L3",
+          "grade_source": "category_registry",
+          "review_required": true,
+          "method": "evidence_comparison",
+          "reason": "字段描述为'货币业务类别'，表为交易明细表且含'对决交易标志'，指向机构间场外/柜台类交易场景，而非特定场内品种（债券、期货、股票、理财）的行情或产品数据。C011'机构用户交易数据'涵盖机构用户的交易持仓与订单，与货币业务（如外汇、同业拆借等）的交易明细最为匹配，所需额外假设最少。",
+          "uncertainty": "缺少明确的产品代码、交易场所标识或对手方主体类型字段，无法确认该交易是否专属于外汇/同业等货币市场工具，也无法排除其归属于债券回购等C001范畴的可能。",
+          "citations": {
+            "metadata.table_description": "交易明细表",
+            "metadata.field_description": "货币业务类别",
+            "observations.table_fields.fields.1.field_description": "对决交易标志"
+          }
+        },
+        "reference": {
+          "category": "finance:业务数据/金融市场数据/债券数据",
+          "grading_level": "L1"
+        },
+        "joint_match": null,
+        "suggestion_joint_match": false
+      },
+      "final_decision_file": "trajectories/source-249/decision.json"
+    },
+    {
+      "source_index": 255,
+      "baseline": {
+        "decision_status": "abstained",
+        "prediction": {},
+        "suggestion": {
+          "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+          "grading_level": "L2",
+          "grade_source": "category_registry",
+          "review_required": true,
+          "method": "evidence_comparison",
+          "reason": "表中含'是否启用'开关和'页面跳转链接'，属于信息系统功能模块的配置管理，而非运行过程中产生的操作事件记录；待办列表的启用/禁用和链接配置更符合配置数据定义。",
+          "uncertainty": "缺少字段中是否有时间戳、操作人、操作类型等日志特征字段的完整清单，无法完全排除该表同时记录操作事件的可能性。",
+          "citations": {
+            "metadata.table_description": "系统信息待办列表",
+            "observations.table_fields.fields.1.field_description": "是否启用",
+            "observations.table_fields.fields.3.field_description": "待办页面跳转链接"
+          }
+        },
+        "reference": {
+          "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+          "grading_level": "L2"
+        },
+        "joint_match": null,
+        "suggestion_joint_match": true
+      },
+      "final_decision_file": "trajectories/source-255/decision.json"
+    },
+    {
+      "source_index": 91,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:企业数据/经营管理数据/人力资源数据",
+          "grading_level": "L2"
+        },
+        "suggestion": null,
+        "reference": {
+          "category": "finance:用户数据/个人用户数据/个人用户基本信息",
+          "grading_level": "L3"
+        },
+        "joint_match": false,
+        "suggestion_joint_match": null
+      },
+      "final_decision_file": "trajectories/source-091/decision.json"
+    }
+  ]
+}

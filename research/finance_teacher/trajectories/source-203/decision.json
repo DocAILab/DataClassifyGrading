@@ -1,0 +1,27 @@
+{
+  "status": "abstained",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": null,
+  "suggestion": {
+    "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+    "grading_level": "L3",
+    "grade_source": "category_registry",
+    "review_required": true,
+    "method": "evidence_comparison",
+    "reason": "该表为往来账明细表，每行记录一笔资金结算/转账交易，包含借贷方向、转账金额、交易日期、对手方账户等典型交易要素。目标字段'资金托管方名称'记录的是该笔交易中托管资金的机构名称，属于机构用户在平台上发生资金往来时的交易附属信息。相比C009（企业自身财务数据），该表明显是面向用户/客户维度的交易流水而非企业自身损益或资产负债；相比C008（其他经营管理数据），该表有明确的交易主体和金额方向，更符合'机构用户交易数据'的定义。",
+    "uncertainty": "仍缺：1) 该表的数据归属主体是否确为机构用户而非平台自身运营记录；2) '资金托管方'是平台合作银行还是用户自身的托管行，影响其是否属于用户交易数据还是平台经营管理数据。",
+    "citations": {
+      "metadata.table_description": "往来账明细表",
+      "metadata.field_description": "资金托管方名称",
+      "observations.table_fields.fields.4.field_description": "对手-资金托管方编号",
+      "observations.table_fields.fields.18.field_description": "转账金额"
+    }
+  },
+  "missing_evidence": "表为往来账明细表，含核心企业、商户客户、对手方等多方主体及资金结算字段，但无法确定该表属于金融信息服务企业自身财务、机构用户交易还是其他经营管理数据，缺少明确的数据归属主体和业务场景说明",
+  "review_status": "accepted",
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.044844,
+    "unknown_usage": 0
+  }
+}
