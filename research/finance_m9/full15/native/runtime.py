@@ -1,0 +1,43 @@
+"""Use the exact current termination program with only the metadata cohort changed."""
+from copy import deepcopy
+import json,types
+from support import ROOT,BASE,N100,DEPS,load,native
+
+
+def build(engine,study,scopes):
+    old=native()
+    module=load('isolated_budget_runtime',ROOT/'budget_runtime.py')
+    planner_limit=json.loads((ROOT.parent/'config.json').read_bytes())['planner_attempt_limit']
+    rollout=module.build(engine,planner_limit)
+    provider=load('full422_same_scoped_provider',DEPS/'finance_program_recovery_source_scope_20261024_r9/source_scope.py')
+    binding=load('full422_same_scope_binding',DEPS/'finance_program_evidence_consumption_20261024_r10/scope_binding.py')
+    table_tools=load('m9_shared_dsl_table_tools',ROOT.parents[2]/'finance_teacher/runtime/collector/dsl_table_tools.py')
+    construct=engine.old.c.controller
+    def create(generate,local,*args,**kwargs):
+        ctrl=construct(generate,local,*args,**kwargs)
+        ctrl.bridge.executor.metadata_lookup=provider.SourceScopedMetadata(local['rows'],scopes)
+        return table_tools.install(binding.install(ctrl))
+    namespace=dict(rollout.__globals__)
+    old_copy=types.SimpleNamespace(**vars(namespace['old']))
+    old_copy.c=types.SimpleNamespace(**vars(old_copy.c));old_copy.c.controller=create
+    namespace['old']=old_copy
+    return types.FunctionType(rollout.__code__,namespace,rollout.__name__,rollout.__defaults__,rollout.__closure__)
+
+
+def prepare():
+    old=native()
+    inputs=json.loads((ROOT/'eval-inputs.json').read_bytes())
+    # Preserve the original initial-state canonical construction used by N100.
+    inputs=json.loads(json.dumps(inputs,ensure_ascii=False,sort_keys=True,separators=(',',':')))
+    study=inputs['study'];cases=deepcopy(inputs['cases'])
+    engine=old.parent.load_engine(old.parent.E2)
+    scopes=json.loads((ROOT/'source-scopes.json').read_bytes())['rows']
+    rollout=build(engine,study,scopes)
+    for case in cases:
+        messages=[]
+        def capture(m):messages.append(deepcopy(m));raise old.TargetReached()
+        try:rollout(case['item'],study,capture,case['snapshot'])
+        except old.TargetReached:pass
+        assert len(messages)==1
+        case['messages']=messages[0]
+    return study,cases,rollout

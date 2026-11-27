@@ -1,0 +1,123 @@
+{
+  "before": {
+    "sources": 5,
+    "classified": 5,
+    "joint_matches": 3,
+    "best_candidate": 3,
+    "sft_candidates": 1
+  },
+  "after": {
+    "sources": 5,
+    "classified": 5,
+    "joint_matches": 5,
+    "best_candidate": 3,
+    "sft_candidates": 2
+  },
+  "sources": [
+    {
+      "source_index": 86,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+          "grading_level": "L3"
+        },
+        "prediction_source": "best_candidate",
+        "reference": {
+          "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+          "grading_level": "L3"
+        },
+        "category_match": true,
+        "grade_match": true,
+        "joint_match": true,
+        "status": "reference_match",
+        "eligible_for_sft_review": false
+      },
+      "final_decision_file": "trajectories/source-086/decision.json"
+    },
+    {
+      "source_index": 94,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:企业数据/经营管理数据/财务数据",
+          "grading_level": "L2"
+        },
+        "prediction_source": "evidence",
+        "reference": {
+          "category": "finance:企业数据/经营管理数据/财务数据",
+          "grading_level": "L2"
+        },
+        "category_match": true,
+        "grade_match": true,
+        "joint_match": true,
+        "status": "reference_match",
+        "eligible_for_sft_review": true
+      },
+      "final_decision_file": "trajectories/source-094/decision.json"
+    },
+    {
+      "source_index": 249,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+          "grading_level": "L3"
+        },
+        "prediction_source": "best_candidate",
+        "reference": {
+          "category": "finance:业务数据/金融市场数据/债券数据",
+          "grading_level": "L1"
+        },
+        "category_match": false,
+        "grade_match": false,
+        "joint_match": false,
+        "status": "reference_mismatch",
+        "eligible_for_sft_review": false
+      },
+      "final_decision_file": "trajectories/source-249/decision.json"
+    },
+    {
+      "source_index": 255,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+          "grading_level": "L2"
+        },
+        "prediction_source": "best_candidate",
+        "reference": {
+          "category": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+          "grading_level": "L2"
+        },
+        "category_match": true,
+        "grade_match": true,
+        "joint_match": true,
+        "status": "reference_match",
+        "eligible_for_sft_review": false
+      },
+      "final_decision_file": "trajectories/source-255/decision.json"
+    },
+    {
+      "source_index": 91,
+      "baseline": {
+        "decision_status": "classified",
+        "prediction": {
+          "category": "finance:企业数据/经营管理数据/人力资源数据",
+          "grading_level": "L2"
+        },
+        "prediction_source": "evidence",
+        "reference": {
+          "category": "finance:用户数据/个人用户数据/个人用户基本信息",
+          "grading_level": "L3"
+        },
+        "category_match": false,
+        "grade_match": false,
+        "joint_match": false,
+        "status": "reference_mismatch",
+        "eligible_for_sft_review": false
+      },
+      "final_decision_file": "trajectories/source-091/decision.json"
+    }
+  ]
+}

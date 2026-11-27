@@ -1,0 +1,28 @@
+{
+  "status": "classified",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": {
+    "category": "finance:用户数据/机构用户数据/机构用户交易数据",
+    "grading_level": "L3"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "表中同时存在机构代码/名称和客户代码/名称，无法确定付款银行ID属于机构用户的交易数据还是企业自身经营管理的付款流程属性，缺少明确区分机构用户交易与企业内部付款管理的证据",
+  "review_status": "accepted",
+  "selection_detail": {
+    "grade_source": "category_registry",
+    "method": "evidence_comparison",
+    "reason": "该表为交付申请表，每行记录一笔付款交易，包含付款方/收款方、金额、日期、记账批次等交易要素。PAY_BNKE_ID（付款银行ID）标识付款方所用银行，属于交易执行路径属性，与机构用户交易数据（交易订单、金融资产变动）最为吻合。相比C012（基本信息），付款银行ID是随交易产生的动态属性而非静态身份描述，归入交易数据所需额外假设更少。",
+    "uncertainty": "仍缺少明确证据表明该表中的'机构'即为平台注册的机构用户，还是企业自身的内部机构；若机构代码代表企业内部分支而非外部客户，则可能偏向经营管理类。",
+    "citations": {
+      "metadata.table_description": "交付申请表",
+      "metadata.field_description": "付款银行ID",
+      "observations.table_fields.fields.24.field_description": "付款方ID",
+      "observations.table_fields.fields.28.field_description": "收款银行ID"
+    }
+  },
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.04272,
+    "unknown_usage": 0
+  }
+}

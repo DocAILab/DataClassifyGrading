@@ -1,0 +1,14 @@
+{
+  "rl-checkpoints.zip": {
+    "bytes": 617082001,
+    "sha256": "0e91e093744e0e51c4474d799388d4d14490c6efdb1dfe3df14616c60093db2a"
+  },
+  "rl-evidence.tar.gz": {
+    "bytes": 84689120,
+    "sha256": "53b09a1d5887a5e08b1176109750f89f03661911e6b85cefd69d3f6519dbd18a"
+  },
+  "sft-checkpoints.zip": {
+    "bytes": 487420024,
+    "sha256": "526002e5c1ca102ad1eee9410df583a136a4d496127c9660db104ccee3e9299a"
+  }
+}

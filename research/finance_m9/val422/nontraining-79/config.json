@@ -1,0 +1,37 @@
+{
+  "arm": "base",
+  "model": "Qwen/Qwen3.5-9B",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "parameter_dtype": "torch.float16",
+  "planner_adapter": false,
+  "skill_adapter": false,
+  "skill_pool": "F66",
+  "context_tokens": 32768,
+  "generation": {
+    "do_sample": false,
+    "max_new_tokens": 512,
+    "max_time": 90.0,
+    "eos_token_id": [
+      248044,
+      248046
+    ],
+    "pad_token_id": 248044
+  },
+  "budget": {
+    "max_programs": 3,
+    "max_program_steps": 10,
+    "max_skill_steps": 12,
+    "max_planner_attempts": 4,
+    "max_identical_calls": 1
+  },
+  "formal_cohort": "full422",
+  "cohorts": {
+    "val80": 80,
+    "val342": 342,
+    "smoke_in_formal_count": false
+  },
+  "runtime_signature": "c34105f2767513d7d50a1c5fa15f8123e790865d25da681efa049182110132f8",
+  "study_sha256": "3f920bb7af482e7aca43fa012cc987c785bb9c4cfd42c75bcd78f6700c3a1364",
+  "archived_protocol_sha256": "402cd0f06ae144a96430bfbb58a17192779483aa27f8051bf4c62be6c881ef52",
+  "archived_manifest_sha256": "19b52b23d68d72fa309e28132f8c5fa49a364090b65e68348f2b30e18b4df950"
+}

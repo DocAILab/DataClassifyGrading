@@ -1,0 +1,4 @@
+# Preserve the byte identities used by the native runtime on every checkout.
+runtime/** -text
+*.gz binary
+runtime-sha256.json text eol=lf

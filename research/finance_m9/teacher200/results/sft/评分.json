@@ -1,0 +1,353 @@
+{
+  "n": 422,
+  "valid": 419,
+  "joint": 198,
+  "category": 198,
+  "grade": 240,
+  "full_path": {
+    "unique": 9,
+    "top": [
+      "GET_FIELD_METADATA",
+      "INTERPRET_FIELD_NAME",
+      "INTERPRET_FIELD_DESCRIPTION",
+      "SEARCH_STANDARD_BY_FIELD",
+      "INFER_CATEGORY",
+      "INFER_GRADING_LEVEL",
+      "FINALIZE_CLASSIFICATION"
+    ],
+    "count": 345,
+    "without_path": 0
+  },
+  "first_plan": {
+    "unique": 4,
+    "top": [
+      "GET_FIELD_METADATA",
+      "INTERPRET_FIELD_NAME",
+      "INTERPRET_FIELD_DESCRIPTION",
+      "SEARCH_STANDARD_BY_FIELD",
+      "INFER_CATEGORY",
+      "INFER_GRADING_LEVEL",
+      "FINALIZE_CLASSIFICATION"
+    ],
+    "count": 350,
+    "without_path": 0
+  },
+  "multiple_plans": 10,
+  "total_calls": 3044,
+  "mean_calls": 7.213270142180095,
+  "median_calls": 7.0,
+  "stops": {
+    "validated_terminal": 419,
+    "abstained_terminal": 3
+  },
+  "by_category": {
+    "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据": {
+      "n": 60,
+      "joint": 0
+    },
+    "finance:业务数据/金融市场数据/债券数据": {
+      "n": 100,
+      "joint": 74
+    },
+    "finance:业务数据/金融市场数据/理财数据": {
+      "n": 13,
+      "joint": 4
+    },
+    "finance:企业数据/经营管理数据/财务数据": {
+      "n": 44,
+      "joint": 23
+    },
+    "finance:用户数据/机构用户数据/机构用户交易数据": {
+      "n": 90,
+      "joint": 64
+    },
+    "finance:业务数据/金融市场数据/股票数据": {
+      "n": 30,
+      "joint": 6
+    },
+    "finance:企业数据/系统运维数据/日志数据": {
+      "n": 63,
+      "joint": 27
+    },
+    "finance:企业数据/经营管理数据/人力资源数据": {
+      "n": 22,
+      "joint": 0
+    }
+  },
+  "by_table": {
+    "XT_OPM_USER": {
+      "n": 70,
+      "joint": 0
+    },
+    "TGZLOG": {
+      "n": 92,
+      "joint": 68
+    },
+    "TPROJECT_INFO_DETAIL": {
+      "n": 6,
+      "joint": 2
+    },
+    "TFYMX": {
+      "n": 44,
+      "joint": 23
+    },
+    "XT_FS_QFTRADE_DTL": {
+      "n": 49,
+      "joint": 39
+    },
+    "XT_FS_JFBJGL": {
+      "n": 41,
+      "joint": 25
+    },
+    "T_SHQS_YWLBYJSMX": {
+      "n": 19,
+      "joint": 3
+    },
+    "（表名缺失）": {
+      "n": 63,
+      "joint": 27
+    },
+    "T_CHQS_ZQLBMX1YZQLB": {
+      "n": 8,
+      "joint": 6
+    },
+    "TZZQHLOG": {
+      "n": 7,
+      "joint": 2
+    },
+    "XT_OPM_ROLE": {
+      "n": 12,
+      "joint": 0
+    },
+    "T_SHQS_YWLBYZGH": {
+      "n": 7,
+      "joint": 1
+    },
+    "T_SHQS_YWLBYZQYE": {
+      "n": 2,
+      "joint": 1
+    },
+    "T_SZQS_V52_YWLBYSJSDZ": {
+      "n": 2,
+      "joint": 1
+    }
+  },
+  "wrong_category_retrieval": {
+    "miss": 78,
+    "hit": 143
+  },
+  "confusions": [
+    {
+      "reference": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+      "predicted": "finance:用户数据/个人用户数据/个人用户基本信息",
+      "count": 37,
+      "example_field": "是否电子签章(0：否 1：是)",
+      "example_id": "833f95c1-7562-575a-8ee4-ce9520548706"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/股票数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "count": 21,
+      "example_field": "业务类型",
+      "example_id": "2f41438a-d63e-5563-93aa-43194c0487ce"
+    },
+    {
+      "reference": "finance:企业数据/经营管理数据/财务数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "count": 19,
+      "example_field": "业务日期",
+      "example_id": "6f928445-4ee9-583e-bb35-5d1452152cac"
+    },
+    {
+      "reference": "finance:企业数据/经营管理数据/人力资源数据",
+      "predicted": "finance:用户数据/个人用户数据/个人用户基本信息",
+      "count": 15,
+      "example_field": "用户名称",
+      "example_id": "bc5f68a1-f155-53e0-980a-cbbd914168ed"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+      "predicted": "finance:企业数据/经营管理数据/人力资源数据",
+      "count": 12,
+      "example_field": "角色名称",
+      "example_id": "d4727dc1-23de-52c5-9b18-7c88df3d4b01"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/日志数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "count": 11,
+      "example_field": "移动端传输备注",
+      "example_id": "763d74c5-6711-5541-b4a3-f047688d9e0b"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/日志数据",
+      "predicted": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+      "count": 11,
+      "example_field": "逻辑处理接口",
+      "example_id": "8a6c35ba-aaee-55e5-b263-44f64d7feab8"
+    },
+    {
+      "reference": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "predicted": "finance:业务数据/金融市场数据/股票数据",
+      "count": 9,
+      "example_field": "交易附言",
+      "example_id": "f9e978a6-2fe6-52db-a647-2ff4a4bd25f0"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/债券数据",
+      "predicted": "finance:业务数据/金融市场数据/股票数据",
+      "count": 9,
+      "example_field": "股东代码",
+      "example_id": "e3699675-a5d6-51ae-8b9d-7b24b3e41393"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/网络设备和信息系统的配置数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "count": 9,
+      "example_field": "创建人",
+      "example_id": "0e057cd2-afac-5d40-b312-835c57ef45ce"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/债券数据",
+      "predicted": "finance:企业数据/系统运维数据/日志数据",
+      "count": 8,
+      "example_field": "规则方法",
+      "example_id": "89fbf643-0ed2-5280-ac61-1c1e40b12b83"
+    },
+    {
+      "reference": "finance:企业数据/经营管理数据/人力资源数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "count": 7,
+      "example_field": "所属机构编号",
+      "example_id": "62139017-bdad-55d7-8921-61f7401f8acf"
+    },
+    {
+      "reference": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "predicted": "finance:企业数据/经营管理数据/财务数据",
+      "count": 6,
+      "example_field": "唯一编号",
+      "example_id": "f68765cd-2dee-5d3f-957b-e32bacf4535d"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/理财数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "count": 5,
+      "example_field": "账套编号",
+      "example_id": "833a4e08-678a-573d-b17d-df27a1cf2496"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/日志数据",
+      "predicted": "finance:业务数据/金融市场数据/债券数据",
+      "count": 5,
+      "example_field": "初始数据",
+      "example_id": "4081a5f3-b35c-54d8-b5c1-0d3148adbd88"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/理财数据",
+      "predicted": "finance:企业数据/经营管理数据/财务数据",
+      "count": 4,
+      "example_field": "要素字段",
+      "example_id": "3d91024d-11c9-5dc4-9a44-fcc2937b203d"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/债券数据",
+      "predicted": "finance:企业数据/经营管理数据/财务数据",
+      "count": 4,
+      "example_field": "科目代码",
+      "example_id": "3518a757-f84a-5031-a094-4c32fad37928"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/债券数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "count": 4,
+      "example_field": "席位编号",
+      "example_id": "edb61089-b0f4-5fdc-a60c-edd7f5651393"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/日志数据",
+      "predicted": "finance:业务数据/金融市场数据/股票数据",
+      "count": 4,
+      "example_field": "发送补充内容",
+      "example_id": "1cb5efc6-df9d-56e7-aad6-678fd95aa2ec"
+    },
+    {
+      "reference": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "predicted": "finance:业务数据/金融市场数据/债券数据",
+      "count": 4,
+      "example_field": "兑付状态 0 兑付处理中 1兑付正常",
+      "example_id": "e5569315-2849-5e4c-99b0-4f7cdd564130"
+    },
+    {
+      "reference": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "predicted": "finance:企业数据/经营管理数据/其他经营管理数据",
+      "count": 3,
+      "example_field": "推送表示0未推送 1已推送",
+      "example_id": "a796a865-0d50-560c-b1a3-0e80c62e7534"
+    },
+    {
+      "reference": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "predicted": "finance:企业数据/系统运维数据/日志数据",
+      "count": 2,
+      "example_field": "推送表示0未推送 1已推送",
+      "example_id": "ee7776a1-7e2a-5515-afd0-f3249ecda887"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/日志数据",
+      "predicted": "finance:企业数据/经营管理数据/其他经营管理数据",
+      "count": 2,
+      "example_field": "OA返回状态",
+      "example_id": "74ee9354-064a-504b-922c-2bc9b784707d"
+    },
+    {
+      "reference": "finance:用户数据/机构用户数据/机构用户交易数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "count": 2,
+      "example_field": "证件号码",
+      "example_id": "dda8eaed-e3ad-51d8-8b64-906940b584e8"
+    },
+    {
+      "reference": "finance:企业数据/系统运维数据/日志数据",
+      "predicted": "finance:用户数据/机构用户数据/机构用户基本信息",
+      "count": 2,
+      "example_field": "组织名称",
+      "example_id": "9f9443b0-1d81-5f83-b59d-109231f19276"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/股票数据",
+      "predicted": "finance:业务数据/金融市场数据/债券数据",
+      "count": 2,
+      "example_field": "对账证券代码",
+      "example_id": "bbde0b47-f55f-56ed-bff6-b74e4ebcc3b6"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/债券数据",
+      "predicted": "finance:业务数据/金融市场数据/理财数据",
+      "count": 1,
+      "example_field": "持仓分类",
+      "example_id": "7eafc994-3cb4-5338-8f69-74abdc95f402"
+    },
+    {
+      "reference": "finance:企业数据/经营管理数据/财务数据",
+      "predicted": "finance:业务数据/金融市场数据/股票数据",
+      "count": 1,
+      "example_field": "市场类别",
+      "example_id": "35d9b3e4-285c-5911-a0f7-b6b903dd448d"
+    },
+    {
+      "reference": "finance:业务数据/金融市场数据/股票数据",
+      "predicted": "finance:业务数据/金融市场数据/理财数据",
+      "count": 1,
+      "example_field": "经理类型",
+      "example_id": "d12f3964-a549-584a-b224-50f6377ba604"
+    },
+    {
+      "reference": "finance:企业数据/经营管理数据/财务数据",
+      "predicted": "finance:业务数据/金融市场数据/债券数据",
+      "count": 1,
+      "example_field": "市场类别",
+      "example_id": "4c3c97c9-7505-5fc4-9901-8135e7e773f7"
+    }
+  ],
+  "planner_sha256": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+  "skill_sha256": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7"
+}

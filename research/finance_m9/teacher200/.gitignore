@@ -1,0 +1,9 @@
+/work/
+/sft/planner.jsonl
+/results/rl/evidence.tar.gz
+/results/rl/updates/**/resume.pt
+/results/rl/updates/*/planner/
+!/results/rl/updates/batch-04/planner/
+!/results/rl/updates/batch-16/planner/
+/rl-checkpoints.zip
+/rl-evidence.tar.gz

@@ -1,0 +1,10 @@
+{
+  "status": "classified",
+  "stop_reason": "validated_terminal",
+  "prediction": {
+    "category": "finance:用户数据/机构用户数据/机构用户基本信息",
+    "grading_level": "L3"
+  },
+  "prediction_source": "evidence",
+  "missing_evidence": null
+}

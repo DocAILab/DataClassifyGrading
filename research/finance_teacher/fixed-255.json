@@ -1,0 +1,55 @@
+{
+  "original": {
+    "option_id": "UNRESOLVED",
+    "summary": "待办列表归属运维子类未定",
+    "support": {
+      "sufficient": false,
+      "missing_evidence": "表描述为系统信息待办列表，字段含启用状态和页面链接，但无法区分该待办列表属于系统运行操作事件记录（C005日志）还是信息系统功能配置管理（C006配置），需明确待办列表是记录运行事件还是配置系统功能模块。",
+      "citations": []
+    }
+  },
+  "revised": {
+    "option_id": "C006",
+    "summary": "系统待办列表配置数据",
+    "support": {
+      "sufficient": true,
+      "missing_evidence": "",
+      "citations": [
+        {
+          "fact_id": "metadata.table_description",
+          "quote": "系统信息待办列表"
+        },
+        {
+          "fact_id": "metadata.field_description",
+          "quote": "待办表序列号"
+        },
+        {
+          "fact_id": "observations.table_fields.fields.1.field_description",
+          "quote": "是否启用"
+        },
+        {
+          "fact_id": "observations.table_fields.fields.3.field_description",
+          "quote": "待办页面跳转链接"
+        }
+      ]
+    }
+  },
+  "category": "企业数据 > 系统运维数据 > 网络设备和信息系统的配置数据",
+  "citations_checked": true,
+  "wire_complete": true,
+  "usage": {
+    "prompt_tokens": 6830,
+    "total_tokens": 7446,
+    "completion_tokens": 616,
+    "prompt_tokens_details": {
+      "cached_tokens": 2048,
+      "text_tokens": 6830
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 512,
+      "text_tokens": 616
+    }
+  },
+  "estimated_CNY": 0.104136,
+  "http_calls": 1
+}

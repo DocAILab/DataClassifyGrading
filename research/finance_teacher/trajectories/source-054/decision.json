@@ -1,0 +1,25 @@
+{
+  "status": "classified",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": {
+    "category": "finance:业务数据/金融市场数据/股票数据",
+    "grading_level": "L1"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "字段描述为股东名称，但按C004边界规则，仅股东属性不自动证明证券市场股票语境。缺少表名、表描述或其他正面证据将该字段与证券交易市场股票业务关联，也无法排除其他股东语境（如企业自身股东、机构股东等）。",
+  "review_status": "accepted",
+  "selection_detail": {
+    "grade_source": "category_registry",
+    "method": "evidence_comparison",
+    "reason": "字段SHAREHOLDER_MC（股东名称）与C004描述中明确列出的'股东信息、股东股本'高度吻合；在金融信息服务场景下，股东名称字段最常见于上市公司股东披露数据，归入股票数据所需额外假设最少。",
+    "uncertainty": "缺少表名、表描述或同表其他字段（如股票代码、持股比例等）来正面确认该表属于证券交易市场股票业务语境，无法完全排除企业自身股东登记等其他场景。",
+    "citations": {
+      "metadata.field_description": "股东名称"
+    }
+  },
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.030336,
+    "unknown_usage": 0
+  }
+}

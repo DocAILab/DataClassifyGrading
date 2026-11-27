@@ -1,0 +1,28 @@
+{
+  "status": "classified",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": {
+    "category": "finance:业务数据/金融市场数据/理财数据",
+    "grading_level": "L2"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "表含募集金额、托管人、通道项目类型、是否假集合等资管项目特征，但无法确定属于理财/信托/基金等具体产品类型还是企业内部经营管理项目，C003与C008的正面范围均未被明确建立",
+  "review_status": "accepted",
+  "selection_detail": {
+    "grade_source": "category_registry",
+    "method": "evidence_comparison",
+    "reason": "表中字段（募集金额、托管人、通道项目类型、是否假集合、申购开放说明、展期开始时间、结构化情况说明）均为信托/资管产品的典型业务属性，C_CLOSEDPERIOD（封闭期）是资管产品层面的运作参数，与C003所涵盖的信托产品、私募基金等理财产品数据高度吻合。C008需额外假设该表是企业内部管理视角而非产品业务视角，假设更多。",
+    "uncertainty": "缺少能明确标识该表归属于信托公司或理财子公司的机构信息字段，无法排除该表为某综合金融集团内部项目管理视图的可能性",
+    "citations": {
+      "metadata.table_description": "项目信息表",
+      "observations.table_fields.fields.12.field_description": "募集金额",
+      "observations.table_fields.fields.17.field_description": "托管人",
+      "observations.table_fields.fields.24.field_description": "通道项目类型"
+    }
+  },
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.04308,
+    "unknown_usage": 0
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "source_index": 10,
+  "request_cap": 16,
+  "cost_cap_CNY": 6.0,
+  "frozen_manifest_sha256": "7629767f1844784e8adb6b7c491a07cd76081f9b1ba5f8ef71e5db315dfda99c",
+  "classification_protocol": {
+    "version": "classification-contract-v2",
+    "sha256": "e75672ddc9ee510453e2a66c33ffbd2203312d8eafff7dfd89d6c03619a1d1c8"
+  },
+  "scope_binding_protocol": {
+    "version": "final-source-scope-v1",
+    "binder_sha256": "be991cdf1aec5deb05421576726ed91ebdb3c5fe4a9dfc8ecf33e7d35cf81fcf",
+    "adapter_sha256": "8dc27136d53a486ca061e45c8d4e90286f75b8d8f06ba7873ceac240250c4518"
+  },
+  "table_observation_protocol": {
+    "version": "skill-json-v1",
+    "sha256": "86a1cc1e852da031bfa789af5efe377c1533d273af61ca9e9abccf49aecb81fb"
+  },
+  "source_evidence_protocol": {
+    "version": "observe-before-classifying-v2",
+    "sha256": "47456342cd0747496d1981ba092dfe38587557a9db6c0d262cb75975f2f22126",
+    "source_metadata": {
+      "version": "training-table-evidence-v1",
+      "sha256": "07b19b9269524fa6bb8cbf38ddd55b79f81240a7e1544e3ecc0d80e2123dd431"
+    }
+  },
+  "smoke_thinking_budget": 512,
+  "train_table_catalog": {
+    "version": "named-train-tables-v1",
+    "sha256": "3f704ae7fc162327825a9a9874dd1737b8d184b5ab9e3b04686bf86be741bf21"
+  },
+  "role_evidence_protocol": {
+    "version": "related-field-descriptions-v1",
+    "sha256": "ff03f5f9dc154f05ae4a0dda899157e3308527dd594f3238c6e7577370a2d197"
+  }
+}

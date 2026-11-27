@@ -1,0 +1,9 @@
+*.py text eol=lf
+rl/plan.json -text whitespace=cr-at-eol
+rl/train-public.json -text whitespace=cr-at-eol
+rl/reward-labels.json -text whitespace=cr-at-eol
+rl/skill_reward.py -text
+results/rl/plan.json -text whitespace=cr-at-eol
+*.safetensors binary
+*.gz binary
+*.zip binary

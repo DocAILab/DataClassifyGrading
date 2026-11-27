@@ -1,0 +1,11 @@
+{
+  "sources": 200,
+  "examples": 201,
+  "optimizer_updates": 13,
+  "reloaded_tensors": 80,
+  "reloaded_parameters": 3473408,
+  "cpu_forward_finite": true,
+  "max_logit_difference": 0.34375,
+  "sha256": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+  "data_sha256": "a222faaba464b0a5800782f0b6a6bd930befeb8eda1698b7d193f52f208f019e"
+}

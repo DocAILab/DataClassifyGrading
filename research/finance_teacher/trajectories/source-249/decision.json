@@ -1,0 +1,23 @@
+{
+  "status": "classified",
+  "stop_reason": "unresolved_no_new_business_evidence",
+  "prediction": {
+    "category": "finance:业务数据/金融市场数据/债券数据",
+    "grading_level": "L1"
+  },
+  "prediction_source": "best_candidate",
+  "missing_evidence": "字段描述为货币业务类别，表为交易明细表，同表有买卖方向和对决交易标志，但无法确定该交易属于债券、股票还是机构用户交易等具体品种或主体范围",
+  "review_status": "invalid_suggestion",
+  "selection_detail": {
+    "method": "retrieval_rank",
+    "rank": 1,
+    "ranking_skill": "SEARCH_STANDARD_BY_FIELD",
+    "ranking_summary": "对决交易指向债券市场",
+    "grade_source": "category_registry"
+  },
+  "review_accounting": {
+    "http_calls": 1,
+    "estimated_CNY": 0.029532,
+    "unknown_usage": 0
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "body": {
+    "model": "qwen3.8-2.4t-a95b",
+    "messages": [
+      {
+        "role": "system",
+        "content": "你是数据库字段分类的复核员。正式分类已因证据不足而弃权。现在从给定候选中选一个最可能的类别供人工复核。先判断这张表的一行记录什么，再比较目标字段记录谁在该活动中的什么信息。根据实际字段区分目标参与方与表中的其他参与方。就最接近的两个类别比较哪一个需要更少的额外假设。候选按编号展示，编号无排名含义。给出暂定建议，即使差距很小也选一个，并明确仍缺什么。仅输出 JSON 对象，结构为 {\"option_id\":\"候选编号\",\"reason\":\"简短中文理由\",\"fact_ids\":[\"原始事实编号\"],\"uncertainty\":\"仍缺的证据\"}。fact_ids 只填写 facts 中已有的短编号，如 F01。引用一至四个，不要编造字段值或数值置信度。"
+      },
+      {
+        "role": "user",
+        "content": "{\"target_field\": \"HBYWLB\", \"facts\": {\"F01\": {\"scope\": [\"metadata\", \"table_description\"], \"attribute\": \"table_description\", \"value\": \"交易明细表\"}, \"F02\": {\"scope\": [\"metadata\", \"field_description\"], \"attribute\": \"field_description\", \"value\": \"货币业务类别\"}, \"F03\": {\"scope\": [\"observations\", \"table_fields\"], \"attribute\": \"field_description\", \"value\": \"买卖方向\"}, \"F04\": {\"scope\": [\"observations\", \"table_fields\"], \"attribute\": \"field_description\", \"value\": \"对决交易标志\"}, \"F05\": {\"scope\": [\"observations\", \"table_fields\"], \"attribute\": \"field_description\", \"value\": \"对决交易标志\"}, \"F06\": {\"scope\": [\"observations\", \"table_fields\"], \"attribute\": \"field_description\", \"value\": \"交易备注\"}}, \"candidates\": [{\"option_id\": \"C001\", \"label\": \"业务数据 > 金融市场数据 > 债券数据\", \"description\": \"证券交易市场及场外市场发行的债券业务数据，包括债券的基本资料、市场数据、主体信息、公告事项等数据，如债券发行上市信息、实时价格、成交量、成交额、付息兑付信息、信用评级、担保情况、估值信息、行情数据、收益率曲线、发行主体、中介机构、征信机构、重大事项公告等。\"}, {\"option_id\": \"C002\", \"label\": \"业务数据 > 金融市场数据 > 期货期权\", \"description\": \"期货期权市场数据，包括期货、期权的基本资料、行情数据等数据，如品种数据、成交量、成交额、持仓量、月合约数据、加工合约数据、成交持仓排名、涨跌停价格、风险指标等。\"}, {\"option_id\": \"C003\", \"label\": \"业务数据 > 金融市场数据 > 理财数据\", \"description\": \"理财产品和市场数据，包括银行理财、年金养老金、保险资管、私募基金、期货资管、基金专户、信托产品、保险产品等，如理财产品说明书、产品规模、产品净值、季度持仓、资产配置、理财公司基本资料、大股东及管理层等信息。\"}, {\"option_id\": \"C004\", \"label\": \"业务数据 > 金融市场数据 > 股票数据\", \"description\": \"证券交易市场的股票业务数据，包括股票基本资料、交易行情、股东股本、公告事项等数据，如股票发行信息、所属行业板块、股东信息、实时价格、成交量、成交额、分时数据、K线数据、股票分红、重大事项公告等。\"}, {\"option_id\": \"C011\", \"label\": \"用户数据 > 机构用户数据 > 机构用户交易数据\", \"description\": \"机构用户的金融资产、交易持仓、交易订单等数据。\"}], \"unresolved_question\": \"字段描述为货币业务类别，表为交易明细表，同表有买卖方向和对决交易标志，但无法确定该交易属于债券、股票还是机构用户交易等具体品种或主体范围\"}"
+      }
+    ],
+    "temperature": 0,
+    "max_tokens": 2048,
+    "thinking_budget": 512,
+    "enable_thinking": true,
+    "enable_search": false,
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "content": "{\"option_id\":\"C011\",\"reason\":\"表为交易明细表，字段含\"\n}",
+  "receipt": {
+    "suggestion": null,
+    "http_calls": 1,
+    "model": "qwen3.8-2.4t-a95b",
+    "source_classifier_sha256": "2d0ee05e0642fb658221fbd218387561fb56deedd069c876f75ed5ddf3eeb7c1",
+    "wire_complete": true,
+    "unknown_usage": 0,
+    "estimated_CNY": 0.029532,
+    "review_status": "invalid_suggestion"
+  }
+}
