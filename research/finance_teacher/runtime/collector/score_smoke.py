@@ -45,7 +45,7 @@ def summarize(directory, reference_file):
         if any(k in plan and plan[k] != admission.get(k)
                for k in ("scope_binding_protocol", "classification_protocol", "table_observation_protocol",
                          "source_evidence_protocol", "smoke_thinking_budget", "train_table_catalog", "role_evidence_protocol",
-                         "followup_evidence_protocol", "table_recovery_protocol")):
+                         "followup_evidence_protocol", "table_recovery_protocol", "dsl_table_protocol", "selected_context_protocol")):
             raise ValueError(f"Source {index} used a different experiment protocol")
         if (row["source_index"] != index or row["split"] != "train"
                 or common.read(target / "config.json")["model"] != plan["model"]):

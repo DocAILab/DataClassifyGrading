@@ -17,6 +17,14 @@ TEMPERATURE = 0.8
 BASE_REVISION = "c202236235762e1c871ad0ccb60c8ee5ba337b9a"
 
 
+class GenerationTokenLimit(ValueError):
+    """The model used its entire token allowance without emitting EOS."""
+    def __init__(self, stage, prompt_size, tokens, reply, action):
+        super().__init__(f"{stage} used all {len(tokens)} output tokens without EOS")
+        self.evidence = dict(stage=stage, prompt_tokens=prompt_size, token_ids=tokens, reply=reply)
+        self.action = action
+
+
 def sha(path):
     with Path(path).open("rb") as stream:
         digest = hashlib.sha256()
@@ -158,12 +166,15 @@ class Backend:
             output = self.model.generate(input_ids=x, attention_mask=torch.ones_like(x), **options)
             seq = output.sequences if stochastic else output
             tokens = seq[0, len(prompt):].tolist()
-            if not tokens or tokens[-1] not in options["eos_token_id"]:
-                raise ValueError(f"{stage} generation ended without EOS")
             action = None
             if stochastic:
                 # Generation scores already include the sampling temperature.
                 behavior = [float(s[0].float().log_softmax(-1)[i])
                             for s, i in zip(output.scores, tokens, strict=True)]
                 action = {"prompt": prompt, "tokens": tokens, "behavior": behavior}
-        return tok.decode(tokens, skip_special_tokens=True, clean_up_tokenization_spaces=False), action
+        reply = tok.decode(tokens, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        if not tokens or tokens[-1] not in options["eos_token_id"]:
+            if len(tokens) == options["max_new_tokens"]:
+                raise GenerationTokenLimit(stage, len(prompt), tokens, reply, action)
+            raise ValueError(f"{stage} ended without EOS after {len(tokens)}/{options['max_new_tokens']} tokens")
+        return reply, action

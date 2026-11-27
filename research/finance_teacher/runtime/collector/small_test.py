@@ -14,6 +14,8 @@ import evidence_followup
 import table_recovery
 import row_evidence
 import field_roles
+import dsl_table_protocol
+import selected_context_evidence
 
 
 def main():
@@ -45,6 +47,8 @@ def main():
                "smoke_thinking_budget": args.thinking_budget,
                "role_evidence_protocol": role_evidence.identity(),
                "row_evidence_protocol": row_evidence.identity(),
+               "dsl_table_protocol": dsl_table_protocol.identity(),
+               "selected_context_protocol": selected_context_evidence.identity(),
                "field_roles_protocol": field_roles.identity(),
                "followup_evidence_protocol": evidence_followup.identity(args.evidence_updates),
                **({"table_recovery_protocol": table_recovery.identity()} if "context" in args.evidence_updates else {}),

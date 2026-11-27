@@ -1,0 +1,8 @@
+{
+  "supervised_turns": 201,
+  "identical": 0,
+  "same_system": 0,
+  "same_user": 0,
+  "median_M9_input_characters": 114768,
+  "median_teacher_input_characters": 110080
+}

@@ -1,0 +1,328 @@
+{
+  "plans": {
+    "shared-table": {
+      "classification_protocol": {
+        "version": "classification-contract-v2",
+        "sha256": "e75672ddc9ee510453e2a66c33ffbd2203312d8eafff7dfd89d6c03619a1d1c8"
+      },
+      "scope_binding_protocol": {
+        "version": "final-source-scope-v1",
+        "binder_sha256": "be991cdf1aec5deb05421576726ed91ebdb3c5fe4a9dfc8ecf33e7d35cf81fcf",
+        "adapter_sha256": "8dc27136d53a486ca061e45c8d4e90286f75b8d8f06ba7873ceac240250c4518"
+      },
+      "table_observation_protocol": {
+        "version": "skill-json-v1",
+        "sha256": "86a1cc1e852da031bfa789af5efe377c1533d273af61ca9e9abccf49aecb81fb"
+      },
+      "source_evidence_protocol": {
+        "version": "observe-before-classifying-v2",
+        "sha256": "47456342cd0747496d1981ba092dfe38587557a9db6c0d262cb75975f2f22126",
+        "source_metadata": {
+          "version": "training-table-evidence-v1",
+          "sha256": "07b19b9269524fa6bb8cbf38ddd55b79f81240a7e1544e3ecc0d80e2123dd431"
+        }
+      },
+      "smoke_thinking_budget": 512,
+      "role_evidence_protocol": {
+        "version": "related-field-descriptions-v1",
+        "sha256": "ff03f5f9dc154f05ae4a0dda899157e3308527dd594f3238c6e7577370a2d197"
+      },
+      "row_evidence_protocol": {
+        "version": "row-evidence-v1",
+        "sha256": "292d47e116fecbc7ae41fc09a318232f8495c1cf5bca8dc9c69091be67e968fc"
+      },
+      "dsl_table_protocol": {
+        "version": "public-table-names-v1",
+        "sha256": "c3540d788e5a7e99c6a7061bae9460b8f32032c048a65fea928bebadd247e552",
+        "protocol_sha256": "6e54f25578c4c5a7b1e5987e1cd73b0c1e7f099807b7cc23338ec60c4c8fbafb"
+      },
+      "field_roles_protocol": {
+        "version": "distinct-field-qualifiers-v1",
+        "sha256": "b3fd1183aa7a6669e2a9129d845fada763c6f22b3d7440960f17a96477fa1a3d"
+      },
+      "followup_evidence_protocol": {
+        "version": "followup-evidence-v1",
+        "changes": [
+          "context",
+          "decision",
+          "retrieval"
+        ],
+        "sha256": "a18a291bb0f9805c6e222edd0a933a92e8bc6334dc4c08a6946d433eebf4856c"
+      },
+      "table_recovery_protocol": {
+        "version": "known-table-coverage-v1",
+        "sha256": "2eea6e93cf85b603bfcfbd814f958d41b15b77a7d15573e5ea5495f8869918f2"
+      },
+      "train_table_catalog": {
+        "version": "named-train-tables-v1",
+        "sha256": "3f704ae7fc162327825a9a9874dd1737b8d184b5ab9e3b04686bf86be741bf21"
+      },
+      "model": "qwen3.8-2.4t-a95b"
+    },
+    "selected-context": {
+      "classification_protocol": {
+        "version": "classification-contract-v2",
+        "sha256": "e75672ddc9ee510453e2a66c33ffbd2203312d8eafff7dfd89d6c03619a1d1c8"
+      },
+      "scope_binding_protocol": {
+        "version": "final-source-scope-v1",
+        "binder_sha256": "be991cdf1aec5deb05421576726ed91ebdb3c5fe4a9dfc8ecf33e7d35cf81fcf",
+        "adapter_sha256": "8dc27136d53a486ca061e45c8d4e90286f75b8d8f06ba7873ceac240250c4518"
+      },
+      "table_observation_protocol": {
+        "version": "skill-json-v1",
+        "sha256": "86a1cc1e852da031bfa789af5efe377c1533d273af61ca9e9abccf49aecb81fb"
+      },
+      "source_evidence_protocol": {
+        "version": "observe-before-classifying-v2",
+        "sha256": "47456342cd0747496d1981ba092dfe38587557a9db6c0d262cb75975f2f22126",
+        "source_metadata": {
+          "version": "training-table-evidence-v1",
+          "sha256": "07b19b9269524fa6bb8cbf38ddd55b79f81240a7e1544e3ecc0d80e2123dd431"
+        }
+      },
+      "smoke_thinking_budget": 512,
+      "role_evidence_protocol": {
+        "version": "related-field-descriptions-v1",
+        "sha256": "ff03f5f9dc154f05ae4a0dda899157e3308527dd594f3238c6e7577370a2d197"
+      },
+      "row_evidence_protocol": {
+        "version": "row-evidence-v1",
+        "sha256": "292d47e116fecbc7ae41fc09a318232f8495c1cf5bca8dc9c69091be67e968fc"
+      },
+      "dsl_table_protocol": {
+        "version": "public-table-names-v1",
+        "sha256": "c3540d788e5a7e99c6a7061bae9460b8f32032c048a65fea928bebadd247e552",
+        "protocol_sha256": "6e54f25578c4c5a7b1e5987e1cd73b0c1e7f099807b7cc23338ec60c4c8fbafb"
+      },
+      "field_roles_protocol": {
+        "version": "distinct-field-qualifiers-v1",
+        "sha256": "b3fd1183aa7a6669e2a9129d845fada763c6f22b3d7440960f17a96477fa1a3d"
+      },
+      "followup_evidence_protocol": {
+        "version": "followup-evidence-v1",
+        "changes": [
+          "context",
+          "decision",
+          "retrieval"
+        ],
+        "sha256": "a18a291bb0f9805c6e222edd0a933a92e8bc6334dc4c08a6946d433eebf4856c"
+      },
+      "table_recovery_protocol": {
+        "version": "known-table-coverage-v1",
+        "sha256": "2eea6e93cf85b603bfcfbd814f958d41b15b77a7d15573e5ea5495f8869918f2"
+      },
+      "train_table_catalog": {
+        "version": "named-train-tables-v1",
+        "sha256": "3f704ae7fc162327825a9a9874dd1737b8d184b5ab9e3b04686bf86be741bf21"
+      },
+      "selected_context_protocol": {
+        "version": "selected-field-evidence-v1",
+        "sha256": "f79cc58372f105bf864a5d8117e8e4f245bfa7375be787a53fb70752c3f77213"
+      },
+      "model": "qwen3.8-2.4t-a95b"
+    }
+  },
+  "by_source_index": {
+    "1095": "shared-table",
+    "53": "shared-table",
+    "94": "shared-table",
+    "80": "shared-table",
+    "18": "shared-table",
+    "56": "shared-table",
+    "35": "shared-table",
+    "10": "shared-table",
+    "46": "shared-table",
+    "8": "shared-table",
+    "83": "shared-table",
+    "30": "shared-table",
+    "60": "shared-table",
+    "2014": "shared-table",
+    "1313": "shared-table",
+    "2021": "shared-table",
+    "1815": "shared-table",
+    "1896": "shared-table",
+    "1119": "shared-table",
+    "1529": "shared-table",
+    "1273": "shared-table",
+    "1076": "shared-table",
+    "1589": "selected-context",
+    "1137": "selected-context",
+    "2282": "selected-context",
+    "1485": "selected-context",
+    "2231": "selected-context",
+    "1797": "selected-context",
+    "1379": "selected-context",
+    "1439": "selected-context",
+    "2192": "selected-context",
+    "2257": "selected-context",
+    "1960": "selected-context",
+    "2154": "selected-context",
+    "2246": "selected-context",
+    "1925": "selected-context",
+    "1291": "selected-context",
+    "2060": "selected-context",
+    "1037": "selected-context",
+    "1824": "selected-context",
+    "1478": "selected-context",
+    "1942": "selected-context",
+    "1442": "selected-context",
+    "1451": "selected-context",
+    "1342": "selected-context",
+    "2239": "selected-context",
+    "1576": "selected-context",
+    "1325": "selected-context",
+    "1791": "selected-context",
+    "1820": "selected-context",
+    "1438": "selected-context",
+    "1798": "selected-context",
+    "1935": "selected-context",
+    "1040": "selected-context",
+    "1961": "selected-context",
+    "1471": "selected-context",
+    "1238": "selected-context",
+    "1370": "selected-context",
+    "1817": "selected-context",
+    "1695": "selected-context",
+    "1085": "selected-context",
+    "1014": "selected-context",
+    "1072": "selected-context",
+    "1920": "selected-context",
+    "1969": "selected-context",
+    "1257": "selected-context",
+    "2175": "selected-context",
+    "1704": "selected-context",
+    "2001": "selected-context",
+    "1741": "selected-context",
+    "1495": "selected-context",
+    "1827": "selected-context",
+    "1156": "selected-context",
+    "1810": "selected-context",
+    "1332": "selected-context",
+    "1545": "selected-context",
+    "2244": "selected-context",
+    "2098": "selected-context",
+    "1475": "selected-context",
+    "2198": "selected-context",
+    "1448": "selected-context",
+    "1847": "selected-context",
+    "1334": "selected-context",
+    "1068": "selected-context",
+    "1335": "selected-context",
+    "2056": "selected-context",
+    "1574": "selected-context",
+    "2293": "selected-context",
+    "2197": "selected-context",
+    "1108": "selected-context",
+    "1692": "selected-context",
+    "1667": "selected-context",
+    "2006": "selected-context",
+    "2163": "selected-context",
+    "1218": "selected-context",
+    "1386": "selected-context",
+    "1308": "selected-context",
+    "1281": "selected-context",
+    "1696": "selected-context",
+    "1669": "selected-context",
+    "1764": "selected-context",
+    "1515": "selected-context",
+    "1129": "selected-context",
+    "2024": "selected-context",
+    "1009": "selected-context",
+    "1602": "selected-context",
+    "1084": "selected-context",
+    "1042": "selected-context",
+    "1012": "selected-context",
+    "2170": "selected-context",
+    "1705": "selected-context",
+    "1214": "selected-context",
+    "1884": "selected-context",
+    "1103": "selected-context",
+    "1302": "selected-context",
+    "1915": "selected-context",
+    "1312": "selected-context",
+    "1191": "selected-context",
+    "1396": "selected-context",
+    "2030": "selected-context",
+    "1426": "selected-context",
+    "1365": "selected-context",
+    "1678": "selected-context",
+    "1056": "selected-context",
+    "1582": "selected-context",
+    "1372": "selected-context",
+    "1746": "selected-context",
+    "1149": "selected-context",
+    "2117": "selected-context",
+    "1083": "selected-context",
+    "1192": "selected-context",
+    "2218": "selected-context",
+    "2259": "selected-context",
+    "1707": "selected-context",
+    "1951": "selected-context",
+    "2158": "selected-context",
+    "1868": "selected-context",
+    "2262": "selected-context",
+    "1344": "selected-context",
+    "1346": "selected-context",
+    "2149": "selected-context",
+    "1376": "selected-context",
+    "1628": "selected-context",
+    "1908": "selected-context",
+    "1905": "selected-context",
+    "2140": "selected-context",
+    "1627": "selected-context",
+    "1468": "selected-context",
+    "1235": "selected-context",
+    "1718": "selected-context",
+    "1143": "selected-context",
+    "1010": "selected-context",
+    "1016": "selected-context",
+    "2127": "selected-context",
+    "1219": "selected-context",
+    "1066": "selected-context",
+    "1088": "selected-context",
+    "2002": "selected-context",
+    "1456": "selected-context",
+    "1318": "selected-context",
+    "1519": "selected-context",
+    "1239": "selected-context",
+    "1795": "selected-context",
+    "1528": "selected-context",
+    "2286": "selected-context",
+    "2025": "selected-context",
+    "1070": "selected-context",
+    "1200": "selected-context",
+    "1968": "selected-context",
+    "1167": "selected-context",
+    "2133": "selected-context",
+    "1618": "selected-context",
+    "1959": "selected-context",
+    "1048": "selected-context",
+    "1754": "selected-context",
+    "2049": "selected-context",
+    "1840": "selected-context",
+    "1150": "selected-context",
+    "1234": "selected-context",
+    "2102": "selected-context",
+    "1023": "selected-context",
+    "1735": "selected-context",
+    "1808": "selected-context",
+    "1940": "selected-context",
+    "1980": "selected-context",
+    "1809": "selected-context",
+    "2111": "selected-context",
+    "1505": "selected-context",
+    "1770": "selected-context",
+    "2120": "selected-context",
+    "2217": "selected-context",
+    "2106": "selected-context",
+    "1577": "selected-context",
+    "2097": "selected-context",
+    "2177": "selected-context",
+    "1608": "selected-context",
+    "1112": "selected-context",
+    "1355": "selected-context",
+    "1981": "selected-context",
+    "1912": "selected-context"
+  }
+}

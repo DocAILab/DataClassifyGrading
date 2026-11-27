@@ -1,6 +1,13 @@
 from base_contracts import *
 import re
 PREFIX = '{"option_id":"'
+
+class OptionInputTooLong(ValueError):
+    """The intact ranking request exceeds its fixed input budget."""
+    def __init__(self, count, limit, prompt_sha256):
+        # Keep the existing message visible to the native recovery planner.
+        super().__init__('no truncation permitted')
+        self.evidence=dict(tokens=count,limit=limit,prompt_sha256=prompt_sha256)
 def make_decision(case,registry,templates,ids):
     if len(ids) not in (5,12) or len(set(ids))!=len(ids):raise ValueError('fixed5 or full12 only')
     if len(ids)==12 and set(ids)!={x['option_id'] for x in registry}:raise ValueError('full12 registry')
@@ -17,7 +24,7 @@ def encode_option(messages,option_id,tokenizer,max_length):
     prefix=prompt+PREFIX;full=prefix+option_id
     enc=tokenizer(full,add_special_tokens=False,return_offsets_mapping=True)
     ids=enc['input_ids'];offsets=enc['offset_mapping'];start=len(prefix)
-    if len(ids)>max_length:raise ValueError('no truncation permitted')
+    if len(ids)>max_length:raise OptionInputTooLong(len(ids),max_length,__import__('hashlib').sha256(prompt.encode()).hexdigest())
     supervised=[i for i,(a,b) in enumerate(offsets) if b>start and a<len(full)]
     if not supervised or supervised!=list(range(supervised[0],len(ids))):raise ValueError('ID must be the contiguous supervised suffix')
     if offsets[supervised[0]][0]!=start or offsets[-1][1]!=len(full):raise ValueError('token boundary crosses JSON scaffolding')

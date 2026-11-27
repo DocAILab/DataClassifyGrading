@@ -42,6 +42,8 @@ from release_inputs import use_catalog
 import table_recovery
 import row_evidence
 import field_roles
+import dsl_table_protocol
+import selected_context_evidence
 from abstention import apply_review, decision, verified_abstention
 
 
@@ -65,7 +67,9 @@ def protocols(admission, data):
           evidence_followup.use(science.runtime(), admission.get("followup_evidence_protocol"), data["study"]["registry"]),
           table_recovery.use(science.runtime(), admission.get("table_recovery_protocol")),
           row_evidence.use(science.runtime(), admission.get("row_evidence_protocol")),
-          field_roles.use(science.runtime(), admission.get("field_roles_protocol"))):
+          field_roles.use(science.runtime(), admission.get("field_roles_protocol")),
+          dsl_table_protocol.use(science.runtime(), admission.get("dsl_table_protocol")),
+          selected_context_evidence.use(science.runtime(), admission.get("selected_context_protocol"))):
         yield
 
 
@@ -186,7 +190,8 @@ def main():
                      table_observation_protocol=table_observation.identity(), source_evidence_protocol=source_evidence_protocol.identity(),
                      smoke_thinking_budget=512, train_table_catalog=train_table_catalog.identity(), role_evidence_protocol=role_evidence.identity(),
                      followup_evidence_protocol=evidence_followup.identity(), table_recovery_protocol=table_recovery.identity(),
-                     row_evidence_protocol=row_evidence.identity(), field_roles_protocol=field_roles.identity())
+                     row_evidence_protocol=row_evidence.identity(), field_roles_protocol=field_roles.identity(),
+                     dsl_table_protocol=dsl_table_protocol.identity(), selected_context_protocol=selected_context_evidence.identity())
     plan_file = target.parent / "plan.json"
     if plan_file.is_file() and "scope_binding_protocol" in (plan := common.read(plan_file)):
         if args.source_index not in plan["source_indices"]:

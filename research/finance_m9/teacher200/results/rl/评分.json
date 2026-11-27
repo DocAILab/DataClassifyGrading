@@ -1,0 +1,188 @@
+{
+  "pilot": {
+    "fields": 32,
+    "mixed": 14,
+    "group_scores": [
+      4,
+      0,
+      0,
+      1,
+      4,
+      0,
+      3,
+      0,
+      3,
+      0,
+      4,
+      0,
+      3,
+      2,
+      0,
+      3,
+      1,
+      1,
+      0,
+      3,
+      4,
+      0,
+      0,
+      3,
+      1,
+      1,
+      0,
+      0,
+      2,
+      0,
+      1,
+      0
+    ],
+    "correct": 44,
+    "different_routes": 31
+  },
+  "dev": {
+    "dev-08": {
+      "total": 41,
+      "valid": 41,
+      "joint": 17,
+      "category": 17,
+      "grade": 27,
+      "max_path": 38,
+      "paths": 2,
+      "stops": {
+        "validated_terminal": 41
+      },
+      "mean_calls": 7.073170731707317
+    },
+    "dev-04": {
+      "total": 41,
+      "valid": 41,
+      "joint": 18,
+      "category": 18,
+      "grade": 28,
+      "max_path": 32,
+      "paths": 2,
+      "stops": {
+        "validated_terminal": 41
+      },
+      "mean_calls": 7.219512195121951
+    },
+    "dev-16": {
+      "total": 41,
+      "valid": 41,
+      "joint": 15,
+      "category": 15,
+      "grade": 27,
+      "max_path": 41,
+      "paths": 1,
+      "stops": {
+        "validated_terminal": 41
+      },
+      "mean_calls": 7.0
+    },
+    "dev-00": {
+      "total": 41,
+      "valid": 41,
+      "joint": 16,
+      "category": 16,
+      "grade": 27,
+      "max_path": 32,
+      "paths": 3,
+      "stops": {
+        "validated_terminal": 41
+      },
+      "mean_calls": 7.2682926829268295
+    }
+  },
+  "selected": 4,
+  "final": {
+    "total": 422,
+    "valid": 418,
+    "joint": 200,
+    "category": 200,
+    "grade": 241,
+    "max_path": 350,
+    "paths": 9,
+    "stops": {
+      "validated_terminal": 418,
+      "abstained_terminal": 4
+    },
+    "mean_calls": 7.203791469194313
+  },
+  "changes": {
+    "两次均错": 218,
+    "两次均对": 194,
+    "错转对": 6,
+    "对转错": 4
+  },
+  "categories": {
+    "日志数据": {
+      "n": 63,
+      "before": 27,
+      "after": 28
+    },
+    "财务数据": {
+      "n": 44,
+      "before": 23,
+      "after": 23
+    },
+    "机构用户交易数据": {
+      "n": 90,
+      "before": 64,
+      "after": 64
+    },
+    "网络设备和信息系统的配置数据": {
+      "n": 60,
+      "before": 0,
+      "after": 0
+    },
+    "股票数据": {
+      "n": 30,
+      "before": 6,
+      "after": 6
+    },
+    "债券数据": {
+      "n": 100,
+      "before": 74,
+      "after": 75
+    },
+    "人力资源数据": {
+      "n": 22,
+      "before": 0,
+      "after": 0
+    },
+    "理财数据": {
+      "n": 13,
+      "before": 4,
+      "after": 4
+    }
+  },
+  "paths_changed": 59,
+  "predictions_changed": 16,
+  "reward_groups": {
+    "mixed": 47,
+    "all_correct": 28,
+    "all_wrong": 53
+  },
+  "effective_updates": 16,
+  "boundaries": 16,
+  "interruption": {
+    "after_batch": 1,
+    "checkpoint": "a05cf4721bdf99ce8fe26b375eda9f93002ee5f8be59da2fcfe088e6d6f14523",
+    "pid": 344671,
+    "at": 1795696096.4204586
+  },
+  "resumed": 15,
+  "rollouts_verified": 1226,
+  "training_token_limits": 2,
+  "training_stops": {
+    "validated_terminal": 442,
+    "abstained_terminal": 68,
+    "generation_token_limit": 2
+  },
+  "oversized_search_training_episodes": 0,
+  "oversized_search_by_stage": {},
+  "selected_sha256": "d80517012aa39adc4cc40ddde20f5370314a34211fa8d0ccf2040c32be534425",
+  "baseline_sha256": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+  "skill_sha256": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+  "uses_skill_rewards": true
+}

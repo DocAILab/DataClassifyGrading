@@ -85,6 +85,23 @@ class NativeTests(unittest.TestCase):
         self.assertIsNone(result["prediction"])
         self.assertEqual(result["stop_reason"], "abstained_terminal")
 
+    def test_token_cap_preserves_sampled_actions_but_service_faults_raise(self):
+        from model import GenerationTokenLimit
+        class Capped(Scripted):
+            def call(self, stage, messages, *, sample):
+                if stage=="INTERPRET_FIELD_NAME":
+                    raise GenerationTokenLimit(stage,6,[1]*768,"truncated",None)
+                return super().call(stage,messages,sample=sample)
+        case=self.public["inputs"]["cases"][0]
+        result,actions=run_episode(self.public,case,Capped(),sample=True,record_token_limit=True)
+        self.assertEqual((result["valid"],result["stop_reason"],result["calls"]),(False,"generation_token_limit",2))
+        self.assertEqual(actions,[{"toy_action":True}])
+        class Failed(Scripted):
+            def call(self, stage, messages, *, sample):
+                raise RuntimeError("interrupted model service")
+        with self.assertRaisesRegex(RuntimeError,"Incomplete native"):
+            run_episode(self.public,case,Failed(),sample=True,record_token_limit=True)
+
     def test_split_and_labels_are_checked_before_rollout(self):
         with self.assertRaises(ValueError):
             cohort(self.file, "VAL")
@@ -96,6 +113,38 @@ class NativeTests(unittest.TestCase):
         p.write_text(json.dumps({"split": "VAL", "references": {}}))
         with self.assertRaises(ValueError):
             references(p, self.public, "TRAIN")
+
+    def test_excessive_rank_input_uses_native_recovery(self):
+        from partial_contract import OptionInputTooLong
+        class Oversize(Scripted):
+            hit=False
+            def call(self, stage, messages, *, sample):
+                if stage.startswith("SEARCH_STANDARD_") and not self.hit:
+                    self.hit=True
+                    raise OptionInputTooLong(8200,8192,"test-digest")
+                return super().call(stage,messages,sample=sample)
+        actor=Oversize()
+        case=self.public["inputs"]["cases"][0]
+        result,actions=run_episode(self.public,case,actor,sample=True,record_token_limit=True)
+        self.assertTrue(actor.hit)
+        self.assertTrue(actions)
+        self.assertEqual(result["valid"],result["stop_reason"]=="validated_terminal")
+        with self.assertRaisesRegex(RuntimeError,"Incomplete native"):
+            run_episode(self.public,case,Oversize(),sample=True)
+
+    def test_full_context_stops_without_truncation_or_invented_action(self):
+        from resource_policy12 import ContextBudgetExceeded,generation_options
+        self.assertEqual(generation_options(49152-768,768)["max_new_tokens"],768)
+        class FullContext(Scripted):
+            def call(self,stage,messages,*,sample):
+                if stage=="INTERPRET_FIELD_NAME":
+                    generation_options(49152-767,768)
+                return super().call(stage,messages,sample=sample)
+        with self.assertRaises(ContextBudgetExceeded):
+            generation_options(49152-767,768)
+        result,actions=run_episode(self.public,self.public["inputs"]["cases"][0],FullContext(),
+                                   sample=True,record_token_limit=True)
+        self.assertEqual((result["valid"],result["stop_reason"],actions),(False,"context_token_limit",[{"toy_action":True}]))
 
 
 class PolicyTests(unittest.TestCase):

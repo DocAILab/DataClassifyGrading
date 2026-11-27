@@ -1,0 +1,5522 @@
+{
+  "status": {
+    "stage": "complete",
+    "workers": {},
+    "at": 1795763390.0939255
+  },
+  "counts": {
+    "train-07": 32,
+    "train-02": 32,
+    "dev-08": 41,
+    "train-06": 32,
+    "train-10": 32,
+    "train-13": 32,
+    "train-12": 32,
+    "train-16": 32,
+    "train-11": 32,
+    "train-15": 32,
+    "train-03": 32,
+    "pilot": 128,
+    "dev-04": 41,
+    "dev-16": 41,
+    "dev-00": 41,
+    "train-04": 32,
+    "train-05": 32,
+    "train-08": 32,
+    "val": 422,
+    "train-14": 32,
+    "train-09": 32,
+    "train-01": 32
+  },
+  "errors": [],
+  "pilot": {
+    "fields": 32,
+    "mixed": 14,
+    "group_scores": [
+      4,
+      0,
+      0,
+      1,
+      4,
+      0,
+      3,
+      0,
+      3,
+      0,
+      4,
+      0,
+      3,
+      2,
+      0,
+      3,
+      1,
+      1,
+      0,
+      3,
+      4,
+      0,
+      0,
+      3,
+      1,
+      1,
+      0,
+      0,
+      2,
+      0,
+      1,
+      0
+    ],
+    "correct": 44,
+    "different_routes": 31
+  },
+  "night": null,
+  "selected": {
+    "batch": 4,
+    "scores": {
+      "0": 16,
+      "4": 18,
+      "8": 17,
+      "16": 15
+    },
+    "at": 1795760173.1236708,
+    "rule": "highest trained development joint score, earliest tie; retain original baseline for comparison"
+  },
+  "complete": {
+    "at": 1795763390.0936596,
+    "selected": {
+      "batch": 4,
+      "scores": {
+        "0": 16,
+        "4": 18,
+        "8": 17,
+        "16": 15
+      },
+      "at": 1795760173.1236708,
+      "rule": "highest trained development joint score, earliest tie; retain original baseline for comparison"
+    }
+  },
+  "restart": {
+    "after_batch": 1,
+    "checkpoint": "a05cf4721bdf99ce8fe26b375eda9f93002ee5f8be59da2fcfe088e6d6f14523",
+    "pid": 344671,
+    "at": 1795696096.4204586
+  },
+  "updates": [
+    {
+      "batch": 1,
+      "next_batch": 2,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "a05cf4721bdf99ce8fe26b375eda9f93002ee5f8be59da2fcfe088e6d6f14523",
+      "resume_sha256": "35b252767794e947ce45f0b7ac20e433b5671029666feca4a663378095189358",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.00920858866668537,
+      "rewards": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.12
+        ],
+        [
+          0.13999999999999999,
+          0.13999999999999999,
+          1.08,
+          1.1400000000000001
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.0
+        ],
+        [
+          0.12,
+          0.12,
+          0.12,
+          0.12
+        ],
+        [
+          1.06,
+          1.12,
+          1.12,
+          1.06
+        ],
+        [
+          0.044,
+          1.044,
+          1.12,
+          1.12
+        ],
+        [
+          1.08,
+          1.08,
+          1.08,
+          1.08
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "0e392536-61a3-5a8d-8ea0-802a25c5b56a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0e392536-61a3-5a8d-8ea0-802a25c5b56a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0e392536-61a3-5a8d-8ea0-802a25c5b56a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0e392536-61a3-5a8d-8ea0-802a25c5b56a",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "25f369bd-a2b8-5447-b8d7-0e22e653deee",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "25f369bd-a2b8-5447-b8d7-0e22e653deee",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "25f369bd-a2b8-5447-b8d7-0e22e653deee",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "25f369bd-a2b8-5447-b8d7-0e22e653deee",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "b7b10991-c2a7-54ff-a186-0e0c255d294a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "b7b10991-c2a7-54ff-a186-0e0c255d294a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "b7b10991-c2a7-54ff-a186-0e0c255d294a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "b7b10991-c2a7-54ff-a186-0e0c255d294a",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "a9584f22-4f0a-572a-b9a2-01f5904e05ed",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "a9584f22-4f0a-572a-b9a2-01f5904e05ed",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "a9584f22-4f0a-572a-b9a2-01f5904e05ed",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "a9584f22-4f0a-572a-b9a2-01f5904e05ed",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "da2e5956-3d4a-51c5-944c-d5bbe1083f92",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "da2e5956-3d4a-51c5-944c-d5bbe1083f92",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "da2e5956-3d4a-51c5-944c-d5bbe1083f92",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "da2e5956-3d4a-51c5-944c-d5bbe1083f92",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "9c195927-d918-550f-9d64-d4660a654f7b",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 0.044
+        },
+        {
+          "source_id": "9c195927-d918-550f-9d64-d4660a654f7b",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 1.044
+        },
+        {
+          "source_id": "9c195927-d918-550f-9d64-d4660a654f7b",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "9c195927-d918-550f-9d64-d4660a654f7b",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "fcfb27c0-34e8-5059-a82e-66a148d74340",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "fcfb27c0-34e8-5059-a82e-66a148d74340",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "fcfb27c0-34e8-5059-a82e-66a148d74340",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "fcfb27c0-34e8-5059-a82e-66a148d74340",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "58141aa5-0c43-5bd0-8cd1-288581e7df7a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "58141aa5-0c43-5bd0-8cd1-288581e7df7a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "58141aa5-0c43-5bd0-8cd1-288581e7df7a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "58141aa5-0c43-5bd0-8cd1-288581e7df7a",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        }
+      ]
+    },
+    {
+      "batch": 2,
+      "next_batch": 3,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "eaf7a33720c5ddcf7bf7432e51110b100f7d5ec03edb4b9e5e2907cc2de185ed",
+      "resume_sha256": "4ed0766a4f54b9ebe0d11295ce37e3d68fd2f7c74e7a74c8202801a21654e645",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.006924833762149006,
+      "rewards": [
+        [
+          1.08,
+          1.08,
+          1.08,
+          1.08
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.04
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          1.08,
+          1.08,
+          1.08,
+          1.08
+        ],
+        [
+          1.1400000000000001,
+          0.0,
+          1.1400000000000001,
+          1.1400000000000001
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "ab97f320-0649-5d3b-bef8-eb195faa6de7",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "ab97f320-0649-5d3b-bef8-eb195faa6de7",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "ab97f320-0649-5d3b-bef8-eb195faa6de7",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "ab97f320-0649-5d3b-bef8-eb195faa6de7",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "23090d89-affb-5fea-921b-e38611bb1b1a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "23090d89-affb-5fea-921b-e38611bb1b1a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "23090d89-affb-5fea-921b-e38611bb1b1a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "23090d89-affb-5fea-921b-e38611bb1b1a",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "a4a3231a-ab67-55e2-bd47-a1cb66528ce0",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "a4a3231a-ab67-55e2-bd47-a1cb66528ce0",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "a4a3231a-ab67-55e2-bd47-a1cb66528ce0",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "a4a3231a-ab67-55e2-bd47-a1cb66528ce0",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "554027b8-755d-5b79-bc41-3181918f1554",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "554027b8-755d-5b79-bc41-3181918f1554",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "554027b8-755d-5b79-bc41-3181918f1554",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "554027b8-755d-5b79-bc41-3181918f1554",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "9d43c4c5-a61a-596b-ac25-d7441d833387",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "9d43c4c5-a61a-596b-ac25-d7441d833387",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "9d43c4c5-a61a-596b-ac25-d7441d833387",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "9d43c4c5-a61a-596b-ac25-d7441d833387",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22d13376-84ae-5838-acab-cc6805ade49d",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22d13376-84ae-5838-acab-cc6805ade49d",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22d13376-84ae-5838-acab-cc6805ade49d",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22d13376-84ae-5838-acab-cc6805ade49d",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "2555e54b-9715-5684-ba17-746ec43bd352",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "2555e54b-9715-5684-ba17-746ec43bd352",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "2555e54b-9715-5684-ba17-746ec43bd352",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "2555e54b-9715-5684-ba17-746ec43bd352",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "c7134434-8679-510a-9899-08f0d0c7d215",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "c7134434-8679-510a-9899-08f0d0c7d215",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c7134434-8679-510a-9899-08f0d0c7d215",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "c7134434-8679-510a-9899-08f0d0c7d215",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        }
+      ]
+    },
+    {
+      "batch": 3,
+      "next_batch": 4,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "621bd7062b7dbf4844bb74f00a0cac0589e0d659a99de66721e3b19be17ac7b6",
+      "resume_sha256": "3fbf8931e54addbbe932480ffc24f0414c68e3aaa3c72d1b6922b2d7a3ca564e",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.005625975011136002,
+      "rewards": [
+        [
+          0.0,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          0.06,
+          0.06,
+          0.06,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.12,
+          0.0,
+          0.13999999999999999,
+          0.13999999999999999
+        ],
+        [
+          1.044,
+          0.0,
+          1.044,
+          1.024
+        ],
+        [
+          0.0,
+          0.024,
+          0.024,
+          0.024
+        ],
+        [
+          0.06,
+          0.06,
+          0.06,
+          0.06
+        ],
+        [
+          0.13999999999999999,
+          1.1400000000000001,
+          0.13999999999999999,
+          0.13999999999999999
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "67440f74-c604-5c6d-b5eb-839bd0e3d29b",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "67440f74-c604-5c6d-b5eb-839bd0e3d29b",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "67440f74-c604-5c6d-b5eb-839bd0e3d29b",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "67440f74-c604-5c6d-b5eb-839bd0e3d29b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "445d148e-e2fa-5f94-aeb1-c67cf8161423",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "445d148e-e2fa-5f94-aeb1-c67cf8161423",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "445d148e-e2fa-5f94-aeb1-c67cf8161423",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "445d148e-e2fa-5f94-aeb1-c67cf8161423",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "da932212-180e-5d20-a11d-0863795f4610",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "da932212-180e-5d20-a11d-0863795f4610",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "da932212-180e-5d20-a11d-0863795f4610",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "da932212-180e-5d20-a11d-0863795f4610",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "1a4175b4-36a6-5454-bb7e-73a79bb44b0b",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "1a4175b4-36a6-5454-bb7e-73a79bb44b0b",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "1a4175b4-36a6-5454-bb7e-73a79bb44b0b",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "1a4175b4-36a6-5454-bb7e-73a79bb44b0b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "75208d7d-20e1-51e1-888a-587fbeaddb3d",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 1.044
+        },
+        {
+          "source_id": "75208d7d-20e1-51e1-888a-587fbeaddb3d",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "75208d7d-20e1-51e1-888a-587fbeaddb3d",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 1.044
+        },
+        {
+          "source_id": "75208d7d-20e1-51e1-888a-587fbeaddb3d",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 1.024
+        },
+        {
+          "source_id": "c0926f1b-a665-5760-8bcb-b22bb2947edf",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c0926f1b-a665-5760-8bcb-b22bb2947edf",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "c0926f1b-a665-5760-8bcb-b22bb2947edf",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "c0926f1b-a665-5760-8bcb-b22bb2947edf",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "10995a86-127d-5922-b893-2e2d83949ddd",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "10995a86-127d-5922-b893-2e2d83949ddd",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "10995a86-127d-5922-b893-2e2d83949ddd",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "10995a86-127d-5922-b893-2e2d83949ddd",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "6d2a62f5-d16d-5e94-8273-dce3ed1a1e1a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "6d2a62f5-d16d-5e94-8273-dce3ed1a1e1a",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "6d2a62f5-d16d-5e94-8273-dce3ed1a1e1a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "6d2a62f5-d16d-5e94-8273-dce3ed1a1e1a",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        }
+      ]
+    },
+    {
+      "batch": 4,
+      "next_batch": 5,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "d80517012aa39adc4cc40ddde20f5370314a34211fa8d0ccf2040c32be534425",
+      "resume_sha256": "0b4d76f0c0987c0cd0794c7d05255d3c8bb5aae9908c1aa447e119c34d960799",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0047572017986503,
+      "rewards": [
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          1.06,
+          0.0,
+          0.06,
+          1.06
+        ],
+        [
+          0.06,
+          0.06,
+          0.06,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.03,
+          0.024
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.02,
+          0.02,
+          0.024,
+          0.0
+        ],
+        [
+          0.12,
+          1.12,
+          0.12,
+          1.12
+        ],
+        [
+          0.12,
+          1.12,
+          0.0,
+          0.12
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "1aa47fe2-188f-5821-9ee8-230384682362",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "1aa47fe2-188f-5821-9ee8-230384682362",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "1aa47fe2-188f-5821-9ee8-230384682362",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "1aa47fe2-188f-5821-9ee8-230384682362",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "e0c8dc63-ef7f-5c2f-aaa5-295d6609786b",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "e0c8dc63-ef7f-5c2f-aaa5-295d6609786b",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "e0c8dc63-ef7f-5c2f-aaa5-295d6609786b",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "e0c8dc63-ef7f-5c2f-aaa5-295d6609786b",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "35c72054-8bf6-54fa-a90e-b48f50d221ee",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "35c72054-8bf6-54fa-a90e-b48f50d221ee",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "35c72054-8bf6-54fa-a90e-b48f50d221ee",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "35c72054-8bf6-54fa-a90e-b48f50d221ee",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "9bf47389-09a7-5c05-9678-4fb52e5df091",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "9bf47389-09a7-5c05-9678-4fb52e5df091",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "9bf47389-09a7-5c05-9678-4fb52e5df091",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "9bf47389-09a7-5c05-9678-4fb52e5df091",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "64ab0b6a-f99c-5b04-9411-c3a57ecf0dc3",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "64ab0b6a-f99c-5b04-9411-c3a57ecf0dc3",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "64ab0b6a-f99c-5b04-9411-c3a57ecf0dc3",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "64ab0b6a-f99c-5b04-9411-c3a57ecf0dc3",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "5f18ac34-d405-5638-80ac-f4e0a4af354c",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "5f18ac34-d405-5638-80ac-f4e0a4af354c",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "5f18ac34-d405-5638-80ac-f4e0a4af354c",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "5f18ac34-d405-5638-80ac-f4e0a4af354c",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "5f3961e9-bb97-519e-8575-6adaaa3089be",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "5f3961e9-bb97-519e-8575-6adaaa3089be",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "5f3961e9-bb97-519e-8575-6adaaa3089be",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "5f3961e9-bb97-519e-8575-6adaaa3089be",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "15b8047c-8a68-5297-9f19-da0c9026c04f",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "15b8047c-8a68-5297-9f19-da0c9026c04f",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "15b8047c-8a68-5297-9f19-da0c9026c04f",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "15b8047c-8a68-5297-9f19-da0c9026c04f",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        }
+      ]
+    },
+    {
+      "batch": 5,
+      "next_batch": 6,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "3dcbefcc69081e96b4fc660cb3aaadd5a64eaaeecc407c7d2dba361c6da9fdfd",
+      "resume_sha256": "4a84a02774e3d1345752cdbb3df40496db4e878013643fbe3de0ad14575c79c1",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0041107846193395685,
+      "rewards": [
+        [
+          1.024,
+          0.024,
+          0.024,
+          1.03
+        ],
+        [
+          0.0,
+          0.02,
+          0.02,
+          0.0
+        ],
+        [
+          0.0,
+          1.08,
+          0.0,
+          0.0
+        ],
+        [
+          0.04,
+          0.06,
+          0.04,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.03,
+          0.0
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.12,
+          1.1400000000000001
+        ],
+        [
+          1.08,
+          1.06,
+          1.06,
+          1.08
+        ],
+        [
+          1.12,
+          1.12,
+          0.0,
+          1.12
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "0560caad-ab77-585d-9073-0d998cc835ea",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 1.024
+        },
+        {
+          "source_id": "0560caad-ab77-585d-9073-0d998cc835ea",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "0560caad-ab77-585d-9073-0d998cc835ea",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "0560caad-ab77-585d-9073-0d998cc835ea",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 1.03
+        },
+        {
+          "source_id": "4e89d789-b236-526b-81f9-37809b5e264b",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "4e89d789-b236-526b-81f9-37809b5e264b",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "4e89d789-b236-526b-81f9-37809b5e264b",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "4e89d789-b236-526b-81f9-37809b5e264b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "ddc18e57-207f-534e-9716-9e33b45750fc",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "ddc18e57-207f-534e-9716-9e33b45750fc",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "ddc18e57-207f-534e-9716-9e33b45750fc",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "ddc18e57-207f-534e-9716-9e33b45750fc",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "d6c4eb66-e8fe-5303-be57-9528e3593d35",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "d6c4eb66-e8fe-5303-be57-9528e3593d35",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "d6c4eb66-e8fe-5303-be57-9528e3593d35",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "d6c4eb66-e8fe-5303-be57-9528e3593d35",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "5e112611-4ba3-5d2b-8044-0dd6871d2c19",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "5e112611-4ba3-5d2b-8044-0dd6871d2c19",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "5e112611-4ba3-5d2b-8044-0dd6871d2c19",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "5e112611-4ba3-5d2b-8044-0dd6871d2c19",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "891fdebe-1aa6-5845-87b4-577ffd500cf3",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "891fdebe-1aa6-5845-87b4-577ffd500cf3",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "891fdebe-1aa6-5845-87b4-577ffd500cf3",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "891fdebe-1aa6-5845-87b4-577ffd500cf3",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "2407569f-8bdc-54fe-8ba4-70b08bd1bcff",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "2407569f-8bdc-54fe-8ba4-70b08bd1bcff",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "2407569f-8bdc-54fe-8ba4-70b08bd1bcff",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "2407569f-8bdc-54fe-8ba4-70b08bd1bcff",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "e41c0bf1-ba04-5514-ae56-28798c31f865",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "e41c0bf1-ba04-5514-ae56-28798c31f865",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "e41c0bf1-ba04-5514-ae56-28798c31f865",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "e41c0bf1-ba04-5514-ae56-28798c31f865",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        }
+      ]
+    },
+    {
+      "batch": 6,
+      "next_batch": 7,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "c6769a89a72e7a968ec7d3a4b04faa00e566abf16f8b7dce5372aa565a66d5dd",
+      "resume_sha256": "31bfd89ea5b04e313c97eddfcb4d948c6d088018295c1292fd71473d454cde1c",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0038188994774937834,
+      "rewards": [
+        [
+          0.024,
+          0.024,
+          0.0,
+          0.024
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.12,
+          1.1400000000000001
+        ],
+        [
+          1.06,
+          1.06,
+          1.06,
+          1.06
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.12
+        ],
+        [
+          0.06,
+          0.0,
+          0.06,
+          0.04
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.13999999999999999,
+          1.12,
+          0.0,
+          0.0
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "aa983b2c-3929-5227-8183-cd142a928aef",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "aa983b2c-3929-5227-8183-cd142a928aef",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "aa983b2c-3929-5227-8183-cd142a928aef",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "aa983b2c-3929-5227-8183-cd142a928aef",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "509ac7ff-b51d-5eec-a233-0413357ccc20",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "509ac7ff-b51d-5eec-a233-0413357ccc20",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "509ac7ff-b51d-5eec-a233-0413357ccc20",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "509ac7ff-b51d-5eec-a233-0413357ccc20",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "cc3b7847-10b7-555a-9df8-566585ea9f3a",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "cc3b7847-10b7-555a-9df8-566585ea9f3a",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "cc3b7847-10b7-555a-9df8-566585ea9f3a",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "cc3b7847-10b7-555a-9df8-566585ea9f3a",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "9f75abe3-cc01-5166-9a6d-c47339c5e535",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "9f75abe3-cc01-5166-9a6d-c47339c5e535",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "9f75abe3-cc01-5166-9a6d-c47339c5e535",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "9f75abe3-cc01-5166-9a6d-c47339c5e535",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "c4d9ae36-1256-5a35-83f8-ca34d034b46f",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "c4d9ae36-1256-5a35-83f8-ca34d034b46f",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c4d9ae36-1256-5a35-83f8-ca34d034b46f",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "c4d9ae36-1256-5a35-83f8-ca34d034b46f",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "06b460e1-b518-5dc5-88fa-29b2ec0664c1",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "06b460e1-b518-5dc5-88fa-29b2ec0664c1",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "06b460e1-b518-5dc5-88fa-29b2ec0664c1",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "06b460e1-b518-5dc5-88fa-29b2ec0664c1",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "b628dd87-81cb-5ad6-95d5-cb2fabbbe1a1",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "b628dd87-81cb-5ad6-95d5-cb2fabbbe1a1",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "b628dd87-81cb-5ad6-95d5-cb2fabbbe1a1",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "b628dd87-81cb-5ad6-95d5-cb2fabbbe1a1",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "81d94f9c-2901-5bea-b34d-b8f461f362bc",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "81d94f9c-2901-5bea-b34d-b8f461f362bc",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "81d94f9c-2901-5bea-b34d-b8f461f362bc",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "81d94f9c-2901-5bea-b34d-b8f461f362bc",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        }
+      ]
+    },
+    {
+      "batch": 7,
+      "next_batch": 8,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "297e46b2601559d4f9d67d43e7b5dcac55ac2470329e0fe80160f9abcd6e4935",
+      "resume_sha256": "cc91da59b56d453c9939ae87bb851a8af96b46c4da2ee0f4d17798be8a378cca",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0037833178254151507,
+      "rewards": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.12,
+          0.0,
+          0.12,
+          1.12
+        ],
+        [
+          0.06,
+          0.13999999999999999,
+          0.13999999999999999,
+          0.13999999999999999
+        ],
+        [
+          0.02,
+          0.02,
+          0.0,
+          0.02
+        ],
+        [
+          1.05,
+          1.05,
+          1.05,
+          1.05
+        ],
+        [
+          0.06,
+          0.044,
+          0.06,
+          0.06
+        ],
+        [
+          0.03,
+          0.0,
+          1.06,
+          0.12
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          0.0,
+          1.1400000000000001
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "c361d091-2d9e-56ed-8520-515834e73c06",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c361d091-2d9e-56ed-8520-515834e73c06",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c361d091-2d9e-56ed-8520-515834e73c06",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c361d091-2d9e-56ed-8520-515834e73c06",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "bd5ad2fd-c352-512c-973e-aa621c866b1f",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "bd5ad2fd-c352-512c-973e-aa621c866b1f",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "bd5ad2fd-c352-512c-973e-aa621c866b1f",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "bd5ad2fd-c352-512c-973e-aa621c866b1f",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "452644ce-e6a4-5546-ab15-162831506298",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "452644ce-e6a4-5546-ab15-162831506298",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "452644ce-e6a4-5546-ab15-162831506298",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "452644ce-e6a4-5546-ab15-162831506298",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "4437a01d-5952-5d65-a683-91f09e0d978a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "4437a01d-5952-5d65-a683-91f09e0d978a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "4437a01d-5952-5d65-a683-91f09e0d978a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "4437a01d-5952-5d65-a683-91f09e0d978a",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "03dce74a-aae7-52e7-890c-d09cb5012ed3",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 1.05
+        },
+        {
+          "source_id": "03dce74a-aae7-52e7-890c-d09cb5012ed3",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 1.05
+        },
+        {
+          "source_id": "03dce74a-aae7-52e7-890c-d09cb5012ed3",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 1.05
+        },
+        {
+          "source_id": "03dce74a-aae7-52e7-890c-d09cb5012ed3",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 1.05
+        },
+        {
+          "source_id": "247726e2-d80b-5077-af00-ea9a81df054b",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "247726e2-d80b-5077-af00-ea9a81df054b",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 0.044
+        },
+        {
+          "source_id": "247726e2-d80b-5077-af00-ea9a81df054b",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "247726e2-d80b-5077-af00-ea9a81df054b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "e3bc8679-7b35-5ea8-baa6-b6a298f47d09",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "e3bc8679-7b35-5ea8-baa6-b6a298f47d09",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "e3bc8679-7b35-5ea8-baa6-b6a298f47d09",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "e3bc8679-7b35-5ea8-baa6-b6a298f47d09",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "c39d8e76-ac57-5583-8404-bf2de840548e",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "c39d8e76-ac57-5583-8404-bf2de840548e",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "c39d8e76-ac57-5583-8404-bf2de840548e",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "c39d8e76-ac57-5583-8404-bf2de840548e",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        }
+      ]
+    },
+    {
+      "batch": 8,
+      "next_batch": 9,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "0fe185f6449871cbfe05efc5b9ad83fea7d7ce3ac3dfdb85bc7183696aab74a7",
+      "resume_sha256": "d01866bd5cce14d1f866666131ca0a19e560bf52d5063a1a60d621aea93d7dd8",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.003230054133511261,
+      "rewards": [
+        [
+          0.0,
+          0.03,
+          0.03,
+          0.03
+        ],
+        [
+          1.12,
+          0.0,
+          0.0,
+          1.12
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.08,
+          0.13999999999999999,
+          0.13999999999999999,
+          0.02
+        ],
+        [
+          0.02,
+          0.0,
+          0.02,
+          0.0
+        ],
+        [
+          1.06,
+          1.05,
+          1.06,
+          1.03
+        ],
+        [
+          1.06,
+          1.06,
+          0.04,
+          1.08
+        ],
+        [
+          0.12,
+          0.12,
+          1.03,
+          0.12
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "326071c3-9df6-5733-a957-7dd4e7516132",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "326071c3-9df6-5733-a957-7dd4e7516132",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "326071c3-9df6-5733-a957-7dd4e7516132",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "326071c3-9df6-5733-a957-7dd4e7516132",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "1f0f75d9-90e4-50e0-92cd-23789de7c218",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "1f0f75d9-90e4-50e0-92cd-23789de7c218",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "1f0f75d9-90e4-50e0-92cd-23789de7c218",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "1f0f75d9-90e4-50e0-92cd-23789de7c218",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "d00c9268-be5d-5143-bbdd-9158e9394290",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "d00c9268-be5d-5143-bbdd-9158e9394290",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "d00c9268-be5d-5143-bbdd-9158e9394290",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "d00c9268-be5d-5143-bbdd-9158e9394290",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "9124c32a-378b-5030-b9c3-96c381e933d7",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 0.08
+        },
+        {
+          "source_id": "9124c32a-378b-5030-b9c3-96c381e933d7",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "9124c32a-378b-5030-b9c3-96c381e933d7",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "9124c32a-378b-5030-b9c3-96c381e933d7",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "245fc17f-2afa-53b8-9317-f89db7dbeebe",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "245fc17f-2afa-53b8-9317-f89db7dbeebe",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "245fc17f-2afa-53b8-9317-f89db7dbeebe",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "245fc17f-2afa-53b8-9317-f89db7dbeebe",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "090938e6-2f49-58b3-a136-92ecd45a1e70",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "090938e6-2f49-58b3-a136-92ecd45a1e70",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 1.05
+        },
+        {
+          "source_id": "090938e6-2f49-58b3-a136-92ecd45a1e70",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "090938e6-2f49-58b3-a136-92ecd45a1e70",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 1.03
+        },
+        {
+          "source_id": "88923125-5fc3-57ee-b96f-554a2085539f",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "88923125-5fc3-57ee-b96f-554a2085539f",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "88923125-5fc3-57ee-b96f-554a2085539f",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "88923125-5fc3-57ee-b96f-554a2085539f",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "c4d393f0-0b97-5106-a897-a8d34b1a45b9",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "c4d393f0-0b97-5106-a897-a8d34b1a45b9",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "c4d393f0-0b97-5106-a897-a8d34b1a45b9",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 1.03
+        },
+        {
+          "source_id": "c4d393f0-0b97-5106-a897-a8d34b1a45b9",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        }
+      ]
+    },
+    {
+      "batch": 9,
+      "next_batch": 10,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "4e81a316172a364ec456442843c337cfa6da36509219d870579cf856ac59ede6",
+      "resume_sha256": "0399e60b40ae90ce6138828640922decfd64a694d08a81c9586c9d9d37ad082a",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.003168653081295705,
+      "rewards": [
+        [
+          0.0,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          0.0,
+          0.044,
+          0.024,
+          0.02
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.02,
+          0.0,
+          0.02,
+          1.044
+        ],
+        [
+          0.13999999999999999,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.06,
+          0.06,
+          0.0,
+          0.06
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "410c6a78-71de-5b51-b9ed-098b9bb409c3",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "410c6a78-71de-5b51-b9ed-098b9bb409c3",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "410c6a78-71de-5b51-b9ed-098b9bb409c3",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "410c6a78-71de-5b51-b9ed-098b9bb409c3",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "26e3e8dd-d2d7-5cb9-a9e5-1abff0b13f69",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "26e3e8dd-d2d7-5cb9-a9e5-1abff0b13f69",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 0.044
+        },
+        {
+          "source_id": "26e3e8dd-d2d7-5cb9-a9e5-1abff0b13f69",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "26e3e8dd-d2d7-5cb9-a9e5-1abff0b13f69",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "347ec47a-0128-5611-bddb-7a91eb813938",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "347ec47a-0128-5611-bddb-7a91eb813938",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "347ec47a-0128-5611-bddb-7a91eb813938",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "347ec47a-0128-5611-bddb-7a91eb813938",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "6b5d17d0-3602-57ed-8e01-3bf1827f7d63",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "6b5d17d0-3602-57ed-8e01-3bf1827f7d63",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "6b5d17d0-3602-57ed-8e01-3bf1827f7d63",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "6b5d17d0-3602-57ed-8e01-3bf1827f7d63",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "ab8a2b82-7473-5f45-b656-5bab77a9c54c",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "ab8a2b82-7473-5f45-b656-5bab77a9c54c",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "ab8a2b82-7473-5f45-b656-5bab77a9c54c",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "ab8a2b82-7473-5f45-b656-5bab77a9c54c",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "e5e9a590-20d6-5bf8-8de0-36e6f07fdf78",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "e5e9a590-20d6-5bf8-8de0-36e6f07fdf78",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "e5e9a590-20d6-5bf8-8de0-36e6f07fdf78",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "e5e9a590-20d6-5bf8-8de0-36e6f07fdf78",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 1.044
+        },
+        {
+          "source_id": "066e6143-1a8c-5a5e-b0c2-332c57633bd9",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "066e6143-1a8c-5a5e-b0c2-332c57633bd9",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "066e6143-1a8c-5a5e-b0c2-332c57633bd9",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "066e6143-1a8c-5a5e-b0c2-332c57633bd9",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "10d64246-4314-596e-9e55-7f309c1497a2",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "10d64246-4314-596e-9e55-7f309c1497a2",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "10d64246-4314-596e-9e55-7f309c1497a2",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "10d64246-4314-596e-9e55-7f309c1497a2",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        }
+      ]
+    },
+    {
+      "batch": 10,
+      "next_batch": 11,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "fee6db9d1eacdbe43d6a9349a46993c8ce77b3d040fd0e87886ed7c49a153029",
+      "resume_sha256": "1192b4c495737ae9c20d7f3cf7ef92709a32ba6375f063b1882bfc28ae36019a",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0032363069999426152,
+      "rewards": [
+        [
+          0.0,
+          0.024,
+          0.024,
+          0.024
+        ],
+        [
+          0.08,
+          1.06,
+          1.06,
+          0.0
+        ],
+        [
+          0.024,
+          1.044,
+          0.024,
+          0.044
+        ],
+        [
+          0.06,
+          0.06,
+          0.06,
+          0.06
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          0.0
+        ],
+        [
+          0.05,
+          0.05,
+          0.0,
+          0.05
+        ],
+        [
+          1.06,
+          1.044,
+          1.024,
+          0.0
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "2fa3c60d-5fc0-5b00-9721-057bc9465d98",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "2fa3c60d-5fc0-5b00-9721-057bc9465d98",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "2fa3c60d-5fc0-5b00-9721-057bc9465d98",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "2fa3c60d-5fc0-5b00-9721-057bc9465d98",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "103faaba-154f-5cbf-abe8-5551ab432a81",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 0.08
+        },
+        {
+          "source_id": "103faaba-154f-5cbf-abe8-5551ab432a81",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "103faaba-154f-5cbf-abe8-5551ab432a81",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "103faaba-154f-5cbf-abe8-5551ab432a81",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "17f53aa0-5573-56d2-9f63-cd175535c707",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "17f53aa0-5573-56d2-9f63-cd175535c707",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 1.044
+        },
+        {
+          "source_id": "17f53aa0-5573-56d2-9f63-cd175535c707",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "17f53aa0-5573-56d2-9f63-cd175535c707",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 0.044
+        },
+        {
+          "source_id": "0cb03527-93dd-5abb-8df3-6743feb6bc66",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "0cb03527-93dd-5abb-8df3-6743feb6bc66",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "0cb03527-93dd-5abb-8df3-6743feb6bc66",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "0cb03527-93dd-5abb-8df3-6743feb6bc66",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "4b3e51c2-fef5-59f1-b525-17847376c2d0",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "4b3e51c2-fef5-59f1-b525-17847376c2d0",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "4b3e51c2-fef5-59f1-b525-17847376c2d0",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "4b3e51c2-fef5-59f1-b525-17847376c2d0",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "a2a5ca1e-7d50-51d2-8e81-1782f23b2e7b",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a2a5ca1e-7d50-51d2-8e81-1782f23b2e7b",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a2a5ca1e-7d50-51d2-8e81-1782f23b2e7b",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a2a5ca1e-7d50-51d2-8e81-1782f23b2e7b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "97c97bcf-65e2-596f-94f3-f6ab3aaef4b9",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 0.05
+        },
+        {
+          "source_id": "97c97bcf-65e2-596f-94f3-f6ab3aaef4b9",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 0.05
+        },
+        {
+          "source_id": "97c97bcf-65e2-596f-94f3-f6ab3aaef4b9",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "97c97bcf-65e2-596f-94f3-f6ab3aaef4b9",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 0.05
+        },
+        {
+          "source_id": "664ee731-3e25-54ab-a88d-854ef13089cc",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "664ee731-3e25-54ab-a88d-854ef13089cc",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.02,
+          "total": 1.044
+        },
+        {
+          "source_id": "664ee731-3e25-54ab-a88d-854ef13089cc",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 1.024
+        },
+        {
+          "source_id": "664ee731-3e25-54ab-a88d-854ef13089cc",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        }
+      ]
+    },
+    {
+      "batch": 11,
+      "next_batch": 12,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "6ac9f3183f0315c42973e790121770a958ed4e8ab4cd937d3da282071f264865",
+      "resume_sha256": "95740b0a81b30ec43821140c0d64d6a447c04457212bf6280b75ef59bb2636da",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.003068585407317503,
+      "rewards": [
+        [
+          0.0,
+          0.0,
+          0.024,
+          0.0
+        ],
+        [
+          1.1400000000000001,
+          0.0,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          1.08,
+          1.08,
+          1.08,
+          0.0
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          0.04,
+          0.06,
+          0.06,
+          0.06
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          0.05,
+          0.02,
+          1.05,
+          0.02
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "e677f489-3b8b-5558-88af-ad6829c9b379",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "e677f489-3b8b-5558-88af-ad6829c9b379",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "e677f489-3b8b-5558-88af-ad6829c9b379",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "e677f489-3b8b-5558-88af-ad6829c9b379",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "5b04af62-1b13-5304-b003-92c368d85466",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "5b04af62-1b13-5304-b003-92c368d85466",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "5b04af62-1b13-5304-b003-92c368d85466",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "5b04af62-1b13-5304-b003-92c368d85466",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "c99c908f-22f7-519a-9fd0-ea02e275386b",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "c99c908f-22f7-519a-9fd0-ea02e275386b",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "c99c908f-22f7-519a-9fd0-ea02e275386b",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "c99c908f-22f7-519a-9fd0-ea02e275386b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "a895acb5-f649-5fbc-850d-c8205aff1249",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "a895acb5-f649-5fbc-850d-c8205aff1249",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "a895acb5-f649-5fbc-850d-c8205aff1249",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "a895acb5-f649-5fbc-850d-c8205aff1249",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "d4ed2de9-a617-58c2-b5a2-06391e894d33",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "d4ed2de9-a617-58c2-b5a2-06391e894d33",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "d4ed2de9-a617-58c2-b5a2-06391e894d33",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "d4ed2de9-a617-58c2-b5a2-06391e894d33",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "e64083d0-0b25-5d6d-9bfe-f3687e61c5b7",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "e64083d0-0b25-5d6d-9bfe-f3687e61c5b7",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "e64083d0-0b25-5d6d-9bfe-f3687e61c5b7",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "e64083d0-0b25-5d6d-9bfe-f3687e61c5b7",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a50bbaac-17f1-5d7f-aa50-65c71857b943",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "a50bbaac-17f1-5d7f-aa50-65c71857b943",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "a50bbaac-17f1-5d7f-aa50-65c71857b943",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "a50bbaac-17f1-5d7f-aa50-65c71857b943",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "a2c1d658-7f58-5a68-ae23-3d39a4b73a7f",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 0.05
+        },
+        {
+          "source_id": "a2c1d658-7f58-5a68-ae23-3d39a4b73a7f",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "a2c1d658-7f58-5a68-ae23-3d39a4b73a7f",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.02,
+          "total": 1.05
+        },
+        {
+          "source_id": "a2c1d658-7f58-5a68-ae23-3d39a4b73a7f",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        }
+      ]
+    },
+    {
+      "batch": 12,
+      "next_batch": 13,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "6473df0d3e3cad2942af5984451b8e6fe96ea2a867fa3a49c63983c7bcf31d49",
+      "resume_sha256": "92389fc5d645a19426ef831a8e2b46877d573107a09bcb2fcbff0fb23a839df9",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0029712223812869503,
+      "rewards": [
+        [
+          1.024,
+          1.024,
+          0.0,
+          0.12
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.0,
+          1.08,
+          0.0,
+          0.0
+        ],
+        [
+          0.06,
+          0.03,
+          0.0,
+          0.03
+        ],
+        [
+          0.0,
+          0.12,
+          0.0,
+          0.0
+        ],
+        [
+          1.1400000000000001,
+          0.13999999999999999,
+          0.13999999999999999,
+          1.1400000000000001
+        ],
+        [
+          1.08,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.12
+        ],
+        [
+          1.12,
+          0.12,
+          0.13999999999999999,
+          1.1400000000000001
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "86137adf-3a22-52ef-916d-37c165c6696f",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 1.024
+        },
+        {
+          "source_id": "86137adf-3a22-52ef-916d-37c165c6696f",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 1.024
+        },
+        {
+          "source_id": "86137adf-3a22-52ef-916d-37c165c6696f",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "86137adf-3a22-52ef-916d-37c165c6696f",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "a4308f0b-2e0c-5be2-9735-cc67f90d8f8b",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a4308f0b-2e0c-5be2-9735-cc67f90d8f8b",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a4308f0b-2e0c-5be2-9735-cc67f90d8f8b",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a4308f0b-2e0c-5be2-9735-cc67f90d8f8b",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "ab5a399f-5b2b-530e-9065-9e30b2867155",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "ab5a399f-5b2b-530e-9065-9e30b2867155",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "ab5a399f-5b2b-530e-9065-9e30b2867155",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "ab5a399f-5b2b-530e-9065-9e30b2867155",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "3b4a4880-e195-5818-a76d-ece99a293289",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "3b4a4880-e195-5818-a76d-ece99a293289",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "3b4a4880-e195-5818-a76d-ece99a293289",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "3b4a4880-e195-5818-a76d-ece99a293289",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "6078ac94-7c9a-5578-9d90-139c6621dfb9",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "6078ac94-7c9a-5578-9d90-139c6621dfb9",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "6078ac94-7c9a-5578-9d90-139c6621dfb9",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "6078ac94-7c9a-5578-9d90-139c6621dfb9",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "de4680f1-42e6-5d76-b0e8-985db3477bda",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "de4680f1-42e6-5d76-b0e8-985db3477bda",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "de4680f1-42e6-5d76-b0e8-985db3477bda",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "de4680f1-42e6-5d76-b0e8-985db3477bda",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "bf52ea1d-6eb8-5e80-8138-7e66f0d56b8c",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "bf52ea1d-6eb8-5e80-8138-7e66f0d56b8c",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "bf52ea1d-6eb8-5e80-8138-7e66f0d56b8c",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "bf52ea1d-6eb8-5e80-8138-7e66f0d56b8c",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "b572e48f-7902-5421-93d1-134bfe668b3a",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "b572e48f-7902-5421-93d1-134bfe668b3a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "b572e48f-7902-5421-93d1-134bfe668b3a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "b572e48f-7902-5421-93d1-134bfe668b3a",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        }
+      ]
+    },
+    {
+      "batch": 13,
+      "next_batch": 14,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "155e9953c41a585d633b3f6f69a419456cba4dda2d1fc1827136dca657260c17",
+      "resume_sha256": "73d88a68c7c3a03caa772726f36b44773edef89a688e20d957a83a7f0c4232e5",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0030100714110194203,
+      "rewards": [
+        [
+          0.03,
+          0.024,
+          0.024,
+          0.024
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.0,
+          0.02,
+          0.02,
+          0.0
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ],
+        [
+          0.06,
+          1.12,
+          1.12,
+          0.06
+        ],
+        [
+          1.12,
+          1.12,
+          0.0,
+          1.1400000000000001
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "fdf15481-f368-59f1-b6cb-c91cff6ce7d8",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "fdf15481-f368-59f1-b6cb-c91cff6ce7d8",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "fdf15481-f368-59f1-b6cb-c91cff6ce7d8",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "fdf15481-f368-59f1-b6cb-c91cff6ce7d8",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.024,
+          "evidence": 0.0,
+          "total": 0.024
+        },
+        {
+          "source_id": "d556a524-483b-5e0c-bfb5-b2da070ec16e",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "d556a524-483b-5e0c-bfb5-b2da070ec16e",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "d556a524-483b-5e0c-bfb5-b2da070ec16e",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "d556a524-483b-5e0c-bfb5-b2da070ec16e",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "0bfa6039-341c-50f0-b5e7-7b329de555ee",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0bfa6039-341c-50f0-b5e7-7b329de555ee",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "0bfa6039-341c-50f0-b5e7-7b329de555ee",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "0bfa6039-341c-50f0-b5e7-7b329de555ee",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "22e8267f-6de4-5e1e-b292-54331ea671f9",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22e8267f-6de4-5e1e-b292-54331ea671f9",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22e8267f-6de4-5e1e-b292-54331ea671f9",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "22e8267f-6de4-5e1e-b292-54331ea671f9",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "e87f2bc7-c1f7-5269-8b53-8aba93242287",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "e87f2bc7-c1f7-5269-8b53-8aba93242287",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "e87f2bc7-c1f7-5269-8b53-8aba93242287",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "e87f2bc7-c1f7-5269-8b53-8aba93242287",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "0925fa90-c711-5fb6-8f76-1a8c10bf6525",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "0925fa90-c711-5fb6-8f76-1a8c10bf6525",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "0925fa90-c711-5fb6-8f76-1a8c10bf6525",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0925fa90-c711-5fb6-8f76-1a8c10bf6525",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "6c6edec2-3b8e-5628-8b81-b4aae1710c65",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "6c6edec2-3b8e-5628-8b81-b4aae1710c65",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "6c6edec2-3b8e-5628-8b81-b4aae1710c65",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "6c6edec2-3b8e-5628-8b81-b4aae1710c65",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "8707ccf1-bad6-53c0-8dcc-4937ad5cc67b",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "8707ccf1-bad6-53c0-8dcc-4937ad5cc67b",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "8707ccf1-bad6-53c0-8dcc-4937ad5cc67b",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "8707ccf1-bad6-53c0-8dcc-4937ad5cc67b",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        }
+      ]
+    },
+    {
+      "batch": 14,
+      "next_batch": 15,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "4525c5060790877d87578dce4d21a59ef39b1d7f8104c53f9a3af9c7432fc419",
+      "resume_sha256": "458f191e9db462e15b2b8559a3db9ba9987b1e26bca03e196249430e7054152f",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0028886783605141975,
+      "rewards": [
+        [
+          0.0,
+          0.03,
+          0.03,
+          0.04
+        ],
+        [
+          1.12,
+          1.12,
+          1.08,
+          0.13999999999999999
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          0.12
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.13999999999999999,
+          0.0,
+          0.0
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.1400000000000001,
+          0.13999999999999999
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "0aa0b346-0e79-5d2b-968e-a9ecd4ad38a6",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0aa0b346-0e79-5d2b-968e-a9ecd4ad38a6",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "0aa0b346-0e79-5d2b-968e-a9ecd4ad38a6",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "0aa0b346-0e79-5d2b-968e-a9ecd4ad38a6",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "fa109040-f50c-52ed-ae36-ada9c4e36317",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "fa109040-f50c-52ed-ae36-ada9c4e36317",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "fa109040-f50c-52ed-ae36-ada9c4e36317",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "fa109040-f50c-52ed-ae36-ada9c4e36317",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "6308d6e6-f442-58c2-adae-f2340f7c1451",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "6308d6e6-f442-58c2-adae-f2340f7c1451",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "6308d6e6-f442-58c2-adae-f2340f7c1451",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "6308d6e6-f442-58c2-adae-f2340f7c1451",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "d55d77b6-76a8-57c0-bba3-0ba3798f6cbd",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "d55d77b6-76a8-57c0-bba3-0ba3798f6cbd",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "d55d77b6-76a8-57c0-bba3-0ba3798f6cbd",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "d55d77b6-76a8-57c0-bba3-0ba3798f6cbd",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "6ddf4d8b-707b-5f28-9f9b-6effb7cc64d6",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "6ddf4d8b-707b-5f28-9f9b-6effb7cc64d6",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "6ddf4d8b-707b-5f28-9f9b-6effb7cc64d6",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "6ddf4d8b-707b-5f28-9f9b-6effb7cc64d6",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "cadf72af-d6d6-52fc-9904-4f5eebc48d2d",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "cadf72af-d6d6-52fc-9904-4f5eebc48d2d",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "cadf72af-d6d6-52fc-9904-4f5eebc48d2d",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "cadf72af-d6d6-52fc-9904-4f5eebc48d2d",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "95be372e-5552-57e4-85cb-3f026e9306eb",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "95be372e-5552-57e4-85cb-3f026e9306eb",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "95be372e-5552-57e4-85cb-3f026e9306eb",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "95be372e-5552-57e4-85cb-3f026e9306eb",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "2ca6d088-d8c1-500a-9315-e05b3c85075b",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "2ca6d088-d8c1-500a-9315-e05b3c85075b",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "2ca6d088-d8c1-500a-9315-e05b3c85075b",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "2ca6d088-d8c1-500a-9315-e05b3c85075b",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        }
+      ]
+    },
+    {
+      "batch": 15,
+      "next_batch": 16,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "ef33a30c8fb7e3c1d4dfa355d68f2f284d4faffa6cf34f5979fd201e6830aeba",
+      "resume_sha256": "dc6296a0808454804a5f95b747e1189aab4a20ee1cb9733dbdf2ddc85bdbf8fd",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.002947765941310014,
+      "rewards": [
+        [
+          0.12,
+          0.0,
+          0.12,
+          1.12
+        ],
+        [
+          1.12,
+          1.1400000000000001,
+          1.12,
+          1.1400000000000001
+        ],
+        [
+          0.0,
+          0.04,
+          0.04,
+          0.04
+        ],
+        [
+          1.03,
+          1.03,
+          1.03,
+          0.06
+        ],
+        [
+          0.0,
+          1.1400000000000001,
+          1.12,
+          1.1400000000000001
+        ],
+        [
+          1.06,
+          0.06,
+          0.06,
+          1.06
+        ],
+        [
+          1.12,
+          0.02,
+          0.0,
+          0.0
+        ],
+        [
+          1.12,
+          1.12,
+          1.12,
+          1.12
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "0129937d-1911-5284-a489-ee61c68f0011",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "0129937d-1911-5284-a489-ee61c68f0011",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0129937d-1911-5284-a489-ee61c68f0011",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "0129937d-1911-5284-a489-ee61c68f0011",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "b6f6883c-3e9c-5d54-9c7e-7da840bbfcbe",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "b6f6883c-3e9c-5d54-9c7e-7da840bbfcbe",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "b6f6883c-3e9c-5d54-9c7e-7da840bbfcbe",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "b6f6883c-3e9c-5d54-9c7e-7da840bbfcbe",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "0e5d2e96-6009-5804-a02d-57475c79b683",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "0e5d2e96-6009-5804-a02d-57475c79b683",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "0e5d2e96-6009-5804-a02d-57475c79b683",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "0e5d2e96-6009-5804-a02d-57475c79b683",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.0,
+          "total": 0.04
+        },
+        {
+          "source_id": "a50cae15-77dd-5f30-9b90-42b6a7c2ee00",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 1.03
+        },
+        {
+          "source_id": "a50cae15-77dd-5f30-9b90-42b6a7c2ee00",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 1.03
+        },
+        {
+          "source_id": "a50cae15-77dd-5f30-9b90-42b6a7c2ee00",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 1.03
+        },
+        {
+          "source_id": "a50cae15-77dd-5f30-9b90-42b6a7c2ee00",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "ae805bce-abf5-5206-baf9-03993c5f87e3",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "ae805bce-abf5-5206-baf9-03993c5f87e3",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "ae805bce-abf5-5206-baf9-03993c5f87e3",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "ae805bce-abf5-5206-baf9-03993c5f87e3",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "a7a75d65-f8f8-5436-a040-e8bc62aaa50d",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "a7a75d65-f8f8-5436-a040-e8bc62aaa50d",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "a7a75d65-f8f8-5436-a040-e8bc62aaa50d",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 0.06
+        },
+        {
+          "source_id": "a7a75d65-f8f8-5436-a040-e8bc62aaa50d",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.04,
+          "evidence": 0.02,
+          "total": 1.06
+        },
+        {
+          "source_id": "90e08ddb-ead3-5a9e-b878-24f21950d690",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "90e08ddb-ead3-5a9e-b878-24f21950d690",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "90e08ddb-ead3-5a9e-b878-24f21950d690",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "90e08ddb-ead3-5a9e-b878-24f21950d690",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "8d76ab09-41bd-5d6f-b639-5c4645e7d6b3",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "8d76ab09-41bd-5d6f-b639-5c4645e7d6b3",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "8d76ab09-41bd-5d6f-b639-5c4645e7d6b3",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        },
+        {
+          "source_id": "8d76ab09-41bd-5d6f-b639-5c4645e7d6b3",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        }
+      ]
+    },
+    {
+      "batch": 16,
+      "next_batch": 17,
+      "parent": "1d527f90b632a80809d6b0e152d62e04c773711c9ceb73ae8b441d7cb2f0bcd0",
+      "fixed_skill": "0e52b9439b0016b0cad2903392030fca4b501019c7378a3a594b0fb6d1d4faf7",
+      "planner_sha256": "07bbc48d9878dac751ed68dd426dd06a750b70a226f8906006544a49397efd9d",
+      "resume_sha256": "52b97859be5972bee8effc43c399f34a984039dae9392597b4e02fe8c4daf9e0",
+      "contract": {
+        "plan.json": "b64533cf3e792bcc4d5fb64efb59240576f0c093a4877288e198668fbe0a4f87",
+        "train-public.json": "9459cb9bb27bdef567181bd45d5a9ac81b90d356d16b20a5b5c1dde32ced8fc0",
+        "reward-labels.json": "0a9ed95407f1ff534a8dc07cf49e284afb684be870c45a2b9bfa0e7a3809c729",
+        "skill_reward.py": "531184a22563a1e4d8aab99e8922233388779c441e66695944d9c7d7ae122c2e"
+      },
+      "updated": true,
+      "delta_norm": 0.0026649476502987996,
+      "rewards": [
+        [
+          0.13999999999999999,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001
+        ],
+        [
+          0.12,
+          0.12,
+          0.12,
+          0.12
+        ],
+        [
+          0.03,
+          0.0,
+          0.03,
+          0.03
+        ],
+        [
+          0.13999999999999999,
+          0.13999999999999999,
+          0.13999999999999999,
+          1.1400000000000001
+        ],
+        [
+          0.02,
+          0.02,
+          0.02,
+          0.02
+        ],
+        [
+          0.0,
+          1.06,
+          0.08,
+          1.08
+        ],
+        [
+          0.06,
+          0.06,
+          0.06,
+          0.06
+        ],
+        [
+          1.1400000000000001,
+          1.1400000000000001,
+          1.1400000000000001,
+          1.12
+        ]
+      ],
+      "optimizer_states": 80,
+      "skill_reward_components": [
+        {
+          "source_id": "6287962d-b1bc-5d0c-ad2e-51bbabce2473",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "6287962d-b1bc-5d0c-ad2e-51bbabce2473",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "6287962d-b1bc-5d0c-ad2e-51bbabce2473",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "6287962d-b1bc-5d0c-ad2e-51bbabce2473",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "9ac7afc2-8cbb-5a6c-a32d-d2724ca474c6",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "9ac7afc2-8cbb-5a6c-a32d-d2724ca474c6",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "9ac7afc2-8cbb-5a6c-a32d-d2724ca474c6",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "9ac7afc2-8cbb-5a6c-a32d-d2724ca474c6",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 0.12
+        },
+        {
+          "source_id": "4b2a5275-eb4a-5c90-9f0c-17fce62bc3ab",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "4b2a5275-eb4a-5c90-9f0c-17fce62bc3ab",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "4b2a5275-eb4a-5c90-9f0c-17fce62bc3ab",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "4b2a5275-eb4a-5c90-9f0c-17fce62bc3ab",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.03,
+          "evidence": 0.0,
+          "total": 0.03
+        },
+        {
+          "source_id": "31580f73-d462-5590-a782-0711c7e63a4a",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "31580f73-d462-5590-a782-0711c7e63a4a",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "31580f73-d462-5590-a782-0711c7e63a4a",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 0.13999999999999999
+        },
+        {
+          "source_id": "31580f73-d462-5590-a782-0711c7e63a4a",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "b6dade61-4730-59b0-b6be-80e573ac07e0",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "b6dade61-4730-59b0-b6be-80e573ac07e0",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "b6dade61-4730-59b0-b6be-80e573ac07e0",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "b6dade61-4730-59b0-b6be-80e573ac07e0",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.02,
+          "total": 0.02
+        },
+        {
+          "source_id": "56189e64-d812-563c-b282-69d17f8a58c4",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.0,
+          "evidence": 0.0,
+          "total": 0.0
+        },
+        {
+          "source_id": "56189e64-d812-563c-b282-69d17f8a58c4",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 1.06
+        },
+        {
+          "source_id": "56189e64-d812-563c-b282-69d17f8a58c4",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 0.08
+        },
+        {
+          "source_id": "56189e64-d812-563c-b282-69d17f8a58c4",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.06,
+          "evidence": 0.02,
+          "total": 1.08
+        },
+        {
+          "source_id": "c14296f6-a9c1-5b14-976f-1a5f3f6dbe71",
+          "sample": 0,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "c14296f6-a9c1-5b14-976f-1a5f3f6dbe71",
+          "sample": 1,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "c14296f6-a9c1-5b14-976f-1a5f3f6dbe71",
+          "sample": 2,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "c14296f6-a9c1-5b14-976f-1a5f3f6dbe71",
+          "sample": 3,
+          "outcome": 0,
+          "retrieval": 0.06,
+          "evidence": 0.0,
+          "total": 0.06
+        },
+        {
+          "source_id": "5928e90f-2881-52c2-9555-279105b7ae37",
+          "sample": 0,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "5928e90f-2881-52c2-9555-279105b7ae37",
+          "sample": 1,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "5928e90f-2881-52c2-9555-279105b7ae37",
+          "sample": 2,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.02,
+          "total": 1.1400000000000001
+        },
+        {
+          "source_id": "5928e90f-2881-52c2-9555-279105b7ae37",
+          "sample": 3,
+          "outcome": 1,
+          "retrieval": 0.12,
+          "evidence": 0.0,
+          "total": 1.12
+        }
+      ]
+    }
+  ],
+  "restores": [
+    {
+      "previous": 1,
+      "resume_sha256": "35b252767794e947ce45f0b7ac20e433b5671029666feca4a663378095189358",
+      "optimizer_states": 80,
+      "at": 1795697229.4120898,
+      "pid": 402286
+    },
+    {
+      "previous": 2,
+      "resume_sha256": "4ed0766a4f54b9ebe0d11295ce37e3d68fd2f7c74e7a74c8202801a21654e645",
+      "optimizer_states": 80,
+      "at": 1795699650.3190303,
+      "pid": 426394
+    },
+    {
+      "previous": 3,
+      "resume_sha256": "3fbf8931e54addbbe932480ffc24f0414c68e3aaa3c72d1b6922b2d7a3ca564e",
+      "optimizer_states": 80,
+      "at": 1795704873.5111372,
+      "pid": 474499
+    },
+    {
+      "previous": 4,
+      "resume_sha256": "0b4d76f0c0987c0cd0794c7d05255d3c8bb5aae9908c1aa447e119c34d960799",
+      "optimizer_states": 80,
+      "at": 1795711638.186331,
+      "pid": 507978
+    },
+    {
+      "previous": 5,
+      "resume_sha256": "4a84a02774e3d1345752cdbb3df40496db4e878013643fbe3de0ad14575c79c1",
+      "optimizer_states": 80,
+      "at": 1795718988.168569,
+      "pid": 554448
+    },
+    {
+      "previous": 6,
+      "resume_sha256": "31bfd89ea5b04e313c97eddfcb4d948c6d088018295c1292fd71473d454cde1c",
+      "optimizer_states": 80,
+      "at": 1795724897.9045067,
+      "pid": 591715
+    },
+    {
+      "previous": 7,
+      "resume_sha256": "cc91da59b56d453c9939ae87bb851a8af96b46c4da2ee0f4d17798be8a378cca",
+      "optimizer_states": 80,
+      "at": 1795731293.123696,
+      "pid": 632622
+    },
+    {
+      "previous": 8,
+      "resume_sha256": "d01866bd5cce14d1f866666131ca0a19e560bf52d5063a1a60d621aea93d7dd8",
+      "optimizer_states": 80,
+      "at": 1795739929.1862938,
+      "pid": 692145
+    },
+    {
+      "previous": 9,
+      "resume_sha256": "0399e60b40ae90ce6138828640922decfd64a694d08a81c9586c9d9d37ad082a",
+      "optimizer_states": 80,
+      "at": 1795747141.9635806,
+      "pid": 739245
+    },
+    {
+      "previous": 10,
+      "resume_sha256": "1192b4c495737ae9c20d7f3cf7ef92709a32ba6375f063b1882bfc28ae36019a",
+      "optimizer_states": 80,
+      "at": 1795749167.4127421,
+      "pid": 762330
+    },
+    {
+      "previous": 11,
+      "resume_sha256": "95740b0a81b30ec43821140c0d64d6a447c04457212bf6280b75ef59bb2636da",
+      "optimizer_states": 80,
+      "at": 1795751058.2802727,
+      "pid": 784019
+    },
+    {
+      "previous": 12,
+      "resume_sha256": "92389fc5d645a19426ef831a8e2b46877d573107a09bcb2fcbff0fb23a839df9",
+      "optimizer_states": 80,
+      "at": 1795753450.8149328,
+      "pid": 810122
+    },
+    {
+      "previous": 13,
+      "resume_sha256": "73d88a68c7c3a03caa772726f36b44773edef89a688e20d957a83a7f0c4232e5",
+      "optimizer_states": 80,
+      "at": 1795754778.7408183,
+      "pid": 823244
+    },
+    {
+      "previous": 14,
+      "resume_sha256": "458f191e9db462e15b2b8559a3db9ba9987b1e26bca03e196249430e7054152f",
+      "optimizer_states": 80,
+      "at": 1795756784.300109,
+      "pid": 843303
+    },
+    {
+      "previous": 15,
+      "resume_sha256": "dc6296a0808454804a5f95b747e1189aab4a20ee1cb9733dbdf2ddc85bdbf8fd",
+      "optimizer_states": 80,
+      "at": 1795758935.8735628,
+      "pid": 861324
+    }
+  ],
+  "replay": {
+    "batch-06": {
+      "at": 1795723438.127172,
+      "turn": 54,
+      "total": 54,
+      "prompt_tokens": 29967,
+      "action_tokens": 87,
+      "loss": 0.010231764055788517
+    },
+    "batch-11": {
+      "turn": 49,
+      "total": 49,
+      "at": 1795750477.4388494
+    },
+    "batch-15": {
+      "turn": 69,
+      "total": 69,
+      "at": 1795758529.0697017
+    },
+    "batch-02": {
+      "at": 1795698384.194615,
+      "turn": 15,
+      "total": 15,
+      "prompt_tokens": 23052,
+      "action_tokens": 94,
+      "loss": -0.03933503106236458
+    },
+    "batch-05": {
+      "at": 1795717387.5490556,
+      "turn": 73,
+      "total": 73,
+      "prompt_tokens": 23046,
+      "action_tokens": 83,
+      "loss": -0.005169249139726162
+    },
+    "batch-16": {
+      "turn": 46,
+      "total": 46,
+      "at": 1795759869.5557883
+    },
+    "batch-07": {
+      "at": 1795729726.592136,
+      "turn": 60,
+      "total": 60,
+      "prompt_tokens": 25370,
+      "action_tokens": 59,
+      "loss": -0.006255599670112133
+    },
+    "batch-01": {
+      "at": 1795696096.2212667,
+      "turn": 52,
+      "total": 52,
+      "prompt_tokens": 30868,
+      "action_tokens": 71,
+      "loss": -0.01043122448027134
+    },
+    "batch-14": {
+      "turn": 61,
+      "total": 61,
+      "at": 1795756354.9025846
+    },
+    "batch-13": {
+      "turn": 39,
+      "total": 39,
+      "at": 1795754346.5281348
+    },
+    "batch-10": {
+      "turn": 57,
+      "total": 57,
+      "at": 1795748682.934533
+    },
+    "batch-12": {
+      "turn": 70,
+      "total": 70,
+      "at": 1795752972.511998
+    },
+    "batch-04": {
+      "at": 1795709279.3684661,
+      "turn": 54,
+      "total": 54,
+      "prompt_tokens": 23046,
+      "action_tokens": 83,
+      "loss": 0.008685956709086895
+    },
+    "batch-09": {
+      "at": 1795744535.4978204,
+      "turn": 58,
+      "total": 58,
+      "prompt_tokens": 23028,
+      "action_tokens": 83,
+      "loss": -0.0004910894203931093
+    },
+    "batch-03": {
+      "at": 1795703534.0640259,
+      "turn": 48,
+      "total": 48,
+      "prompt_tokens": 25669,
+      "action_tokens": 49,
+      "loss": 0.007499558851122856
+    },
+    "batch-08": {
+      "at": 1795737492.1953256,
+      "turn": 76,
+      "total": 76,
+      "prompt_tokens": 24521,
+      "action_tokens": 59,
+      "loss": 0.004530681297183037
+    }
+  }
+}

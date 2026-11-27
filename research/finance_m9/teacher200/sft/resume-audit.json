@@ -1,0 +1,45 @@
+{
+  "first_failure": {
+    "exit_code": 1,
+    "gpu": "GPU-7e5ea270-3798-a24e-2c67-6a9908d4ae02",
+    "log": "/home/zhubh/finance_student_teacher200_20261126/training.log",
+    "failed_at": 1795628301.5157907,
+    "other_gpu_memory": "18.09 GiB",
+    "use_bounded_delta": false
+  },
+  "remote_checks": [
+    {
+      "phase": "retry_oom",
+      "at": 1795655558.8497162,
+      "watchdog_pid": 113084,
+      "reason": "显存冲突，重新等待空卡",
+      "exit_code": 1,
+      "gpu": "GPU-7e5ea270-3798-a24e-2c67-6a9908d4ae02",
+      "log": "/home/zhubh/finance_student_teacher200_20261126/training.log",
+      "failed_at": 1795628301.5157907
+    },
+    {
+      "phase": "checking_final_dataset",
+      "at": 1795655558.8501496,
+      "watchdog_pid": 113084
+    },
+    {
+      "phase": "waiting_idle_gpu",
+      "at": 1795655581.32784,
+      "watchdog_pid": 113084,
+      "idle_cards": 1,
+      "rows": 201,
+      "longest": 51646,
+      "shortest": 23173,
+      "context_limit": 262144,
+      "retries": 1,
+      "progress": {
+        "updates": 0
+      }
+    }
+  ],
+  "timer_test": {
+    "seconds_between_unchanged_checks": 1800,
+    "phase_change_immediate": true
+  }
+}

@@ -36,28 +36,40 @@ def references(path, public, split):
     return refs
 
 
-def update(backend, optimizer, groups):
-    import torch
+def weighted_turns(groups):
     rewards = [[reward for reward, actions in group] for group in groups]
     normalized = advantages(rewards, rewards)["advantages"]
-    turns = [(action, advantage) for group, weights in zip(groups, normalized, strict=True)
-             for (_, actions), advantage in zip(group, weights, strict=True) if advantage
-             for action in actions]
+    return [(action, advantage) for group, weights in zip(groups, normalized, strict=True)
+            for (_, actions), advantage in zip(group, weights, strict=True) if advantage
+            for action in actions]
+
+
+def backward_turn(backend, action, advantage, denominator):
+    import torch
+    tokens = (action["prompt"], action["tokens"])
+    with backend.route("reference"), torch.no_grad():
+        ref = policy.action_log_probs(backend.model, *tokens, temperature=TEMPERATURE)
+    with backend.route("planner", learn=True), torch.autograd.graph.save_on_cpu():
+        current = policy.action_log_probs(backend.model, *tokens, temperature=TEMPERATURE)
+        loss = policy.corrected_token_objective(
+            current, current.detach(), torch.tensor(action["behavior"]), ref, advantage,
+            torch.ones_like(current), denominator=denominator)
+        loss.backward()
+    return float(loss.detach())
+
+
+def update(backend, optimizer, groups, *, on_turn=None):
+    import torch
+    turns = weighted_turns(groups)
     if not turns:
         return False
     count = sum(len(action["tokens"]) for action, _ in turns)
     optimizer.zero_grad(set_to_none=True)
-    for action, advantage in turns:
-        tokens = (action["prompt"], action["tokens"])
-        with backend.route("reference"), torch.no_grad():
-            ref = policy.action_log_probs(backend.model, *tokens, temperature=TEMPERATURE)
-        with backend.route("planner", learn=True), torch.autograd.graph.save_on_cpu():
-            current = policy.action_log_probs(backend.model, *tokens, temperature=TEMPERATURE)
-            # All groups in this batch were sampled before any optimizer step.
-            loss = policy.corrected_token_objective(
-                current, current.detach(), torch.tensor(action["behavior"]), ref, advantage,
-                torch.ones_like(current), denominator=count)
-            loss.backward()
+    for index, (action, advantage) in enumerate(turns, 1):
+        loss = backward_turn(backend, action, advantage, count)
+        if on_turn is not None:
+            on_turn(dict(turn=index, total=len(turns), prompt_tokens=len(action["prompt"]),
+                         action_tokens=len(action["tokens"]), loss=loss))
     torch.nn.utils.clip_grad_norm_(backend.planner_parameters(), 1., error_if_nonfinite=True)
     optimizer.step()
     return True

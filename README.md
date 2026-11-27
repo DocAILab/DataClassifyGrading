@@ -2,9 +2,9 @@
 
 **An Agentic Framework for Automated Data Classification and Sensitivity Grading of Database Fields**
 
-**金融分类分级训练主线**采用 fresh162 规划器和 Scale1169 分类器，后续 GRPO 只更新规划器。[代码架构、数据格式与运行命令](research/finance_m9/README.md)
+**金融分类分级训练主线**用 200 条百炼教师轨迹训练学生 Planner，固定 Scale1169 分类器，再以 `1 / 0.12 / 0.02` 奖励进行 GRPO。Val422 上，SFT 和 RL 分别有 198 和 200 个字段同时答对类别与等级。[代码、权重、运行命令与逐字段结果](research/finance_m9/teacher200/README.md)
 
-百炼教师采集代码、25 条金融 TRAIN 字段的逐步轨迹、最终分类及离线回放命令见[金融教师轨迹](research/finance_teacher/README.md)。
+本次入选的 [200 条教师轨迹与 SFT 数据导出](research/finance_m9/teacher200/teacher/README.md) 和[共享教师运行时](research/finance_teacher/README.md)随分支提供。
 
 DCG is an LLM-agent-based system that automatically determines the **data category** and **sensitivity level** of a database field. Given a field (which may be expressed in English, *pinyin*, or an abbreviation), its surrounding database/table metadata, and a domain-specific classification-grading standard corpus (e.g., finance, education, automotive), the agent first expands the semantic meaning of the field, then matches it against a multi-level category taxonomy and a sensitivity-level scale.
 

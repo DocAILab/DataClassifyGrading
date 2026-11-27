@@ -11,11 +11,12 @@ def build(engine,study,scopes):
     rollout=module.build(engine,planner_limit)
     provider=load('full422_same_scoped_provider',DEPS/'finance_program_recovery_source_scope_20261024_r9/source_scope.py')
     binding=load('full422_same_scope_binding',DEPS/'finance_program_evidence_consumption_20261024_r10/scope_binding.py')
+    table_tools=load('m9_shared_dsl_table_tools',ROOT.parents[2]/'finance_teacher/runtime/collector/dsl_table_tools.py')
     construct=engine.old.c.controller
     def create(generate,local,*args,**kwargs):
         ctrl=construct(generate,local,*args,**kwargs)
         ctrl.bridge.executor.metadata_lookup=provider.SourceScopedMetadata(local['rows'],scopes)
-        return binding.install(ctrl)
+        return table_tools.install(binding.install(ctrl))
     namespace=dict(rollout.__globals__)
     old_copy=types.SimpleNamespace(**vars(namespace['old']))
     old_copy.c=types.SimpleNamespace(**vars(old_copy.c));old_copy.c.controller=create
