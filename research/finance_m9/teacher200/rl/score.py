@@ -91,7 +91,7 @@ def report(o):
     for k,v in sorted(o["categories"].items(),key=lambda e:-e[1]["n"]):
         lines.append(f"| {k} | {v['n']} | {v['before']} | {v['after']} |")
     lines+=["",f"[选中的 Planner 权重]({w.relative_to(HERE).as_posix()}/adapter_model.safetensors) · "
-            "[逐字段对照](Val422逐字段.csv) · [全部指标](评分.json) · [原始轨迹](evidence.tar.gz) · "
+            "[逐字段对照](Val422逐字段.csv) · [全部指标](评分.json) · [原始轨迹](https://github.com/DocAILab/DataClassifyGrading/releases/download/finance-teacher200-sft-grpo-20261127/rl-evidence.tar.gz) · "
             f"[小试复核]({audit_file}) · [断点与进度](progress.json)"]
     (HERE/"README.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
 

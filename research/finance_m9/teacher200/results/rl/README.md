@@ -53,4 +53,4 @@ Windows 同步任务在连接恢复后补下载断点并验证文件哈希。512
 | 人力资源数据 | 22 | 0 | 0 |
 | 理财数据 | 13 | 4 | 4 |
 
-[选中的 Planner 权重](updates/batch-04/planner/adapter_model.safetensors) · [逐字段对照](Val422逐字段.csv) · [全部指标](评分.json) · [原始轨迹](evidence.tar.gz) · [小试复核](pilot-reward-audit.json) · [断点与进度](progress.json)
+[选中的 Planner 权重](updates/batch-04/planner/adapter_model.safetensors) · [逐字段对照](Val422逐字段.csv) · [全部指标](评分.json) · [原始轨迹](https://github.com/DocAILab/DataClassifyGrading/releases/download/finance-teacher200-sft-grpo-20261127/rl-evidence.tar.gz) · [小试复核](pilot-reward-audit.json) · [断点与进度](progress.json)
